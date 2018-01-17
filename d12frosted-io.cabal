@@ -1,0 +1,34 @@
+name:                  d12frosted-io
+version:               0.1.0.0
+-- synopsis:
+-- description:
+homepage:              https://github.com/d12frosted/d12frosted-io#readme
+license:               BSD3
+license-file:          LICENSE
+author:                Boris Buliga
+maintainer:            boris@d12frosted.io
+copyright:             2017 Boris Buliga
+category:              Development
+build-type:            Simple
+cabal-version:         >=1.10
+extra-source-files:    README.md
+
+executable d12frosted-io
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  other-modules:       Config
+                     , ToContext
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , aeson
+                     , binary
+                     , bytestring
+                     , containers
+                     , hakyll
+                     , mtl
+                     , path
+                     , regex-base
+                     , regex-tdfa
+                     , shakespeare
+                     , text
+                     , unordered-containers
