@@ -29,7 +29,7 @@ main = hakyll $ do
     compile compressCssCompiler
 
   match "static/index.html" $ do
-    route idRoute
+    route $ gsubRoute "static/" (const "")
     compile $ do
       config <- load "configs/config.json"
       getResourceBody
