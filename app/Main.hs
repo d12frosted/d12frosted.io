@@ -16,7 +16,7 @@ import Data.Monoid ((<>))
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
-  match "config.json" $ do
+  match "configs/config.json" $ do
     route idRoute
     compile configCompiler
 
@@ -28,15 +28,15 @@ main = hakyll $ do
     route   idRoute
     compile compressCssCompiler
 
-  match "index.html" $ do
+  match "static/index.html" $ do
     route idRoute
     compile $ do
-      config <- load "config.json"
+      config <- load "configs/config.json"
       getResourceBody
         >>= loadAndApplyTemplate "templates/default.html" (defContext $ itemBody config)
         >>= relativizeUrls
 
-  match "templates/default.html" $ compile templateBodyCompiler
+  match "templates/*" $ compile templateBodyCompiler
 
 defContext :: Config -> Context String
 defContext cfg = toContext cfg <> defaultContext
