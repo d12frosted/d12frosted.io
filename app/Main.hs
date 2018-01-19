@@ -31,12 +31,12 @@ main = hakyll $ do
   match "static/index.html" $ do
     route $ gsubRoute "static/" (const "")
     compile $ do
-      config <- load "configs/config.json"
+      context <- loadContext
       getResourceBody
-        >>= loadAndApplyTemplate "templates/default.html" (defContext $ itemBody config)
+        >>= loadAndApplyTemplate "templates/default.html" context
         >>= relativizeUrls
 
   match "templates/*" $ compile templateBodyCompiler
 
-defContext :: Config -> Context String
-defContext cfg = toContext cfg <> defaultContext
+loadContext :: Compiler (Context String)
+loadContext = appContext <$> itemBody <$> load "configs/config.json"

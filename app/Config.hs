@@ -18,6 +18,7 @@ import           Data.List (stripPrefix, isPrefixOf)
 import           Data.Binary (Binary)
 import qualified Data.ByteString.Lazy as BS
 import qualified Data.Char as Char
+import           Data.Monoid ((<>))
 
 --------------------------------------------------------------------------------
 data Config = Config {
@@ -51,6 +52,10 @@ configCompiler = do
   case decode body of
     Nothing -> compilerThrow ["Could not parse config"]
     Just config -> makeItem config
+
+--------------------------------------------------------------------------------
+appContext :: Config -> Context String
+appContext config = toContext config <> defaultContext
 
 --------------------------------------------------------------------------------
 stripCamelCasePrefix :: String -> String -> String
