@@ -17,7 +17,6 @@ import Data.Monoid ((<>))
 main :: IO ()
 main = hakyll $ do
   match "configs/config.json" $ do
-    route idRoute
     compile configCompiler
 
   match "images/*" $ do
