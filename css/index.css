@@ -1,0 +1,81 @@
+h1 {
+    font-family: 'Open Sans', serif;
+    font-size: 20px;
+    margin: 0;
+}
+
+h2 {
+    font-family: 'Open Sans', serif; font-size: 18px;
+    margin: 0;
+    font-weight: 400;
+}
+h2 a {
+    font-size: 18px;
+}
+
+a, p {
+    font-family: 'Open Sans', sans-serif; font-size: 13px;
+    line-height:1.5;
+}
+
+a {
+    color: #357023;
+    text-decoration: none;
+}
+a:hover {
+    color: #222;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+}
+
+.body {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin: 3rem auto;
+}
+
+.left {
+    margin: auto;
+    width: 184px;
+}
+
+.left img {
+    width: 160px;
+    height: auto;
+    border-radius: 100px;
+}
+
+.right {
+    margin: auto;
+    width: 276px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
+ul a {
+    color: #222;
+    text-decoration: none;
+    font-size: 24px;
+}
+ul a:hover {
+    color: #357023;
+    background: -webkit-linear-gradient(left, #fa9df9 0%, #983251 40%, #c37a7a 70%);
+    background: linear-gradient(to bottom right, #fa9df9 0%,#983251 40%,#c37a7a 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* zocial */
+[class*="fa-"]:before {
+    font-size: 28pt;
+    margin-right: 20px;
+}
