@@ -1,0 +1,245 @@
+@font-face {
+    font-family: 'Junge';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Junge'), local('Junge-Regular'), url(https://fonts.gstatic.com/s/junge/v4/rDDLpRsvJtDYa9fMgcJnCaCWcynf_cDxXwCLxiixG1c.woff) format('woff');
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Source Code Pro Light'), local('SourceCodePro-Light'), url(https://fonts.gstatic.com/s/sourcecodepro/v6/leqv3v-yTsJNC7nFznSMqcVNtom4QlEDNJaqqqzqdSs.woff) format('woff');
+}
+
+/* General */
+/* ******* */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Junge', serif;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+}
+
+content a {
+  color: #4070A0;
+  text-decoration: none;
+}
+
+content a:hover {
+  color: #6666FF;
+}
+
+body, html {
+  height: 100%;
+  color: #777;
+  line-height: 1.8;
+}
+
+.fancy {
+  font-family: 'Junge', serif;
+}
+
+.bgimg-1, .bgimg-2, .bgimg-3 {
+  opacity: 0.9;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Turn off parallax scrolling for tablets and mobiles */
+@media only screen and (max-width: 1024px) {
+  .bgimg-1, .bgimg-2, .bgimg-3 {
+    background-attachment: scroll;
+  }
+}
+
+.bgimg-1 {
+  background-image: url('../images/a7caf5a0-8291-11e6-baf7-135b620ccccc.jpg');
+  min-height: 100%;
+}
+
+.bgimg-2 {
+  background-image: url("../images/ef0b7862-835a-11e6-a292-c72c97b5b1a1.jpg");
+  min-height: 400px;
+}
+
+.d12-black {
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+}
+
+#d12-projects {
+  text-align: justify;
+}
+
+.d12-project {
+
+}
+
+.d12-project-name {
+  font-size: 22px;
+  margin-bottom: 0px;
+}
+
+.d12-project-role {
+  color: #400080;
+  font-size: 12px;
+  margin: 0px;
+}
+
+.d12-project-description {
+  margin: 0px;
+}
+
+#d12-about {
+  text-align: justify;
+}
+
+.w3-wide {
+  letter-spacing: 10px;
+}
+
+.w3-hover-opacity {
+  cursor: pointer;
+}
+
+.d12-xxxlarge {
+  font-size: 48px;
+}
+
+.d12-padding-xlarge {
+  padding: 16px 32px;
+}
+
+@media only screen and (max-width: 600px) {
+  .d12-xxxlarge {
+    font-size: 32px;
+  }
+
+  .d12-padding-xlarge {
+    padding: 10px 21px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .d12-xxxlarge {
+    font-size: 24px;
+  }
+
+  .d12-padding-xlarge {
+    padding: 8px 16px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #d12-navbar span {
+    font-size: 0px;
+  }
+}
+
+.d12-image-circle {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+#d12-post-body .figure {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+#d12-post-body img {
+  max-width:100%;
+  max-height:100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#d12-post-body .caption {
+  text-align: center;
+  font-style: italic;
+}
+
+#d12-post-body h1, h2, h3, h4, h5, h6 {
+  text-align: center;
+  padding-top: 72px;
+  margin-top: -72px;
+}
+
+#d12-post-body pre {
+  overflow-x: auto;
+  width: 100%;
+}
+
+#d12-post-body p {
+  text-align: justify;
+}
+
+#d12-post-body pre, code {
+  font-size: 0.95em;
+  font-family: 'Source Code Pro', monospace;
+  background: #FDFFF7;
+  color: #4070a0;
+}
+
+#d12-post-body pre {
+  padding: 8px 16px 8px 16px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-top-width: thin;
+  border-right-width: thin;
+  border-bottom-width: thin;
+  border-left-width: thin;
+  border-top-color: rgb(243, 243, 243);
+  border-right-color: rgb(243, 243, 243);
+  border-bottom-color: rgb(243, 243, 243);
+  border-left-color: rgb(243, 243, 243);
+}
+
+#d12-post-body blockquote {
+  border-left-width: medium;
+  border-left-style: solid;
+  border-left-color: rgb(96,160,176);;
+  padding-left: 16px;
+}
+
+@media only screen and (max-width: 1024px) {
+  #d12-post-body blockquote {
+    margin: 16px;
+  }
+}
+
+#d12-post-info {
+  text-align: right;
+}
+
+/* Loosely based on pygment's default colors */
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+pre.sourceCode { }
+code.sourceCode span.kw { color: #007020; font-weight: bold; }
+code.sourceCode span.dt { color: #902000; }
+code.sourceCode span.dv { color: #40a070; }
+code.sourceCode span.bn { color: #40a070; }
+code.sourceCode span.fl { color: #40a070; }
+code.sourceCode span.ch { color: #4070a0; }
+code.sourceCode span.st { color: #4070a0; }
+code.sourceCode span.co { color: #60a0b0; font-style: italic; }
+code.sourceCode span.ot { color: #007020; }
+code.sourceCode span.al { color: red; font-weight: bold; }
+code.sourceCode span.fu { color: #06287e; }
+code.sourceCode span.re { }
+code.sourceCode span.er { color: red; font-weight: bold; }

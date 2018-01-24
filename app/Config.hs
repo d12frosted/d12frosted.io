@@ -21,8 +21,10 @@ import qualified Data.Char as Char
 import           Data.Monoid ((<>))
 
 --------------------------------------------------------------------------------
-data Config = Config {
-  getSiteTitle :: String
+data Config
+  = Config
+  { getSiteTitle   :: String
+  , getSourcesRoot :: String
 } deriving (Generic, Show)
 
 instance ToJSON Config where
@@ -37,8 +39,9 @@ instance Writable Config where
   write fp item = BS.writeFile fp . encode . itemBody $ item
 
 instance ToContext Config where
-  toContext cfg =
-    constField "siteTitle" (getSiteTitle cfg)
+  toContext cfg
+    =  constField "siteTitle"   (getSiteTitle cfg)
+    <> constField "sourcesRoot" (getSourcesRoot cfg)
 
 --------------------------------------------------------------------------------
 customOptions = defaultOptions

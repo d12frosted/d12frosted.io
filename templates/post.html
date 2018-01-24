@@ -1,11 +1,21 @@
-<article>
-    <section class="header">
-        Posted on $date$
-        $if(author)$
-            by $author$
-        $endif$
-    </section>
-    <section>
-        $body$
-    </section>
+<article class="w3-content w3-container w3-padding-64">
+  <h1 class="w3-center">$title$</h1>
+
+  <div id="d12-post-body">
+    $body$
+  </div>
+
+  <hr>
+
+  <div id="d12-post-info">
+    <p>
+      Posted on $date$
+      $if(author)$
+      by $author$
+      $endif$
+    </p>
+    <p>
+      Source: <a href="$sourcesRoot$/$path$">$title$</a>
+    </p>
+  </div>
 </article>
