@@ -32,3 +32,5 @@ executable d12frosted-io
                      , shakespeare
                      , text
                      , unordered-containers
+                     , blaze-markup
+                     , blaze-html

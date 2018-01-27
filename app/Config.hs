@@ -23,9 +23,15 @@ import           Data.Monoid ((<>))
 --------------------------------------------------------------------------------
 data Config
   = Config
-  { getSiteTitle   :: String
-  , getSourcesRoot :: String
-} deriving (Generic, Show)
+  { getSiteTitle       :: String
+  , getSiteUrl         :: String
+  , getSourcesRoot     :: String
+  , getAuthorName      :: String
+  , getAuthorEmail     :: String
+  , getFeedTitle       :: String
+  , getFeedDescription :: String
+  , getFeedSize        :: Int
+  } deriving (Generic, Show)
 
 instance ToJSON Config where
   toEncoding = genericToEncoding customOptions

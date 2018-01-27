@@ -1,0 +1,21 @@
+<article class="post">
+  <header>
+    <a href="">
+      <h1 class="post-title">$title$</h1>
+    </a>
+    <div class="post-header">
+      <time datetime="2015-04-19T09:00:00+00:00" class="post-date">$date$</time>
+      <p class="post-tags">
+        $if(tags)$
+        Tags: $tags$
+        $endif$
+      </p>
+    </div>
+  </header>
+  <div class="post-body">
+    $body$
+  </div>
+  <footer class="post-footer">
+    <a target="_blank" class="post-footer-sources" href="$sourcesRoot$/$path$">Source: $title$ <i class="fa fa-github fa-2x"></i></a>
+  </footer>
+</article>

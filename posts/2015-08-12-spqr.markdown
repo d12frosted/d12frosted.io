@@ -1,5 +1,6 @@
 ---
 title: S.P.Q.R.
+tags: tag1, tag2
 ---
 
 Mauris in lorem nisl. Maecenas tempus facilisis ante, eget viverra nisl
