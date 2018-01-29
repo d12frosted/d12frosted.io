@@ -22,6 +22,8 @@ executable d12frosted-io
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , binary
+                     , blaze-html
+                     , blaze-markup
                      , bytestring
                      , containers
                      , hakyll
@@ -31,6 +33,6 @@ executable d12frosted-io
                      , regex-tdfa
                      , shakespeare
                      , text
+                     , time
+                     , time-locale-compat
                      , unordered-containers
-                     , blaze-markup
-                     , blaze-html

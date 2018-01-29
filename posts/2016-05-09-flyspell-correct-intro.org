@@ -1,0 +1,81 @@
+---
+title: flyspell-correct
+tags: emacs, release
+---
+
+*TL;DR* ~flyspell-correct~ is a package for correcting words with flyspell via
+various interfaces. It's available on [[https://github.com/d12frosted/flyspell-correct][GitHub]] and [[http://melpa.org/#/flyspell-correct][MELPA]].
+
+It's very common to make mistakes while writing notes, comments or whatever. And
+a desire to have spell checking software is natural. In [[http://www.gnu.org/software/emacs/index.html][Emacs]], we usually use
+[[https://www.emacswiki.org/emacs/FlySpell][Flyspell]] for that purpose. It's a great piece of software, but sometimes it
+lacks better interface for correcting words. Especially since there are
+completion packages like [[https://github.com/auto-complete/popup-el][popup.el]], [[https://github.com/emacs-helm/helm][helm]], [[https://github.com/abo-abo/swiper][ivy]] etc. Actually, there are already
+available separate packages for correcting words via ~popup.el~ ([[https://www.emacswiki.org/emacs/FlySpell#toc11][wiki]],
+[[https://github.com/xuchunyang/flyspell-popup][flyspell-popup]]) and ~helm~ ([[https://github.com/pronobis/helm-flyspell][helm-flyspell]]). Since recently I have switched from
+~helm~ to ~ivy~, I've found a lack of similar package for ~ivy~, so I decided to
+write my own.
+
+Since available packages are all the same, except the part that calls completion
+front-end, my goal was to provide a generic package that allows using any
+interface. With some predefined (~popup~, ~helm~ and ~ivy~).
+
+In order to use this package, just install it from [[http://melpa.org/#/flyspell-correct][MELPA]], setup
+~flyspell-correct-interface~ variable to one of predefined
+(~flyspell-correct-ivy~, ~flyspell-correct-helm~ or ~flyspell-correct-popup~) or
+your own interface function. Then all you have to do is to call
+~flyspell-correct-word-generic~ with the cursor on a misspelled word. You can
+also bind ~flyspell-correct-word-generic~ to any key binding.
+
+#+BEGIN_SRC emacs-lisp
+;; set ivy as correcting interface
+(setq flyspell-correct-interface 'flyspell-correct-ivy)
+;; bind flyspell-correct-word-generic
+(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-word-generic)
+#+END_SRC
+
+* Implementing custom interfaces
+  :PROPERTIES:
+  :CUSTOM_ID:      h:EA327339-900D-4E43-8C9C-28FB906317ED
+  :END:
+
+As it was already said, you can implement your own interface for correcting
+words. It has to be a function that accepts a list of candidates and misspelt
+word as it's arguments. This function must return either replacement string or a
+tuple of ~(command, word)~ to be used by flyspell-do-correct. Available commands
+are ~save~, ~session~ and ~buffer~. Refer to the ~flyspell~ documentation for
+more information.
+
+Let's check ~flyspell-correct-ivy~ as an example of a custom interface.
+
+#+BEGIN_SRC emacs-lisp
+(defun flyspell-correct-ivy (candidates word)
+  "Run `ivy-read' for the given CANDIDATES given by flyspell for the WORD.
+Return a selected word to use as a replacement."
+  (let* (result
+         (action-default (lambda (x) (setq result x)))
+         (action-save-word (lambda (_) (setq result (cons 'save word))))
+         (action-accept-session (lambda (_) (setq result (cons 'session word))))
+         (action-accept-buffer (lambda (_) (setq result (cons 'buffer word))))
+         (action `(1
+                   ("o" ,action-default "correct")
+                   ("s" ,action-save-word "Save")
+                   ("S" ,action-accept-session "Accept (session)")
+                   ("b" ,action-accept-buffer "Accept (buffer)"))))
+    (ivy-read (format "Suggestions for \"%s\" in dictionary \"%s\": "
+                      word (or ispell-local-dictionary
+                               ispell-dictionary
+                               "Default"))
+              candidates
+              :action action
+              :caller 'flyspell-correct-ivy)
+    result))
+#+END_SRC
+
+As you see, it's pretty straightforward. Just run ~ivy-read~ with candidates
+provided by ~flyspell~ for the misspelled word. Default action just returns selected
+replacement word. While other actions return mentioned tuple of ~(command, word)~.
+
+That's all. Hope you'll like this package.
+
+P. S. And as always - contributions are warmly welcome.

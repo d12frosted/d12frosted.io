@@ -1,0 +1,35 @@
+---
+title: Using Spacemacs with different Emacs versions
+tags: emacs, spacemacs
+---
+
+*Update on [2016-10-11 Tue]:* thanks to [[https://github.com/bmag][bmag]] Spacemacs [[https://github.com/syl20bnr/spacemacs/pull/5410][has an option]] to set
+packages directory based on Emacs version. Just set
+=dotspacemacs-elpa-subdirectory= to =emacs-version= and be happy about it. This
+option is available starting with Spacemacs v0.200.
+
+#+BEGIN_HTML
+<hr>
+#+END_HTML
+
+Emacs 25 is very stable at the moment and I am using it for more than 6 months
+with Spacemacs. There are some open [[https://github.com/sigma/gh.el/issues/73][issues]] related to Emacs 25, but still, it's
+very good and I recommend to use it on a daily basis.
+
+Sometimes I need to switch to an older version of Emacs. Usually, it means that
+I have to totally nuke =~/.emacs.d/elpa= directory and wait for several minutes
+in order to install 300+ packages. This is not critical, but there is room for
+improvement. Thanks to [[https://github.com/bmag][bmag]] now it is [[https://github.com/syl20bnr/spacemacs/pull/5410][possible]] to easily (without any dirty
+hacks) to change directory where all packages are installed. I use separate
+directories for every Emacs version. So packages are downloaded only the first
+time I use specific version. But for the next time everything will be ready for
+use.
+
+#+BEGIN_SRC emacs-lisp
+;; setup package-user-dir to allow seamless switch between emacs versions
+(setq package-user-dir (file-name-as-directory
+                        (concat user-emacs-directory "elpa/" emacs-version)))
+#+END_SRC
+
+Add this expression to =dotspacemacs/user-init= function in your =.spacemacs= and
+make it easier to switch between versions.

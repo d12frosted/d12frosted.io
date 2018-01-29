@@ -405,6 +405,10 @@ only screen and (min-resolution: 3dppx) {
   }
 }
 
+.post-title-tag {
+  color: #818181;
+}
+
 .post-header {
   font-family: "Junge", sans-serif;
   font-size: 1.2em;
@@ -432,15 +436,30 @@ only screen and (min-resolution: 3dppx) {
 }
 
 .post-tags a {
-  font-size: 0.8em;
-  color: #818181;
+  color: #60a0b0; /* #443E40; */
 }
 
 .post-tags a:hover {
-  color: #443E40
+  color: #818181;
 }
 
 .post-body p {
+  text-align: justify;
+  line-height: 1.6;
+  margin-bottom: 25px
+}
+
+.post-body a {
+  background: transparent;
+  text-decoration: none;
+  color: #60a0b0;
+}
+
+.post-body a:hover :not(.sourceLine) {
+  color: #222;
+}
+
+.post-body ul {
   text-align: justify;
   line-height: 1.6;
   margin-bottom: 25px
@@ -454,9 +473,16 @@ only screen and (min-resolution: 3dppx) {
 
 .post-image img,
 .post-image video {
+  display: block;
   width: 100%;
   max-width: 100%;
   height: auto
+}
+
+.post-image-half img {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
 .post-image+.post-image {
@@ -755,20 +781,29 @@ nav li {
   padding-right: 12px;
 }
 
-nav::after {
-  background-image: url("/images/separator.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-color: transparent;
-  content: "";
-  width: 100%;
-  max-width: 596px;
-  height: 42px;
-  display: block;
-  margin: 20px auto 50px;
-  background-size: 596px !important
+nav a {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 13px;
 }
+
+nav a:hover {
+  border-color: #443E40;
+}
+
+/* nav::after { */
+/*   background-image: url("/images/separator.png"); */
+/*   background-size: 100%; */
+/*   background-repeat: no-repeat; */
+/*   background-position: center bottom; */
+/*   background-color: transparent; */
+/*   content: ""; */
+/*   width: 100%; */
+/*   max-width: 596px; */
+/*   height: 42px; */
+/*   display: block; */
+/*   margin: 20px auto 50px; */
+/*   background-size: 596px !important */
+/* } */
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.2),
 only screen and (min--moz-device-pixel-ratio: 1.2),
@@ -805,6 +840,64 @@ only screen and (min-resolution: 3dppx) {
   color: #818181;
   margin: 15px 0 25px;
   letter-spacing: 0.06em;
+}
+
+.post-list-tags {
+  font-size: 1.0em;
+}
+
+.post-list-tags a {
+  font-size: 1.0em;
+}
+
+.post-body table {
+  empty-cells: show;
+  border: 1px solid #cbcbcb;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-body table caption {
+  color: #000;
+  font: italic 85% / 1 arial, sans-serif;
+  padding: 1em 0;
+  text-align: center
+}
+
+.post-body table td, .post-body table th {
+  border-left: 1px solid#cbcbcb;
+  border-width: 0 0 0 1px;
+  font-size: inherit;
+  margin: 0;
+  overflow: visible;
+  padding: .5em 1em
+}
+
+.post-body table td:first-child, .post-body table th:first-child {
+  border-left-width: 0
+}
+
+.post-body table thead {
+  background-color: #fffae5;
+  /* background-color: #ffea85; */
+  color: #000;
+  vertical-align: bottom
+}
+
+.post-body table th {
+  text-align: center;
+}
+
+.post-body table td {
+  background-color: transparent
+}
+
+.post-body table td {
+  border-bottom: 1px solid #cbcbcb
+}
+
+.post-body table tbody {
+  /* background-color: #fffae5; */
 }
 
 /* Loosely based on pygment's default colors */

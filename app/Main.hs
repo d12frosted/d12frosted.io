@@ -16,13 +16,15 @@ import           Data.List (intercalate, intersperse, sortBy)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import           Text.Blaze.Html (toHtml, toValue, (!))
-import           Control.Monad (foldM, forM, forM_, mplus)
+import           Control.Monad (foldM, forM, forM_, mplus, filterM)
 import           Data.Maybe (catMaybes, fromMaybe)
 import           Text.Blaze.Html.Renderer.String (renderHtml)
+import           Data.Time.Locale.Compat (defaultTimeLocale)
+import           Data.Time (getCurrentTime, UTCTime)
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = getCurrentTime >>= \now -> hakyll $ do
   match "configs/config.json" $ do
     compile configCompiler
 
@@ -71,7 +73,7 @@ main = hakyll $ do
   create ["blog.html"] $ do
     route idRoute
     compile $ do
-      posts   <- recentFirst =<< loadAll postsPattern
+      posts   <- skipFuture now =<< recentFirst =<< loadAll postsPattern
       postCtx <- loadPostCtx tags
       archiveCtx <- loadArchiveCtx postCtx posts
       makeItem ""
@@ -84,7 +86,8 @@ main = hakyll $ do
     route idRoute
     compile $ do
       config  <- itemBody <$> load "configs/config.json"
-      posts   <- fmap (take . getFeedSize $ config) . recentFirst
+      posts   <- fmap (take . getFeedSize $ config) . skipFuture now
+        =<< recentFirst
         =<< loadAllSnapshots postsPattern "content"
       feedCtx <- bodyField "description" <+> loadPostCtx tags
       renderAtom (feedConfiguration config) feedCtx posts
@@ -126,7 +129,12 @@ blogCtx = constField "group" "post"
 
 --------------------------------------------------------------------------------
 postsPattern :: Pattern
-postsPattern = "posts/*.markdown"
+postsPattern = "posts/*"
+
+--------------------------------------------------------------------------------
+skipFuture :: (MonadMetadata m) => UTCTime -> [Item a] -> m [Item a]
+skipFuture now = filterM $ fmap (now >=) .
+  getItemUTC defaultTimeLocale . itemIdentifier
 
 --------------------------------------------------------------------------------
 feedConfiguration :: Config -> FeedConfiguration
@@ -138,36 +146,6 @@ feedConfiguration config
   , feedAuthorEmail = getAuthorEmail config
   , feedRoot        = getSiteUrl config
   }
-
---------------------------------------------------------------------------------
-tagsField' :: String -> Tags -> Context a
-tagsField' =
-  tagsFieldWith' getTags simpleRenderLink (mconcat . intersperse ", ")
-
-tagsFieldWith' :: (Identifier -> Compiler [String])
-              -- ^ Get the tags
-              -> (String -> (Maybe FilePath) -> Maybe H.Html)
-              -- ^ Render link for one tag
-              -> ([H.Html] -> H.Html)
-              -- ^ Concatenate tag links
-              -> String
-              -- ^ Destination field
-              -> Tags
-              -- ^ Tags structure
-              -> Context a
-              -- ^ Resulting context
-tagsFieldWith' getTags' renderLink cat key tags = field key $ \item -> do
-  tags' <- getTags' $ itemIdentifier item
-  links <- forM tags' $ \tag -> do
-    route' <- getRoute $ tagsMakeId tags tag
-    return $ renderLink tag route'
-
-  return $ renderHtml $ cat $ catMaybes $ links
-
-simpleRenderLink :: String -> (Maybe FilePath) -> Maybe H.Html
-simpleRenderLink _   Nothing         = Nothing
-simpleRenderLink tag (Just filePath) =
-  Just $ H.a ! A.href (toValue $ toUrl filePath) $ toHtml tag
 
 --------------------------------------------------------------------------------
 (<+>) :: (Monoid a, Applicative m) => a -> m a -> m a
