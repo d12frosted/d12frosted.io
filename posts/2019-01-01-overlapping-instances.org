@@ -4,7 +4,7 @@ tags: haskell
 ---
 
 * Intro
-Have you ever noticed something special about =Show= instance of =String=? Since it's just an alias for =[Char]=, shouldn't it behave just like all the other list instances of =Show=?
+Have you ever noticed something special about =Show= instance of =String=?
 
 #+BEGIN_SRC haskell
 λ show [1, 2, 3]
@@ -15,7 +15,7 @@ Have you ever noticed something special about =Show= instance of =String=? Since
 "\"hello\""
 #+END_SRC
 
-Common sense whispers that there should be generic instance for all lists with =Show='able content and a =String= specialisation.
+Since it's just an alias for =[Char]=, shouldn't it behave just like all the other list instances of =Show=? Common sense whispers that there should be a generic instance for all lists with =Show='able content and a =String= specialisation.
 
 #+BEGIN_SRC haskell
 instance Show a => Show [a] where ...
@@ -80,5 +80,6 @@ View "'h''e''l''l''o'"
 
 * Problem 1
 
+* Problem 2
 
 #  LocalWords:  specialisation

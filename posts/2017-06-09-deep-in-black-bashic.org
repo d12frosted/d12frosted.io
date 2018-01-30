@@ -1,5 +1,5 @@
 ---
-title: Deep in black bashic
+title: Deep in the black bashic
 tags: blog
 ---
 
@@ -13,7 +13,7 @@ fix it by moving to [[https://aws.amazon.com/s3/][S3]] with [[https://aws.amazon
 and not everything works as you wish. You fix several minor issues and then you
 notice the part where you upload your blog using some black bashic, so you go to
 [[https://aws.amazon.com/codebuild/][CodeBuild]] and [[https://aws.amazon.com/codedeploy/][CodeDeploy]] to automate everything and end up configuring [[https://www.docker.com][Docker]].
-You waste time and money, but comfort yourself saying 'At least am learning
-something new, something I can share later'.
+You waste time and money, but comfort yourself saying 'At least I am learning
+something new, something I can share with folks later'.
 
 That's how it works, isn't it?
