@@ -779,6 +779,7 @@ nav li {
   display: inline-block;
   padding-left: 12px;
   padding-right: 12px;
+  padding-top: 24px;
 }
 
 nav a {
