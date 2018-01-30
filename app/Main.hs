@@ -49,7 +49,7 @@ main = getCurrentTime >>= \now -> hakyll $ do
   tagsRules tags $ \tag pat -> do
     route idRoute
     compile $ do
-      posts   <- recentFirst =<< loadAll pat
+      posts   <- skipFuture now =<< recentFirst =<< loadAll pat
       postCtx <- loadPostCtx tags
       tagCtx <- loadTagCtx tag postCtx posts
 
