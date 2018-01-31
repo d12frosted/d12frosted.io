@@ -565,17 +565,19 @@ only screen and (min-resolution: 3dppx) {
 }
 
 .post-footer-sources {
-  display: none
+  display: none;
 }
 
 .post-footer-sources {
   font-family: "Junge", sans-serif;
+  font-size: 1.0em;
   letter-spacing: 0.06em;
   display: block;
   min-height: 21px;
   padding-right: 55px;
-  float: right;
+  text-align: right;
   margin-top: -9px;
+  margin-bottom: 12px;
   padding-top: 9px;
   color: #818181
 }
