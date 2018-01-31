@@ -133,7 +133,7 @@ postsPattern = "posts/*"
 
 --------------------------------------------------------------------------------
 skipFuture :: (MonadMetadata m) => UTCTime -> [Item a] -> m [Item a]
-skipFuture now = filterM $ fmap (now >=) .
+skipFuture now = filterM $ fmap (now >) .
   getItemUTC defaultTimeLocale . itemIdentifier
 
 --------------------------------------------------------------------------------
