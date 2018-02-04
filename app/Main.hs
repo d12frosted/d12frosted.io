@@ -125,7 +125,7 @@ indexCtx :: Context String
 indexCtx = constField "group" "index"
 
 blogCtx :: Context String
-blogCtx = constField "group" "post"
+blogCtx = constField "group" "blog"
 
 --------------------------------------------------------------------------------
 postsPattern :: Pattern
