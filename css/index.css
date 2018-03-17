@@ -26,6 +26,7 @@ a {
   color: #357023;
   text-decoration: none;
 }
+
 a:hover {
   color: #222;
 }
@@ -62,25 +63,31 @@ body {
 }
 
 ul {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-}
-ul a {
-  color: #222;
-  text-decoration: none;
-  font-size: 24px;
-}
-ul a:hover {
-  color: #357023;
-  background: -webkit-linear-gradient(left, #fa9df9 0%, #983251 40%, #c37a7a 70%);
-  background: linear-gradient(to bottom right, #fa9df9 0%,#983251 40%,#c37a7a 90%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  list-style: none;
+  text-align: center;
+  padding: 0px;
 }
 
-/* zocial */
+ul li {
+  display: inline-block;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+ul a {
+  background: transparent;
+  text-decoration: none;
+  color: #443E40;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 13px;
+}
+
+ul a:hover {
+  border-color: #443E40;
+}
+
 [class*="fa-"]:before {
-  font-size: 28pt;
-  margin-right: 20px;
+  font-size: 24pt;
+  margin-left: 12px;
+  margin-right: 12px;
 }

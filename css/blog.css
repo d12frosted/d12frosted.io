@@ -340,47 +340,8 @@ section[role="main"] {
   font-style: italic
 }
 
-.post::after {
-  background-image: url("/images/separator.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-color: transparent;
-  content: "";
-  width: 100%;
-  max-width: 596px;
-  height: 42px;
-  display: block;
-  margin: 20px auto 50px;
-  background-size: 596px !important
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 1.2),
-only screen and (min--moz-device-pixel-ratio: 1.2),
-only screen and (-o-min-device-pixel-ratio: 5 / 4),
-only screen and (min-device-pixel-ratio: 1.2),
-only screen and (min-resolution: 120dpi),
-only screen and (min-resolution: 1.2dppx) {
-  .post::after {
-    background-image: url("/images/separator@2x.png")
-  }
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 3),
-only screen and (min--moz-device-pixel-ratio: 3),
-only screen and (-o-min-device-pixel-ratio: 3 / 1),
-only screen and (min-device-pixel-ratio: 3),
-only screen and (min-resolution: 288dpi),
-only screen and (min-resolution: 3dppx) {
-  .post::after {
-    background-image: url("/images/separator@3x.png")
-  }
-}
-
-@media only screen and (min-width: 645px) {
-  .post::after {
-    margin-top: 5px
-  }
+.post {
+  margin-bottom: 25px
 }
 
 .post-title {
@@ -769,7 +730,6 @@ blockquote {
 
 nav {
   list-style: none;
-  line-height: 1.2;
   text-align: center;
 }
 
@@ -793,52 +753,9 @@ nav a:hover {
   border-color: #443E40;
 }
 
-/* nav::after { */
-/*   background-image: url("/images/separator.png"); */
-/*   background-size: 100%; */
-/*   background-repeat: no-repeat; */
-/*   background-position: center bottom; */
-/*   background-color: transparent; */
-/*   content: ""; */
-/*   width: 100%; */
-/*   max-width: 596px; */
-/*   height: 42px; */
-/*   display: block; */
-/*   margin: 20px auto 50px; */
-/*   background-size: 596px !important */
-/* } */
-
-@media only screen and (-webkit-min-device-pixel-ratio: 1.2),
-only screen and (min--moz-device-pixel-ratio: 1.2),
-only screen and (-o-min-device-pixel-ratio: 5 / 4),
-only screen and (min-device-pixel-ratio: 1.2),
-only screen and (min-resolution: 120dpi),
-only screen and (min-resolution: 1.2dppx) {
-  nav::after {
-    background-image: url("/images/separator@2x.png")
-  }
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 3),
-only screen and (min--moz-device-pixel-ratio: 3),
-only screen and (-o-min-device-pixel-ratio: 3 / 1),
-only screen and (min-device-pixel-ratio: 3),
-only screen and (min-resolution: 288dpi),
-only screen and (min-resolution: 3dppx) {
-  nav::after {
-    background-image: url("/images/separator@3x.png")
-  }
-}
-
-@media only screen and (min-width: 645px) {
-  nav::after {
-    margin-top: 5px
-  }
-}
-
 .post-list ul li {
   font-family: "Junge", sans-serif;
-  font-size: 1.2em;
+  font-size: 1em;
   display: block;
   color: #818181;
   margin: 15px 0 25px;
