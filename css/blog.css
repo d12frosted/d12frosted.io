@@ -124,7 +124,11 @@ kbd,
 pre,
 samp {
   font-family: monospace, monospace;
-  font-size: 0.9em
+  font-size: 14px;
+}
+
+pre {
+  font-size: 16px;
 }
 
 button,
@@ -247,7 +251,7 @@ html {
 }
 
 body {
-  font: 400 18px / 1.2 "Cormorant Garamond", serif;
+  font: 400 20px / 1.2 "Cormorant Garamond", serif;
   color: #222;
   background-color: #fefefe;
   -webkit-text-size-adjust: 100%;
@@ -424,6 +428,10 @@ section[role="main"] {
   text-align: justify;
   line-height: 1.6;
   margin-bottom: 25px
+}
+
+.post-body li {
+  margin-bottom: 8px
 }
 
 .post-image {
