@@ -78,12 +78,6 @@ ul a {
   background: transparent;
   text-decoration: none;
   color: #443E40;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 13px;
-}
-
-ul a:hover {
-  border-color: #443E40;
 }
 
 [class*="fa-"]:before {
