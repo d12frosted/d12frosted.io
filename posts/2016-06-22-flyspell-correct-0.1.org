@@ -3,6 +3,9 @@ title: flyspell-correct v0.1
 tags: emacs, release
 ---
 
+~flyspell-correct~ is a package for distraction-free words correction with
+flyspell via selected interface. It's available on [[https://github.com/d12frosted/flyspell-correct][GitHub]] and [[http://melpa.org/#/flyspell-correct][MELPA]].
+
 Not long ago I have released the first version of ~flyspell-correct~. There are
 several interesting changes compared to initial implementation. First of all, I
 divided this package into four different packages - core and interfaces. This

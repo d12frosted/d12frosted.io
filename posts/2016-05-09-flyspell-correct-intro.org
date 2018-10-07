@@ -1,10 +1,11 @@
 ---
 title: flyspell-correct
 tags: emacs, release
+last-updated: 2018-10-07
 ---
 
-*TL;DR* ~flyspell-correct~ is a package for correcting words with flyspell via
-various interfaces. It's available on [[https://github.com/d12frosted/flyspell-correct][GitHub]] and [[http://melpa.org/#/flyspell-correct][MELPA]].
+*TL;DR* ~flyspell-correct~ is a package for distraction-free words correction with
+flyspell via selected interface. It's available on [[https://github.com/d12frosted/flyspell-correct][GitHub]] and [[http://melpa.org/#/flyspell-correct][MELPA]].
 
 It's very common to make mistakes while writing notes, comments or whatever. And
 a desire to have spell checking software is natural. In [[http://www.gnu.org/software/emacs/index.html][Emacs]], we usually use
@@ -22,60 +23,157 @@ interface. With some predefined (~popup~, ~helm~ and ~ivy~).
 
 In order to use this package, just install it from [[http://melpa.org/#/flyspell-correct][MELPA]], setup
 ~flyspell-correct-interface~ variable to one of predefined
-(~flyspell-correct-ivy~, ~flyspell-correct-helm~ or ~flyspell-correct-popup~) or
-your own interface function. Then all you have to do is to call
-~flyspell-correct-word-generic~ with the cursor on a misspelled word. You can
-also bind ~flyspell-correct-word-generic~ to any key binding.
+(~flyspell-correct-ivy~, ~flyspell-correct-helm~, ~flyspell-correct-popup~,
+~flyspell-correct-ido~, ~flyspell-correct-dummy~) or your own interface
+function. Then all you have to do is to call ~flyspell-correct-wrapper~ from any
+point of the buffer. You can also bind ~flyspell-correct-wrapper~ to any key
+binding.
 
 #+BEGIN_SRC emacs-lisp
-;; set ivy as correcting interface
-(setq flyspell-correct-interface 'flyspell-correct-ivy)
-;; bind flyspell-correct-word-generic
-(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-word-generic)
+  ;; set ivy as correcting interface
+  (setq flyspell-correct-interface #'flyspell-correct-ivy)
+
+  ;; bind flyspell-correct-wrapper
+  (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-wrapper)
 #+END_SRC
 
 * Implementing custom interfaces
-  :PROPERTIES:
-  :CUSTOM_ID:      h:EA327339-900D-4E43-8C9C-28FB906317ED
-  :END:
+:PROPERTIES:
+:CUSTOM_ID:      h:EA327339-900D-4E43-8C9C-28FB906317ED
+:ID:                     21D95C0C-B29B-4AA5-AE2B-F21B8752D01E
+:END:
 
 As it was already said, you can implement your own interface for correcting
-words. It has to be a function that accepts a list of candidates and misspelt
-word as it's arguments. This function must return either replacement string or a
-tuple of ~(command, word)~ to be used by flyspell-do-correct. Available commands
-are ~save~, ~session~ and ~buffer~. Refer to the ~flyspell~ documentation for
-more information.
+words. It has to be a function that takes two arguments - candidates and
+incorrect word. It has to return either replacement word or ~(command, word)~
+tuple, where ~command~ can be one of the following:
+
+- ~skip~ - meaning that no action is required for current incorrect ~word~;
+- ~save~ - meaning that the ~word~ must be saved in a dictionary;
+- ~session~ - meaning that the ~word~ must be saved for the current session;
+- ~buffer~ - meaning that the ~word~ must be saved for the current buffer.
 
 Let's check ~flyspell-correct-ivy~ as an example of a custom interface.
 
 #+BEGIN_SRC emacs-lisp
-(defun flyspell-correct-ivy (candidates word)
-  "Run `ivy-read' for the given CANDIDATES given by flyspell for the WORD.
-Return a selected word to use as a replacement."
-  (let* (result
-         (action-default (lambda (x) (setq result x)))
-         (action-save-word (lambda (_) (setq result (cons 'save word))))
-         (action-accept-session (lambda (_) (setq result (cons 'session word))))
-         (action-accept-buffer (lambda (_) (setq result (cons 'buffer word))))
-         (action `(1
-                   ("o" ,action-default "correct")
-                   ("s" ,action-save-word "Save")
-                   ("S" ,action-accept-session "Accept (session)")
-                   ("b" ,action-accept-buffer "Accept (buffer)"))))
-    (ivy-read (format "Suggestions for \"%s\" in dictionary \"%s\": "
-                      word (or ispell-local-dictionary
-                               ispell-dictionary
-                               "Default"))
-              candidates
-              :action action
-              :caller 'flyspell-correct-ivy)
-    result))
+  (defun flyspell-correct-ivy (candidates word)
+    "Run `ivy-read' for the given CANDIDATES.
+
+  List of CANDIDATES is given by flyspell for the WORD.
+
+  Return a selected word to use as a replacement or a tuple
+  of (command, word) to be used by `flyspell-do-correct'."
+    (let* (result
+           (action-default (lambda (x) (setq result x)))
+           (action-save-word (lambda (_) (setq result (cons 'save word))))
+           (action-accept-session (lambda (_) (setq result (cons 'session word))))
+           (action-accept-buffer (lambda (_) (setq result (cons 'buffer word))))
+           (action-skip-word (lambda (_) (setq result (cons 'skip word))))
+           (action `(1
+                     ("o" ,action-default "correct")
+                     ("s" ,action-save-word "Save")
+                     ("S" ,action-accept-session "Accept (session)")
+                     ("b" ,action-accept-buffer "Accept (buffer)")
+                     ("k" ,action-skip-word "Skip"))))
+      (ivy-read (format "Suggestions for \"%s\" in dictionary \"%s\": "
+                        word (or ispell-local-dictionary
+                                 ispell-dictionary
+                                 "Default"))
+                candidates
+                :action action
+                :caller 'flyspell-correct-ivy)
+      result))
 #+END_SRC
 
 As you see, it's pretty straightforward. Just run ~ivy-read~ with candidates
-provided by ~flyspell~ for the misspelled word. Default action just returns selected
+provided by ~flyspell~ for the incorrect word. Default action just returns selected
 replacement word. While other actions return mentioned tuple of ~(command, word)~.
 
-That's all. Hope you'll like this package.
+* Distraction-free meaning
+:PROPERTIES:
+:ID:                     E39202B8-1A59-4AFA-B562-32E55DD0D9BE
+:CUSTOM_ID:              h:E78D60DB-88B0-4F55-B0F3-4DB97EB8D38F
+:END:
 
-P. S. And as always - contributions are warmly welcome.
+One of the most important parts of the ~flyspell-correct~ package is the ability
+to correct words that are far from the point. By default,
+~flyspell-correct-wrapper~ jumps to the first incorrect word before the point.
+So you don't have to move the point manually to correct a mistake made several
+words or lines before.
+
+Also, if you happen to have multiple mistakes before the point, you can use
+~flyspell-correct-wrapper~ in a so-called 'rapid mode'. Just call it with a
+universal argument (e.g. ~C-u C-;~) and you'll get an option to correct all
+mistakes one by one in a current direction. If you want to leave incorrect word
+as is, just use ~skip~ command.
+
+The direction of the spelling can be changed by calling ~flyspell-correct-wrapper~
+with ~C-u C-u~.
+
+* Screenshots
+:PROPERTIES:
+:ID:                     A7D2BA6F-A054-4FA0-9593-9C99095F26A1
+:CUSTOM_ID:              h:F64AC6EF-DBA1-497A-B942-84817F2CDA3A
+:END:
+
+** Ivy interface
+:PROPERTIES:
+:ID:                     E4CB133B-8838-4366-BE23-966DECA59092
+:CUSTOM_ID:              h:5E98E522-A77E-4400-9B74-359BED124F41
+:END:
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/screenshot-ivy-1.png" />
+</div>
+#+END_EXPORT
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/screenshot-ivy-2.png" />
+</div>
+#+END_EXPORT
+
+** Popup interface
+:PROPERTIES:
+:ID:                     1812089F-4C68-4CFC-BDB9-69E6CB5E9B36
+:CUSTOM_ID:              h:0299DF7E-1363-44CB-8C3B-BE32FB4940D8
+:END:
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/screenshot-popup.png" />
+</div>
+#+END_EXPORT
+
+** Helm interface
+:PROPERTIES:
+:ID:                     7DB685F6-3DED-4C7F-BBA9-789DD007C9D6
+:CUSTOM_ID:              h:A541869C-F481-4693-89FB-E9D17E97252B
+:END:
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/screenshot-helm.png" />
+</div>
+#+END_EXPORT
+
+** Ido interface
+:PROPERTIES:
+:ID:                     FED00B5D-590E-42E9-8F62-FFAE24ED1157
+:CUSTOM_ID:              h:04DB7CA3-ACE6-4313-8FA2-9CF1AC104079
+:END:
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/screenshot-ido.png" />
+</div>
+#+END_EXPORT
+
+* Last few words
+:PROPERTIES:
+:ID:                     6336610B-ED20-4941-ADA6-D7BB65182937
+:CUSTOM_ID:              h:C32BE0EC-96B1-4854-AA6D-8DDF4E6DCF0C
+:END:
+
+Contributions are warmly welcome!
