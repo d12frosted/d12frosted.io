@@ -365,13 +365,17 @@ section[role="main"] {
   padding: 23px 0 13px;
 }
 
+.post-header div {
+  margin-bottom: 8px;
+}
+
 .wf-inactive .post-header,
 .wf-loading .post-header {
   padding-top: 18px;
 }
 
 .post-date {
-  font-variant: small-caps;
+  font-size: 0.8em;
 }
 
 .post-tags {

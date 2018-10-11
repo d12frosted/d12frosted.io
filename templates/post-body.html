@@ -4,12 +4,15 @@
       <h1 class="post-title">$title$</h1>
     </a>
     <div class="post-header">
-      <time datetime="2015-04-19T09:00:00+00:00" class="post-date">$date$</time>
-      <p class="post-tags">
+      <div class="post-date" id="post-date">Created: <time>$date$</time></div>
+      $if(update)$
+      <div class="post-date" id="post-update">Updated: <time>$update$</time></div>
+      $endif$
+      <div class="post-tags">
         $if(tags)$
-        Tags: $tags$
+          Tags: $tags$
         $endif$
-      </p>
+      </div>
     </div>
   </header>
   <div class="post-body">

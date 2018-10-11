@@ -9,18 +9,20 @@ import           Config
 import           ToContext
 
 --------------------------------------------------------------------------------
+import           Control.Applicative (Alternative (..))
+import           Control.Monad (foldM, forM, forM_, mplus, filterM)
+import           Data.List (intercalate, intersperse, sortBy)
+import           Data.Maybe (catMaybes, fromMaybe)
+import           Data.Monoid ((<>))
+import           Data.Time (getCurrentTime, UTCTime, utctDay)
+import           Data.Time.Format (formatTime)
+import           Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
 import           Hakyll
 import           Hakyll.Core.Compiler.Internal
-import           Data.Monoid ((<>))
-import           Data.List (intercalate, intersperse, sortBy)
+import           Text.Blaze.Html (toHtml, toValue, (!))
+import           Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
-import           Text.Blaze.Html (toHtml, toValue, (!))
-import           Control.Monad (foldM, forM, forM_, mplus, filterM)
-import           Data.Maybe (catMaybes, fromMaybe)
-import           Text.Blaze.Html.Renderer.String (renderHtml)
-import           Data.Time.Locale.Compat (defaultTimeLocale)
-import           Data.Time (getCurrentTime, UTCTime)
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -106,6 +108,7 @@ loadPostCtx tags
   =   blogCtx
   <+> tagsField "tags" tags
   <+> dateField "date" "%B %e, %Y"
+  <+> updateField "update" "%B %e, %Y"
   <+> loadCtx
 
 loadArchiveCtx :: Context String -> [Item String] -> Compiler (Context String)
@@ -146,6 +149,19 @@ feedConfiguration config
   , feedAuthorEmail = getAuthorEmail config
   , feedRoot        = getSiteUrl config
   }
+
+--------------------------------------------------------------------------------
+updateField :: String -> String -> Context a
+updateField = updateFieldWith defaultTimeLocale
+
+--------------------------------------------------------------------------------
+updateFieldWith :: TimeLocale -> String -> String -> Context a
+updateFieldWith locale key format = field key $ \i -> do
+  createTime <- getItemUTC locale $ itemIdentifier i
+  updateTime <- getItemModificationTime $ itemIdentifier i
+  if utctDay createTime == utctDay updateTime
+    then empty
+    else pure $ formatTime locale format updateTime
 
 --------------------------------------------------------------------------------
 (<+>) :: (Monoid a, Applicative m) => a -> m a -> m a

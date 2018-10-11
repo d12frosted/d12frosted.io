@@ -1,7 +1,6 @@
 ---
 title: flyspell-correct
 tags: emacs, release
-last-updated: 2018-10-07
 ---
 
 *TL;DR* ~flyspell-correct~ is a package for distraction-free words correction with
