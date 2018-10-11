@@ -515,6 +515,10 @@ section[role="main"] {
   }
 }
 
+.post-footer {
+  border-top: 1px solid var(--line);
+}
+
 .post-footer-sources {
   display: none;
 }
@@ -530,11 +534,11 @@ section[role="main"] {
   margin-top: 12px;
   margin-bottom: 12px;
   padding-top: 9px;
-  color: var(--text-light);
+  color: var(--link);
 }
 
 .post-footer-sources:hover {
-  color: var(--text);
+  color: var(--link-hover);
 }
 
 pre,
