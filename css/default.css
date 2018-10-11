@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:400,500|Junge|Source+Code+Pro:400,500&subset=cyrillic,cyrillic-ext,latin-ext');
+
+:root {
+  /* Special */
+  --background: #fcfcfc;
+  --background-accent: #fdfff7;
+  --background-code: #fcfcfc;
+  --code: #707489;
+  --text: #2a2c2d;
+  --text-light: #818181;
+  --line: #f3f3f3;
+  --link: #60a0b0;
+  --link-hover: #8da1b9;
+
+  /* Source Code */
+  --kw: #007020;
+  --dt: #902000;
+  --dv: #40a070;
+  --bn: #40a070;
+  --fl: #40a070;
+  --ch: #4070a0;
+  --st: #4070a0;
+  --co: #60a0b0;
+  --ot: #007020;
+  --al: red;
+  --fu: #06287e;
+  --er: red;
+}
