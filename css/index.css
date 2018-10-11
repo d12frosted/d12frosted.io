@@ -5,8 +5,26 @@ html {
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 1.4em;
   margin: 0.67em 0;
+}
+
+@media only screen and (min-width: 510px) {
+  h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+  }
+}
+
+h2 {
+  font-size: 1.1em;
+}
+
+@media only screen and (min-width: 510px) {
+  h2 {
+    font-size: 1.8em;
+    margin: 0.67em 0;
+  }
 }
 
 a {
@@ -49,7 +67,13 @@ body {
 
 .right {
   margin: auto;
-  width: 480px;
+  width: 280px;
+}
+
+@media only screen and (min-width: 510px) {
+  .right {
+    width: 480px;
+  }
 }
 
 ul {
@@ -60,6 +84,7 @@ ul {
 
 ul li {
   display: inline-block;
+  padding-bottom: 18px;
   padding-left: 6px;
   padding-right: 6px;
 }
