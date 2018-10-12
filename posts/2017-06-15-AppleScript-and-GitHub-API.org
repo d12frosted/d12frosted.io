@@ -1,6 +1,6 @@
 ---
 title: AppleScript and the GitHub API
-tags: applescript
+tags: applescript, macos
 ---
 
 AppleScript is a powerful scripting language that allows to directly control
