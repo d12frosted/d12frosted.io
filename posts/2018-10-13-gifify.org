@@ -5,8 +5,8 @@ tags: shell, ffmpeg, utils
 
 #+BEGIN_EXPORT html
 <div class="post-image post-image--split">
-<img src="/images/gifify-screen-regular.gif" />
-<img src="/images/gifify-screen-palette.gif" />
+<img src="/images/gifify-monty-regular.gif" />
+<img src="/images/gifify-monty-palette.gif" />
 </div>
 #+END_EXPORT
 
