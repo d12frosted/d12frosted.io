@@ -9,12 +9,13 @@ import Config
 
 --------------------------------------------------------------------------------
 import Control.Applicative (Alternative (..))
-import Control.Monad (filterM, mplus)
-import Data.Maybe (fromMaybe)
+import Control.Monad (filterM)
+import Data.List (intersperse)
 import Data.Time (getCurrentTime, UTCTime, utctDay)
 import Data.Time.Format (formatTime)
 import Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
 import Hakyll
+import Text.Blaze.Html (toHtml)
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -96,6 +97,7 @@ loadCtx = appContext <$> itemBody <$> load "configs/config.json"
 loadPostCtx :: Tags -> Compiler (Context String)
 loadPostCtx tags
   =   tagsField "tags" tags
+  <+> rawTagsField "rawTags" tags
   <+> dateField "date" "%B %e, %Y"
   <+> updateField "update" "%B %e, %Y"
   <+> teaserField "teaser" "content"
@@ -144,7 +146,6 @@ feedConfiguration config
 updateField :: String -> String -> Context a
 updateField = updateFieldWith defaultTimeLocale
 
---------------------------------------------------------------------------------
 updateFieldWith :: TimeLocale -> String -> String -> Context a
 updateFieldWith locale key format = field key $ \i -> do
   createTime <- getItemUTC locale $ itemIdentifier i
@@ -152,6 +153,12 @@ updateFieldWith locale key format = field key $ \i -> do
   if utctDay createTime == utctDay updateTime
     then empty
     else pure $ formatTime locale format updateTime
+
+--------------------------------------------------------------------------------
+rawTagsField :: String -> Tags -> Context a
+rawTagsField = tagsFieldWith getTags render (mconcat . intersperse ", ")
+  where render _ Nothing = Nothing
+        render tag _     = Just $ toHtml tag
 
 --------------------------------------------------------------------------------
 (<+>) :: (Monoid a, Applicative m) => a -> m a -> m a
