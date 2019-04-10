@@ -1,6 +1,6 @@
 ---
 title: Revisiting Eru
-keywords: shell
+tags: shell
 description: Overview of my computer configuration maintenance system
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: flyspell-correct v0.1
-keywords: emacs, release
+tags: emacs, release
 description: Announcement of new version of flyspell-correct
 ---
 

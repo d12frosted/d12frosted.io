@@ -1,6 +1,6 @@
 ---
 title: Using Spacemacs with several Emacs versions
-keywords: emacs, spacemacs
+tags: emacs, spacemacs
 description: Instructions on how to use Spacemacs with several Emacs versions at the same time
 ---
 

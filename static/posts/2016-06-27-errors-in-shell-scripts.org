@@ -1,6 +1,6 @@
 ---
 title: Errors in shell scripts
-keywords: shell
+tags: shell
 description: Handing errors in shell scripts
 ---
 

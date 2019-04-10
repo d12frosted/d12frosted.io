@@ -1,6 +1,6 @@
 ---
 title: Dealing with overlapping instances in Haskell
-keywords: haskell
+tags: haskell
 description: Something that I will never finish writing
 ---
 

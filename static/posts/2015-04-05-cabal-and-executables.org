@@ -1,6 +1,6 @@
 ---
 title: Cabal and executables
-keywords: haskell
+tags: haskell
 description: Simple script for installing exectuables from Hackage without running into cabal hell
 ---
 

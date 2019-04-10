@@ -1,6 +1,6 @@
 ---
 title: Being an org-mode addict
-keywords: emacs, org-mode
+tags: emacs, org-mode
 description: Meaningfulness of trying to escape Org mode and Emacs
 ---
 

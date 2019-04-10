@@ -1,6 +1,6 @@
 ---
 title: "calendorg: Google Calendar and Org mode synchronisation"
-keywords: haskell
+tags: haskell
 description: Building a tool for Google Calendar and Org mode synchronisation
 ---
 

@@ -44,7 +44,36 @@ div.date span {
   }
 }
 
+div.tags {
+  text-align: right;
+  color: #999;
+}
+
+div.tags a:link, div.tags a:visited {
+  text-decoration: none;
+  color: #aaa;
+}
+
 div.footer-separator {
   color: #aaa;
   border-bottom: 1px solid #aaa;
+}
+
+div.footer {
+  font-family: OpenSans;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: right;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+div.footer a:link, div.footer a:visited {
+  text-decoration: none;
+  color: #aaa;
+}
+
+div.footer img.icon {
+  height: 1.0em;
+  width: 1.0em;
 }

@@ -1,6 +1,6 @@
 ---
 title: Make the Fish fly
-keywords: fish
+tags: fish
 description: Opinion after trying out the Fish
 ---
 

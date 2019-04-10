@@ -1,6 +1,6 @@
 ---
 title: Random bytes generation with OpenSSL
-keywords: shell
+tags: shell
 description: Quick random bytes generation from terminal using OpenSSL
 ---
 

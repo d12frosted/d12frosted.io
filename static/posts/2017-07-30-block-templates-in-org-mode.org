@@ -1,6 +1,6 @@
 ---
 title: Structure templates in Org mode
-keywords: emacs, org-mode
+tags: emacs, org-mode
 description: Fast blocks creation in org-mode
 ---
 

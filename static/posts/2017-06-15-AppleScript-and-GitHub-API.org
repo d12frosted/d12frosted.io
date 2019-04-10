@@ -1,6 +1,6 @@
 ---
 title: AppleScript and the GitHub API
-keywords: applescript, macos
+tags: applescript, macos
 description: Using GitHub API from AppleScript
 ---
 

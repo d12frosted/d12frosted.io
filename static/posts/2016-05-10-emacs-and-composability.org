@@ -1,6 +1,6 @@
 ---
 title: Emacs and Composability
-keywords: emacs
+tags: emacs
 description: The most important thing in Emacs
 ---
 

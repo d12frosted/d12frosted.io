@@ -1,6 +1,6 @@
 ---
 title: 'Git: conditional configurations'
-keywords: git
+tags: git
 description: Two approaches of having different configurations in different repositories
 ---
 

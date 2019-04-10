@@ -11,6 +11,10 @@ h1, h2, h3 {
   font-family: OpenSans, serif;
 }
 
+h1 code {
+  color: #000;
+}
+
 h3 {
   font-size: 1.8rem;
   text-align: center;
@@ -49,6 +53,16 @@ p.read-more {
   text-align: right;
 }
 p.read-more a:link, p.read-more a:visited {
+  text-decoration: none;
+  color: #aaa;
+}
+
+p.tags {
+  text-align: right;
+  color: #999;
+}
+
+p.tags a:link, p.tags a:visited {
   text-decoration: none;
   color: #aaa;
 }

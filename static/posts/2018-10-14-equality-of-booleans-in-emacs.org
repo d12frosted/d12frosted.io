@@ -1,6 +1,6 @@
 ---
 title: Equality of booleans in Emacs
-keywords: emacs
+tags: emacs
 description: About booleans in Emacs
 ---
 

@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="$tags$">
-    <meta name="description" content="$description$" />
+    <meta name="keywords" content="$tag$">
+    <meta name="description" content="$tag$" />
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:description" content="$description$">
+    <meta name="twitter:description" content="$tag$">
     <meta property="og:locale" content="es_US">
     <meta property="og:title" content="$title$">
-    <meta property="og:description" content="$description$">
+    <meta property="og:description" content="$tag$">
     <title>$title$</title>
     <link rel="stylesheet" href="/css/bundle.css" />
-    <link rel="stylesheet" href="/css/post.css" />
+    <link rel="stylesheet" href="/css/index.css" />
   </head>
   <body>
     <header>
@@ -30,21 +30,8 @@
       </nav>
     </header>
 
-    <h1 class="post-title">$title$</h1>
-    <div class="date"><span>$date$</span></div>
-    <div class="tags"><span>($tags$)</span></div>
-    <article>
-      <section>
-        $body$
-      </section>
-    </article>
-
-    <div class="footer-separator"></div>
-    <div class="footer">
-      <a target="_blank" class="post-footer-sources" href="$sourcesRoot$/$path$">
-        Source: $title$ <img class="icon" src="/images/github.svg" alt="GitHub"></i>
-      </a>
-    </div>
-    <script src="../js/post.js"></script>
+    <h1 class="post-title"><code>(tagged "$tag$")</code></h1>
+    $partial("templates/post-list.html")$
+    <script src="../js/home.js"></script>
   </body>
 </html>

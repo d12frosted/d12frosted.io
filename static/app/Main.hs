@@ -5,24 +5,16 @@
 module Main (main) where
 
 --------------------------------------------------------------------------------
-import           Config
-import           ToContext
+import Config
 
 --------------------------------------------------------------------------------
-import           Control.Applicative (Alternative (..))
-import           Control.Monad (foldM, forM, forM_, mplus, filterM)
-import           Data.List (intercalate, intersperse, sortBy)
-import           Data.Maybe (catMaybes, fromMaybe)
-import           Data.Monoid ((<>))
-import           Data.Time (getCurrentTime, UTCTime, utctDay)
-import           Data.Time.Format (formatTime)
-import           Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
-import           Hakyll
-import           Hakyll.Core.Compiler.Internal
-import           Text.Blaze.Html (toHtml, toValue, (!))
-import           Text.Blaze.Html.Renderer.String (renderHtml)
-import qualified Text.Blaze.Html5 as H
-import qualified Text.Blaze.Html5.Attributes as A
+import Control.Applicative (Alternative (..))
+import Control.Monad (filterM, mplus)
+import Data.Maybe (fromMaybe)
+import Data.Time (getCurrentTime, UTCTime, utctDay)
+import Data.Time.Format (formatTime)
+import Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
+import Hakyll
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -38,30 +30,27 @@ main = getCurrentTime >>= \now -> hakyll $ do
     route   idRoute
     compile compressCssCompiler
 
-  -- TODO: convert to 'combine' helper
   create ["css/bundle.css"] $ do
     route idRoute
     compile $ do
       cssFiles <- loadAll "css/common/*"
       let styleCtx = listField "items" defaultContext (return cssFiles)
 
-      makeItem ""
+      makeItem []
         >>= loadAndApplyTemplate "templates/concat.txt" styleCtx
 
   tags <- buildTags postsPattern (fromCapture "tags/*.html")
 
-  -- tagsRules tags $ \tag pat -> do
-  --   route idRoute
-  --   compile $ do
-  --     posts   <- skipFuture now =<< recentFirst =<< loadAll pat
-  --     postCtx <- loadPostCtx tags
-  --     tagCtx <- loadTagCtx tag postCtx posts
+  tagsRules tags $ \tag pat -> do
+    route idRoute
+    compile $ do
+      posts   <- skipFuture now =<< recentFirst =<< loadAll pat
+      postCtx <- loadPostCtx tags
+      tagCtx  <- loadTagCtx tag postCtx posts
 
-  --     makeItem ""
-  --         >>= loadAndApplyTemplate "templates/tag.html"     tagCtx
-  --         >>= loadAndApplyTemplate "templates/blog.html"    tagCtx
-  --         >>= loadAndApplyTemplate "templates/default.html" tagCtx
-  --         >>= relativizeUrls
+      makeItem ""
+        >>= loadAndApplyTemplate "templates/tag.html" tagCtx
+        >>= relativizeUrls
 
   match postsPattern $ do
     route   $ setExtension "html"
@@ -89,13 +78,13 @@ main = getCurrentTime >>= \now -> hakyll $ do
   match "index.html" $ do
     route   $ idRoute
     compile $ do
-      about      <- load $ fromFilePath "about.org"
-      posts      <- skipFuture now =<< recentFirst =<< loadAll postsPattern
-      postCtx    <- loadPostCtx tags
-      archiveCtx <- loadArchiveCtx postCtx posts about
+      about    <- load $ fromFilePath "about.org"
+      posts    <- skipFuture now =<< recentFirst =<< loadAll postsPattern
+      postCtx  <- loadPostCtx tags
+      indexCtx <- loadIndexCtx postCtx posts about
 
       getResourceBody
-        >>= applyAsTemplate archiveCtx
+        >>= applyAsTemplate indexCtx
         >>= relativizeUrls
 
   match "templates/*" $ compile templateBodyCompiler
@@ -113,13 +102,19 @@ loadPostCtx tags
   <+> defaultContext
   <+> loadCtx
 
-loadArchiveCtx :: Context String -> [Item String] -> Item String -> Compiler (Context String)
-loadArchiveCtx ctx posts about
+loadIndexCtx :: Context String
+            -> [Item String]
+            -> Item String
+            -> Compiler (Context String)
+loadIndexCtx ctx posts about
   =   listField "posts" ctx (return posts)
   <+> field "about" (const . return . itemBody $ about)
   <+> loadCtx
 
-loadTagCtx :: String -> Context String -> [Item String] -> Compiler (Context String)
+loadTagCtx :: String
+           -> Context String
+           -> [Item String]
+           -> Compiler (Context String)
 loadTagCtx tag ctx posts
   =   constField "tag" tag
   <+> listField "posts" ctx (return posts)

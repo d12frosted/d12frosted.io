@@ -1,6 +1,6 @@
 ---
 title: High quality GIF from video
-keywords: shell, ffmpeg, utils
+tags: shell, ffmpeg, utils
 description: Tool for converting GIFs from video files
 ---
 
