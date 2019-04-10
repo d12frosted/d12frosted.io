@@ -13,9 +13,8 @@ import           Data.Aeson as Aeson
 import           Data.Binary (Binary)
 import qualified Data.ByteString.Lazy as BS
 import qualified Data.Char as Char
-import           Data.List (stripPrefix, isPrefixOf)
+import           Data.List (stripPrefix)
 import           Data.Monoid ((<>))
-import           Data.Text (Text)
 import           GHC.Generics
 import           Hakyll
 import           Hakyll.Core.Compiler.Internal

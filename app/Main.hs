@@ -20,11 +20,11 @@ import Text.Blaze.Html (toHtml)
 --------------------------------------------------------------------------------
 main :: IO ()
 main = getCurrentTime >>= \now -> hakyll $ do
-  match "configs/config.json" $ do
+  match "assets/config.json" $ do
     compile configCompiler
 
-  match ("js/*" .||. "images/*" .||. "fonts/*") $ do
-    route   idRoute
+  match "assets/images/*" $ do
+    route assetsRoute
     compile copyFileCompiler
 
   match ("css/*" .||. "css/**/*") $ do
@@ -65,21 +65,21 @@ main = getCurrentTime >>= \now -> hakyll $ do
   create ["atom.xml"] $ do
     route idRoute
     compile $ do
-      config  <- itemBody <$> load "configs/config.json"
+      config  <- itemBody <$> load "assets/config.json"
       posts   <- fmap (take . getFeedSize $ config) . skipFuture now
         =<< recentFirst
         =<< loadAllSnapshots postsPattern "content"
       feedCtx <- bodyField "description" <+> loadPostCtx tags
       renderAtom (feedConfiguration config) feedCtx posts
 
-  match "about.org" $ do
-    route   $ setExtension "html"
+  match "assets/about.org" $ do
+    route   $ assetsRoute <> setExtension "html"
     compile $ pandocCompiler
 
-  match "index.html" $ do
-    route   $ idRoute
+  match "assets/index.html" $ do
+    route assetsRoute
     compile $ do
-      about    <- load $ fromFilePath "about.org"
+      about    <- load $ fromFilePath "assets/about.org"
       posts    <- skipFuture now =<< recentFirst =<< loadAll postsPattern
       postCtx  <- loadPostCtx tags
       indexCtx <- loadIndexCtx postCtx posts about
@@ -92,7 +92,7 @@ main = getCurrentTime >>= \now -> hakyll $ do
 
 --------------------------------------------------------------------------------
 loadCtx :: Compiler (Context String)
-loadCtx = appContext <$> itemBody <$> load "configs/config.json"
+loadCtx = appContext <$> itemBody <$> load "assets/config.json"
 
 loadPostCtx :: Tags -> Compiler (Context String)
 loadPostCtx tags
@@ -159,6 +159,10 @@ rawTagsField :: String -> Tags -> Context a
 rawTagsField = tagsFieldWith getTags render (mconcat . intersperse ", ")
   where render _ Nothing = Nothing
         render tag _     = Just $ toHtml tag
+
+--------------------------------------------------------------------------------
+assetsRoute :: Routes
+assetsRoute = gsubRoute "assets/" (const "")
 
 --------------------------------------------------------------------------------
 (<+>) :: (Monoid a, Applicative m) => a -> m a -> m a

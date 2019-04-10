@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-stack build
-stack exec -- d12frosted-io clean
-stack exec -- d12frosted-io build
