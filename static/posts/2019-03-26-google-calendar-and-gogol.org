@@ -1,0 +1,68 @@
+---
+title: "calendorg: Google Calendar and Org mode synchronisation"
+keywords: haskell
+description: Building a tool for Google Calendar and Org mode synchronisation
+---
+
+Being an Emacs user means that you strive to do everything in Emacs. Reading and
+sending emails, chatting, controlling your Xs, writing code and [[http://doc.norang.ca/org-mode.html][organising your
+life in plain text]], of course. [[https://orgmode.org/][Org mode]] is an Emacs package for keeping notes,
+maintaining TODO lists and planning projects with a fast and effective plain
+text system. You can learn the basics for using it in five minutes and this may
+be all you need. But as it was said before, [[./2016-12-20-Being-an-org-mode-addict][Org mode is highly addictive]] and
+while "it cannot impose any complex features on you, it is you who will
+eventually impose more complex features on yourself".
+
+And if you are like me, you use =org-agenda= on a daily basis to check all the
+things that should be taken care of. And then there is Google Calendar with all
+important meetings that are not part of your cosy agenda. And this is where we
+are going to impose complex features on ourselves, because we ask an important
+question - why? Why all the events from Google Calendar are not in our agenda?
+
+As it turns out, we are not the first to ask this question. And so there are
+multiple solutions to this problem. All of them can be divided into two
+categories - scripts that are intended to be run outside of Emacs (either
+manually or via crontab) and programs written in Emacs Lisp.
+
+Ironically, I don't like to run periodic tasks in Emacs. Especially heavy onces.
+It always fails for me when I rely on it the most. For this, I prefer external
+scripts that I can automate via cron. The good thing - they can still
+communicate with Emacs instance or server and execute some Lisp.
+
+
+--------------------------------------------------------------------------------
+
+1. [[https://orgmode.org/worg/org-tutorials/org-google-sync.html][ical2org.awk]] - a script that uses
+2. [[https://github.com/dengste/org-caldav][org-caldav]]
+3. [[https://github.com/kiwanami/emacs-calfw][emacs-calfw]]
+4. [[https://github.com/myuhe/org-gcal.el][org-gcal.el]]
+
+Some of the options are simple (like =org-gcal.el= and =org-caldav=), some are
+beefy and do much more than just the syncing task (=emacs-calfw=) and others are
+actually external scripts that one can run as a cron job.
+
+All of these options have their own advantages and disadvantages. These tools
+are known to work (at least for some people), so I highly encourage you to give
+them a try.
+
+As you could guess, I am not using any of the mentioned projects. Either because
+they don't work as I want them to work, or are not reliable and I have to fight
+them on a daily basis or have poor support of multiple accounts/calendars.
+
+And ironically, I don't like to run periodic tasks in Emacs. Especially heavy ones.
+It always fails for me when I rely on it the most. For this, I prefer to write
+bash or Haskell scripts and run them via crontab. The good thing - you can still
+talk to your Emacs instance or server and execute some Lisp. So strictly
+speaking, I am not cheating Emacs.
+
+But most importantly, I always wanted to write such a tool by myself using
+Haskell. And why not, when you have such a wonderful library as [[https://github.com/brendanhay/gogol][gogol]]!
+
+In this blog post, we are going to write a script that synchronises events from
+your Google Calendar to Org mode file, automate this task using crontab and add
+the generated file to the agenda. We are not going to cover editing and adding
+new events to Google Calendar, but we'll leave some room for this feature.
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML

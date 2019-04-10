@@ -1,0 +1,90 @@
+---
+title: Dealing with overlapping instances in Haskell
+keywords: haskell
+description: Something that I will never finish writing
+---
+
+* Intro
+Have you ever noticed something special about =Show= instance of =String=?
+
+#+BEGIN_SRC haskell
+λ show [1, 2, 3]
+"[1,2,3]"
+λ show [True, False, True]
+"[True,False,True]"
+λ show ['h', 'e', 'l', 'l', 'o']
+"\"hello\""
+#+END_SRC
+
+Since it's just an alias for =[Char]=, shouldn't it behave just like all the other list instances of =Show=? Common sense whispers that there should be a generic instance for all lists with =Show='able content and a =String= specialisation.
+
+#+BEGIN_SRC haskell
+instance Show a => Show [a] where ...
+instance Show [Char] where ...
+#+END_SRC
+
+But if you try to do something like this you'll get overlapping instances error right on compilation.
+
+In this article we'll solve this problem in several different ways and also will cover another similar problem.
+
+* Formal definition
+*Problem 1.* Define an instance of =F= for =R a= with specialisation for =R A=.
+
+#+BEGIN_SRC haskell
+instance F a => F (R a) where ...
+instance F (R A) where ...
+#+END_SRC
+
+*Problem 2.* Define an instance of =F= for any given =a= that has an instance of =G=, but with specialisation for =A= that has an instance of =G=.
+
+#+BEGIN_SRC haskell
+instance G a => F a where ...
+instance G A where ...
+instance F A where ...
+#+END_SRC
+
+* Playground
+Since both of the problems are too abstract, let's define some data types to play with.
+
+#+BEGIN_SRC haskell
+data View = View String deriving (Show)
+
+instance Monoid View where
+  mempty = View mempty
+	  (View a) `mappend` (View b) = View $ a `mappend` b
+
+class Viewable a where
+  view :: a -> View
+
+instance Viewable Bool where
+  view = View . show
+
+instance Viewable Char where
+  view = View . show
+
+instance Viewable a => Viewable [a] where
+  view = mconcat . map view
+#+END_SRC
+
+Load everything into REPL, and try it out.
+
+#+BEGIN_SRC
+λ view True
+View "True"
+λ view 'c'
+View "'c'"
+λ view [True, False, True]
+View "TrueFalseTrue"
+λ view "hello"
+View "'h''e''l''l''o'"
+#+END_SRC
+
+* Problem 1
+
+* Problem 2
+
+#  LocalWords:  specialisation
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML

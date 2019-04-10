@@ -1,0 +1,16 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Frontend for person blog",
+  "main": "index.js",
+  "author": "Boris Buliga",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  },
+  "scripts": {
+    "build": "webpack -p"
+  }
+}

@@ -1,30 +1,31 @@
----
-title: Home
----
-
-<div class="body">
-  <div class="left">
-    <a href="https://d12frosted.io" title="Click to read more about me"><img src="images/boris.png"></a>
-  </div>
-
-  <div class="right">
-    <h1>Boris Buliga</h1>
-    <h2>Server-side developer <a href="https://wix.com">@Wix</a></h2>
-    <p>
-      Coding
-      in <a href="https://haskell-lang.org/">Haskell</a>, <a href="https://www.scala-lang.org/">Scala</a>, <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/">C#</a>
-      and whatever suits my needs. Tea addict, wine lover and a traveler.
-    </p>
-    <p>
-      Favourite editor
-      is <a href="https://www.gnu.org/software/emacs/">Emacs</a>
-      with <a href="http://spacemacs.org">Spacemacs</a>.
-    </p>
-    <ul>
-      <li> <a class="fa fa-pencil" href="/blog.html" title="Blog"></a></li>
-      <li> <a class="fa fa-envelope" href="mailto:boris@d12frosted.io" title="Email"></a></li>
-      <li> <a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub"></a></li>
-      <li> <a class="fa fa-stack-overflow" href="https://stackoverflow.com/users/3086454/d12frosted" title="StackOverflow"></a></li>
-    </ul>
-  </div>
-</div>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="$siteKeywords$">
+    <meta property="og:title" content="$siteTitle$">
+    <meta property="og:locale" content="es_US">
+    <meta property="og:url" content="$siteUrl$">
+    <title>$siteTitle$</title>
+    <link rel="stylesheet" href="/css/bundle.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <h1>$siteTitle$</h1>
+    <div class="info">
+      $about$
+    </div>
+    <nav>
+      <a href="./rss/posts.rss" title="RSS feed">
+        <img class="icon-rss" src="./images/rss.svg" alt="RSS">
+      </a>
+      <a href="$gitHubUrl$" title="GitHub profile">
+        <img class="icon" src="./images/github.svg" alt="GitHub">
+      </a>
+    </nav>
+    $partial("templates/post-list.html")$
+    <script src="/js/home.js"></script>
+  </body>
+</html>

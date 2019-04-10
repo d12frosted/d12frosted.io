@@ -1,0 +1,4 @@
+Hi, I’m Boris Buliga, a backend developer [[https://wix.com/][@Wix]]. I code in [[https://haskell-lang.org/][Haskell]], [[https://www.gnu.org/software/emacs/][Emacs Lisp]],
+[[https://www.scala-lang.org/][Scala]] and whatever suits my needs. I am tea addict, wine lover and a traveler.
+Most of my projects are open source and you can check them out on GitHub.
+Occasionally, I write stuff here.

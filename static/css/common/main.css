@@ -1,0 +1,83 @@
+/* BODY */
+body {
+  font-family: Merriweather, serif;
+  color: #000;
+  max-width: 720px;
+}
+
+@media (max-width: 319px) {
+  body {
+    width: 90%;
+    margin: 0;
+    padding: 0 5%;
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 320px) {
+  body {
+    width: 90%;
+    margin: 0;
+    padding: 0 5%;
+    font-size: 1.0rem;
+  }
+}
+
+@media (min-width: 760px) {
+  body {
+    margin: 0 auto;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+}
+
+/* NAV */
+
+nav {
+  margin: 1rem 0 2rem 1rem;
+  text-align: center;
+}
+
+@media (min-width: 320px) {
+  nav {
+    margin: 1rem 0 0 0;
+  }
+}
+
+@media (min-width: 760px) {
+  nav {
+    margin: 1rem 0 2rem 0;
+  }
+}
+
+nav a {
+  margin-left: 1rem;
+}
+
+nav a:link, a:visited {
+  text-decoration: none;
+}
+
+nav img {
+  height: 3rem;
+  width: 3rem;
+  vertical-align: middle;
+}
+
+nav img.icon {
+  height: 2.55rem;
+  width: 2.55rem;
+}
+
+nav img.icon-rss {
+  height: 2.1rem;
+  width: 2.1rem;
+}
+
+/* FOOTER */
+
+@media (min-width: 760px) {
+  footer {
+    text-align: right;
+  }
+}

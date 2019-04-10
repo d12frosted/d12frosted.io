@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+./build
+(
+  cd static
+  stack exec -- d12frosted-io watch
+)

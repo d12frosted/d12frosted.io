@@ -1,0 +1,28 @@
+name: d12frosted-io
+version: '0.1.0.0'
+author: Boris Buliga
+maintainer: Boris Buliga
+github: d12frosted/d12frosted.io
+
+executables:
+  d12frosted-io:
+    main:                Main.hs
+    source-dirs:         app
+    dependencies:
+      - base >= 4.7 && < 5
+      - aeson
+      - binary
+      - blaze-html
+      - blaze-markup
+      - bytestring
+      - containers
+      - hakyll
+      - mtl
+      - path
+      - regex-base
+      - regex-tdfa
+      - shakespeare
+      - text
+      - time
+      - time-locale-compat
+      - unordered-containers

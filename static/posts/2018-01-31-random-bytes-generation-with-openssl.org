@@ -1,0 +1,50 @@
+---
+title: Random bytes generation with OpenSSL
+keywords: shell
+description: Quick random bytes generation from terminal using OpenSSL
+---
+
+Sometimes you just have to generate some random bytes with high entropy. And
+OpenSSL can help you with this task.
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+#+BEGIN_SRC bash
+$ openssl rand [options] num
+#+END_SRC
+
+The =rand= command outputs =num= pseudo-random bytes. Since in most cases we
+don't want to deal with edge bytes, it's better to use either =-hex= or
+=-base64= option in order to encode output and thus lead to a valid password.
+
+#+BEGIN_SRC bash
+$ openssl rand 16
+fӤ?v ???^@?y??
+
+$ openssl rand -hex 16
+b4ef65a47a327727bf4ad77d8d3352b2
+
+$ openssl rand -base64 16
+o1DqThmx1DWGoPAidi6DKQ==
+#+END_SRC
+
+Another problem is the length. When you use =-hex= or =-base64= option the
+output string is longer than passed =num=. In order to keep the desired length,
+you have to chop it. For example, using the =cut= command.
+
+#+BEGIN_SRC bash
+$ openssl rand -hex 16 | cut -c1-16
+ce8ad63b50cbe611
+
+$ openssl rand -base64 16 | cut -c1-16
+4HIcmt4vTcmchbHU
+#+END_SRC
+
+Some useful links:
+
+- [[https://wiki.openssl.org/index.php/Manual:Rand(1)][Rand command manual]]
+- [[https://wiki.openssl.org/index.php/Random_Numbers][OpenSSL random numbers]]
+- [[https://www.grc.com/haystack.htm][Password Haystack]]
+- [[http://rumkin.com/tools/password/passchk.php][Password Check]]

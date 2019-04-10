@@ -1,0 +1,49 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 989ed0c700389e423c6555cd6fa669a9c709abb7e9ef6a7e18d5751976f09694
+
+name:           d12frosted-io
+version:        0.1.0.0
+homepage:       https://github.com/d12frosted/d12frosted.io#readme
+bug-reports:    https://github.com/d12frosted/d12frosted.io/issues
+author:         Boris Buliga
+maintainer:     Boris Buliga
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/d12frosted/d12frosted.io
+
+executable d12frosted-io
+  main-is: Main.hs
+  other-modules:
+      Config
+      ToContext
+      Paths_d12frosted_io
+  hs-source-dirs:
+      app
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , binary
+    , blaze-html
+    , blaze-markup
+    , bytestring
+    , containers
+    , hakyll
+    , mtl
+    , path
+    , regex-base
+    , regex-tdfa
+    , shakespeare
+    , text
+    , time
+    , time-locale-compat
+    , unordered-containers
+  default-language: Haskell2010
