@@ -2,14 +2,6 @@
 
 set -e
 
-(
-  cd frontend || exit
-  ./deploy
-)
-
-(
-  cd static || exit
-  stack build
-  stack exec -- d12frosted-io clean
-  stack exec -- d12frosted-io build
-)
+stack build
+stack exec -- d12frosted-io clean
+stack exec -- d12frosted-io build

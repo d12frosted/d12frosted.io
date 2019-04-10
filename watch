@@ -3,7 +3,4 @@
 set -e
 
 ./build
-(
-  cd static
-  stack exec -- d12frosted-io watch
-)
+stack exec -- d12frosted-io watch

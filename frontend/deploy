@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-mkdir -p ../static/js
-yarn install
-yarn build
-cp ./output/js/* ../static/js
