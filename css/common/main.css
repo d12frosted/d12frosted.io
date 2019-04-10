@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:400,500|Junge|Source+Code+Pro:400,500&subset=cyrillic,cyrillic-ext,latin-ext');
+
 /* BODY */
+
 body {
-  font-family: Merriweather, serif;
+  font-family: "Cormorant Garamond", serif;
   color: #000;
   max-width: 720px;
 }
@@ -10,7 +13,7 @@ body {
     width: 90%;
     margin: 0;
     padding: 0 5%;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -19,7 +22,7 @@ body {
     width: 90%;
     margin: 0;
     padding: 0 5%;
-    font-size: 1.0rem;
+    font-size: 1.4rem;
   }
 }
 
@@ -27,35 +30,51 @@ body {
   body {
     margin: 0 auto;
     padding: 0;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
   }
 }
 
 /* NAV */
 
 nav {
-  margin: 1rem 0 2rem 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   text-align: center;
 }
 
 @media (min-width: 320px) {
   nav {
+    font-size: 1.4rem;
     margin: 1rem 0 0 0;
   }
 }
 
 @media (min-width: 760px) {
   nav {
+    font-size: 2.0rem;
     margin: 1rem 0 2rem 0;
   }
 }
 
 nav a {
+  color: #000;
   margin-left: 1rem;
+  border-bottom: 1px solid #f3f3f3;
+  vertical-align: middle;
 }
 
 nav a:link, a:visited {
+  color: #000;
   text-decoration: none;
+}
+
+nav a:hover {
+  border-bottom: 1px solid #999;
+}
+
+nav span {
+  vertical-align: middle;
 }
 
 nav img {
@@ -80,4 +99,163 @@ nav img.icon-rss {
   footer {
     text-align: right;
   }
+}
+
+/* Headers */
+
+h1, h2, h3, h4 {
+  font-family: "Junge", sans-serif;
+}
+
+/* other */
+
+code {
+  background-color: #fcfcfc;
+  color: #4070a0;
+  font-family: "Source Code Pro", monospace;
+  font-size: 1.3rem;
+}
+
+pre {
+  padding: 16px;
+  background-color: #fcfcfc;
+  color: #4070a0;
+  border-radius: 8px;
+  overflow: auto;
+  font-family: "Source Code Pro", monospace;
+  font-size: 1.3rem;
+}
+
+pre code {
+  font-size: 1.3rem;
+  background-color: #fcfcfc;
+}
+
+@media (min-width: 320px) {
+  code {
+    font-size: 1.0rem;
+  }
+
+  pre {
+    font-size: 1.0rem;
+  }
+
+  pre code {
+    font-size: 1.0rem;
+  }
+}
+
+@media (min-width: 760px) {
+  code {
+    font-size: 1.3rem;
+  }
+
+  pre {
+    font-size: 1.3rem;
+  }
+
+  pre code {
+    font-size: 1.3rem;
+  }
+}
+
+
+/* Firefox needs this for right margin in code blocks
+ * but chrome doesn't need it and ends up with twice
+ * the margin. What should I do? */
+a.sourceLine {
+  margin-right: 16px;
+}
+
+blockquote {
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+  padding: 0 1em;
+}
+
+p, li {
+  line-height: 1.75em;
+}
+
+table {
+  empty-cells: show;
+  border: 1px solid #f3f3f3;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table caption {
+  text-align: center;
+}
+
+table td, table th {
+  border-left: 1px solid #f3f3f3;
+  border-bottom: 1px solid #f3f3f3;
+  font-size: inherit;
+  margin: 0;
+  overflow: visible;
+  padding: .5em 1em;
+}
+
+table td:first-child, table th:first-child {
+  border-left-width: 0
+}
+
+table thead {
+  background-color: #fdfff7;
+  vertical-align: bottom;
+}
+
+table th {
+  text-align: center;
+}
+
+table td {
+  background-color: transparent;
+}
+
+div.post-image img {
+  width: 100%;
+  display: block;
+  margin: auto;
+}
+
+div.post-image-half img {
+  width: 50%;
+}
+
+@media (min-width: 320px) {
+  div.post-image-half img {
+    width: 100%;
+  }
+}
+
+@media (min-width: 760px) {
+  div.post-image-half img {
+    width: 50%;
+  }
+}
+
+div.post-image-split img {
+  width: calc(50% - 4px);
+  display: initial;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+@media (min-width: 320px) {
+  div.post-image-split img {
+    width: 100%;
+  }
+}
+
+@media (min-width: 760px) {
+  div.post-image-split img {
+    width: calc(50% - 4px);
+  }
+}
+
+p.post-image-caption {
+  text-align: center;
+  font-size: 0.9em;
 }
