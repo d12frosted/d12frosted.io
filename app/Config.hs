@@ -26,6 +26,7 @@ data Config
   { getSiteTitle       :: String
   , getSiteUrl         :: String
   , getSiteKeywords    :: String
+  , getGitLabUrl       :: String
   , getGitHubUrl       :: String
   , getSourcesRoot     :: String
   , getAuthorName      :: String
@@ -51,6 +52,7 @@ instance ToContext Config where
     =  constField "siteTitle"    (getSiteTitle cfg)
     <> constField "siteUrl"      (getSiteUrl cfg)
     <> constField "siteKeywords" (getSiteKeywords cfg)
+    <> constField "gitLabUrl"    (getGitLabUrl cfg)
     <> constField "gitHubUrl"    (getGitHubUrl cfg)
     <> constField "sourcesRoot"  (getSourcesRoot cfg)
 

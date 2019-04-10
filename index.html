@@ -11,22 +11,15 @@
     <title>$siteTitle$</title>
     <link rel="stylesheet" href="/css/bundle.css" />
     <link rel="stylesheet" href="/css/index.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML'></script>
   </head>
   <body>
     <h1>$siteTitle$</h1>
     <div class="info">
       $about$
     </div>
-    <nav>
-      <a href="./rss/posts.rss" title="RSS feed">
-        <img class="icon-rss" src="./images/rss.svg" alt="RSS">
-        <span>RSS</span>
-      </a>
-      <a href="$gitHubUrl$" title="GitHub profile">
-        <img class="icon" src="./images/github.svg" alt="GitHub">
-        <span>GitHub</span>
-      </a>
-    </nav>
+    $partial("templates/nav.html")$
     $partial("templates/post-list.html")$
     <script src="/js/home.js"></script>
   </body>
