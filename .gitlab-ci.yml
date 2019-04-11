@@ -1,4 +1,4 @@
-image: haskell:latest
+image: fpco/stack-build:lts-12.26
 
 before_script:
   - apt-get update && apt-get install xz-utils make
