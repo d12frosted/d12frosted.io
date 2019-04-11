@@ -18,8 +18,14 @@ import Hakyll
 import Text.Blaze.Html (toHtml)
 
 --------------------------------------------------------------------------------
+hakyllConfig :: Configuration
+hakyllConfig = defaultConfiguration {
+  destinationDirectory = "public"
+}
+
+
 main :: IO ()
-main = getCurrentTime >>= \now -> hakyll $ do
+main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
   match "assets/config.json" $ do
     compile configCompiler
 
