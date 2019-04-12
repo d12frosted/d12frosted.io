@@ -1,4 +1,5 @@
 :root {
+  --bg: #fcfcfc;
   --kw: #007020;
   --dt: #902000;
   --dv: #40a070;
@@ -11,6 +12,19 @@
   --al: red;
   --fu: #06287e;
   --er: red;
+}
+
+code {
+  background-color: var(--bg);
+  color: var(--st);
+}
+
+pre {
+  padding: 16px;
+  background-color: var(--bg);
+  color: var(--st);
+  border-radius: 8px;
+  overflow: auto;
 }
 
 table.sourceCode,

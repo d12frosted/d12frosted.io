@@ -1,0 +1,15 @@
+body {
+  font-family: "Cormorant Garamond", serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Junge", sans-serif;
+}
+
+code {
+  font-family: "Source Code Pro", monospace;
+}
+
+pre {
+  font-family: "Source Code Pro", monospace;
+}
