@@ -17,6 +17,7 @@
 code {
   background-color: var(--bg);
   color: var(--st);
+  font-size: 1.0rem;
 }
 
 pre {
@@ -25,6 +26,7 @@ pre {
   color: var(--st);
   border-radius: 8px;
   overflow: auto;
+  font-size: 1.0rem;
 }
 
 table.sourceCode,
