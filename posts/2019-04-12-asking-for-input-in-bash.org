@@ -97,7 +97,7 @@ indirection and =declare= to do all the dirty job for us.
       [ -z "$res" ] && res="$def"
       [ -n "$res" ] && break
     done
-    declare -g "$1=$res"
+    declare -rg "$1=$res"
   }
 
   ask "owner" "Repository owner"
@@ -124,8 +124,16 @@ problems as it allows execution of arbitrary code. So why risking, when we can
 use something suited for this job?
 
 The same goes for =declare=. While we could use =eval=, there is a built-in just
-for this particular problem. We use =-g= flag to make the variable accessible
-outside the function body via regular variable expansion.
+for this particular problem. We use =-r= since we are not planning to modify
+this value in the future and =-g= flag to make the variable accessible outside
+the function body via regular variable expansion. Please note that =-g= option
+is not available prior to 4.2 version of =bash=. If for some reason you plan to
+support older versions (for example, on macOS the preinstalled =bash= has
+version 3.2), then you can use =readonly=.
+
+#+begin_src bash
+  readonly "$1=$res"
+#+end_src
 
 If you are interested in using =eval= instead of indirection and =decalre=, it
 would look like this.
