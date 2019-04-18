@@ -5,33 +5,29 @@ stages:
   - pages
   - github
 
-before_script:
-  - apt-get update && apt-get install xz-utils make
-  - export STACK_ROOT=`pwd`/.stack
-  - stack setup
-  - stack install --only-dependencies
-  - stack build
-
-build:
-  stage: build
+.build_template: &build_template
   cache:
     paths:
       - _cache
       - .stack
   script:
+    - apt-get update && apt-get install xz-utils make
+    - export STACK_ROOT=`pwd`/.stack
+    - stack setup
+    - stack install --only-dependencies
+    - stack build
     - stack exec -- d12frosted-io build
+    - cp -r assets/.well-known public/.well-known
+
+build:
+  <<: *build_template
+  stage: build
   except:
     - master
 
 pages:
+  <<: *build_template
   stage: pages
-  cache:
-    paths:
-      - _cache
-      - .stack
-  script:
-    - stack exec -- d12frosted-io build
-    - cp -r assets/.well-known public/.well-known
   artifacts:
     paths:
       - public
