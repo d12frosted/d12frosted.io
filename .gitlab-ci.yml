@@ -13,6 +13,7 @@ before_script:
   - stack build
 
 build:
+  stage: build
   cache:
     paths:
       - _cache
@@ -23,6 +24,7 @@ build:
     - master
 
 pages:
+  stage: pages
   cache:
     paths:
       - _cache
