@@ -3,7 +3,6 @@ image: haskell:latest
 stages:
   - build
   - pages
-  - github
 
 .build_template: &build_template
   cache:
@@ -31,12 +30,5 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - master
-
-gihub:
-  stage: github
-  script:
-    - .ci/github_push
   only:
     - master
