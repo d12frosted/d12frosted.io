@@ -1,0 +1,14 @@
+#+STARTUP: showall
+
+* Contributing
+
+Everyone is welcome to contribute to =d12frosted.io= project. Feature requests,
+proposals, issue reports, documentation improvements, code patches - just to
+name few things that the project can gain from.
+
+Please note that the main upstream of =d12frosted.io= is located on [[https://gitlab.com/d12frosted/d12frosted.io][GitLab]], and
+it's advisable to send your contributions there. But they can be accepted also
+via [[mailto:boris@d12frosted.io][email]] and [[https://github.com/d12frosted/d12frosted.io][GitHub]].
+
+Happy hacking!
+
