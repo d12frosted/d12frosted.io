@@ -1,6 +1,5 @@
 nav {
   display: block;
-  list-style: none;
   text-align: center;
   font-size: 1.4rem;
 }
@@ -14,6 +13,13 @@ nav li {
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 1rem;
+  list-style: none;
+}
+
+@media (max-width: 720px) {
+  nav li {
+    display: block;
+  }
 }
 
 nav a {
