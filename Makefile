@@ -1,5 +1,5 @@
 build:
-	bower install --allow-root
+	yarn install
 	stack setup
 	stack install --only-dependencies
 	stack build

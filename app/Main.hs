@@ -33,8 +33,8 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
     route assetsRoute
     compile copyFileCompiler
 
-  match "bower_components/**" $ do
-    route bowerRoute
+  match "node_modules/**" $ do
+    route nodeRoute
     compile copyFileCompiler
 
   match ("css/*" .||. "css/**/*") $ do
@@ -191,8 +191,8 @@ rawTagsField = tagsFieldWith getTags render (mconcat . intersperse ", ")
 assetsRoute :: Routes
 assetsRoute = gsubRoute "assets/" (const "")
 
-bowerRoute :: Routes
-bowerRoute = gsubRoute "bower_components" (const "library")
+nodeRoute :: Routes
+nodeRoute = gsubRoute "node_modules" (const "library")
 
 --------------------------------------------------------------------------------
 (<+>) :: (Monoid a, Applicative m) => a -> m a -> m a
