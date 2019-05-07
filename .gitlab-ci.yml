@@ -10,7 +10,11 @@ stages:
       - _cache
       - .stack
   script:
-    - apt-get update && apt-get install xz-utils make
+    - apt-get update
+    - apt-get install -y xz-utils make
+    - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+    - apt-get install -y nodejs
+    - npm install bower -g
     - export STACK_ROOT=`pwd`/.stack
     - make build
 

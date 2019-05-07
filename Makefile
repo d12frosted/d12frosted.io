@@ -1,4 +1,5 @@
 build:
+	bower install --allow-root
 	stack setup
 	stack install --only-dependencies
 	stack build
