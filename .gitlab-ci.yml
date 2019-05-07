@@ -12,11 +12,7 @@ stages:
   script:
     - apt-get update && apt-get install xz-utils make
     - export STACK_ROOT=`pwd`/.stack
-    - stack setup
-    - stack install --only-dependencies
-    - stack build
-    - stack exec -- d12frosted-io build
-    - cp -r assets/.well-known public/.well-known
+    - make build
 
 build:
   <<: *build_template
