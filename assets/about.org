@@ -1,4 +1,4 @@
 Hello, my name is Boris Buliga. I am backend developer [[https://wix.com/][@Wix]]. I make the world
 better™ in [[https://haskell-lang.org/][Haskell]], [[https://www.gnu.org/software/emacs/][Emacs Lisp]], [[https://www.scala-lang.org/][Scala]] and whatever suits my current task. Most
-of my projects are open sourced and available on GitHub. Outside of the digital
-world, I am a tea addict, wine lover and a traveller.
+of my projects are open sourced and available on [[https://gitlab.com/d12frosted][GitLab]] and [[https://github.com/d12frosted][GitHub]]. Outside of
+the digital world, I am a tea addict, wine lover and a traveller.
