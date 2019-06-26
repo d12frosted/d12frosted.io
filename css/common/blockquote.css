@@ -4,7 +4,7 @@ blockquote {
   padding: 0 1em;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1280px) {
   blockquote {
     margin-left: 10px;
     margin-right: 10px;

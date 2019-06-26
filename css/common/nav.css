@@ -16,7 +16,7 @@ nav li {
   list-style: none;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1280px) {
   nav li {
     display: block;
   }
