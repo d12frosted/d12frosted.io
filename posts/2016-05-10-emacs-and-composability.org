@@ -32,9 +32,9 @@ don't like Emacs Lisp, and out-of-box experience is far from being ideal. In
 order to perfect Emacs The Editor you have to invest a lot of time in writing
 configurations. You also have to use dozens of third-party packages and also
 configure them appropriately. But it gives you freedom. And in case you don't
-like writing configs, just take a look at these great projects -
-[[https://github.com/purcell/emacs.d][Purcell's emacs.d]], [[https://github.com/bbatsov/prelude][Prelude]] and of
-course, [[https://github.com/syl20bnr/spacemacs][Spacemacs.]] You have plenty of options. And composability is one of them.
+like writing configs, just take a look at these great projects - [[https://github.com/purcell/emacs.d][Purcell's
+emacs.d]], [[https://github.com/bbatsov/prelude][Prelude]] and of course, [[https://github.com/syl20bnr/spacemacs][Spacemacs.]] You have plenty of options. And
+composability is one of them.
 
 #+BEGIN_HTML
 <!--more-->
