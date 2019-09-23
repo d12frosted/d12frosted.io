@@ -170,4 +170,4 @@ would look like this.
 
 But personally, I would not use =eval= until I really have to.
 
-You can find another example of this technique in [[http:/posts/2018-11-04-revisiting-eru.html][Revisiting Eru]] post.
+You can find another example of this technique in [[./2018-11-04-revisiting-eru.html][Revisiting Eru]] post.
