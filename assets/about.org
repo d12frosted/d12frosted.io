@@ -1,4 +1,5 @@
-Hello, my name is Boris Buliga. I am backend developer [[https://wix.com/][@Wix]]. I make the world
-better™ in [[https://haskell-lang.org/][Haskell]], [[https://www.gnu.org/software/emacs/][Emacs Lisp]], [[https://www.scala-lang.org/][Scala]] and whatever suits my current task. Most
-of my projects are open sourced and available on [[https://gitlab.com/d12frosted][GitLab]] and [[https://github.com/d12frosted][GitHub]]. Outside of
-the digital world, I am a tea addict, wine lover and a traveller.
+Welcome to my personal site, where I irregularly post technical notes, usually
+[[https://www.gnu.org/software/emacs/][Emacs]] or [[https://haskell-lang.org/][Haskell]]-related. I am developer at [[https://wix.com/][Wix]] during the daytime, and
+developer at home before and after the daytime. When I am not writing code, I am
+either drinking tea (with these little cups) or drinking wine (Sicily, I love
+you). Cheese is my bread and tracking everything in Emacs is my cheese.
