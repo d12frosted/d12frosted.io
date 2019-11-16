@@ -1,19 +1,13 @@
 h1 {
-  font-size: 3.5rem;
+  font-size: 2.5rem;
 }
 
 h1 code {
   color: #000;
 }
 
-@media (max-width: 1024px) {
-  h1 {
-    font-size: 2.8rem;
-  }
-}
-
 h3 {
-  font-size: 2.4rem;
+  font-size: 1.8rem;
   text-align: center;
   margin: 0;
 }
