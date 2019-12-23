@@ -1,0 +1,39 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - uses: actions/setup-node@v1.1.0
+
+    - uses: actions/cache@v1
+      with:
+        path: .stack-work
+        key: ${{ runner.os }}-stack-work
+        restore-keys: |
+          ${{ runner.os }}-stack-work
+
+    - uses: actions/cache@v1
+      with:
+        path: ~/.stack
+        key: ${{ runner.os }}-stack
+        restore-keys: |
+          ${{ runner.os }}-stack
+
+    - name: Build site
+      run: make build
+
+    - name: Deploy
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v1
+      with:
+        target_branch: gh-pages
+        build_dir: public
+      env:
+        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
