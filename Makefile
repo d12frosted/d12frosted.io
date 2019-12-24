@@ -5,7 +5,7 @@ build:
 	stack build
 	stack exec -- d12frosted-io build
 	cp -r assets/.well-known public/.well-known
-  cp -r assets/CNAME public/CNAME
+	cp -r assets/CNAME public/CNAME
 
 clean: build
 	stack exec -- d12frosted-io clean
