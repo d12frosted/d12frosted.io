@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +28,11 @@ jobs:
     - name: Build site
       run: make build
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'master'
+    steps:
     - name: Deploy
       if: success()
       uses: crazy-max/ghaction-github-pages@v1
