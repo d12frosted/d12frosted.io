@@ -30,13 +30,8 @@ jobs:
     - name: Build site
       run: make build
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    steps:
     - name: Deploy
-      if: success()
+      if: success() && github.ref == 'refs/heads/master'
       uses: crazy-max/ghaction-github-pages@v1
       with:
         target_branch: gh-pages
