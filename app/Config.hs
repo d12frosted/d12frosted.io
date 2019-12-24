@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 --------------------------------------------------------------------------------
 module Config where
@@ -9,12 +9,12 @@ module Config where
 import           ToContext
 
 --------------------------------------------------------------------------------
-import           Data.Aeson as Aeson
-import           Data.Binary (Binary)
-import qualified Data.ByteString.Lazy as BS
-import qualified Data.Char as Char
-import           Data.List (stripPrefix)
-import           Data.Monoid ((<>))
+import           Data.Aeson                    as Aeson
+import           Data.Binary                   (Binary)
+import qualified Data.ByteString.Lazy          as BS
+import qualified Data.Char                     as Char
+import           Data.List                     (stripPrefix)
+import           Data.Monoid                   ((<>))
 import           GHC.Generics
 import           Hakyll
 import           Hakyll.Core.Compiler.Internal
@@ -25,7 +25,6 @@ data Config
   { getSiteTitle       :: String
   , getSiteUrl         :: String
   , getSiteKeywords    :: String
-  , getGitLabUrl       :: String
   , getGitHubUrl       :: String
   , getSourcesRoot     :: String
   , getAuthorName      :: String
@@ -44,14 +43,13 @@ instance FromJSON Config where
 instance Binary Config
 
 instance Writable Config where
-  write fp item = BS.writeFile fp . encode . itemBody $ item
+  write fp = BS.writeFile fp . encode . itemBody
 
 instance ToContext Config where
   toContext cfg
     =  constField "siteTitle"    (getSiteTitle cfg)
     <> constField "siteUrl"      (getSiteUrl cfg)
     <> constField "siteKeywords" (getSiteKeywords cfg)
-    <> constField "gitLabUrl"    (getGitLabUrl cfg)
     <> constField "gitHubUrl"    (getGitHubUrl cfg)
     <> constField "sourcesRoot"  (getSourcesRoot cfg)
 

@@ -5,7 +5,7 @@ description: A little black magic to ease the burden of asking user for some inp
 ---
 
 Yet another tale about bash script refactoring. This time the configuration
-script of [[https://gitlab.com/d12frosted/mirror-elpa][mirror-elpa]] had undergone some changes and I like the result so much
+script of [[https://github.com/d12frosted/mirror-elpa][mirror-elpa]] had undergone some changes and I like the result so much
 that I decided to share it.
 
 Imagine that you want your users to give you some input, for example, repository
