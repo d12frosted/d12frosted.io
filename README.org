@@ -1,5 +1,5 @@
 * d12frosted.io
 
-[[https://github.com/d12frosted/d12frosted.io/workflows/main/badge.svg][file:https://github.com/d12frosted/d12frosted.io/workflows/main/badge.svg]]
+[[https://github.com/d12frosted/d12frosted.io/workflows/CI/badge.svg][file:https://github.com/d12frosted/d12frosted.io/workflows/CI/badge.svg]]
 
 Personal site.
