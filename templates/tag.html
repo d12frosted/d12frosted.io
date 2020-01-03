@@ -12,26 +12,13 @@
     <meta property="og:title" content="$title$">
     <meta property="og:description" content="$tag$">
     <title>$title$</title>
-    <link rel="stylesheet" href="/css/bundle.css" />
-    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/index-bundle.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src='/library/mathjax/MathJax.js?config=TeX-MML-AM_CHTML'></script>
   </head>
   <body>
-    <header>
-      <nav>
-        <a href="/" title="Home">
-          <img id="home" src="/images/home.svg" alt="Home">
-        </a>
-        <a href="../rss/posts.rss" title="RSS feed">
-          <img class="icon-rss" src="/images/rss.svg" alt="RSS">
-        </a>
-        <a href="$gitHubUrl$" title="GitHub profile">
-          <img class="icon" src="/images/github.svg" alt="GitHub">
-        </a>
-      </nav>
-    </header>
-
-    <h1 class="post-title"><code>(tagged "$tag$")</code></h1>
+    $partial("templates/nav.html")$
+    <h1>(tagged "$tag$")</h1>
     $partial("templates/post-list.html")$
-    <script src="../js/home.js"></script>
   </body>
 </html>
