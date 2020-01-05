@@ -1,6 +1,5 @@
 Welcome to my personal site, where I irregularly post technical notes, usually
 [[https://www.gnu.org/software/emacs/][Emacs]] or [[https://haskell-lang.org/][Haskell]]-related. I am developer at [[https://wix.com/][Wix]] during the daytime, and
 developer at home before and after the daytime. When I am not writing code, I am
-either drinking tea (with these little cups) or drinking wine (Sicily, I love
-you). Cheese is my bread and tracking everything in Emacs is my cheese. So
-welcome!
+either drinking wine or drinking tea (with these little cups). Cheese is my
+bread and tracking everything in Emacs is my cheese. So welcome!
