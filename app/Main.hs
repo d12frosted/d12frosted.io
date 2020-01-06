@@ -103,8 +103,8 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
     route   $ assetsRoute <> setExtension "html"
     compile $ pandocCompiler
 
-  match "assets/index.html" $ do
-    route assetsRoute
+  match "templates/index.html" $ do
+    route (constRoute "index.html")
     compile $ do
       about    <- load $ fromFilePath "assets/about.org"
       posts    <- skipFuture now =<< recentFirst =<< loadAll postsPattern
