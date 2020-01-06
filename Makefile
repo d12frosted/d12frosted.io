@@ -1,4 +1,4 @@
-build:
+build: clean
 	yarn install
 	stack setup
 	stack install --only-dependencies
@@ -7,8 +7,8 @@ build:
 	cp -r assets/.well-known public/.well-known
 	cp -r assets/CNAME public/CNAME
 
-clean: build
+clean:
 	stack exec -- d12frosted-io clean
 
-watch: clean
+watch: build
 	stack exec -- d12frosted-io watch
