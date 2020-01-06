@@ -1,23 +1,28 @@
 --------------------------------------------------------------------------------
+
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
+
 module Main (main) where
 
 --------------------------------------------------------------------------------
-import Config
+
+import           Config
 
 --------------------------------------------------------------------------------
-import Control.Applicative (Alternative (..))
-import Control.Monad (filterM)
-import Data.List (intersperse)
-import Data.Time (getCurrentTime, UTCTime, utctDay)
-import Data.Time.Format (formatTime)
-import Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
-import Hakyll
-import Text.Blaze.Html (toHtml)
+
+import           Control.Applicative     (Alternative (..))
+import           Control.Monad           (filterM)
+import           Data.List               (intersperse)
+import           Data.Time               (UTCTime, getCurrentTime, utctDay)
+import           Data.Time.Format        (formatTime)
+import           Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
+import           Hakyll
+import           Text.Blaze.Html         (toHtml)
 
 --------------------------------------------------------------------------------
+
 hakyllConfig :: Configuration
 hakyllConfig = defaultConfiguration {
   destinationDirectory = "public"
@@ -118,6 +123,7 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
   match "templates/*" $ compile templateBodyCompiler
 
 --------------------------------------------------------------------------------
+
 loadCtx :: Compiler (Context String)
 loadCtx = appContext <$> itemBody <$> load "assets/config.json"
 
@@ -150,15 +156,18 @@ loadTagCtx tag ctx posts
   <+> loadCtx
 
 --------------------------------------------------------------------------------
+
 postsPattern :: Pattern
 postsPattern = "posts/*"
 
 --------------------------------------------------------------------------------
+
 skipFuture :: (MonadMetadata m) => UTCTime -> [Item a] -> m [Item a]
 skipFuture now = filterM $ fmap (now >) .
   getItemUTC defaultTimeLocale . itemIdentifier
 
 --------------------------------------------------------------------------------
+
 feedConfiguration :: Config -> FeedConfiguration
 feedConfiguration config
   = FeedConfiguration
@@ -170,6 +179,7 @@ feedConfiguration config
   }
 
 --------------------------------------------------------------------------------
+
 updateField :: String -> String -> Context a
 updateField = updateFieldWith defaultTimeLocale
 
@@ -182,12 +192,14 @@ updateFieldWith locale key format = field key $ \i -> do
     else pure $ formatTime locale format updateTime
 
 --------------------------------------------------------------------------------
+
 rawTagsField :: String -> Tags -> Context a
 rawTagsField = tagsFieldWith getTags render (mconcat . intersperse ", ")
   where render _ Nothing = Nothing
         render tag _     = Just $ toHtml tag
 
 --------------------------------------------------------------------------------
+
 assetsRoute :: Routes
 assetsRoute = gsubRoute "assets/" (const "")
 
@@ -195,6 +207,9 @@ nodeRoute :: Routes
 nodeRoute = gsubRoute "node_modules" (const "library")
 
 --------------------------------------------------------------------------------
+
 (<+>) :: (Monoid a, Applicative m) => a -> m a -> m a
 a <+> ma = mappend a <$> ma
 infixr 6 <+>
+
+--------------------------------------------------------------------------------
