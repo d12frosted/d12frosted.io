@@ -1,6 +1,7 @@
 ---
 tag: mirror-elpa
 languages: Bash
+category: Emacs
 ---
 
 Bash script that is used to maintain =elpa-mirror= project.

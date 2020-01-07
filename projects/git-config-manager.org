@@ -1,6 +1,7 @@
 ---
 tag: git-config-manager
 languages: Haskell
+category: Other
 ---
 
 Small command line utility for managing and applying Git configurations in

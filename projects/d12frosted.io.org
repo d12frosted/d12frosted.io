@@ -1,6 +1,7 @@
 ---
 tag: blog
 languages: Haskell
+category: Special
 ---
 
 Sources of this site.

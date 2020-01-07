@@ -159,7 +159,10 @@ loadProjectsCtx :: Context String
                 -> Item String
                 -> Compiler (Context String)
 loadProjectsCtx projectCtx projects about
-  =   listField "projects" projectCtx (return projects)
+  =   listField "projects-special" projectCtx (withCategory "Special" projects)
+  <+> listField "projects-emacs" projectCtx (withCategory "Emacs" projects)
+  <+> listField "projects-haskell" projectCtx (withCategory "Haskell" projects)
+  <+> listField "projects-other" projectCtx (withCategory "Other" projects)
   <+> field "about" (const . return . itemBody $ about)
   <+> loadCtx
 
@@ -234,6 +237,15 @@ assetsRoute = gsubRoute "assets/" (const "")
 
 nodeRoute :: Routes
 nodeRoute = gsubRoute "node_modules" (const "library")
+
+--------------------------------------------------------------------------------
+
+withCategory :: MonadMetadata m => String -> [Item a] -> m [Item a]
+withCategory cat = filterM (hasCategory cat)
+
+hasCategory :: MonadMetadata m => String -> Item a -> m Bool
+hasCategory cat item
+  = (cat ==) <$> getMetadataField' (itemIdentifier item) "category"
 
 --------------------------------------------------------------------------------
 

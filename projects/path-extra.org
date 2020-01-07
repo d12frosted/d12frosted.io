@@ -1,5 +1,6 @@
 ---
 languages: Haskell
+category: Haskell
 ---
 
 Path helpers for my personal projects.

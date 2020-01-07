@@ -1,5 +1,6 @@
 ---
 languages: Emacs Lisp
+category: Emacs
 ---
 
 Set of mirrors for different Emacs packages repositories like ELPA, MELPA,

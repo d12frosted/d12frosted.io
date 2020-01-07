@@ -1,6 +1,7 @@
 ---
 tag: environment
 languages: Haskell, Emacs Lisp, Bash, Fish
+category: Special
 ---
 
 Huge repository containing configurations for the tools and applications I am

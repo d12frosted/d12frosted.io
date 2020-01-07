@@ -1,5 +1,6 @@
 ---
 languages: Org, TeX, Haskell
+category: Special
 ---
 
 Slides and materials from my talks.

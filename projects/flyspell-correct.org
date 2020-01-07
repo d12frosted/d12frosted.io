@@ -1,6 +1,7 @@
 ---
 tag: flyspell-correct
 languages: Emacs Lisp
+category: Emacs
 ---
 
 Emacs package for distraction-free words correction with flyspell. Provides

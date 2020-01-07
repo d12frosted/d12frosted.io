@@ -1,5 +1,6 @@
 ---
 languages: Emacs Lisp
+category: Emacs
 ---
 
 Ukrainian macOS-like input method for Emacs.

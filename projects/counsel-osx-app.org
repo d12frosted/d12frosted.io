@@ -1,5 +1,6 @@
 ---
 languages: Emacs Lisp
+category: Emacs
 ---
 
 Emacs package for launching macOS application via counsel (ivy) interface.

@@ -1,6 +1,7 @@
 ---
 tag: env-extra
 languages: Haskell
+category: Haskell
 ---
 
 Safe helpers for accessing and modifying environment variables.

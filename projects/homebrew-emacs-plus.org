@@ -1,6 +1,7 @@
 ---
 tag: emacs-plus
 languages: Ruby
+category: Emacs
 ---
 
 Homebrew Emacs formula with sane defaults and nice experimental options.

@@ -1,5 +1,6 @@
 ---
 languages: Python
+category: Other
 ---
 
 Dotbot plugin for installing packages via Homebrew.

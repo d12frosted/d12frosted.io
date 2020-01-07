@@ -1,5 +1,6 @@
 ---
 languages: Emacs Lisp
+category: Emacs
 ---
 
 Emacs package that disables functionality to quit Emacs. Based on your addiction

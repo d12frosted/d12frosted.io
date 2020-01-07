@@ -1,5 +1,6 @@
 ---
 tag: CanonicalPath
+category: Haskell
 languages: Haskell
 ---
 
