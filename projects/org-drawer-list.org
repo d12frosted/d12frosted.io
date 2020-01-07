@@ -1,0 +1,5 @@
+---
+languages: Emacs Lisp
+---
+
+Emacs library for working with lists in Org mode drawers.

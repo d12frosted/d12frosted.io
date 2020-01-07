@@ -1,0 +1,5 @@
+---
+languages: Python
+---
+
+Dotbot plugin for installing packages via Homebrew.

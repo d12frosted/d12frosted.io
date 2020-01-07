@@ -1,0 +1,9 @@
+---
+languages: Emacs Lisp
+---
+
+Emacs package that disables functionality to quit Emacs. Based on your addiction
+mode it either asks you if you are sure, opens up buffer with psychotherapist or
+just sings a famous song about bright side of life.
+
+Intended to be fun.

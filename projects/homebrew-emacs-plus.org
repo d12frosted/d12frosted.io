@@ -1,0 +1,6 @@
+---
+tag: 'emacs-plus'
+languages: Ruby
+---
+
+Homebrew Emacs formula with sane defaults and nice experimental options.

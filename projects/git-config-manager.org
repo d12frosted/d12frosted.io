@@ -1,0 +1,6 @@
+---
+languages: Haskell
+---
+
+Small command line utility for managing and applying Git configurations in
+repositories.

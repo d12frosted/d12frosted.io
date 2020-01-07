@@ -1,0 +1,7 @@
+---
+languages: Haskell, Emacs Lisp, Bash, Fish
+---
+
+Huge repository containing configurations for the tools and applications I am
+using ([[https://www.gnu.org/software/emacs/][Emacs]], [[https://fishshell.com/][fish shell]], [[https://xmonad.org/][xmonad]] and others); different small utilities; and the
+script that setups my environment on any new machine which is called Eru.

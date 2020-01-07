@@ -1,0 +1,5 @@
+---
+languages: Haskell
+---
+
+Sources of this site.

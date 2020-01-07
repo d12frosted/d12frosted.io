@@ -1,0 +1,5 @@
+---
+languages: Org, TeX, Haskell
+---
+
+Slides and materials from my talks.

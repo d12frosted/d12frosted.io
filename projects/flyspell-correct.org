@@ -1,0 +1,13 @@
+---
+languages: Emacs Lisp
+---
+
+Emacs package for distraction-free words correction with flyspell. Provides
+interface for =ivy=, =helm=, =popup=, =avy-menu= and it's easy to define a
+custom one.
+
+[[http://melpa.org/#/flyspell-correct][file:https://img.shields.io/badge/melpa-flyspell--correct-blue.svg]]
+[[http://melpa.org/#/flyspell-correct-ivy][file:https://img.shields.io/badge/melpa-flyspell--correct--ivy-blue.svg]]
+[[http://melpa.org/#/flyspell-correct-helm][file:https://img.shields.io/badge/melpa-flyspell--correct--helm-blue.svg]]
+[[http://melpa.org/#/flyspell-correct-popup][file:https://img.shields.io/badge/melpa-flyspell--correct--popup-blue.svg]]
+[[http://melpa.org/#/flyspell-correct-avy-menu][file:https://img.shields.io/badge/melpa-flyspell--correct--avy--menu-blue.svg]]

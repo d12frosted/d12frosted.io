@@ -1,0 +1,5 @@
+---
+languages: Bash
+---
+
+Bash script that is used to maintain =elpa-mirror= project.

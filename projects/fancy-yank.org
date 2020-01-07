@@ -1,0 +1,5 @@
+---
+languages: Emacs Lisp
+---
+
+Emacs plugin that allows to hook into yanking process by transforming the data.

@@ -1,0 +1,5 @@
+---
+languages: Emacs Lisp
+---
+
+Reading list manager for Emacs with offline access support.

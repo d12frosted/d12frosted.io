@@ -94,6 +94,8 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
         >>= loadAndApplyTemplate "templates/post.html" ctx
         >>= relativizeUrls
 
+  match projectsPattern (compile pandocCompiler)
+
   create ["atom.xml"] $ do
     route idRoute
     compile $ do
@@ -111,10 +113,22 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
   match "templates/index.html" $ do
     route (constRoute "index.html")
     compile $ do
-      about    <- load $ fromFilePath "assets/about.org"
-      posts    <- skipFuture now =<< recentFirst =<< loadAll postsPattern
-      postCtx  <- loadPostCtx tags
-      indexCtx <- loadIndexCtx postCtx posts about
+      about      <- load $ fromFilePath "assets/about.org"
+      posts      <- skipFuture now =<< recentFirst =<< loadAll postsPattern
+      postCtx    <- loadPostCtx tags
+      indexCtx   <- loadIndexCtx postCtx posts about
+
+      getResourceBody
+        >>= applyAsTemplate indexCtx
+        >>= relativizeUrls
+
+  match "templates/projects.html" $ do
+    route (constRoute "projects.html")
+    compile $ do
+      about      <- load $ fromFilePath "assets/about.org"
+      projects   <- loadAll projectsPattern
+      projectCtx <- loadProjectCtx
+      indexCtx   <- loadProjectsCtx projectCtx projects about
 
       getResourceBody
         >>= applyAsTemplate indexCtx
@@ -137,12 +151,24 @@ loadPostCtx tags
   <+> defaultContext
   <+> loadCtx
 
+loadProjectCtx :: Compiler (Context String)
+loadProjectCtx = defaultContext <+> loadCtx
+
+loadProjectsCtx :: Context String
+                -> [Item String]
+                -> Item String
+                -> Compiler (Context String)
+loadProjectsCtx projectCtx projects about
+  =   listField "projects" projectCtx (return projects)
+  <+> field "about" (const . return . itemBody $ about)
+  <+> loadCtx
+
 loadIndexCtx :: Context String
             -> [Item String]
             -> Item String
             -> Compiler (Context String)
-loadIndexCtx ctx posts about
-  =   listField "posts" ctx (return posts)
+loadIndexCtx postCtx posts about
+  =   listField "posts" postCtx (return posts)
   <+> field "about" (const . return . itemBody $ about)
   <+> loadCtx
 
@@ -159,6 +185,9 @@ loadTagCtx tag ctx posts
 
 postsPattern :: Pattern
 postsPattern = "posts/*"
+
+projectsPattern :: Pattern
+projectsPattern = "projects/*"
 
 --------------------------------------------------------------------------------
 
