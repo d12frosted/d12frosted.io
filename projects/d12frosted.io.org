@@ -2,6 +2,7 @@
 tag: blog
 languages: Haskell
 category: Special
+priority: 2
 ---
 
 Sources of this site.

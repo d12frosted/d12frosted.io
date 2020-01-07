@@ -2,6 +2,7 @@
 tag: env-extra
 languages: Haskell
 category: Haskell
+priority: 1
 ---
 
 Safe helpers for accessing and modifying environment variables.

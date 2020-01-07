@@ -1,6 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
+priority: 5
 ---
 
 Reading list manager for Emacs with offline access support.

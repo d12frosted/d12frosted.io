@@ -1,6 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
+priority: 9
 ---
 
 Emacs library for working with lists in Org mode drawers.

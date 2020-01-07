@@ -1,6 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
+priority: 8
 ---
 
 Ukrainian macOS-like input method for Emacs.

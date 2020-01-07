@@ -1,6 +1,7 @@
 --------------------------------------------------------------------------------
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections     #-}
 
 --------------------------------------------------------------------------------
 
@@ -13,8 +14,9 @@ import           Config
 --------------------------------------------------------------------------------
 
 import           Control.Applicative     (Alternative (..))
-import           Control.Monad           (filterM)
-import           Data.List               (intersperse)
+import           Control.Monad           (filterM, liftM)
+import           Data.List               (intersperse, sortBy)
+import           Data.Ord                (comparing)
 import           Data.Time               (UTCTime, getCurrentTime, utctDay)
 import           Data.Time.Format        (formatTime)
 import           Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
@@ -126,7 +128,7 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
     route (constRoute "projects.html")
     compile $ do
       about      <- load $ fromFilePath "assets/about.org"
-      projects   <- loadAll projectsPattern
+      projects   <- loadAll projectsPattern >>= sortByMetadata "priority"
       projectCtx <- loadProjectCtx
       indexCtx   <- loadProjectsCtx projectCtx projects about
 
@@ -246,6 +248,15 @@ withCategory cat = filterM (hasCategory cat)
 hasCategory :: MonadMetadata m => String -> Item a -> m Bool
 hasCategory cat item
   = (cat ==) <$> getMetadataField' (itemIdentifier item) "category"
+
+--------------------------------------------------------------------------------
+
+sortByMetadata :: MonadMetadata m => String -> [Item a] -> m [Item a]
+sortByMetadata name = sortByM $ \i -> getMetadataField' (itemIdentifier i) name
+  where
+    sortByM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
+    sortByM f xs = liftM (map fst . sortBy (comparing snd)) $
+                   mapM (\x -> liftM (x,) (f x)) xs
 
 --------------------------------------------------------------------------------
 

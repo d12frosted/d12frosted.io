@@ -1,6 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
+priority: 6
 ---
 
 Emacs package that disables functionality to quit Emacs. Based on your addiction

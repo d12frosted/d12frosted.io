@@ -2,6 +2,7 @@
 tag: flyspell-correct
 languages: Emacs Lisp
 category: Emacs
+priority: 2
 ---
 
 Emacs package for distraction-free words correction with flyspell. Provides

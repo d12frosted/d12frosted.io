@@ -1,6 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
+priority: 3
 ---
 
 Set of mirrors for different Emacs packages repositories like ELPA, MELPA,
