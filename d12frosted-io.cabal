@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 989ed0c700389e423c6555cd6fa669a9c709abb7e9ef6a7e18d5751976f09694
+-- hash: b513166661453a3e7eac729e2ef89af3262e3d0068f8d6b2e07c69ab2f3a4f3e
 
 name:           d12frosted-io
 version:        0.1.0.0
@@ -23,8 +23,16 @@ source-repository head
 executable d12frosted-io
   main-is: Main.hs
   other-modules:
-      Config
-      ToContext
+      Site.About
+      Site.Config
+      Site.Core
+      Site.CSS
+      Site.Index
+      Site.Posts
+      Site.Projects
+      Site.RSS
+      Site.Static
+      Site.Tags
       Paths_d12frosted_io
   hs-source-dirs:
       app

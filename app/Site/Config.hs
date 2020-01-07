@@ -1,25 +1,36 @@
 --------------------------------------------------------------------------------
+
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
-module Config where
+
+module Site.Config
+  ( Config(..)
+  , configCompiler
+  , configRule
+  , loadConfig
+  , loadAppCtx
+  , appContext
+  ) where
 
 --------------------------------------------------------------------------------
-import           ToContext
+
+import           Site.Core
 
 --------------------------------------------------------------------------------
+
 import           Data.Aeson                    as Aeson
 import           Data.Binary                   (Binary)
 import qualified Data.ByteString.Lazy          as BS
 import qualified Data.Char                     as Char
 import           Data.List                     (stripPrefix)
-import           Data.Monoid                   ((<>))
+import           Data.String                   (IsString)
 import           GHC.Generics
-import           Hakyll
 import           Hakyll.Core.Compiler.Internal
 
 --------------------------------------------------------------------------------
+
 data Config
   = Config
   { getSiteTitle       :: String
@@ -54,12 +65,21 @@ instance ToContext Config where
     <> constField "sourcesRoot"  (getSourcesRoot cfg)
 
 --------------------------------------------------------------------------------
+
 customOptions :: Aeson.Options
 customOptions = defaultOptions
   { fieldLabelModifier = stripCamelCasePrefix "get"
   }
 
+stripCamelCasePrefix :: String -> String -> String
+stripCamelCasePrefix prefix label =
+  case stripPrefix prefix label of
+    Nothing    -> label
+    Just (h:t) -> Char.toLower h : t
+    Just t     -> t
+
 --------------------------------------------------------------------------------
+
 configCompiler :: Compiler (Item Config)
 configCompiler = do
   body <- itemBody <$> getResourceLBS
@@ -68,13 +88,24 @@ configCompiler = do
     Right config -> makeItem config
 
 --------------------------------------------------------------------------------
+
+configRule :: Rules ()
+configRule = match configPath (compile configCompiler)
+
+--------------------------------------------------------------------------------
+
+loadConfig :: Compiler (Item Config)
+loadConfig = load configPath
+
+loadAppCtx :: Compiler (Context String)
+loadAppCtx = appContext <$> itemBody <$> loadConfig
+
 appContext :: Config -> Context String
 appContext config = toContext config <> defaultContext
 
 --------------------------------------------------------------------------------
-stripCamelCasePrefix :: String -> String -> String
-stripCamelCasePrefix prefix label =
-  case stripPrefix prefix label of
-    Nothing    -> label
-    Just (h:t) -> Char.toLower h : t
-    Just t     -> t
+
+configPath :: IsString a => a
+configPath = "assets/config.json"
+
+--------------------------------------------------------------------------------

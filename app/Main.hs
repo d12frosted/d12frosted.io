@@ -9,19 +9,20 @@ module Main (main) where
 
 --------------------------------------------------------------------------------
 
-import           Config
+import           Site.About
+import           Site.Config
+import           Site.Core
+import           Site.CSS
+import           Site.Index
+import           Site.Posts
+import           Site.Projects
+import           Site.RSS
+import           Site.Static
+import           Site.Tags
 
 --------------------------------------------------------------------------------
 
-import           Control.Applicative     (Alternative (..))
-import           Control.Monad           (filterM, liftM)
-import           Data.List               (intersperse, sortBy)
-import           Data.Ord                (comparing)
-import           Data.Time               (UTCTime, getCurrentTime, utctDay)
-import           Data.Time.Format        (formatTime)
-import           Data.Time.Locale.Compat (TimeLocale, defaultTimeLocale)
-import           Hakyll
-import           Text.Blaze.Html         (toHtml)
+import           Data.Time     (getCurrentTime)
 
 --------------------------------------------------------------------------------
 
@@ -30,241 +31,21 @@ hakyllConfig = defaultConfiguration {
   destinationDirectory = "public"
 }
 
-
 main :: IO ()
 main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
-  match "assets/config.json" $ do
-    compile configCompiler
-
-  match "assets/images/*" $ do
-    route assetsRoute
-    compile copyFileCompiler
-
-  match "node_modules/**" $ do
-    route nodeRoute
-    compile copyFileCompiler
-
-  match ("css/*" .||. "css/**/*") $ do
-    route   idRoute
-    compile compressCssCompiler
-
-  create ["css/index-bundle.css"] $ do
-    route idRoute
-    compile $ do
-      commonCss <- loadAll "css/common/*"
-      indexCss  <- loadAll "css/index/*"
-      let styleCtx = listField
-                     "items"
-                     defaultContext
-                     (return $ commonCss <> indexCss)
-
-      makeItem []
-        >>= loadAndApplyTemplate "templates/concat.txt" styleCtx
-
-  create ["css/post-bundle.css"] $ do
-    route idRoute
-    compile $ do
-      commonCss <- loadAll "css/common/*"
-      postCss   <- loadAll "css/post/*"
-      let styleCtx = listField
-                     "items"
-                     defaultContext
-                     (return $ commonCss <> postCss)
-
-      makeItem []
-        >>= loadAndApplyTemplate "templates/concat.txt" styleCtx
+  staticsRule
+  configRule
+  cssRule
+  aboutRule
+  projectsRule
 
   tags <- buildTags postsPattern (fromCapture "tags/*.html")
+  postsRule tags
+  tagsRule tags now
+  rssRule tags now
 
-  tagsRules tags $ \tag pat -> do
-    route idRoute
-    compile $ do
-      about   <- load $ fromFilePath "assets/about.org"
-      posts   <- skipFuture now =<< recentFirst =<< loadAll pat
-      postCtx <- loadPostCtx tags
-      tagCtx  <- loadTagCtx tag postCtx posts about
-
-      makeItem ""
-        >>= loadAndApplyTemplate "templates/tag.html" tagCtx
-        >>= relativizeUrls
-
-  match postsPattern $ do
-    route   $ setExtension "html"
-    compile $ do
-      ctx   <- loadPostCtx tags
-      pandocCompiler
-        >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/post.html" ctx
-        >>= relativizeUrls
-
-  match projectsPattern (compile pandocCompiler)
-
-  create ["atom.xml"] $ do
-    route idRoute
-    compile $ do
-      config  <- itemBody <$> load "assets/config.json"
-      posts   <- fmap (take . getFeedSize $ config) . skipFuture now
-        =<< recentFirst
-        =<< loadAllSnapshots postsPattern "content"
-      feedCtx <- bodyField "description" <+> loadPostCtx tags
-      renderAtom (feedConfiguration config) feedCtx posts
-
-  match "assets/about.org" $ do
-    route   $ assetsRoute <> setExtension "html"
-    compile $ pandocCompiler
-
-  match "templates/index.html" $ do
-    route (constRoute "index.html")
-    compile $ do
-      about      <- load $ fromFilePath "assets/about.org"
-      posts      <- skipFuture now =<< recentFirst =<< loadAll postsPattern
-      postCtx    <- loadPostCtx tags
-      indexCtx   <- loadIndexCtx postCtx posts about
-
-      getResourceBody
-        >>= applyAsTemplate indexCtx
-        >>= relativizeUrls
-
-  match "templates/projects.html" $ do
-    route (constRoute "projects.html")
-    compile $ do
-      about      <- load $ fromFilePath "assets/about.org"
-      projects   <- loadAll projectsPattern >>= sortByMetadata "priority"
-      projectCtx <- loadProjectCtx
-      indexCtx   <- loadProjectsCtx projectCtx projects about
-
-      getResourceBody
-        >>= applyAsTemplate indexCtx
-        >>= relativizeUrls
+  indexRule tags now
 
   match "templates/*" $ compile templateBodyCompiler
-
---------------------------------------------------------------------------------
-
-loadCtx :: Compiler (Context String)
-loadCtx = appContext <$> itemBody <$> load "assets/config.json"
-
-loadPostCtx :: Tags -> Compiler (Context String)
-loadPostCtx tags
-  =   tagsField "tags" tags
-  <+> rawTagsField "rawTags" tags
-  <+> dateField "date" "%B %e, %Y"
-  <+> updateField "update" "%B %e, %Y"
-  <+> teaserField "teaser" "content"
-  <+> defaultContext
-  <+> loadCtx
-
-loadProjectCtx :: Compiler (Context String)
-loadProjectCtx = defaultContext <+> loadCtx
-
-loadProjectsCtx :: Context String
-                -> [Item String]
-                -> Item String
-                -> Compiler (Context String)
-loadProjectsCtx projectCtx projects about
-  =   listField "projects-special" projectCtx (withCategory "Special" projects)
-  <+> listField "projects-emacs" projectCtx (withCategory "Emacs" projects)
-  <+> listField "projects-haskell" projectCtx (withCategory "Haskell" projects)
-  <+> listField "projects-other" projectCtx (withCategory "Other" projects)
-  <+> field "about" (const . return . itemBody $ about)
-  <+> loadCtx
-
-loadIndexCtx :: Context String
-            -> [Item String]
-            -> Item String
-            -> Compiler (Context String)
-loadIndexCtx postCtx posts about
-  =   listField "posts" postCtx (return posts)
-  <+> field "about" (const . return . itemBody $ about)
-  <+> loadCtx
-
-loadTagCtx :: String
-           -> Context String
-           -> [Item String]
-           -> Item String
-           -> Compiler (Context String)
-loadTagCtx tag ctx posts about
-  =   constField "tag" tag
-  <+> listField "posts" ctx (return posts)
-  <+> field "about" (const . return . itemBody $ about)
-  <+> loadCtx
-
---------------------------------------------------------------------------------
-
-postsPattern :: Pattern
-postsPattern = "posts/*"
-
-projectsPattern :: Pattern
-projectsPattern = "projects/*"
-
---------------------------------------------------------------------------------
-
-skipFuture :: (MonadMetadata m) => UTCTime -> [Item a] -> m [Item a]
-skipFuture now = filterM $ fmap (now >) .
-  getItemUTC defaultTimeLocale . itemIdentifier
-
---------------------------------------------------------------------------------
-
-feedConfiguration :: Config -> FeedConfiguration
-feedConfiguration config
-  = FeedConfiguration
-  { feedTitle       = getFeedTitle config
-  , feedDescription = getFeedDescription config
-  , feedAuthorName  = getAuthorName config
-  , feedAuthorEmail = getAuthorEmail config
-  , feedRoot        = getSiteUrl config
-  }
-
---------------------------------------------------------------------------------
-
-updateField :: String -> String -> Context a
-updateField = updateFieldWith defaultTimeLocale
-
-updateFieldWith :: TimeLocale -> String -> String -> Context a
-updateFieldWith locale key format = field key $ \i -> do
-  createTime <- getItemUTC locale $ itemIdentifier i
-  updateTime <- getItemModificationTime $ itemIdentifier i
-  if utctDay createTime == utctDay updateTime
-    then empty
-    else pure $ formatTime locale format updateTime
-
---------------------------------------------------------------------------------
-
-rawTagsField :: String -> Tags -> Context a
-rawTagsField = tagsFieldWith getTags render (mconcat . intersperse ", ")
-  where render _ Nothing = Nothing
-        render tag _     = Just $ toHtml tag
-
---------------------------------------------------------------------------------
-
-assetsRoute :: Routes
-assetsRoute = gsubRoute "assets/" (const "")
-
-nodeRoute :: Routes
-nodeRoute = gsubRoute "node_modules" (const "library")
-
---------------------------------------------------------------------------------
-
-withCategory :: MonadMetadata m => String -> [Item a] -> m [Item a]
-withCategory cat = filterM (hasCategory cat)
-
-hasCategory :: MonadMetadata m => String -> Item a -> m Bool
-hasCategory cat item
-  = (cat ==) <$> getMetadataField' (itemIdentifier item) "category"
-
---------------------------------------------------------------------------------
-
-sortByMetadata :: MonadMetadata m => String -> [Item a] -> m [Item a]
-sortByMetadata name = sortByM $ \i -> getMetadataField' (itemIdentifier i) name
-  where
-    sortByM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
-    sortByM f xs = liftM (map fst . sortBy (comparing snd)) $
-                   mapM (\x -> liftM (x,) (f x)) xs
-
---------------------------------------------------------------------------------
-
-(<+>) :: (Monoid a, Applicative m) => a -> m a -> m a
-a <+> ma = mappend a <$> ma
-infixr 6 <+>
 
 --------------------------------------------------------------------------------
