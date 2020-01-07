@@ -1,0 +1,9 @@
+---
+tag: CanonicalPath
+languages: Haskell
+---
+
+Safe helpers for accessing and modifying environment variables.
+
+[[https://hackage.haskell.org/package/system-canonicalpath][file:https://img.shields.io/badge/hackage-CanonicalPath-blue.svg]]
+[[https://stackage.haskell.org/package/system-canonicalpath][file:https://img.shields.io/badge/stackage-CanonicalPath-blue.svg]]

@@ -1,4 +1,5 @@
 ---
+tag: blog
 languages: Haskell
 ---
 

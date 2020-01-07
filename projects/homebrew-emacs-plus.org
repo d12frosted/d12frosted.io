@@ -1,5 +1,5 @@
 ---
-tag: 'emacs-plus'
+tag: emacs-plus
 languages: Ruby
 ---
 

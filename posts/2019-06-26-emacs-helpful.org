@@ -1,6 +1,6 @@
 ---
 title: 'Emacs: reusing window for helpful buffers'
-tags: emacs
+tags: emacs, environment
 description: Tweaking helpful to avoid all windows taken by helpful
 ---
 

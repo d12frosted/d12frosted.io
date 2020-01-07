@@ -1,6 +1,6 @@
 ---
 title: CanonicalPath v0.3.0.0
-tags: haskell, release
+tags: haskell, release, CanonicalPath
 description: Announcement of the third major version of CanonicalPath
 ---
 

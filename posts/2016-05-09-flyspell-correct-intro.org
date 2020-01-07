@@ -1,6 +1,6 @@
 ---
 title: flyspell-correct
-tags: emacs, release
+tags: emacs, release, flyspell-correct
 description: Announcement of flyspell-correct package for Emacs
 ---
 

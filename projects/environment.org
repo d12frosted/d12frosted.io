@@ -1,4 +1,5 @@
 ---
+tag: environment
 languages: Haskell, Emacs Lisp, Bash, Fish
 ---
 

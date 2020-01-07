@@ -1,6 +1,6 @@
 ---
 title: Asking for input in Bash
-tags: shell
+tags: shell, mirror-elpa
 description: A little black magic to ease the burden of asking user for some input
 ---
 

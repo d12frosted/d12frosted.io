@@ -1,6 +1,6 @@
 ---
 title: 'Git: conditional configurations'
-tags: git
+tags: git, git-config-manager
 description: Two approaches of having different configurations in different repositories
 ---
 

@@ -1,5 +1,5 @@
 ---
-tag: 'env-extra'
+tag: env-extra
 languages: Haskell
 ---
 

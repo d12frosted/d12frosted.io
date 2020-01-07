@@ -1,6 +1,6 @@
 ---
-title: 'env-extra v1.0.0.0'
-tags: 'haskell, env-extra'
+title: env-extra v1.0.0.0
+tags: haskell, env-extra
 description: 'Announcement of new version of env-extra'
 ---
 
