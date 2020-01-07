@@ -79,9 +79,10 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
   tagsRules tags $ \tag pat -> do
     route idRoute
     compile $ do
+      about   <- load $ fromFilePath "assets/about.org"
       posts   <- skipFuture now =<< recentFirst =<< loadAll pat
       postCtx <- loadPostCtx tags
-      tagCtx  <- loadTagCtx tag postCtx posts
+      tagCtx  <- loadTagCtx tag postCtx posts about
 
       makeItem ""
         >>= loadAndApplyTemplate "templates/tag.html" tagCtx
@@ -90,7 +91,7 @@ main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
   match postsPattern $ do
     route   $ setExtension "html"
     compile $ do
-      ctx <- loadPostCtx tags
+      ctx   <- loadPostCtx tags
       pandocCompiler
         >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/post.html" ctx
@@ -180,10 +181,12 @@ loadIndexCtx postCtx posts about
 loadTagCtx :: String
            -> Context String
            -> [Item String]
+           -> Item String
            -> Compiler (Context String)
-loadTagCtx tag ctx posts
+loadTagCtx tag ctx posts about
   =   constField "tag" tag
   <+> listField "posts" ctx (return posts)
+  <+> field "about" (const . return . itemBody $ about)
   <+> loadCtx
 
 --------------------------------------------------------------------------------
