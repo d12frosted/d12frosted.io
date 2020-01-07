@@ -5,4 +5,8 @@ category: Special
 priority: 2
 ---
 
-Sources of this site.
+Source code of this site. It is built using [[https://jaspervdj.be/hakyll/][Hakyll]] - a Haskell library for
+generating static sites. While my site is pretty simple, it has several
+interesting(?) parts. For example, json-configuration, projects, delayed posts
+that will become available somewhere at the date (easy to add support of time as
+well).
