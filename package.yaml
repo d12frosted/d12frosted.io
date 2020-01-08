@@ -16,6 +16,7 @@ executables:
       - blaze-markup
       - bytestring
       - containers
+      - env-extra
       - filepath
       - hakyll
       - http-conduit

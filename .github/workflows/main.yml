@@ -31,6 +31,9 @@ jobs:
           ${{ runner.os }}-stack
 
     - name: Build site
+      env:
+        GITHUB_API_USER: ${{ secrets.GITHUB_API_USER }}
+        GITHUB_API_SECRET: ${{ secrets.GITHUB_API_SECRET }}
       run: make build
 
     - name: Deploy

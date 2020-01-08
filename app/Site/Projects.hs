@@ -17,17 +17,19 @@ import           Site.Core
 
 --------------------------------------------------------------------------------
 
-import           Control.Lens          (preview)
-import           Control.Monad         (filterM, join, liftM)
-import           Data.Aeson.Lens       (key, _Integer)
-import qualified Data.ByteString.Char8 as BS
-import           Data.List             (sortOn)
-import           Data.Maybe            (fromMaybe)
-import           Data.Ord              (comparing)
-import           Data.String           (IsString (..))
+import           Control.Lens             (preview)
+import           Control.Monad            (filterM, join, liftM)
+import           Data.Aeson.Lens          (key, _Integer)
+import qualified Data.ByteString.Char8    as BS
+import           Data.List                (sortOn)
+import           Data.Maybe               (fromMaybe)
+import           Data.Ord                 (comparing)
+import           Data.String              (IsString (..))
 import           Hakyll
-import           Network.HTTP.Simple   (getResponseBody, httpBS,
-                                        setRequestHeader)
+import           Network.HTTP.Simple      (getResponseBody, httpBS,
+                                           setRequestBasicAuth,
+                                           setRequestHeader)
+import           System.Environment.Extra (envMaybe)
 
 --------------------------------------------------------------------------------
 
@@ -108,11 +110,14 @@ fetchStargazersCount project = do
 
 fetchProjectInfo :: String -> IO BS.ByteString
 fetchProjectInfo project = do
+  user <- envMaybe "GITHUB_API_USER"
+  secret <- envMaybe "GITHUB_API_SECRET"
+  let setAuth = setRequestBasicAuth <$> user <*> secret
   let url = "https://api.github.com/repos/d12frosted/" <> project
   let request
         = setRequestHeader "User-Agent" ["d12frosted"]
         $ fromString url
-  res <- httpBS request
+  res <- httpBS (fromMaybe request (setAuth <*> pure request))
   pure (getResponseBody res)
 
 --------------------------------------------------------------------------------
