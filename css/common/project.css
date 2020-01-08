@@ -9,9 +9,6 @@
   padding-bottom: 1rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  /* margin-bottom: 2rem; */
-  /* border: 1px solid #999; */
-  /* border-radius: 5px; */
   flex-basis: calc(50% - 2rem);
 }
 
@@ -39,7 +36,7 @@
 .project-header p {
   margin-top: 0.2em;
   margin-bottom: 0.2em;
-  line-height: 1em;
+  line-height: 1.2em;
   font-size: 1.0rem;
 }
 

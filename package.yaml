@@ -9,14 +9,18 @@ executables:
     main:                Main.hs
     source-dirs:         app
     dependencies:
-      - base >= 4.7 && < 5
       - aeson
+      - base >= 4.7 && < 5
       - binary
       - blaze-html
       - blaze-markup
       - bytestring
       - containers
+      - filepath
       - hakyll
+      - http-conduit
+      - lens
+      - lens-aeson
       - mtl
       - path
       - regex-base

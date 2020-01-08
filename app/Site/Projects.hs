@@ -17,10 +17,17 @@ import           Site.Core
 
 --------------------------------------------------------------------------------
 
-import           Control.Monad (filterM, liftM)
-import           Data.List     (sortOn)
-import           Data.Ord      (comparing)
+import           Control.Lens          (preview)
+import           Control.Monad         (filterM, join, liftM)
+import           Data.Aeson.Lens       (key, _Integer)
+import qualified Data.ByteString.Char8 as BS
+import           Data.List             (sortOn)
+import           Data.Maybe            (fromMaybe)
+import           Data.Ord              (comparing)
+import           Data.String           (IsString (..))
 import           Hakyll
+import           Network.HTTP.Simple   (getResponseBody, httpBS,
+                                        setRequestHeader)
 
 --------------------------------------------------------------------------------
 
@@ -35,7 +42,9 @@ projectsRule = do
     compile $ do
       about      <- loadAbout
       projects   <- loadProjects
-      projectCtx <- loadAppCtx
+      stars      <- unsafeCompiler $ mapM (traverseToSnd fetchStargazersCount)
+                    (getTitle <$> projects)
+      projectCtx <- stargazersField stars <+> loadAppCtx
       indexCtx   <- loadProjectsCtx loadAppCtx projectCtx projects about
 
       getResourceBody
@@ -83,5 +92,27 @@ sortByMetadata name = sortByM $ \i -> getMetadataField' (itemIdentifier i) name
   where
     sortByM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
     sortByM f xs = map fst . sortOn snd <$> mapM (\x -> fmap (x,) (f x)) xs
+
+--------------------------------------------------------------------------------
+
+stargazersField :: [(String, Maybe Integer)] -> Context String
+stargazersField stars
+  = field "stargazers_count"
+    (pure . show . fromMaybe 0 . join . flip lookup stars . getTitle)
+
+fetchStargazersCount :: String -> IO (Maybe Integer)
+fetchStargazersCount project = do
+  body <- fetchProjectInfo project
+  let count = preview (key "stargazers_count" . _Integer) body
+  pure count
+
+fetchProjectInfo :: String -> IO BS.ByteString
+fetchProjectInfo project = do
+  let url = "https://api.github.com/repos/d12frosted/" <> project
+  let request
+        = setRequestHeader "User-Agent" ["d12frosted"]
+        $ fromString url
+  res <- httpBS request
+  pure (getResponseBody res)
 
 --------------------------------------------------------------------------------
