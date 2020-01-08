@@ -32,13 +32,14 @@ hakyllConfig = defaultConfiguration {
 }
 
 main :: IO ()
-main = getCurrentTime >>= \now -> hakyllWith hakyllConfig $ do
+main = hakyllWith hakyllConfig $ do
   staticsRule
   configRule
   cssRule
   aboutRule
   projectsRule
 
+  now <- preprocess getCurrentTime
   tags <- buildTags postsPattern (fromCapture "tags/*.html")
   postsRule tags
   tagsRule tags now
