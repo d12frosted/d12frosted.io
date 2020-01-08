@@ -1,15 +1,8 @@
--- | Module description
-
---------------------------------------------------------------------------------
-
-{-# LANGUAGE OverloadedStrings #-}
-
 --------------------------------------------------------------------------------
 
 module Site.Core
   ( module Hakyll
   , UTCTime
-  , assetsRoute
   , ToContext(..)
   , (<+>)
   ) where
@@ -18,11 +11,6 @@ module Site.Core
 
 import           Data.Time (UTCTime)
 import           Hakyll
-
---------------------------------------------------------------------------------
-
-assetsRoute :: Routes
-assetsRoute = gsubRoute "assets/" (const "")
 
 --------------------------------------------------------------------------------
 

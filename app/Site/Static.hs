@@ -15,7 +15,7 @@ import           Site.Core
 staticsRule :: Rules ()
 staticsRule = do
   match "assets/images/*" $ do
-    route assetsRoute
+    route $ gsubRoute "assets/" (const "")
     compile copyFileCompiler
 
   match "node_modules/**" $ do

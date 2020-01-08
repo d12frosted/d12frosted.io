@@ -21,7 +21,7 @@ import           Data.String (IsString)
 
 aboutRule :: Rules ()
 aboutRule = match aboutPath $ do
-  route $ assetsRoute <> setExtension "html"
+  route $ gsubRoute "assets/" (const "") <> setExtension "html"
   compile pandocCompiler
 
 loadAbout :: Compiler (Item String)
