@@ -98,7 +98,7 @@ loadConfig :: Compiler (Item Config)
 loadConfig = load configPath
 
 loadAppCtx :: Compiler (Context String)
-loadAppCtx = appContext <$> itemBody <$> loadConfig
+loadAppCtx = appContext . itemBody <$> loadConfig
 
 appContext :: Config -> Context String
 appContext config = toContext config <> defaultContext

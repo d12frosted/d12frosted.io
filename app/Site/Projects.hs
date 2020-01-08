@@ -18,7 +18,7 @@ import           Site.Core
 --------------------------------------------------------------------------------
 
 import           Control.Monad (filterM, liftM)
-import           Data.List     (sortBy)
+import           Data.List     (sortOn)
 import           Data.Ord      (comparing)
 import           Hakyll
 
@@ -82,7 +82,6 @@ sortByMetadata :: MonadMetadata m => String -> [Item a] -> m [Item a]
 sortByMetadata name = sortByM $ \i -> getMetadataField' (itemIdentifier i) name
   where
     sortByM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
-    sortByM f xs = liftM (map fst . sortBy (comparing snd)) $
-                   mapM (\x -> liftM (x,) (f x)) xs
+    sortByM f xs = map fst . sortOn snd <$> mapM (\x -> fmap (x,) (f x)) xs
 
 --------------------------------------------------------------------------------
