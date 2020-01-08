@@ -6,5 +6,3 @@ priority: 1
 ---
 
 Safe helpers for accessing and modifying environment variables.
-
-[[https://hackage.haskell.org/package/env-extra][file:https://img.shields.io/badge/hackage-env--extra-blue.svg]]
