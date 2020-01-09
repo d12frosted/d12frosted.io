@@ -4,8 +4,6 @@ tags: haskell, env-extra
 description: 'Announcement of new version of env-extra'
 ---
 
-[[https://hackage.haskell.org/package/env-extra][file:/images/hackage-v1.0.0.0-blue.svg]]
-
 It's hard (though possible) to imagine a script that doesn't access environment
 variables. In Haskell ecosystem there is a good built-in module
 [[https://hackage.haskell.org/package/base-4.12.0.0/docs/System-Environment.html][System.Environment]] that does the job, but it has several drawbacks. First of
