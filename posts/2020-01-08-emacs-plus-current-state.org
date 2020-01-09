@@ -28,11 +28,15 @@ Here is my top list.
 
 1. Experimental =xwidgets= build was breaking time to time and only thanks to
    users (mostly [[https://github.com/agzam][Ag Ibragimov]]) I would acknowledge it.
-2. While I state that =HEAD= builds are not supported, I still want it to work.
+2. While I state that =HEAD= builds are not supported, I still want this option
+   to work. First of all, for Emacs users to easily get the latest features. And
+   secondly, for Emacs maintainers to get feedback from the users.
 3. Patches are located outside of the project and their destiny is unclear.
 4. It's hard to contribute a new patch or a patch fix inside the =emacs-plus=
    repository, because you have to mess with the URLs and branch names.
-5. CI is slow. For example, it was impossible to build the HEAD on Travis.
+5. Travis builds are very slow. The default build takes 7 minutes, from
+   sources - 13 minutes, build HEAD was impossible. I'd like to test much more
+   build options and their combination.
 6. Too many options are given to the users, which kind of contradicts my initial
    idea.
 
@@ -43,12 +47,23 @@ categories - patch application failure or upstream issue.
 
 In order to address the named issues, I've performed the following actions.
 
-I moved from Travis to GitHub Workflows, which gave such a great boost in
-compiling time. It even enabled me to add the =HEAD= and =xwidgets= options to
+I moved from Travis to GitHub Workflows, which gave such a decent boost in
+compiling time. It also enabled me to add the =HEAD= and =xwidgets= options to
 the build matrix. I would love to add =x11= as well, but I didn't figure out how
-to setup XQuartz on build machines. This gives me better visibility on the build
-breakages (both when patch application fails or it's because of the upstream
-issue).
+to setup XQuartz on build machines. I haven't really measured the build time,
+but here are some examples that I fetched from the build history. Also I've
+heard that Travis improved their machines so more calculating power is given to
+the users now.
+
+| Options                  | Travis  | GitHub  |
+|--------------------------+---------+---------|
+|                          | 6m 30s  | 3m 14s  |
+| =--with-no-titlebar=     | 11m 16s | 5m 18s  |
+| =--HEAD=                 | -       | 11m 18s |
+| =--HEAD --with-xwidgets= | -       | 11m 15s |
+
+This gives me better visibility on the build breakages (both when patch
+application fails or it's because of the upstream issue).
 
 All of the used patches were moved to the =emacs-plus= repository, so they are
 always with formula. And I added support for running builds on CI with patches
