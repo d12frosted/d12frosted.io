@@ -1,0 +1,10 @@
+---
+category: Other
+languages: C#
+priority: 3
+---
+
+Unity Library Switcher is a Unity3d plugin for switching build targets and git
+branches without the burden of assets reimporting. In the nutshell it provides
+you UI for viewing your Library folder cache and switching between branches and
+targets.
