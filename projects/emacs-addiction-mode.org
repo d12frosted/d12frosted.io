@@ -5,7 +5,7 @@ priority: 6
 ---
 
 Emacs package that disables functionality to quit Emacs. Based on your addiction
-mode it either asks you if you are sure, opens up buffer with psychotherapist or
-just sings a famous song about bright side of life.
+mode it either asks you to confirm, opens up buffer with psychotherapist or just
+sings a famous song from Life of Brian.
 
 Intended to be fun.
