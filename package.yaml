@@ -23,6 +23,7 @@ executables:
       - lens
       - lens-aeson
       - mtl
+      - pandoc
       - path
       - regex-base
       - regex-tdfa

@@ -14,6 +14,7 @@ module Site.Projects
 import           Site.About
 import           Site.Config
 import           Site.Core
+import           Site.Pandoc
 
 --------------------------------------------------------------------------------
 
@@ -36,7 +37,7 @@ import           System.Environment.Extra (envMaybe)
 projectsRule :: Rules ()
 projectsRule = do
   -- compile project definitions
-  match projectsPattern (compile pandocCompiler)
+  match projectsPattern (compile pandocMathCompiler)
 
   -- create projects page
   match "templates/projects.html" $ do

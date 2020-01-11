@@ -16,6 +16,7 @@ module Site.Posts
 
 import           Site.Config
 import           Site.Core
+import           Site.Pandoc
 
 --------------------------------------------------------------------------------
 
@@ -34,7 +35,7 @@ postsRule tags = match postsPattern $ do
   route   $ setExtension "html"
   compile $ do
     ctx   <- loadPostCtx tags
-    pandocCompiler
+    pandocMathCompiler
       >>= saveSnapshot "content"
       >>= loadAndApplyTemplate "templates/post.html" ctx
       >>= relativizeUrls

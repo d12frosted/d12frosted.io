@@ -12,6 +12,7 @@ module Site.About
 --------------------------------------------------------------------------------
 
 import           Site.Core
+import           Site.Pandoc
 
 --------------------------------------------------------------------------------
 
@@ -22,7 +23,7 @@ import           Data.String (IsString)
 aboutRule :: Rules ()
 aboutRule = match aboutPath $ do
   route $ gsubRoute "assets/" (const "") <> setExtension "html"
-  compile pandocCompiler
+  compile pandocMathCompiler
 
 loadAbout :: Compiler (Item String)
 loadAbout = load $ fromFilePath aboutPath
