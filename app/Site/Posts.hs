@@ -35,7 +35,7 @@ postsRule tags = match postsPattern $ do
   route   $ setExtension "html"
   compile $ do
     ctx   <- loadPostCtx tags
-    pandocMathCompiler
+    customPandocCompiler
       >>= saveSnapshot "content"
       >>= loadAndApplyTemplate "templates/post.html" ctx
       >>= relativizeUrls

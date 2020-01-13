@@ -24,9 +24,12 @@ executables:
       - lens-aeson
       - mtl
       - pandoc
+      - pandoc-types
       - path
       - regex-base
       - regex-tdfa
+      - scientific
+      - shakespeare
       - shakespeare
       - text
       - time

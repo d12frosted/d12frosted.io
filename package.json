@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "mathjax": "^2.7.5"
+    "mathjax": "^2.7.5",
+    "chart.js": "^2.9.3"
   }
 }

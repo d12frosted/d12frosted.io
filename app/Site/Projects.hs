@@ -37,7 +37,7 @@ import           System.Environment.Extra (envMaybe)
 projectsRule :: Rules ()
 projectsRule = do
   -- compile project definitions
-  match projectsPattern (compile pandocMathCompiler)
+  match projectsPattern (compile customPandocCompiler)
 
   -- create projects page
   match "templates/projects.html" $ do

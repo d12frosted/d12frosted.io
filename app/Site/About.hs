@@ -23,7 +23,7 @@ import           Data.String (IsString)
 aboutRule :: Rules ()
 aboutRule = match aboutPath $ do
   route $ gsubRoute "assets/" (const "") <> setExtension "html"
-  compile pandocMathCompiler
+  compile customPandocCompiler
 
 loadAbout :: Compiler (Item String)
 loadAbout = load $ fromFilePath aboutPath
