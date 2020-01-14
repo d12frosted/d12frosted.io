@@ -20,6 +20,7 @@ import           Site.Criterion.Types
 
 import           Data.Aeson                      as Aeson
 import qualified Data.Char                       as Char
+import           Data.Hashable
 import           Data.List                       (stripPrefix)
 import qualified Data.Map.Strict                 as M
 import           Data.Maybe                      (fromMaybe, isJust)
@@ -38,7 +39,10 @@ import           Text.Julius
 --------------------------------------------------------------------------------
 
 render :: [(String, String)] -> String -> [Benchmark] -> String
-render kvs name bs = renderHtml $ render' kvs name bs
+render kvs name bs = renderHtml $ render' kvs chartId bs
+  -- ideally, chartId should contain random value to make it possible to render
+  -- two identical charts, currently it's possible by adding trash to the kvs
+  where chartId = name <> "-" <> show (hash kvs)
 
 render' :: [(String, String)] -> String -> [Benchmark] -> Html
 render' kvs name bs

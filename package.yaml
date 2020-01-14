@@ -19,6 +19,7 @@ executables:
       - env-extra
       - filepath
       - hakyll
+      - hashable
       - http-conduit
       - lens
       - lens-aeson
