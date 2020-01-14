@@ -58,8 +58,11 @@ chartJs :: [(String, String)] -> String -> [Benchmark] -> LT.Text
 chartJs kvs name bs
   = let title = lookup "title" kvs
         chartType = fromMaybe "line" $ lookup "type" kvs
+        xAxisType = fromMaybe "linear" $ lookup "xAxisType" kvs
         yAxisType = fromMaybe "linear" $ lookup "yAxisType" kvs
-        displayLegend = isJust $ lookup "legend" kvs
+        xAxisBeginAtZero = fromMaybe True $ lookupFlag "xAxisBeginAtZero" kvs
+        yAxisBeginAtZero = fromMaybe True $ lookupFlag "yAxisBeginAtZero" kvs
+        displayLegend = fromMaybe False $ lookupFlag "legend" kvs
         chartData = toChartData bs
         labels = toJSON $ cdLabels chartData
         dataSets = toJSON $ cdDataSets chartData
@@ -79,11 +82,29 @@ chartJs kvs name bs
             display: #{displayLegend}
           },
           scales: {
-            yAxes: [{ type: #{yAxisType} }]
+            xAxes: [{
+              type: #{xAxisType},
+              ticks: {
+                beginAtZero: #{xAxisBeginAtZero}
+              }
+            }],
+            yAxes: [{
+              type: #{yAxisType},
+              ticks: {
+                beginAtZero: #{yAxisBeginAtZero}
+              }
+            }]
           }
         }
       });
       |] undefined
+
+lookupFlag :: String -> [(String, String)] -> Maybe Bool
+lookupFlag key kvs = case lookup key kvs of
+  Just "t"     -> Just True
+  Just "true"  -> Just True
+  Just "false" -> Just False
+  _            -> Just False
 
 --------------------------------------------------------------------------------
 
@@ -145,6 +166,7 @@ toChartDataSet labels idx ldsLabel dataMap
   , cdsFill            = False
   }
 
+-- TODO: move to configurations
 lineColors :: [Text]
 lineColors
   = [ "#ff6384"
@@ -166,13 +188,5 @@ stripCamelCasePrefix prefix label =
 
 toKVList :: (Ord a) => [(a, b)] -> M.Map a [b]
 toKVList = M.fromListWith (++) . fmap (\(x,y) -> (x,[y]))
-
---------------------------------------------------------------------------------
-
--- | Not-a-number value if the type supports it.
-{-# SPECIALIZE nan :: Double #-}
-{-# SPECIALIZE nan :: Float #-}
-nan :: (RealFloat a) => a
-nan = 0/0
 
 --------------------------------------------------------------------------------
