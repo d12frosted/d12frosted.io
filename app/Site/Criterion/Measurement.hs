@@ -16,12 +16,12 @@ import           Text.Printf            (printf)
 
 --------------------------------------------------------------------------------
 
-secs :: (IsString a) => Double -> a
-secs = fromString . secs'
+display :: (IsString a) => Double -> a
+display = fromString . displayString
 
-secs' :: Double -> String
-secs' k
-    | k < 0      = '-' : secs' (-k)
+displayString :: Double -> String
+displayString k
+    | k < 0      = '-' : displayString (-k)
     | k >= 1     = k        `with` "s"
     | k >= 1e-3  = (k*1e3)  `with` "ms"
     | k >= 1e-6  = (k*1e6)  `with` "us"

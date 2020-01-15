@@ -20,6 +20,7 @@ import           Site.Criterion.Types
 --------------------------------------------------------------------------------
 
 import           Data.Aeson                      as Aeson
+import           Data.Bifunctor
 import qualified Data.Char                       as Char
 import           Data.Hashable
 import           Data.List                       (stripPrefix)
@@ -65,7 +66,10 @@ chartJs kvs name bs
         chartData = toChartData bs
         labels = toJSON $ cdLabels chartData
         dataSets = toJSON $ cdDataSets chartData
-        prettyValues = M.fromList $ (\b -> (benchmarkName b, secs' . toRealFloat . benchmarkMean $ b)) <$> bs
+        prettyValues = M.fromList $
+                       second (displayString . toRealFloat) .
+                       (\b -> (benchmarkName b, benchmarkMean b)) <$>
+                       bs
     in renderJavascript $ [julius|
       new Chart(document.getElementById(#{name}), {
         type: #{chartType},
