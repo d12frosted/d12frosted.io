@@ -19,3 +19,11 @@ body {
 p, li {
   line-height: 1.75em;
 }
+
+hr {
+  color: #999;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 1px solid #aaa;
+}
