@@ -14,6 +14,7 @@ module Site.Criterion.Render
 --------------------------------------------------------------------------------
 
 import           Site.Core
+import           Site.Criterion.Measurement
 import           Site.Criterion.Types
 
 --------------------------------------------------------------------------------
@@ -64,6 +65,7 @@ chartJs kvs name bs
         chartData = toChartData bs
         labels = toJSON $ cdLabels chartData
         dataSets = toJSON $ cdDataSets chartData
+        prettyValues = M.fromList $ (\b -> (benchmarkMean b, secs' . toRealFloat . benchmarkMean $ b)) <$> bs
     in renderJavascript $ [julius|
       new Chart(document.getElementById(#{name}), {
         type: #{chartType},
@@ -78,6 +80,17 @@ chartJs kvs name bs
           },
           legend: {
             display: #{displayLegend}
+          },
+          tooltips: {
+            callbacks: {
+              label: function(item, data) {
+                var vtls = #{toJSON prettyValues}
+                var label = data.datasets[item.datasetIndex].label || '';
+                if (label) label += ": ";
+                label += vtls[item.value];
+                return label;
+              }
+            }
           },
           scales: #{toJSON chartScales}
         }
