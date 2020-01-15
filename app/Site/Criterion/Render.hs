@@ -23,7 +23,8 @@ import qualified Data.Char                       as Char
 import           Data.Hashable
 import           Data.List                       (stripPrefix)
 import qualified Data.Map.Strict                 as M
-import           Data.Maybe                      (fromMaybe, isJust)
+import           Data.Maybe                      (fromMaybe, isJust,
+                                                  maybeToList)
 import           Data.Scientific
 import qualified Data.Set                        as S
 import           Data.String                     (IsString, fromString)
@@ -58,10 +59,7 @@ chartJs :: [(String, String)] -> String -> [Benchmark] -> LT.Text
 chartJs kvs name bs
   = let title = lookup "title" kvs
         chartType = fromMaybe "line" $ lookup "type" kvs
-        xAxisType = fromMaybe "linear" $ lookup "xAxisType" kvs
-        yAxisType = fromMaybe "linear" $ lookup "yAxisType" kvs
-        xAxisBeginAtZero = fromMaybe True $ lookupFlag "xAxisBeginAtZero" kvs
-        yAxisBeginAtZero = fromMaybe True $ lookupFlag "yAxisBeginAtZero" kvs
+        chartScales = toChartScales chartType kvs
         displayLegend = fromMaybe False $ lookupFlag "legend" kvs
         chartData = toChartData bs
         labels = toJSON $ cdLabels chartData
@@ -81,30 +79,60 @@ chartJs kvs name bs
           legend: {
             display: #{displayLegend}
           },
-          scales: {
-            xAxes: [{
-              type: #{xAxisType},
-              ticks: {
-                beginAtZero: #{xAxisBeginAtZero}
-              }
-            }],
-            yAxes: [{
-              type: #{yAxisType},
-              ticks: {
-                beginAtZero: #{yAxisBeginAtZero}
-              }
-            }]
-          }
+          scales: #{toJSON chartScales}
         }
       });
       |] undefined
 
-lookupFlag :: String -> [(String, String)] -> Maybe Bool
-lookupFlag key kvs = case lookup key kvs of
-  Just "t"     -> Just True
-  Just "true"  -> Just True
-  Just "false" -> Just False
-  _            -> Just False
+--------------------------------------------------------------------------------
+
+data ChartScales
+  = ChartScales
+  { csAxisX :: Maybe ChartAxis
+  , csAxisY :: Maybe ChartAxis
+  }
+
+data ChartAxis
+  = ChartAxis
+  { caType        :: Text
+  , caBeginAtZero :: Bool
+  }
+
+instance ToJSON ChartScales where
+  toJSON ChartScales {..}
+    = Aeson.object
+    [ "xAxes" .= toJSON (maybeToList csAxisX)
+    , "yAxes" .= toJSON (maybeToList csAxisY)
+    ]
+
+instance ToJSON ChartAxis where
+  toJSON ChartAxis {..}
+    = Aeson.object
+    [ "type" .= caType
+    , "ticks" .= Aeson.object
+      [ "beginAtZero" .= caBeginAtZero
+      ]
+    ]
+
+toChartScales :: String -> [(String, String)] -> ChartScales
+toChartScales "horizontalBar" kvs
+  = ChartScales
+  { csAxisX =
+      Just $ ChartAxis
+      { caType = fromString . fromMaybe "linear" $ lookup "xAxisType" kvs
+      , caBeginAtZero = fromMaybe True $ lookupFlag "xAxisBeginAtZero" kvs
+      }
+  , csAxisY = Nothing
+  }
+toChartScales _ kvs
+  = ChartScales
+  { csAxisX = Nothing
+  , csAxisY =
+      Just $ ChartAxis
+      { caType = fromString . fromMaybe "linear" $ lookup "yAxisType" kvs
+      , caBeginAtZero = fromMaybe True $ lookupFlag "yAxisBeginAtZero" kvs
+      }
+  }
 
 --------------------------------------------------------------------------------
 
@@ -136,8 +164,6 @@ instance ToJSON ChartDataSet where
   toEncoding = genericToEncoding $ defaultOptions
     { fieldLabelModifier = stripCamelCasePrefix "lds"
     }
-
---------------------------------------------------------------------------------
 
 toDataMap :: [Benchmark] -> M.Map Text (M.Map Text Scientific)
 toDataMap bs = M.fromList <$> toKVList (toRaw <$> bs)
@@ -178,6 +204,13 @@ lineColors
     ]
 
 --------------------------------------------------------------------------------
+
+lookupFlag :: String -> [(String, String)] -> Maybe Bool
+lookupFlag key kvs = case lookup key kvs of
+  Just "t"     -> Just True
+  Just "true"  -> Just True
+  Just "false" -> Just False
+  _            -> Just False
 
 stripCamelCasePrefix :: String -> String -> String
 stripCamelCasePrefix prefix label =
