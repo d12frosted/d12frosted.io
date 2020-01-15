@@ -65,7 +65,7 @@ chartJs kvs name bs
         chartData = toChartData bs
         labels = toJSON $ cdLabels chartData
         dataSets = toJSON $ cdDataSets chartData
-        prettyValues = M.fromList $ (\b -> (benchmarkMean b, secs' . toRealFloat . benchmarkMean $ b)) <$> bs
+        prettyValues = M.fromList $ (\b -> (benchmarkName b, secs' . toRealFloat . benchmarkMean $ b)) <$> bs
     in renderJavascript $ [julius|
       new Chart(document.getElementById(#{name}), {
         type: #{chartType},
@@ -84,10 +84,11 @@ chartJs kvs name bs
           tooltips: {
             callbacks: {
               label: function(item, data) {
-                var vtls = #{toJSON prettyValues}
+                var vtls = #{toJSON prettyValues};
+                var name = data.datasets[item.datasetIndex].label + "/" + item.label;
                 var label = data.datasets[item.datasetIndex].label || '';
                 if (label) label += ": ";
-                label += vtls[item.value];
+                label += vtls[name];
                 return label;
               }
             }
