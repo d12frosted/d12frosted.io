@@ -23,17 +23,15 @@ function application and result combination.
 #+begin_src haskell
   valid :: a -> Bool
   valid = check1 .&& (check2 .|| check3)
+
+  (.&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+  (.||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
 #+end_src
 
 Apart from implementing combinators for predicate composition, we want to avoid
 any runtime penalty from using abstractions. In this article we are going to
-implement the following functions and investigate how far we can go into
-abstractions until performance degrades. Or maybe it wont degrade. Who knows?
-
-#+begin_src haskell
-  (.&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
-  (.||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
-#+end_src
+implement the following functions and investigate how far we can go with
+abstractions until performance degrades. Or maybe it won't degrade. Who knows?
 
 #+BEGIN_HTML
 <!--more-->
@@ -62,10 +60,10 @@ optmisations-by-transformation process, which iteratively rewrites the original
 code into more optimised versions in a smaller language.
 
 In order to dump the intermediate code in Core language we need to ask GHC to do
-it. We use =-O= to enable optimisations (you can also use =-O2=) and
-=-ddump-simpl= to dump the simplified output, which can be combined with
-=-ddump-to-file= to write result into a file instead of =stdout=. More options
-are described in the [[https://downloads.haskell.org/ghc/latest/docs/html/users_guide/debugging.html#debugging-the-compiler][GHC manual]].
+it. We use =-O= (or =-O2=) to enable optimisations and =-ddump-simpl= to dump
+the simplified output, which can be combined with =-ddump-to-file= to write
+result into a file instead of =stdout=. More options are described in the [[https://downloads.haskell.org/ghc/latest/docs/html/users_guide/debugging.html#debugging-the-compiler][GHC
+manual]].
 
 #+begin_src bash
   $ ghc -O -ddump-simpl Main.hs
@@ -77,9 +75,7 @@ Or if you are using [[https://docs.haskellstack.org/en/stable/README/][stack]]:
   $ stack ghc -- -O -ddump-simpl Main.hs
 #+end_src
 
-This prints a lot of stuff, so let me focus on the most important part. I am
-showing you only several lines out of 267 total. You can view the full file
-[[https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/inline.dump-simpl][here]].
+This [[https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/inline.dump-simpl][prints a lot of stuff]], so let me focus on the most important part.
 
 #+begin_src haskell
   ...
@@ -167,8 +163,12 @@ Compiling this module with =-O= produces [[https://github.com/d12frosted/d12fros
 #+end_src
 
 As you can see, it figured out that there is no need to evaluate it in runtime.
-Interestingly, if you pass =-v= option to =ghc=, it will also print
-simplification steps.
+But in order to compare different implementations of composition operators, we
+don't want compiler to inline the result.
+
+If you are curious about reductions steps, you can pass =-v= option to =ghc= to
+be more verbose. When you build with =-v=, compilation of the version with
+=getLine= is less verbose than without.
 
 * Trivial implementation
 
@@ -193,8 +193,7 @@ first step is to create operators in the most trivial manner.
   p1 .|| p2 = \a -> p1 a || p2 a
 #+end_src
 
-If we compile it, the relevant part in Core language is unchanged (full output
-can be found [[https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/operator-naive.dump-simpl][here]]).
+If we compile it, the relevant part in the [[Core language][Core language]] is the same.
 
 #+begin_src haskell
   ...
@@ -223,13 +222,13 @@ can be found [[https://github.com/d12frosted/d12frosted.io/blob/master/assets/sn
   ...
 #+end_src
 
-While our code looks better, there are no runtime penalties. However in some
-cases you should explicitly use [[https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#inline-pragma][INLINE pragma]]. In short, with =-O= option GHC
-always tries to inline small functions (based on [[https://downloads.haskell.org/ghc/latest/docs/html/users_guide/using-optimisation.html#ghc-flag--funfolding-creation-threshold=%E2%9F%A8n%E2%9F%A9][unfolding-creation-threshold]]
-and heuristics) thus avoiding the call overhead and enabling other optimisations
-(like replacing all expression with it's result). And when unfolding doesn't
-happen for some of the reasons and you really think that it should happen (make
-such decision based on CPU and memory profiling), then put inline pragma.
+While our code looks better, there are no runtime penalties. In short, with =-O=
+option GHC always tries to inline small functions (based on
+[[https://downloads.haskell.org/ghc/latest/docs/html/users_guide/using-optimisation.html#ghc-flag--funfolding-creation-threshold=%E2%9F%A8n%E2%9F%A9][unfolding-creation-threshold]] and heuristics) thus avoiding the call overhead and
+enabling other optimisations (like replacing whole expression with its result).
+And when unfolding doesn't happen for some of the reasons and you really think
+that it should happen (make such decision based on CPU and memory profiling),
+then put [[https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#inline-pragma][INLINE pragma]].
 
 #+begin_src haskell
   infixr 3 .&&
@@ -281,7 +280,7 @@ This all reminds me of =Semigroup=.
   gmagic f g = \a -> f a <> g a
 #+end_src
 
-Thanks to =Semigroup= the =plus= function is not passed implicitly and =gmagic=
+Thanks to =Semigroup= the =plus= function is not passed explicitly and =gmagic=
 become lighter. Now, functions which return type is an instance of =Semigroup=
 also form =Semigroup= and it's implementation looks familiar.
 
@@ -290,14 +289,35 @@ also form =Semigroup= and it's implementation looks familiar.
     f <> g = \a -> f a <> g a
 #+end_src
 
-So it turns out that our =gmagic= function is binary operator from =Semigroup=.
-How convenient, isn't it?
+So it turns out that our =gmagic= function is a binary operator from
+=Semigroup=. How convenient, isn't it? If we add more parenthesis to the
+signature you'll notice that it actually takes two functions and produces new
+one (exactly what we are doing with predicates).
 
-And we know that \((\mathcal{B}, \wedge)\) forms semigroup. As well as
-\((\mathcal{B}, \vee)\). Since in Haskell you can't explicitly pass type class
-instance, people usually use =newtype= wrappers when a given type has different
-lawful instances. Like with booleans and different operators. So [[https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-Monoid.html#g:2][Data.Monoid]]
-exports such wrappers for us -- =All= (with =&&=) and =Any= (with =||=).
+#+begin_src haskell
+  gmagic :: (Semigroup b) => (a -> b) -> (a -> b) -> (a -> b)
+  gmagic f g = \a -> f a <> g a
+#+end_src
+
+In Haskell every single data type can have not more than one instance of a given
+type class. But for some data types there are more than one valid (lawful)
+instances of a given type class. For example, we know that the set of natural
+numbers forms different semigroups with different operations: \( ( \mathbb{N}, +
+) \) or \( ( \mathbb{N}, \cdot ) \). The same story with booleans - \( (
+\mathbb{B}, \wedge ) \) and \( ( \mathbb{B}, \vee ) \) are both valid
+semigroups.
+
+Restriction for amount of instances means that we need to wrap our data types
+when we need to create multiple instances. A wrapper per each instance. That
+leads to an awful runtime cost - wrapping and unwrapping are not free. That's
+why we use =newtype= to create wrappers. In compile time the =newtype= wrapper
+is not equal to the type that is being wrapped, so we can use different
+instances. But since the types are isomorphic, all the wrapping and unwrapping
+can be removed by compiler, so we don't have any runtime costs anymore.
+
+When it comes to booleans with conjunction (=&&=) or disjunction (=||=), we
+don't need to define our own wrappers since =Data.Monoid= already provides
+them - =All= and =Any=.
 
 #+begin_src haskell
   > getAll (All True <> All False)
@@ -320,7 +340,7 @@ We can fetch it all together and get new definition of =.&&= and =.||=.
 #+end_src
 
 I've heard multiple times that =newtype= is erased during compilation and by
-[[https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/operator-newtype.dump-simpl][inspecting the dumped]] Core we can confirm that this version is not different
+inspecting [[https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/operator-newtype.dump-simpl][the dumped Core]] we can confirm that this version is not different
 from the previous one.
 
 However we didn't improve the code. I'd say that we degraded. While we
@@ -344,14 +364,15 @@ But what does it mean to be representationally equal? And are there any other
 types[fn:2] of type equality? It turns out that there are two of them and they were
 [[https://gitlab.haskell.org/ghc/ghc/wikis/roles][introduced]] as a solution for a long existing hole in a type system.
 
-Nominal equality means that types are really equal. If two types have the same
+Nominal equality means that types are /really/ equal. If two types have the same
 name (expanding synonyms) they are nominally equal. If they don't have the same
 name, well, then they are not nominally equal.
 
-But what about =newtype= like =All= and =Any=? We know that they are isomorphic
-to =Bool= (and mutually as well). And here comes the second kind of type
-equality -- representational. They all share the same representation. While
-=All= and =Bool= are representationally equal, they are not equal nominally!
+But what about =newtype= wrappers like =All= and =Any=? We know that they are
+isomorphic to =Bool= (and mutually as well). Are they equal? Here comes the
+second kind of type equality -- representational. They all share the same
+representation. While =All= and =Bool= are representationally equal, they are
+not equal nominally!
 
 So all that means that we can use =coerce= to convert from =All= to =Bool= and
 back. Let's try it.
@@ -370,10 +391,13 @@ back. Let's try it.
   coerce . getAll :: Coercible c Bool => All -> c
 #+end_src
 
+/Consider removing =coerce . getAll= as we don't use it/
+
 Wow, this is kind of tricky. Especially when it comes to functions polymorphic
 in their return type. So let's begin with =coerce . getAll=. It basically says
--- 'I will return you a value of type which can be converted to =Bool='. We can
-fix the type by using the function in obvious context[fn:3]:
+-- 'give me a value of type All and I will return you a value of any type of
+your choice, but it must be coercible to =Bool='. We can fix the type by using
+the function in obvious context[fn:3]:
 
 #+begin_src haskell
   > :t not
@@ -488,7 +512,7 @@ and =Product=. But it might look a little bit weird.
   145
 #+end_src
 
-So let's look at [[https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/operator-coerce.dump-simpl][the Core dump]].
+So instead, let's look at [[https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/operator-coerce.dump-simpl][the Core dump]].
 
 #+begin_src haskell
   ...
@@ -525,7 +549,8 @@ The important bits are the same.
 
 I bet that at this point it's obvious, but they perform similarly -- the naive
 implementation and the most abstract one with coercion and =newtype= wrappers.
-But we can refer to criterion to make it more visible.
+We know this because we inspected the dumped Core, but we can also refer to
+criterion to inspect the runtime performance.
 
 #+begin_example
   benchmarking single/naive
@@ -548,6 +573,43 @@ But we can refer to criterion to make it more visible.
 #+begin_criterion
 #+end_criterion
 
+* Final words
+
+I love that in Haskell one can use /some/ of the abstractions without hurting
+runtime. After all, as developers we want to simplify our /development/ life
+with minimal negative influence on the application.
+
+Today we implemented two simple operators for predicate composition using
+semigroups and coercion. And we saw that they don't introduce runtime penalty.
+Techniques that made it possible are usable in other scenarios.
+
+#+begin_src haskell
+  module Data.Monoid.Extra
+    ( (.&&)
+    , (.||)
+    ) where
+
+  import           Data.Coerce
+  import           Data.Monoid
+
+  infixr 3 .&&
+  (.&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+  p1 .&& p2 = getAll . (p1 <~> p2)
+
+  infixr 2 .||
+  (.||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+  p1 .|| p2 = getAny . (p1 <~> p2)
+
+  (<~>) :: ( Coercible b1 c
+           , Coercible b2 c
+           , Monoid c
+           )
+        => (a -> b1) -> (a -> b2) -> a -> c
+  f <~> g = coerce . f <> coerce . g
+#+end_src
+
+Stay safe!
+
 * References
 
 - [[https://www.aosabook.org/en/ghc.html][The Glasgow Haskell Compiler]] by [[https://www.aosabook.org/en/intro2.html#marlow-simon][Simon Marlow]] and [[https://www.aosabook.org/en/intro2.html#peyton-jones-simon][Simon Peyton-Jones]].
@@ -558,4 +620,5 @@ But we can refer to criterion to make it more visible.
 
 [fn:1] Aaah, the tautology...
 [fn:2] Kinds?
-[fn:3] Or we can use [[https://gitlab.haskell.org/ghc/ghc/wikis/type-application][TypeApplications]] extension.
+[fn:3] Or we can explicitly set the type. Or we can use [[https://gitlab.haskell.org/ghc/ghc/wikis/type-application][TypeApplications]]
+extension.
