@@ -544,7 +544,7 @@ But we can refer to criterion to make it more visible.
 #+end_example
 
 #+ATTR_HTML: :file predicate-composition-single.json :type horizontalBar
-#+ATTR_HTML: :height 40 :xAxisBeginAtZero true
+#+ATTR_HTML: :height 120 :xAxisBeginAtZero true
 #+begin_criterion
 #+end_criterion
 

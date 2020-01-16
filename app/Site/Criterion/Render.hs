@@ -55,7 +55,8 @@ render' kvs name bs
                   ! maybe mempty (width . fromString) (lookup "width" kvs)
         _js = chartJs kvs name bs
         _script = script $ toHtml _js
-    in _canvas <> _script
+        _div = H.div ! A.class_ "criterion-chart"
+    in _div $ _canvas <> _script
 
 chartJs :: [(String, String)] -> String -> [Benchmark] -> LT.Text
 chartJs kvs name bs
@@ -78,6 +79,7 @@ chartJs kvs name bs
           datasets: #{dataSets}
         },
         options: {
+          maintainAspectRatio: false,
           title: {
             display: #{isJust title},
             text: #{fromMaybe "" title}
