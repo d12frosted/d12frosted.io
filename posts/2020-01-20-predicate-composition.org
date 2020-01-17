@@ -568,7 +568,7 @@ criterion to inspect the runtime performance.
   variance introduced by outliers: 30% (moderately inflated)
 #+end_example
 
-#+ATTR_HTML: :file predicate-composition-single.json :type horizontalBar
+#+ATTR_HTML: :file predicate-composition/single.json :type horizontalBar
 #+ATTR_HTML: :height 120 :xAxisBeginAtZero true
 #+begin_criterion
 #+end_criterion

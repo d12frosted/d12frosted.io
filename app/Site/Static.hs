@@ -18,7 +18,7 @@ staticsRule = do
     route $ gsubRoute "assets/" (const "")
     compile copyFileCompiler
 
-  match "assets/criterion/*" $ do
+  match "assets/criterion/**" $ do
     route $ gsubRoute "assets/" (const "")
     compile getResourceString
 

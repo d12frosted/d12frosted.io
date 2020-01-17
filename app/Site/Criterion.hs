@@ -26,7 +26,7 @@ import           System.FilePath       (dropExtension)
 --------------------------------------------------------------------------------
 
 loadCriterionMap :: Compiler (M.Map FilePath String)
-loadCriterionMap = toCriterionMap <$> loadAll "assets/criterion/*"
+loadCriterionMap = toCriterionMap <$> loadAll "assets/criterion/**"
 
 toCriterionMap :: [Item String] -> M.Map FilePath String
 toCriterionMap is = M.fromList kvs
