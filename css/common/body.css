@@ -27,3 +27,7 @@ hr {
   border-right: 0px;
   border-bottom: 1px solid #aaa;
 }
+
+.underline {
+  text-decoration: underline;
+}
