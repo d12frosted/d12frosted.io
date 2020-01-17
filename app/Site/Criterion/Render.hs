@@ -22,13 +22,14 @@ import           Site.Criterion.Types
 import           Data.Aeson                      as Aeson
 import           Data.Bifunctor
 import qualified Data.Char                       as Char
+import           Data.Foldable                   (toList)
 import           Data.Hashable
 import           Data.List                       (stripPrefix)
 import qualified Data.Map.Strict                 as M
 import           Data.Maybe                      (fromMaybe, isJust,
                                                   maybeToList)
 import           Data.Scientific
-import qualified Data.Set                        as S
+import qualified Data.Set.Ordered                as S
 import           Data.String                     (IsString, fromString)
 import           Data.Text                       (Text)
 import qualified Data.Text                       as T
@@ -185,17 +186,21 @@ instance ToJSON ChartDataSet where
     { fieldLabelModifier = stripCamelCasePrefix "lds"
     }
 
+labelOf :: Benchmark -> (Text, Text)
+labelOf Benchmark {..} = case T.splitOn "/" benchmarkName of
+  (l:ls) -> (l, T.concat ls)
+  _      -> ("", "")
+
 toDataMap :: [Benchmark] -> M.Map Text (M.Map Text Scientific)
 toDataMap bs = M.fromList <$> toKVList (toRaw <$> bs)
   where toRaw :: Benchmark -> (Text, (Text, Scientific))
-        toRaw Benchmark {..} = case T.splitOn "/" benchmarkName of
-          (l:ls) -> (l, (T.concat ls, benchmarkMean))
-          _      -> (benchmarkName, ("", benchmarkMean))
+        toRaw b = case labelOf b of
+          (l1, l2) -> (l1, (l2, benchmarkMean b))
 
 toChartData :: [Benchmark] -> ChartData
 toChartData bs =
   let dataMap = toDataMap bs
-      labels = S.toList . S.fromList . concat $ M.keys <$> M.elems dataMap
+      labels = toList . S.fromList $ snd . labelOf <$> bs
   in ChartData
   { cdLabels = labels
   , cdDataSets = (\(idx, (k, v)) -> toChartDataSet labels idx k v) <$>
