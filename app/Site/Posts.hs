@@ -46,11 +46,22 @@ loadAllPosts :: UTCTime -> Compiler [Item String]
 loadAllPosts = loadPosts postsPattern
 
 loadPosts :: Pattern -> UTCTime -> Compiler [Item String]
-loadPosts pat now = skipAfter now =<< recentFirst =<< loadAll pat
+loadPosts pat now
+  =   skipDrafts
+  =<< skipAfter now
+  =<< recentFirst
+  =<< loadAll pat
 
 skipAfter :: (MonadMetadata m) => UTCTime -> [Item a] -> m [Item a]
 skipAfter now = filterM $ fmap (now >) .
   getItemUTC defaultTimeLocale . itemIdentifier
+
+skipDrafts :: (MonadMetadata m) => [Item a] -> m [Item a]
+skipDrafts = filterM publish
+  where publish i = maybe True asFlag <$>
+          getMetadataField (itemIdentifier i) "publish"
+        asFlag "true" = True
+        asFlag _      = False
 
 --------------------------------------------------------------------------------
 

@@ -2,6 +2,7 @@
 title: Predicate composition
 tags: haskell, semigroup, performance
 description: Combinators for predicate composition
+publish: false
 ---
 
 They say functional programming has many essences and the composition is one of
