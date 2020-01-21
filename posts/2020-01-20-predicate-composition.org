@@ -387,47 +387,11 @@ back. Let's try it.
 
   > :t getAll . coerce
   getAll . coerce :: Coercible a Bool => a -> Bool
-
-  > :t coerce . getAll
-  coerce . getAll :: Coercible c Bool => All -> c
 #+end_src
 
-/Consider removing =coerce . getAll= as we don't use it/
-
-Wow, this is kind of tricky. Especially when it comes to functions polymorphic
-in their return type. So let's begin with =coerce . getAll=. It basically says
--- 'give me a value of type All and I will return you a value of any type of
-your choice, but it must be coercible to =Bool='. We can fix the type by using
-the function in obvious context[fn:3]:
-
-#+begin_src haskell
-  > :t not
-  not :: Bool -> Bool
-
-  > :t not . coerce . getAll
-  not . coerce . getAll :: All -> Bool
-
-  > not . coerce . getAll $ mempty
-  False
-
-  > :t getAny
-  getAny :: Any -> Bool
-
-  > :t Any . coerce . getAll
-  Any . coerce . getAll :: All -> Any
-
-  > Any . coerce . getAll $ mempty
-  Any {getAny = True}
-#+end_src
-
-Here =not= says that they return type must be =Bool= and there is conversion
-between =Bool= to =Bool= (type equality is equivalence relation, so reflection
-holds). On the other hand, =Any= fixes =c= to =Any=. And again, we know that
-=Any= and =Bool= are representationally equal. So everything works.
-
-But the most interesting is the =getAll . coerce= expression. Because it
-literally says -- 'give me something representationally equal to =Bool= and I
-will get to back the =Bool='. It will do all the conversion for us.
+Wow, this is kind of tricky. The =getAll . coerce= expression literally says --
+'give me something representationally equal to =Bool= and I will get to back the
+=Bool='. It will do all the conversion for us.
 
 When we look at the previous implementation of =.&&= we might notice that we
 actually +convert+ coerce =Bool= to =All= and then get back the =Bool= value.
@@ -577,7 +541,7 @@ criterion to inspect the runtime performance.
 * Final words
 
 I love that in Haskell one can use /some/ of the abstractions without hurting
-runtime. After all, as developers we want to simplify our /development/ life
+the runtime. After all, as developers we want to simplify our /development/ life
 with minimal negative influence on the application.
 
 Today we implemented two simple operators for predicate composition using
@@ -621,5 +585,3 @@ Stay safe!
 
 [fn:1] Aaah, the tautology...
 [fn:2] Kinds?
-[fn:3] Or we can explicitly set the type. Or we can use [[https://gitlab.haskell.org/ghc/ghc/wikis/type-application][TypeApplications]]
-extension.
