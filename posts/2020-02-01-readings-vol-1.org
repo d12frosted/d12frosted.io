@@ -61,7 +61,7 @@ topic as well.
 
 With this approach, users of =safeHead= must handle failure ahead of time. But
 this also means that the calling code doesn't need to use things like =fromJust=
-when they genuinely know that the list is non empty.
+when it is genuinely known that the list is non empty.
 
 There is an orthogonal view on this exact problem by [[https://storm-country.com/][Matt Noonan]] which he
 explains in the [[https://kataskeue.com/gdp.pdf][Ghosts of Departed Proofs (Functional Pearl)]] paper. Matt
@@ -123,12 +123,16 @@ equal to the length of its reverse. And we use it to make the compiler happy.
 The meaning of =Length= and =Rev= are explained in the... paper. So please take
 a look!
 
-One important comment. While this novel approach might look as a burden for
-developer, you might also think that it creates a burden for the runtime. But in
-fact, all this machinery is implemented using Phantom Types and coercions, so
-compiler discards a lot of stuff from the runtime (like naming and proof
-providing), which means that there is no runtime penalty. And we've already seen
-that [[file:2020-01-20-predicate-composition.html][compiler can do it]] for us.
+It's also interesting that all this machinery is implemented using Phantom Types
+and coercions, so compiler discards a lot of stuff from the runtime (like naming
+and proof providing), which means that there is no run-time penalty on having
+compile-time guarantees. We already [[file:2020-01-20-predicate-composition.html][touched this topic previously]].
+
+Now, it's up to you how far to go into encoding preconditions. I think that in
+many cases it's enough to use proper data types. In some very specific scenarios
+it's easier (or more convenient) to use ghosts of departed proofs approach. But
+always keep in mind, that it's possible to move constraints into input type
+instead of wrapping result into =Maybe= (or alike).
 
 Stay safe!
 
