@@ -19,8 +19,8 @@ other cases we encode the possibility of failure due to unsatisfied precondition
 Is this is the only thing we can do? Definitely no! Is it the best thing we can
 do? Depends on the situation.
 
-This article is part of the [[../tags/readings.html][readings]] series where take one topic and share links
-to articles and papers related to it. This time our focus is precondition
+This article is part of the [[../tags/readings.html][readings]] series where I take one topic and share
+links to related articles and papers. This time our focus is precondition
 encoding.
 
 #+BEGIN_HTML
