@@ -2,7 +2,7 @@
 title: "Readings Vol. I: precondition encoding"
 tags: haskell, readings
 description: Recommended articles and books
-publish: false
+publish: true
 ---
 
 When we write libraries for others (including ourselves) to use we often require
@@ -132,7 +132,8 @@ Now, it's up to you how far to go into encoding preconditions. I think that in
 many cases it's enough to use proper data types. In some very specific scenarios
 it's easier (or more convenient) to use ghosts of departed proofs approach. But
 always keep in mind, that it's possible to move constraints into input type
-instead of wrapping result into =Maybe= (or alike).
+instead of wrapping result into =Maybe= (or alike). As people say, make illegal
+states unrepresentable.
 
 Stay safe!
 
