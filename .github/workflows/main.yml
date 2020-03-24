@@ -42,5 +42,7 @@ jobs:
       with:
         target_branch: gh-pages
         build_dir: public
+        committer_name: Golem
+        committer_email: golem@d12frosted.io
       env:
         GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
