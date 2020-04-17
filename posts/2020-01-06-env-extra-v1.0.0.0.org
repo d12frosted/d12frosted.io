@@ -15,8 +15,8 @@ that wraps it for me.
 
 I've been using this library for a long time and today I uploaded it to [[https://hackage.haskell.org/package/env-extra][Hackage]].
 While it's really small, I still think that some of you might find it useful,
-because it has some nice features that original =System.Environment= doesn't
-have. Let's take a look!
+because it has nice features that original =System.Environment= doesn't have.
+Let's take a look!
 
 #+BEGIN_HTML
 <!--more-->
@@ -25,9 +25,9 @@ have. Let's take a look!
 So in the nutshell, there are three functions to access environment variables:
 
 - =envMaybe= of type =( MonadIO m, IsString a ) => Text -> m (Maybe a)= - a
-  wrapper for =lookupEnv=. Aside from working with =Text= input it also leaves
-  in =MonadIO= and returns an =IsString=, which the most interesting part here.
-  I will talk about it shortly.
+  wrapper for =lookupEnv=. Aside from working with =Text= input it also lives in
+  =MonadIO= and returns an =IsString=, which the most interesting part here. I
+  will talk about it shortly.
 - =getEnv= of type =( MonadThrow m, MonadIO m, IsString a ) => Text -> m a= -
   the unsafe version of =envMaybe=.
 - =envRead= of type =( MonadIO m ) => Reader a -> Text -> m (Maybe a)= - a
