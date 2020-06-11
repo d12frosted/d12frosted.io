@@ -89,7 +89,7 @@ And the most important function is for adding tags.
            (tag (completing-read "Tag: " tags)))
       (when (string-empty-p tag)
         (user-error "Tag can't be empty"))
-      (+org-buffer-setting-set
+      (+org-buffer-prop-set
        "ROAM_TAGS"
        (combine-and-quote-strings (seq-uniq (cons tag (+org-notes-tags-read)))))
       (org-roam-db--update-tags)))
@@ -114,7 +114,7 @@ Now the missing functions.
     (apply #'append list-of-lists))
 
   (defun +org-buffer-prop-set (name value)
-    "Set a buffer prop called NAME to VALUE."
+    "Set a buffer property called NAME to VALUE."
     (save-excursion
       (widen)
       (goto-char (point-min))
@@ -127,8 +127,8 @@ Now the missing functions.
             (if (or (looking-at "^#")
                     (looking-at "^:"))
                 (line-move 1 t)
-              (setq found t)
-              (insert "#+" name ": " value "\n")))))))
+              (setq found t)))
+          (insert "#+" name ": " value "\n")))))
 #+end_src
 
 That's it. You can find all solution as a gist on [[https://gist.github.com/d12frosted/4a55f3d072a813159c1d7b31c21bac9a][GitHub]]. Have fun!
