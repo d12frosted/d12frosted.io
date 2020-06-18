@@ -43,7 +43,7 @@ The idea is to generate a custom palette and use it during conversion.
 
 Since I am not good at remembering this kind of commands (and I hate to cycle
 the history of commands), I've created a simple script for doing exactly this.
-It's called =gifify= and you can find it in my [[https://github.com/d12frosted/environment/blob/master/utils/bin/gifify][.environment]] repository.
+It's called =gifify= and you can find it in my [[https://github.com/d12frosted/environment/blob/master/bin/gifify][.environment]] repository.
 
 #+BEGIN_SRC bash
   $ gifify -i file.mov # output is file.gif
@@ -133,14 +133,28 @@ usually put =gifify= in =$HOME/.local/bin=.
 
 * Source code
 
+You can find the latest version on [[https://github.com/d12frosted/environment/blob/master/bin/gifify][GitHub]].
+
 #+BEGIN_SRC bash
   #!/usr/bin/env bash
+  #
+  # Convert video to gif
+  #
+  # Usage:
+  #
+  #  gifify -i FILE [OPTIONS]
+  #
+  # To the list of all options, use
+  #
+  #   gifify --help
+  #
 
   set -e
 
   POSITIONAL=()
   SCALE=1
   FPS=24
+  PTS=1
   PALETTE="custom"
   COMPRESS=0
 
@@ -169,6 +183,11 @@ usually put =gifify= in =$HOME/.local/bin=.
         shift # past argument
         shift # past value
         ;;
+      --pts)
+        PTS="$2"
+        shift # past argument
+        shift # past value
+        ;;
       --default-palette)
         PALETTE="default"
         shift # past argument
@@ -185,6 +204,55 @@ usually put =gifify= in =$HOME/.local/bin=.
   done
   set -- "${POSITIONAL[@]}" # restore positional parameters
 
+  function print_usage() {
+    echo "Usage:
+
+   gifify -i FILE [OPTIONS]
+
+     -i, --input FILE     (required) specify input video file
+
+     -o, --output FILE    (optional) specify output gif file
+
+                          defaults to input file with extension changed to gif
+
+     -s, --scale INT      (optional) specify scale of the resulting gif (affects
+                          both width and height)
+
+                          affects speed of conversion and physical size of the
+                          resulting gif
+
+                          defaults to 1
+
+     --fps INT            (optional) specify FPS of the resulting gif
+
+                          defaults to 24
+
+     --pts INT            (optional) specify PTS of the resulting gif
+
+                          affects speed of the playback
+
+                          defaults to 1
+
+     --default-palette    (optional) enforce default palette instead of
+                          specially generated one, may lead to worse quality
+
+     --compress           (optional) compress the gif to make physical size
+                          lesser, may lead to worse quality
+  "
+  }
+
+  if [[ -z $INPUT ]]; then
+    echo "Missing input"
+    print_usage
+    exit 1
+  fi
+
+  if [[ ! -f $INPUT ]]; then
+    echo "'$INPUT' is not a file"
+    print_usage
+    exit 1
+  fi
+
   if [[ -z $OUTPUT ]]; then
     OUTPUT="${INPUT%.*}.gif"
   fi
@@ -196,14 +264,17 @@ usually put =gifify= in =$HOME/.local/bin=.
   fi
 
   PALETTE_FILE="${INPUT%.*}.png"
+  filters="fps=${FPS},scale=iw*${SCALE}:ih*${SCALE}:flags=lanczos,setpts=${PTS}*PTS"
 
   echo "input    = ${INPUT}"
   echo "output   = ${OUTPUT}"
   echo "scale    = ${SCALE}"
   echo "fps      = ${FPS}"
+  echo "pts      = ${PTS}"
   echo "palette  = ${PALETTE}"
   echo "compress = ${COMPRESS}"
   echo "args     = ${POSITIONAL[*]}"
+  echo "filters  = $filters"
   echo
 
   function cleanup () {
@@ -212,27 +283,28 @@ usually put =gifify= in =$HOME/.local/bin=.
 
   trap cleanup INT TERM EXIT
 
-  filters="fps=${FPS},scale=iw*${SCALE}:ih*${SCALE}:flags=lanczos"
-
   case $PALETTE in
     custom)
+      # shellcheck disable=SC2086
       ffmpeg ${POSITIONAL[*]} \
-             -i "$INPUT" \
-             -vf "$filters,palettegen" \
-             "$PALETTE_FILE"
+        -i "$INPUT" \
+        -vf "$filters,palettegen" \
+        "$PALETTE_FILE"
 
+      # shellcheck disable=SC2086
       ffmpeg ${POSITIONAL[*]} \
-             -i "$INPUT" \
-             -i "$PALETTE_FILE" \
-             -filter_complex "$filters [x]; [x][1:v] paletteuse" \
-             "$OUTPUT_TEMP"
+        -i "$INPUT" \
+        -i "$PALETTE_FILE" \
+        -filter_complex "$filters [x]; [x][1:v] paletteuse" \
+        "$OUTPUT_TEMP"
       ;;
 
     default)
+      # shellcheck disable=SC2086
       ffmpeg ${POSITIONAL[*]} \
-             -i "$INPUT" \
-             -filter_complex "$filters" \
-             "$OUTPUT_TEMP"
+        -i "$INPUT" \
+        -filter_complex "$filters" \
+        "$OUTPUT_TEMP"
       ;;
   esac
 
@@ -246,7 +318,3 @@ usually put =gifify= in =$HOME/.local/bin=.
 In this post, I covered only quality improvements from using a custom palette.
 But actually, there are other ways to tweak you GIF when using FFmpeg. You can
 find out more in [[http://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html][High quality GIF with FFmpeg]].
-
-#+BEGIN_HTML
-<!--more-->
-#+END_HTML
