@@ -5,7 +5,7 @@ description: "Moving tasks to org-roam"
 publish: true
 ---
 
-[[https://orgmode.org][org-mode]] is a simple outliner for note taking and list management. It [[./posts/2016-12-20-Being-an-org-mode-addict.html][doesn't
+[[https://orgmode.org][org-mode]] is a simple outliner for note taking and list management. It [[https://d12frosted.io/posts/2016-12-20-Being-an-org-mode-addict.html][doesn't
 impose]] any complex features on users. This is something users excel at by
 themselves. My suggestion is to continue this tradition and discover task
 management capabilities in [[https://github.com/org-roam/org-roam][org-roam]], an [[https://orgmode.org][org-mode]] extension for non-hierarchical
