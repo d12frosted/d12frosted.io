@@ -1,0 +1,118 @@
+---
+title: "Task management with org-roam Vol. 2: Categories"
+tags: emacs, org-roam, org-mode
+description: "Moving tasks to org-roam"
+publish: true
+---
+
+In the [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][previous article]] we set a ground for moving tasks to [[https://github.com/org-roam/org-roam][org-roam]], and
+encountered an issue with visual garbage in the agenda buffer. Namely,
+=org-roam= file id as part of the category. In this article, we are going to
+explore the means to overcome this issue.
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/org-roam-task-management-vol2-1.png" />
+</div>
+#+END_EXPORT
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+In order to get rid of the garbage, one can use the same approach as was used
+before with =CATEGORY= property, but apply it to the file itself (manually or
+using =org-set-property=).
+
+#+begin_src org
+  :PROPERTIES:
+  :CATEGORY:               emacs-plus
+  :END:
+  ,#+TITLE: emacs-plus
+
+  ...
+#+end_src
+
+#+begin_src org
+  :PROPERTIES:
+  :CATEGORY:               blog
+  :END:
+  ,#+TITLE: Blog
+
+  ...
+#+end_src
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/org-roam-task-management-vol2-2.png" />
+</div>
+#+END_EXPORT
+
+While this works, it is a manual labor. And in most cases we want the category
+to be filename without the id. Fortunately, we can help agenda to properly parse
+the category by modifying the value of =org-agenda-prefix-format=, which allows
+to specify how to render each line in the different agenda buffers (e.g. regular
+agenda, in the list of todo tasks etc). We are looking for the capability to
+evaluate arbitrary lisp expressions. The default value of this variable is
+
+#+begin_src emacs-lisp
+  ((agenda . " %i %-12:c%?-12t% s")
+   (todo . " %i %-12:c")
+   (tags . " %i %-12:c")
+   (search . " %i %-12:c"))
+#+end_src
+
+The interesting part is =%-12:c= which means:
+
+- Give the category (because of =c=) a 12 chars wide field, padded with
+  whitespace on the right (because of =-=).
+- Append a colon if there is a category (because of =:=).
+- Finally, append the category of the item, or as given by the =CATEGORY=
+  property, or derived from the file name.
+
+Instead of =c= we can use any expression.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %-12:(+org-entry-category)%?-12t% s")
+          (todo . " %i %-12:(+org-entry-category)")
+          (tags . " %i %-12:(+org-entry-category)")
+          (search . " %i %-12:(+org-entry-category)")))
+
+  (defun +org-entry-category ()
+    "Get category of item at point.
+
+  Supports `org-roam' filenames by chopping prefix cookie."
+    (+string-chop-prefix-regexp
+     "^[0-9]+\\-"
+     (or (org-entry-get nil "CATEGORY")
+         (if buffer-file-name
+             (file-name-sans-extension
+              (file-name-nondirectory buffer-file-name))
+           ""))))
+
+  ;; requires s.el
+  (defun +string-chop-prefix-regexp (prefix s)
+    "Remove PREFIX regexp if it is at the start of S."
+    (s-chop-prefix (car (s-match prefix s)) s))
+#+end_src
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/org-roam-task-management-vol2-2.png" />
+</div>
+#+END_EXPORT
+
+Now if we remove the manually set =CATEGORY= property from both files we will
+get the same result with nicely parsed categories. Please note that these two
+approaches can be mixed. For example, if you wish to override the category, just
+set this property explicitly and call it a day.
+
+In the next article we are going to talk about tagging tasks related to a
+person. Stay tuned and keep roaming!
+
+* References
+
+- =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
+- =org-mode= documentation on the [[https://orgmode.org][official site]].
+- personal configurations on [[https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el][GitHub]].
