@@ -1,0 +1,192 @@
+---
+title: "Task management with org-roam Vol. 3: FILETAGS"
+tags: emacs, org-roam, org-mode
+description: "Automatic FILETAGS application in org-roam"
+publish: true
+---
+
+In the previous articles ([[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][vol1]] and [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][vol2]]) we walked the path to [[https://github.com/org-roam/org-roam][org-roam]] and
+solved the issue with garbage in the category column of agenda. Today we are
+going to explore meta projects dedicated to specific person, tag inheritance and
+moving such projects to separate =org-roam= files. As result, we will have code
+for automatic tagging based on the title.
+
+Aside from regular meta projects (like personal blog) I also create meta
+projects for people and locations. This is helpful, because some of the tasks
+are really related to someone specifically. For example, when I need to return a
+borrowed book, I just create a task for this.
+
+#+begin_src org
+  ,* Frodo Baggins                                               :@FrodoBaggins:
+
+  ,** TODO Return 'The Lord of the Rings' book
+
+  ,** TODO Farewell party                                             :PROJECT:
+
+  It feels like Mr. Frodo is about to live Shire. So we are going to setup a
+  farewell party for him.
+
+  ,*** TODO Talk to Samwise Gamgee                            :@SamwiseGamgee:
+
+  ,*** TODO Talk to Meriadoc Brandybuck                  :@MeriadocBrandybuck:
+
+  ,*** TODO Talk to Peregrin Took                              :@PeregrinTook:
+
+  ,*** TODO Tie a pair of wool socks
+
+  I am not sure where he is going, so a pair of warm wool socks should be good.
+  At least they can be used to protect bottles of wine during journey. That is in
+  case Frodo doesn't wear socks. But how could it be? Everyone does!
+#+end_src
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+Now, apart from some misconception about hobbits, there are few important points
+to note.
+
+1. Due to [[https://orgmode.org/manual/Tag-Inheritance.html][tags inheritance]], all of the subheadings of =Frodo Baggins= have
+   =@FrodoBaggins= tag.
+2. Tasks tagged with other people also have the =@FrodoBaggins= tag.
+
+Thanks to inheritance, it's easy to find all tasks related to Frodo Baggins via
+=org-agenda=. It even enables the search of overlapping tasks. For example,
+tasks related to Frodo and Samwise. For more information, take a look at the
+[[https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties][matching tags and properties]] section of the manual.
+
+#+BEGIN_EXPORT html
+<div class="post-image post-image-split">
+<img src="/images/org-roam-task-management-vol3-1.png" /><img src="/images/org-roam-task-management-vol3-2.png" />
+</div>
+#+END_EXPORT
+
+With =org-roam=, each person has its own file.
+
+#+begin_src org
+  ,#+TITLE: Frodo Baggins
+  ,#+FILETAGS: @FrodoBaggins
+  ,#+ROAM_TAGS: People
+
+  ,* Tasks
+  ,** TODO Return 'The Lord of the Rings' book
+
+  ,** TODO Farewell party                                             :PROJECT:
+
+  It feels like Mr. Frodo is about to live Shire. So we are going to setup a
+  farewell party for him.
+
+  ,*** TODO Talk to Samwise Gamgee                            :@SamwiseGamgee:
+
+  ,*** TODO Talk to Meriadoc Brandybuck                  :@MeriadocBrandybuck:
+
+  ,*** TODO Talk to Peregrin Took                              :@PeregrinTook:
+
+  ,*** TODO Tie a pair of wool socks
+
+  I am not sure where he is going, so a pair of warm wool socks should be good.
+  At least they can be used to protect bottles of wine during journey. That is in
+  case Frodo doesn't wear socks. But how could it be? Everyone does!
+#+end_src
+
+In order to maintain the feature where =@FrodoBaggins= tag is applied to all
+TODO items we have to use =FILETAGS= property. I am also using [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][org-roam tags]] to
+mark Frodo Baggins as a person. This helps me in two ways. First of all, it
+gives me clear understanding that this entity is a person (some people do have
+strange names). Secondly, it serves me in automation and filtering.
+
+Now, when I see a headline with title and tag being literally the same (with few
+programmable exceptions) or the file with =TITLE= and =FILETAGS= being the same
+(with few programmable exceptions), I am feeling nervous. Especially since I am
+prone to mistakes.
+
+So what I do - I automate =FILETAGS=. I have a function
+=+org-notes-ensure-filetag= which automatically sets the =FILETAGS= buffer
+property for =org-roam= entries tagged as =People=. The following code reuses
+most of the functions from [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][org-roam tags]] post.
+
+#+begin_src emacs-lisp
+  (defun +org-notes-ensure-filetag ()
+    "Add respective file tag if it's missing in the current note."
+    (interactive)
+    (let ((tags (+org-notes-tags-read)))
+      (when (and (seq-contains-p tags "People")
+                 (null (+org-buffer-prop-get "FILETAGS")))
+        (+org-buffer-prop-set
+         "FILETAGS"
+         (+org-notes--title-as-tag)))))
+
+  (defun +org-notes--title-as-tag ()
+    "Return title of the current note as tag."
+    (+org-notes--title-to-tag (+org-buffer-prop-get "TITLE")))
+
+  (defun +org-notes-tags-read ()
+    "Return list of tags as set in the buffer."
+    (unless (+org-notes-buffer-p)
+      (user-error "Current buffer is not a note"))
+    (org-roam--extract-tags-prop (buffer-file-name (buffer-base-buffer))))
+
+  (defun +org-buffer-prop-get (name)
+    "Get a buffer property called NAME as a string."
+    (save-excursion
+      (widen)
+      (goto-char (point-min))
+      (when (re-search-forward (concat "^#\\+" name ": \\(.*\\)") (point-max) t)
+        (buffer-substring-no-properties
+         (match-beginning 1)
+         (match-end 1)))))
+
+  (defun +org-buffer-prop-set (name value)
+    "Set a buffer property called NAME to VALUE."
+    (save-excursion
+      (widen)
+      (goto-char (point-min))
+      (if (re-search-forward (concat "^#\\+" name ": \\(.*\\)") (point-max) t)
+          (replace-match (concat "#+" name ": " value))
+        ;; find the first line that doesn't begin with ':' or '#'
+        (let ((found))
+          (while (not (or found (eobp)))
+            (beginning-of-line)
+            (if (or (looking-at "^#")
+                    (looking-at "^:"))
+                (line-move 1 t)
+              (setq found t)))
+          (insert "#+" name ": " value "\n")))))
+#+end_src
+
+This function can be called interactively, but since I usually place the tag
+using =+org-notes-tags-add=, I just add the =+org-notes-ensure-filetag= to the
+end of that function.
+
+#+begin_src emacs-lisp
+  (defun +org-notes-tags-add ()
+    "Add a tag to current note."
+    (interactive)
+    (unless (+org-notes-buffer-p)
+      (user-error "Current buffer is not a note"))
+    (let* ((tags (seq-uniq
+                  (+seq-flatten
+                   (+seq-flatten
+                    (org-roam-db-query [:select tags :from tags])))))
+           (tag (completing-read "Tag: " tags)))
+      (when (string-empty-p tag)
+        (user-error "Tag can't be empty"))
+      (+org-buffer-prop-set
+       "ROAM_TAGS"
+       (combine-and-quote-strings (seq-uniq (cons tag (+org-notes-tags-read)))))
+      (org-roam-db--update-tags)
+      (+org-notes-ensure-filetag)))
+#+end_src
+
+Though for other purposes one can put this function to the file visit hook. But
+hooks are sensitive, so I am going to stop here.
+
+In the next article we are going to talk about automatic insertion of person tag
+(e.g. =@FrodoBaggins=) when mentioning this person in other task.
+
+* References
+
+- =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
+- =org-mode= documentation on the [[https://orgmode.org][official site]].
+- Org-roam tags on [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][d12frosted.io]].
+- personal configurations on [[https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el][GitHub]].

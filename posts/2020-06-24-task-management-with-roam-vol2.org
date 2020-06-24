@@ -108,7 +108,7 @@ get the same result with nicely parsed categories. Please note that these two
 approaches can be mixed. For example, if you wish to override the category, just
 set this property explicitly and call it a day.
 
-In the next article we are going to talk about tagging tasks related to a
+In the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][next article]] we are going to talk about tagging tasks related to a
 person. Stay tuned and keep roaming!
 
 * References
