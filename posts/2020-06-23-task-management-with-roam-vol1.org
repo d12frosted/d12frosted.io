@@ -173,7 +173,7 @@ the former approach (though even this is debatable).
 So far the transition was simple. However as you can see, in agenda buffer the
 inferred category contains garbage - note id.
 
-In the next article we are going to explore the means to fix the agenda buffer
+In the [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][next article]] we are going to explore the means to fix the agenda buffer
 from the unwanted visual garbage. Stay tuned!
 
 * References
