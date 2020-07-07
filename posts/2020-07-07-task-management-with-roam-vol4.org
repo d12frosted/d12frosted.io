@@ -1,0 +1,81 @@
+---
+title: "Task management with org-roam Vol. 4: Automatic tagging"
+tags: emacs, org-roam, org-mode
+description: "Automatic tagging upon link insertion"
+publish: true
+---
+
+In the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][previous article]] we covered automatic tagging of notes related to a
+specific person, and today we are going to cover automatic tagging of an
+org-mode heading upon insertion of link related to a person. To put it simple,
+when I mention someone in the task, I would love this task to be automatically
+tagged with that persons name. As they say, it's better to see once, than
+imagine multiple times, so here is a screencast.
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/org-notes-insert.gif" />
+</div>
+#+END_EXPORT
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+The solution is based on the relatively recent [[https://github.com/org-roam/org-roam/pull/839][pull request]] to the org-roam.
+Instead of using =org-roam-insert= directly, we can write a wrapper for it
+leveraging the return value, name manipulation from the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][previous article]] and
+tags lookup from [[http://localhost:8000/posts/2020-06-10-org-roam-tags.html][Org-roam tags]] article.
+
+#+begin_src emacs-lisp
+  (defun +org-notes-insert ()
+    "Insert a link to the note."
+    (interactive)
+    (when-let*
+        ((res (org-roam-insert))
+         (path (plist-get res :path))
+         (title (plist-get res :title))
+         (roam-tags (+seq-flatten
+                     (+seq-flatten
+                      (org-roam-db-query [:select tags
+                                                  :from tags
+                                                  :where (= file $s1)]
+                                         path)))))
+      (when (seq-contains-p roam-tags "People")
+        (save-excursion
+          (ignore-errors
+            (org-back-to-heading)
+            (org-set-tags
+             (seq-uniq
+              (cons
+               (+org-notes--title-to-tag title)
+               (org-get-tags nil t)))))))))
+#+end_src
+
+The implementation is straight-forward. We start with calling =org-roam-insert=
+that asks for the note to insert. Then we parse result and query the roam tags
+to understand if the inserted note is related to a person. And if the answer is
+yes, we use =org-set-tags= to automatically tag the heading.
+
+In my case, implementation of =+org-notes--title-to-tag= is the following.
+
+#+begin_src emacs-lisp
+  (defun +org-notes--title-to-tag (title)
+    "Convert TITLE to tag."
+    (concat "@" (s-replace " " "" title)))
+#+end_src
+
+And that's it! The only downside is that it doesn't work with =org-roam-company=
+package. This is something that can be done via hooks. Please let me know if you
+are interested in supporting automating tagging when mentioning people via
+company interface.
+
+P.S. =+org-notes-insert= can be modified to skip tagging when called with
+universal argument. Feel free to reach me if you need help with that!
+
+* References
+
+- =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
+- =org-mode= documentation on the [[https://orgmode.org][official site]].
+- Org-roam tags on [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][d12frosted.io]].
+- personal configurations on [[https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el][GitHub]].
