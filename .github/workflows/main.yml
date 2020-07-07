@@ -15,13 +15,13 @@ jobs:
     - uses: actions/setup-node@v1.1.0
 
     - name: .stack-work cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: .stack-work
         key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml.lock') }}
 
     - name: $HOME/.stack cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.stack
         key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock') }}
