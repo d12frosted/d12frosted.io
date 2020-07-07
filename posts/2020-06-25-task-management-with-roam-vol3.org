@@ -181,7 +181,7 @@ end of that function.
 Though for other purposes one can put this function to the file visit hook. But
 hooks are sensitive, so I am going to stop here.
 
-In the next article we are going to talk about automatic insertion of person tag
+In the [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][next article]] we are going to talk about automatic insertion of person tag
 (e.g. =@FrodoBaggins=) when mentioning this person in other task.
 
 * References
