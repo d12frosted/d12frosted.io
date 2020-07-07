@@ -65,10 +65,11 @@ In my case, implementation of =+org-notes--title-to-tag= is the following.
     (concat "@" (s-replace " " "" title)))
 #+end_src
 
-And that's it! The only downside is that it doesn't work with =org-roam-company=
-package. This is something that can be done via hooks. Please let me know if you
-are interested in supporting automating tagging when mentioning people via
-company interface.
+And that's it! Keep in mind, that with this approach automatic tagging does not
+happen when mentioning people using company interface (e.g. using
+=org-roam-company=) and when using =+org-notes-insert= to mention someone
+unknown to your system (e.g. when you create a new file). Both of the 'features'
+can be implemented using hooks.
 
 P.S. =+org-notes-insert= can be modified to skip tagging when called with
 universal argument. Feel free to reach me if you need help with that!
