@@ -1,5 +1,4 @@
 --------------------------------------------------------------------------------
-
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
@@ -8,7 +7,7 @@ module Site.Static where
 
 --------------------------------------------------------------------------------
 
-import           Site.Core
+import Site.Core
 
 --------------------------------------------------------------------------------
 
@@ -16,6 +15,10 @@ staticsRule :: Rules ()
 staticsRule = do
   match "assets/images/*" $ do
     route $ gsubRoute "assets/" (const "")
+    compile copyFileCompiler
+
+  match "assets/favicon/*" $ do
+    route $ gsubRoute "assets/favicon/" (const "")
     compile copyFileCompiler
 
   match "assets/criterion/**" $ do
