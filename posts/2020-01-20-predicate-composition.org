@@ -572,6 +572,36 @@ Techniques that made it possible are usable in other scenarios.
   f <~> g = coerce . f <> coerce . g
 #+end_src
 
+* Evolution
+
+I love the [[https://willamette.edu/~fruehr/haskell/evolution.html][The Evolution of a Haskell Programmer]] by Fritz Ruehr. And to keep the
+traction of this evolution path, we should step back and reflect on atrocious
+results. We all love functions, don't we? And functions are known functors and
+applicatives. So instead of going this lengthy path, we could just do something
+dead simple.
+
+#+begin_src haskell
+  infixr 3 .&&
+  (.&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+  p1 .&& p2 = (&&) <$> p1 <*> p2
+
+  infixr 2 .||
+  (.||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+  p1 .|| p2 = (||) <$> p1 <*> p2
+#+end_src
+
+Or using =liftA2=:
+
+#+begin_src haskell
+  infixr 3 .&&
+  (.&&) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+  (.&&) p2 = liftA2 (&&)
+
+  infixr 2 .||
+  (.||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+  (.||) = liftA2 (||)
+#+end_src
+
 Stay safe!
 
 * References
