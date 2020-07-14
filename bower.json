@@ -12,6 +12,6 @@
     "bower_components"
   ],
   "dependencies": {
-    "MathJax": "components/MathJax#^2.7.5"
+    "MathJax": "components/MathJax#^3.0.5"
   }
 }
