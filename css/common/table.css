@@ -3,6 +3,7 @@ table {
   border: 1px solid #f3f3f3;
   margin-left: auto;
   margin-right: auto;
+  border-collapse: collapse;
 }
 
 table caption {
@@ -11,15 +12,14 @@ table caption {
 
 table td, table th {
   border-left: 1px solid #f3f3f3;
-  border-bottom: 1px solid #f3f3f3;
   font-size: inherit;
   margin: 0;
   overflow: visible;
   padding: .5em 1em;
 }
 
-table td:first-child, table th:first-child {
-  border-left-width: 0
+table tr {
+  border-bottom: 1px solid #f3f3f3;
 }
 
 table thead {
@@ -32,5 +32,6 @@ table th {
 }
 
 table td {
+  text-align: center;
   background-color: transparent;
 }
