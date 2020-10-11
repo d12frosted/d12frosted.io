@@ -3,41 +3,41 @@ name: CI
 on:
   push:
   schedule:
-    - cron:  '0 */4 * * *'
+    - cron: "0 */4 * * *"
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2.3.3
+      - uses: actions/checkout@v2.3.3
 
-    - uses: actions/setup-node@v2.1.2
+      - uses: actions/setup-node@v2.1.2
 
-    - name: .stack-work cache
-      uses: actions/cache@v2
-      with:
-        path: .stack-work
-        key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml.lock') }}
+      - name: .stack-work cache
+        uses: actions/cache@v2
+        with:
+          path: .stack-work
+          key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml.lock') }}
 
-    - name: $HOME/.stack cache
-      uses: actions/cache@v2
-      with:
-        path: ~/.stack
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock') }}
+      - name: $HOME/.stack cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.stack
+          key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock') }}
 
-    - name: Build site
-      env:
-        GITHUB_API_USER: ${{ secrets.GITHUB_API_USER }}
-        GITHUB_API_SECRET: ${{ secrets.GITHUB_API_SECRET }}
-      run: make build
+      - name: Build site
+        env:
+          GITHUB_API_USER: ${{ secrets.GITHUB_API_USER }}
+          GITHUB_API_SECRET: ${{ secrets.GITHUB_API_SECRET }}
+        run: make build
 
-    - name: Deploy
-      if: success() && github.ref == 'refs/heads/master'
-      uses: crazy-max/ghaction-github-pages@v2
-      with:
-        target_branch: gh-pages
-        build_dir: public
-        committer: Golem <golem@d12frosted.io>
-      env:
-        GH_PAT: ${{ secrets.GITHUB_PAT }}
+      - name: Deploy
+        if: success() && github.ref == 'refs/heads/master'
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: public
+          committer: Golem <golem@d12frosted.io>
+        env:
+          GH_PAT: ${{ secrets.GITHUB_PAT }}
