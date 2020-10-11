@@ -34,11 +34,10 @@ jobs:
 
     - name: Deploy
       if: success() && github.ref == 'refs/heads/master'
-      uses: crazy-max/ghaction-github-pages@v1
+      uses: crazy-max/ghaction-github-pages@v2
       with:
         target_branch: gh-pages
         build_dir: public
-        committer_name: Golem
-        committer_email: golem@d12frosted.io
+        committer: Golem <golem@d12frosted.io>
       env:
-        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+        GH_PAT: ${{ secrets.GITHUB_PAT }}
