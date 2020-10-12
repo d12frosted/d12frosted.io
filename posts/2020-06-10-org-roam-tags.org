@@ -19,6 +19,15 @@ introduced tags system in [[https://github.com/org-roam/org-roam/blob/master/CHA
 Adding and removing them by hand is not nice. So in this article I am sharing a
 snippet that I've forged to ease the unbearable lightness of being.
 
+[2020-10-12 Mon]: Functionality described in this post (and similar
+functionality to manage aliases) is [[https://github.com/org-roam/org-roam/pull/1183][merged to the upstream]]. Now simply use one
+of the following functions:
+
+- =org-roam-tag-add=
+- =org-roam-tag-delete=
+- =org-roam-alias-add=
+- =org-roam-alias-delete=
+
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
