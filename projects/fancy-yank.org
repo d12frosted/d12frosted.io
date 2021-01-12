@@ -1,7 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
-priority: 8
+priority: 10
 ---
 
 Emacs plugin that allows to hook into yanking process by transforming the data.
