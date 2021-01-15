@@ -1,0 +1,8 @@
+---
+languages: Emacs Lisp
+category: Emacs
+priority: 5
+---
+
+Wine cellar tracking in =org-mode=. It's your precious cantina! Uses
+=vulpea=.
