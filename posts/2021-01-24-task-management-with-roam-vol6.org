@@ -1,0 +1,99 @@
+---
+title: "Task management with org-roam Vol. 6: Select a person and view related tasks"
+tags: emacs, org-roam, org-mode
+description: "How to select a person and list all related tasks"
+publish: true
+---
+
+In one of the previous articles ([[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][Vol 3]] to be precise) we talked about automatic
+setup of =FILETAGS=, so each of the task in note related to a person is
+automatically tagged thanks to [[https://orgmode.org/manual/Tag-Inheritance.html][tag inheritance]]. Then, in [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Vol 4]] we talked about
+automatic tagging of tasks whenever a person is mentioned either in the title or
+the body of some task. This all makes =org-agenda= [[https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties][matching capabilities]] really
+useful for when we want to see the list of all tasks related to specific person.
+
+In this article, we are going to write a small utility function that asks user
+to select a person and then presents and =org-agenda= buffer with tasks related
+to selected person.
+
+Believe me, intro is longer than the content!
+
+#+BEGIN_EXPORT html
+<div class="post-video">
+<video autoplay loop>
+  <source src="/images/org-notes-person-agenda.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+</div>
+#+END_EXPORT
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+Long story short, here is the function you can bind or call by name using =M-x=:
+
+#+begin_src emacs-lisp
+  (defun +agenda/person ()
+    "Show main `org-agenda' view."
+    (interactive)
+    (let* ((person (vulpea-select
+                    "Person"
+                    nil nil
+                    (lambda (note)
+                      (seq-contains-p (vulpea-note-tags note)
+                                      "people"))))
+           (names (seq-map
+                   #'car
+                   (org-roam-db-query
+                    [:select title
+                     :from titles
+                     :where (= file $s1)]
+                    (vulpea-note-path person))))
+           (tags (seq-map #'+org-notes--title-to-tag names))
+           (query (string-join tags "|"))
+           (org-agenda-overriding-arguments (list t query)))
+      (org-agenda nil "M")))
+#+end_src
+
+Now some explanations.
+
+1. This code uses [[https://github.com/d12frosted/vulpea][vulpea]] library[fn:1] to select a person. You can achieve the
+   same result without =vulpea=, of course, but it saves some effort.
+   =vulpea-select= asks the user to select a note and accepts a predicate to
+   show only subset of =org-roam= notes. In this case, we simply present only
+   people notes.
+2. Once we have a selected =vulpea-note=, we can get all titles on that file
+   (e.g. main title and aliases). This is important for alias users. For
+   example, in some notes I want use Mr. Frodo instead of Frodo Baggins, but I
+   want to see tasks tagged as =@Mr.Forod= and =@FrodoBaggins= at the same time.
+   It's the same person after all (don't ask me about Gollum, better use =M-x
+   doctor=)!
+3. Now we simply convert those names into tags using =+org-notes--title-to-tag=
+   from [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Vol 4]].
+4. Then we join the tags using =|= separator into single query string.
+5. The last step is to execute =org-agenda= with =M= argument (match for tags,
+   but list only =TODO= items). In order to pass a query to relevant agenda
+   function, we use =org-agenda-overriding-arguments=. Not sure if it's
+   documented anywhere, but you can read the sources of =org-agenda= to figure
+   out how to use it.
+
+That's it! Now see it in action, again.
+
+#+BEGIN_EXPORT html
+<div class="post-video">
+<video autoplay loop>
+  <source src="/images/org-notes-person-agenda.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+</div>
+#+END_EXPORT
+
+* References
+
+- [[https://orgmode.org/worg/dev/org-element-api.html][Org Element API]]
+- [[https://github.com/skeeto/emacsql][skeeto/emacsql]]
+- Code from this article is available as [[https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e][GitHub Gist]]
+
+
+[fn:1] Yikes, I advertise my own libraries on this blog!
