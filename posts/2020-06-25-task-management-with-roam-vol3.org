@@ -39,6 +39,10 @@ borrowed book, I just create a task for this.
   case Frodo doesn't wear socks. But how could it be? Everyone does!
 #+end_src
 
+*[2021-01-24 Sun]* Since some of the functionality mentioned in the original
+article was merged to =org-roam=, all code is updated to reflect the current
+state of affairs.
+
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
@@ -109,49 +113,19 @@ most of the functions from [[https://d12frosted.io/posts/2020-06-10-org-roam-tag
   (defun +org-notes-ensure-filetag ()
     "Add respective file tag if it's missing in the current note."
     (interactive)
-    (let ((tags (+org-notes-tags-read)))
+    (let ((tags (org-roam--extract-tags-prop
+                 (buffer-file-name
+                  (buffer-base-buffer)))))
       (when (and (seq-contains-p tags "People")
-                 (null (+org-buffer-prop-get "FILETAGS")))
-        (+org-buffer-prop-set
+                 (null (org-roam--extract-global-props-keyword
+                        '("FILETAGS"))))
+        (org-roam--set-global-prop
          "FILETAGS"
          (+org-notes--title-as-tag)))))
 
   (defun +org-notes--title-as-tag ()
     "Return title of the current note as tag."
     (+org-notes--title-to-tag (+org-buffer-prop-get "TITLE")))
-
-  (defun +org-notes-tags-read ()
-    "Return list of tags as set in the buffer."
-    (unless (+org-notes-buffer-p)
-      (user-error "Current buffer is not a note"))
-    (org-roam--extract-tags-prop (buffer-file-name (buffer-base-buffer))))
-
-  (defun +org-buffer-prop-get (name)
-    "Get a buffer property called NAME as a string."
-    (save-excursion
-      (widen)
-      (goto-char (point-min))
-      (when (re-search-forward (concat "^#\\+" name ": \\(.*\\)") (point-max) t)
-        (buffer-substring-no-properties
-         (match-beginning 1)
-         (match-end 1)))))
-
-  (defun +org-buffer-prop-set (name value)
-    "Set a buffer property called NAME to VALUE."
-    (save-excursion
-      (widen)
-      (goto-char (point-min))
-      (if (re-search-forward (concat "^#\\+" name ": \\(.*\\)") (point-max) t)
-          (replace-match (concat "#+" name ": " value))
-        ;; find the first line that doesn't begin with ':' or '#'
-        (let ((found))
-          (while (not (or found (eobp)))
-            (beginning-of-line)
-            (if (or (looking-at "^#")
-                    (looking-at "^:"))
-                (line-move 1 t)
-              (setq found t)))
-          (insert "#+" name ": " value "\n")))))
 #+end_src
 
 This function can be called interactively, but since I usually place the tag
@@ -162,19 +136,7 @@ end of that function.
   (defun +org-notes-tags-add ()
     "Add a tag to current note."
     (interactive)
-    (unless (+org-notes-buffer-p)
-      (user-error "Current buffer is not a note"))
-    (let* ((tags (seq-uniq
-                  (+seq-flatten
-                   (+seq-flatten
-                    (org-roam-db-query [:select tags :from tags])))))
-           (tag (completing-read "Tag: " tags)))
-      (when (string-empty-p tag)
-        (user-error "Tag can't be empty"))
-      (+org-buffer-prop-set
-       "ROAM_TAGS"
-       (combine-and-quote-strings (seq-uniq (cons tag (+org-notes-tags-read)))))
-      (org-roam-db--update-tags)
+    (when (org-roam-tag-add)
       (+org-notes-ensure-filetag)))
 #+end_src
 
