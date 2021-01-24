@@ -18,6 +18,10 @@ imagine multiple times, so here is a screencast.
 </div>
 #+END_EXPORT
 
+*[2021-01-24 Sun]* Since some of the functionality mentioned in the original
+article was merged to =org-roam=, all code is updated to reflect the current
+state of affairs.
+
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
@@ -35,12 +39,8 @@ tags lookup from [[http://localhost:8000/posts/2020-06-10-org-roam-tags.html][Or
         ((res (org-roam-insert))
          (path (plist-get res :path))
          (title (plist-get res :title))
-         (roam-tags (+seq-flatten
-                     (+seq-flatten
-                      (org-roam-db-query [:select tags
-                                                  :from tags
-                                                  :where (= file $s1)]
-                                         path)))))
+         (roam-tags (org-roam-with-file path nil
+                      (org-roam--extract-tags path))))
       (when (seq-contains-p roam-tags "People")
         (save-excursion
           (ignore-errors
