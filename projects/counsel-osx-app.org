@@ -1,7 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
-priority: 8
+priority: 4
 ---
 
 Emacs package for launching macOS application via counsel (ivy) interface.

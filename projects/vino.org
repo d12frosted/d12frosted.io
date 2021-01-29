@@ -1,7 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
-priority: 5
+priority: 2
 ---
 
 Wine cellar tracking in =org-mode=. It's your precious cantina! Uses

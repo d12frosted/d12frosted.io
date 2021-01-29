@@ -1,7 +1,7 @@
 ---
 languages: Emacs Lisp
 category: Emacs
-priority: 7
+priority: 4
 ---
 
 Emacs package that disables functionality to quit Emacs. Based on your addiction
