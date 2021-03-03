@@ -11,18 +11,23 @@ encountered an issue with visual garbage in the agenda buffer. Namely,
 explore the means to overcome this issue.
 
 #+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-roam-task-management-vol2-1.png" />
+<div class="post-image post-image-split">
+<img src="/images/org-roam-task-management-vol2-1.png" /><img src="/images/org-roam-task-management-vol2-2.png" />
 </div>
 #+END_EXPORT
+
+*Change Log:*
+
+- [2021-03-02 Tue]: Update category extraction function to use =TITLE= of the
+  note and enforce length limit. Kudos to [[https://github.com/real-or-random/][Tim Ruffing]] for the idea.
+- [2021-03-02 Tue]: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
-In order to get rid of the garbage, one can use the same approach as was used
-before with =CATEGORY= property, but apply it to the file itself (manually or
-using =org-set-property=).
+On of the simplest solutions is to mimic solution for headlines by setting
+=CATEGORY= property on the file level (manually or by using =org-set-property=).
 
 #+begin_src org
   :PROPERTIES:
@@ -48,12 +53,13 @@ using =org-set-property=).
 </div>
 #+END_EXPORT
 
-While this works, it is a manual labor. And in most cases we want the category
-to be filename without the id. Fortunately, we can help agenda to properly parse
-the category by modifying the value of =org-agenda-prefix-format=, which allows
-to specify how to render each line in the different agenda buffers (e.g. regular
-agenda, in the list of todo tasks etc). We are looking for the capability to
-evaluate arbitrary lisp expressions. The default value of this variable is
+While this works, it is a manual labor. And in most cases we want to use =TITLE=
+as =CATEGORY=, at least for agenda buffer. Fortunately, we can help agenda to
+properly parse the category by modifying the value of
+=org-agenda-prefix-format=, which allows to specify how to render each line in
+the different agenda buffers (e.g. regular agenda, in the list of todo tasks
+etc). We are looking for the capability to evaluate arbitrary lisp expressions.
+The default value of this variable is
 
 #+begin_src emacs-lisp
   ((agenda . " %i %-12:c%?-12t% s")
@@ -74,32 +80,43 @@ Instead of =c= we can use any expression.
 
 #+begin_src emacs-lisp
   (setq org-agenda-prefix-format
-        '((agenda . " %i %-12:(+org-entry-category)%?-12t% s")
-          (todo . " %i %-12:(+org-entry-category)")
-          (tags . " %i %-12:(+org-entry-category)")
-          (search . " %i %-12:(+org-entry-category)")))
+        '((agenda . " %i %-12(vulpea-agenda-category)%?-12t% s")
+          (todo . " %i %-12(vulpea-agenda-category) ")
+          (tags . " %i %-12(vulpea-agenda-category) ")
+          (search . " %i %-12(vaulpea-agenda-category) ")))
 
-  (defun +org-entry-category ()
-    "Get category of item at point.
+  (defun vulpea-agenda-category ()
+    "Get category of item at point for agenda.
 
-  Supports `org-roam' filenames by chopping prefix cookie."
-    (+string-chop-prefix-regexp
-     "^[0-9]+\\-"
-     (or (org-entry-get nil "CATEGORY")
-         (if buffer-file-name
-             (file-name-sans-extension
-              (file-name-nondirectory buffer-file-name))
-           ""))))
+  Category is defined by one of the following items:
 
-  ;; requires s.el
-  (defun +string-chop-prefix-regexp (prefix s)
-    "Remove PREFIX regexp if it is at the start of S."
-    (s-chop-prefix (car (s-match prefix s)) s))
+  - CATEGORY property
+  - TITLE keyword
+  - TITLE property
+  - filename without directory and extension
+
+  Usage example:
+
+    (setq org-agenda-prefix-format
+          '((agenda . \" %(vulpea-agenda-category) %?-12t %12s\")))
+
+  Refer to `org-agenda-prefix-format' for more information."
+    (let* ((file-name (when buffer-file-name
+                        (file-name-sans-extension
+                         (file-name-nondirectory buffer-file-name))))
+           (title (car-safe (org-roam--extract-titles-title)))
+           (category (org-get-category)))
+      (or (if (and
+               title
+               (string-equal category file-name))
+              title
+            category)
+          "")))
 #+end_src
 
 #+BEGIN_EXPORT html
 <div class="post-image">
-<img src="/images/org-roam-task-management-vol2-2.png" />
+<img src="/images/org-roam-task-management-vol2-3.png" />
 </div>
 #+END_EXPORT
 
@@ -107,6 +124,63 @@ Now if we remove the manually set =CATEGORY= property from both files we will
 get the same result with nicely parsed categories. Please note that these two
 approaches can be mixed. For example, if you wish to override the category, just
 set this property explicitly and call it a day.
+
+Additionally, it's easy to extend this function to truncate overly long
+categories (in the screenshot above, =Some project with ridiculously long title=
+and =Frodo Baggins= are examples of long categories). We will use [[https://github.com/magnars/s.el][s.el]] library
+to achieve this.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %(vulpea-agenda-category 12)%?-12t% s")
+          (todo . " %i %(vulpea-agenda-category 12) ")
+          (tags . " %i %(vulpea-agenda-category 12) ")
+          (search . " %i %(vaulpea-agenda-category 12) ")))
+
+  (defun vulpea-agenda-category (&optional len)
+    "Get category of item at point for agenda.
+
+  Category is defined by one of the following items:
+
+  - CATEGORY property
+  - TITLE keyword
+  - TITLE property
+  - filename without directory and extension
+
+  When LEN is a number, resulting string is padded right with
+  spaces and then truncated with ... on the right if result is
+  longer than LEN.
+
+  Usage example:
+
+    (setq org-agenda-prefix-format
+          '((agenda . \" %(vulpea-agenda-category) %?-12t %12s\")))
+
+  Refer to `org-agenda-prefix-format' for more information."
+    (let* ((file-name (when buffer-file-name
+                        (file-name-sans-extension
+                         (file-name-nondirectory buffer-file-name))))
+           (title (car-safe (org-roam--extract-titles-title)))
+           (category (org-get-category))
+           (result
+            (or (if (and
+                     title
+                     (string-equal category file-name))
+                    title
+                  category)
+                "")))
+      (if (numberp len)
+          (s-truncate len (s-pad-right len " " result))
+        result)))
+#+end_src
+
+#+BEGIN_EXPORT html
+<div class="post-image">
+<img src="/images/org-roam-task-management-vol2-4.png" />
+</div>
+#+END_EXPORT
+
+Now the agenda is clean.
 
 In the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][next article]] we are going to talk about tagging tasks related to a
 person. Stay tuned and keep roaming!
