@@ -18,9 +18,12 @@ imagine multiple times, so here is a screencast.
 </div>
 #+END_EXPORT
 
-*[2021-01-24 Sun]* Since some of the functionality mentioned in the original
-article was merged to =org-roam=, all code is updated to reflect the current
-state of affairs.
+*Change Log:*
+
+- [2021-01-24 Sun] Since some of the functionality mentioned in the original
+  article was merged to =org-roam=, all code is updated to reflect the current
+  state of affairs.
+- [2021-03-02 Tue]: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
 
 #+BEGIN_HTML
 <!--more-->
@@ -32,7 +35,7 @@ leveraging the return value, name manipulation from the [[https://d12frosted.io/
 tags lookup from [[http://localhost:8000/posts/2020-06-10-org-roam-tags.html][Org-roam tags]] article.
 
 #+begin_src emacs-lisp
-  (defun +org-notes-insert ()
+  (defun vulpea-insert ()
     "Insert a link to the note."
     (interactive)
     (when-let*
@@ -57,21 +60,21 @@ that asks for the note to insert. Then we parse result and query the roam tags
 to understand if the inserted note is related to a person. And if the answer is
 yes, we use =org-set-tags= to automatically tag the heading.
 
-In my case, implementation of =+org-notes--title-to-tag= is the following.
+In my case, implementation of =vulpea--title-to-tag= is the following.
 
 #+begin_src emacs-lisp
-  (defun +org-notes--title-to-tag (title)
+  (defun vulpea--title-to-tag (title)
     "Convert TITLE to tag."
     (concat "@" (s-replace " " "" title)))
 #+end_src
 
 And that's it! Keep in mind, that with this approach automatic tagging does not
 happen when mentioning people using company interface (e.g. using
-=org-roam-company=) and when using =+org-notes-insert= to mention someone
-unknown to your system (e.g. when you create a new file). Both of the 'features'
-can be implemented using hooks.
+=org-roam-company=) and when using =vulpea-insert= to mention someone unknown to
+your system (e.g. when you create a new file). Both of the 'features' can be
+implemented using hooks.
 
-P.S. =+org-notes-insert= can be modified to skip tagging when called with
+P.S. =vulpea-insert= can be modified to skip tagging when called with
 universal argument. Feel free to reach me if you need help with that!
 
 * References
