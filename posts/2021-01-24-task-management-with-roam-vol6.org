@@ -27,6 +27,10 @@ Believe me, intro is longer than the content!
 </div>
 #+END_EXPORT
 
+*Change Log:*
+
+- [2021-03-02 Tue]: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
+
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
@@ -34,12 +38,12 @@ Believe me, intro is longer than the content!
 Long story short, here is the function you can bind or call by name using =M-x=:
 
 #+begin_src emacs-lisp
-  (defun +agenda/person ()
+  (defun vulpea-agenda-person ()
     "Show main `org-agenda' view."
     (interactive)
     (let* ((person (vulpea-select
                     "Person"
-                    nil nil
+                    :filter-fn
                     (lambda (note)
                       (seq-contains-p (vulpea-note-tags note)
                                       "people"))))
@@ -50,10 +54,10 @@ Long story short, here is the function you can bind or call by name using =M-x=:
                      :from titles
                      :where (= file $s1)]
                     (vulpea-note-path person))))
-           (tags (seq-map #'+org-notes--title-to-tag names))
-           (query (string-join tags "|"))
-           (org-agenda-overriding-arguments (list t query)))
-      (org-agenda nil "M")))
+           (tags (seq-map #'vulpea--title-to-tag names))
+           (query (string-join tags "|")))
+      (dlet ((org-agenda-overriding-arguments (list t query)))
+        (org-agenda nil "M"))))
 #+end_src
 
 Now some explanations.
@@ -69,14 +73,15 @@ Now some explanations.
    want to see tasks tagged as =@Mr.Forod= and =@FrodoBaggins= at the same time.
    It's the same person after all (don't ask me about Gollum, better use =M-x
    doctor=)!
-3. Now we simply convert those names into tags using =+org-notes--title-to-tag=
+3. Now we simply convert those names into tags using =vulpea--title-to-tag=
    from [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Vol 4]].
 4. Then we join the tags using =|= separator into single query string.
 5. The last step is to execute =org-agenda= with =M= argument (match for tags,
    but list only =TODO= items). In order to pass a query to relevant agenda
    function, we use =org-agenda-overriding-arguments=. Not sure if it's
    documented anywhere, but you can read the sources of =org-agenda= to figure
-   out how to use it.
+   out how to use it. =dlet= here is used for dynamic binding. If you are not
+   using lexical scope, you can use regular =let= here.
 
 That's it! Now see it in action, again.
 
