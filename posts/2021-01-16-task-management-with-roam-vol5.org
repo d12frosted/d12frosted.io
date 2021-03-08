@@ -24,6 +24,9 @@ to describe.
 *Change Log:*
 
 - [2021-03-02 Tue]: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
+- [2021-03-08 Mon]: [[https://github.com/Whil-][Gustav]] shared that =org-element-map= has an optional
+  parameter =first-match= that works like =seq-find=, meaning that
+  =vulpea-project-p= can be optimised.
 
 #+BEGIN_HTML
 <!--more-->
@@ -54,14 +57,13 @@ parsing functions.
   TODO entries marked as done are ignored, meaning the this
   function returns nil if current buffer contains only completed
   tasks."
-    (seq-find                                 ; (3)
-     (lambda (type)
-       (eq type 'todo))
-     (org-element-map                         ; (2)
+    (org-element-map                          ; (2)
          (org-element-parse-buffer 'headline) ; (1)
          'headline
        (lambda (h)
-         (org-element-property :todo-type h)))))
+         (eq (org-element-property :todo-type h)
+             'todo))
+       nil 'first-match))                     ; (3)
 #+end_src
 
 This might look a little bit too much, so let me explain the code step by step.
@@ -74,8 +76,11 @@ This might look a little bit too much, so let me explain the code step by step.
    [[https://orgmode.org/worg/dev/org-element-api.html#org658999f][contains a property]] we are interested in - =:todo-type=, which returns the
    type of =TODO= keyword according to =org-todo-keywords= - ='done=, ='todo= or
    =nil= (when keyword is not present).
-3. Now all we have to do is to check if this list contains at least one keyword
-   with ='todo= type.
+3. Now all we have to do is to check if the buffer list contains at least one
+   keyword with ='todo= type. We could use =seq=find= on the result of
+   =org-element-map=, but it turns out that it provides an optional
+   =first-match= argument that can be used for our needs. Thanks [[https://github.com/Whil-][Gustav]] for
+   pointing that out.
 
 Now we need to use this function to add or to remove =Project= tag from a note.
 I think that it should be done in two places - when visiting a note and in
