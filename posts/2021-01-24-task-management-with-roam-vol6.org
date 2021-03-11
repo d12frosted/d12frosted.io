@@ -29,7 +29,7 @@ Believe me, intro is longer than the content!
 
 *Change Log:*
 
-- [2021-03-02 Tue]: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
+- ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
 
 #+BEGIN_HTML
 <!--more-->

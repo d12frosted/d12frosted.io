@@ -18,9 +18,9 @@ explore the means to overcome this issue.
 
 *Change Log:*
 
-- [2021-03-02 Tue]: Update category extraction function to use =TITLE= of the
+- ~[2021-03-02 Tue]~: Update category extraction function to use =TITLE= of the
   note and enforce length limit. Kudos to [[https://github.com/real-or-random/][Tim Ruffing]] for the idea.
-- [2021-03-02 Tue]: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
+- ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
 
 #+BEGIN_HTML
 <!--more-->
