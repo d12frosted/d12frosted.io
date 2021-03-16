@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Fish: notify me when you finish</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Getting notifications when the command finishes in Fish" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Getting notifications when the command finishes in Fish">
+    <meta property="og:description" content="Getting notifications when the command finishes in Fish">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">Fish: notify me when you finish</h1>
+    <div class="date"><span>June 13, 2017</span></div>
+    <div class="tags"><span>(<a href="../tags/fish.html">fish</a>, <a href="../tags/environment.html">environment</a>)</span></div>
+    <article>
+      <section>
+        <div class="post-image post-image-half">
+<img src="../images/b98438ae-65f5-11e7-975f-0bbc94238d24.png" />
+</div>
+
+<p>Have you ever been in a situation when you called <code>git fetch</code>, stared at the screen for several seconds and then switched to the browser to read something ‘useful’ while <code>git</code> fetches updates? And in five minutes you’re like ‘Oh wait, I was doing something important, no?’. Rings the bell, doesn’t it?</p>
+<!--more-->
+
+<p>At some point in my life<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, I decided to fix it. The idea is to send a notification whenever fish completes executing a long-running command. It is part of <a href="https://github.com/d12frosted/environment/tree/master/fish">my configurations</a> for a long time and I decided to share it more openly only now. Shame!</p>
+<p>Fish already exposes variable <code>CMD_DURATION</code> which returns the duration of previous command execution in milliseconds. So it’s easy to hack a solution that we can put into <code>fish_prompt</code> function.</p>
+<pre class="fish"><code>function __d12_prompt__check_duration
+  if test $CMD_DURATION
+    if test $CMD_DURATION -ge $cmd_notification_threshold
+      __d12_prompt__on_duration_exceeded $CMD_DURATION
+      __d12_prompt__notify_completion $CMD_DURATION
+    end
+  end
+  set CMD_DURATION 0
+end
+
+function __d12_prompt__on_duration_exceeded -a duration
+  set_color $fish_color_command
+  echo -esn '  ~&gt; duration: '
+  set_color $fish_color_param
+  echo -es $duration ' ms'
+  set_color normal
+end
+
+function __d12_prompt__notify_completion -a duration
+  if command -v terminal-notifier &gt; /dev/null
+    echo -es 'Finished in ' $duration ' ms' | terminal-notifier
+  end
+end
+</code></pre>
+<p>Just call <code>__d12_prompt__check_duration</code> at the very beginning<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> of <code>fish_promt</code>. Then set the value of <code>cmd_notification_threshold</code> to the minimal amount of milliseconds before notification is sent. Good place for setting that value is <code>config.fish</code>.</p>
+<p>Good luck, and don’t procrastinate too much.</p>
+<p>P. S. Current implementation of <code>__d12_prompt__notify_completion</code> targets macOS users. Make sure you modify it so it works well on your system as well.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Just right after I realised that I have failed to master meditation techniques that would help me to stare into the terminal window until command execution completes without being distracted by other things.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>but after you cache the <code>$status</code> value.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2017-06-13-Fish-notify-me-when-you-finish.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Task management with org-roam Vol. 2: Categories</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Automatic category extraction from org-roam" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Automatic category extraction from org-roam">
+    <meta property="og:description" content="Automatic category extraction from org-roam">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">Task management with org-roam Vol. 2: Categories</h1>
+    <div class="date"><span>June 24, 2020</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+    <article>
+      <section>
+        <p>In the <a href="https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html">previous article</a> we set a ground for moving tasks to <a href="https://github.com/org-roam/org-roam">org-roam</a>, and encountered an issue with visual garbage in the agenda buffer. Namely, <code>org-roam</code> file id as part of the category. In this article, we are going to explore the means to overcome this issue.</p>
+<div class="post-image post-image-split">
+<img src="../images/org-roam-task-management-vol2-1.png" /><img src="../images/org-roam-task-management-vol2-2.png" />
+</div>
+
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-03-02 Tue]</code>: Update category extraction function to use <code>TITLE</code> of the note and enforce length limit. Kudos to <a href="https://github.com/real-or-random/">Tim Ruffing</a> for the idea.</li>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+</ul>
+<!--more-->
+
+<p>On of the simplest solutions is to mimic solution for headlines by setting <code>CATEGORY</code> property on the file level (manually or by using <code>org-set-property</code>).</p>
+<pre class="org"><code>:PROPERTIES:
+:CATEGORY:               emacs-plus
+:END:
+#+TITLE: emacs-plus
+
+...
+</code></pre>
+<pre class="org"><code>:PROPERTIES:
+:CATEGORY:               blog
+:END:
+#+TITLE: Blog
+
+...
+</code></pre>
+<div class="post-image">
+<img src="../images/org-roam-task-management-vol2-2.png" />
+</div>
+
+<p>While this works, it is a manual labor. And in most cases we want to use <code>TITLE</code> as <code>CATEGORY</code>, at least for agenda buffer. Fortunately, we can help agenda to properly parse the category by modifying the value of <code>org-agenda-prefix-format</code>, which allows to specify how to render each line in the different agenda buffers (e.g. regular agenda, in the list of todo tasks etc). We are looking for the capability to evaluate arbitrary lisp expressions. The default value of this variable is</p>
+<div class="sourceCode" id="cb3" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1"></a>((agenda . <span class="st">&quot; %i %-12:c%?-12t% s&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a> (todo . <span class="st">&quot; %i %-12:c&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a> (tags . <span class="st">&quot; %i %-12:c&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a> (<span class="kw">search</span> . <span class="st">&quot; %i %-12:c&quot;</span>))</span></code></pre></div>
+<p>The interesting part is <code>%-12:c</code> which means:</p>
+<ul>
+<li>Give the category (because of <code>c</code>) a 12 chars wide field, padded with whitespace on the right (because of <code>-</code>).</li>
+<li>Append a colon if there is a category (because of <code>:</code>).</li>
+<li>Finally, append the category of the item, or as given by the <code>CATEGORY</code> property, or derived from the file name.</li>
+</ul>
+<p>Instead of <code>c</code> we can use any expression.</p>
+<div class="sourceCode" id="cb4" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1"></a>(<span class="kw">setq</span> org-agenda-prefix-format</span>
+<span id="cb4-2"><a href="#cb4-2"></a>      '((agenda . <span class="st">&quot; %i %-12(vulpea-agenda-category)%?-12t% s&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>        (todo . <span class="st">&quot; %i %-12(vulpea-agenda-category) &quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>        (tags . <span class="st">&quot; %i %-12(vulpea-agenda-category) &quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>        (<span class="kw">search</span> . <span class="st">&quot; %i %-12(vaulpea-agenda-category) &quot;</span>)))</span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a>(<span class="kw">defun</span><span class="fu"> vulpea-agenda-category </span>()</span>
+<span id="cb4-8"><a href="#cb4-8"></a>  <span class="st">&quot;Get category of item at point for agenda.</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="st">Category is defined by one of the following items:</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="st">- CATEGORY property</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="st">- TITLE keyword</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="st">- TITLE property</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="st">- filename without directory and extension</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="st">Usage example:</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="st">  (setq org-agenda-prefix-format</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="st">        '((agenda . </span><span class="sc">\&quot;</span><span class="st"> %(vulpea-agenda-category) %?-12t %12s</span><span class="sc">\&quot;</span><span class="st">)))</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="st">Refer to `org-agenda-prefix-format' for more information.&quot;</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a>  (<span class="kw">let*</span> ((file-name (<span class="kw">when</span> buffer-file-name</span>
+<span id="cb4-24"><a href="#cb4-24"></a>                      (file-name-sans-extension</span>
+<span id="cb4-25"><a href="#cb4-25"></a>                       (file-name-nondirectory buffer-file-name))))</span>
+<span id="cb4-26"><a href="#cb4-26"></a>         (title (car-safe (org-roam--extract-titles-title)))</span>
+<span id="cb4-27"><a href="#cb4-27"></a>         (category (org-get-category)))</span>
+<span id="cb4-28"><a href="#cb4-28"></a>    (<span class="kw">or</span> (<span class="kw">if</span> (<span class="kw">and</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a>             title</span>
+<span id="cb4-30"><a href="#cb4-30"></a>             (<span class="kw">string-equal</span> category file-name))</span>
+<span id="cb4-31"><a href="#cb4-31"></a>            title</span>
+<span id="cb4-32"><a href="#cb4-32"></a>          category)</span>
+<span id="cb4-33"><a href="#cb4-33"></a>        <span class="st">&quot;&quot;</span>)))</span></code></pre></div>
+<div class="post-image">
+<img src="../images/org-roam-task-management-vol2-3.png" />
+</div>
+
+<p>Now if we remove the manually set <code>CATEGORY</code> property from both files we will get the same result with nicely parsed categories. Please note that these two approaches can be mixed. For example, if you wish to override the category, just set this property explicitly and call it a day.</p>
+<p>Additionally, it’s easy to extend this function to truncate overly long categories (in the screenshot above, <code>Some project with ridiculously long title</code> and <code>Frodo Baggins</code> are examples of long categories). We will use <a href="https://github.com/magnars/s.el">s.el</a> library to achieve this.</p>
+<div class="sourceCode" id="cb5" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1"></a>(<span class="kw">setq</span> org-agenda-prefix-format</span>
+<span id="cb5-2"><a href="#cb5-2"></a>      '((agenda . <span class="st">&quot; %i %(vulpea-agenda-category 12)%?-12t% s&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>        (todo . <span class="st">&quot; %i %(vulpea-agenda-category 12) &quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>        (tags . <span class="st">&quot; %i %(vulpea-agenda-category 12) &quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>        (<span class="kw">search</span> . <span class="st">&quot; %i %(vaulpea-agenda-category 12) &quot;</span>)))</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a>(<span class="kw">defun</span><span class="fu"> vulpea-agenda-category </span>(&amp;optional len)</span>
+<span id="cb5-8"><a href="#cb5-8"></a>  <span class="st">&quot;Get category of item at point for agenda.</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="st">Category is defined by one of the following items:</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="st">- CATEGORY property</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="st">- TITLE keyword</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="st">- TITLE property</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="st">- filename without directory and extension</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="st">When LEN is a number, resulting string is padded right with</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="st">spaces and then truncated with ... on the right if result is</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="st">longer than LEN.</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="st">Usage example:</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="st">  (setq org-agenda-prefix-format</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="st">        '((agenda . </span><span class="sc">\&quot;</span><span class="st"> %(vulpea-agenda-category) %?-12t %12s</span><span class="sc">\&quot;</span><span class="st">)))</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="st">Refer to `org-agenda-prefix-format' for more information.&quot;</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a>  (<span class="kw">let*</span> ((file-name (<span class="kw">when</span> buffer-file-name</span>
+<span id="cb5-28"><a href="#cb5-28"></a>                      (file-name-sans-extension</span>
+<span id="cb5-29"><a href="#cb5-29"></a>                       (file-name-nondirectory buffer-file-name))))</span>
+<span id="cb5-30"><a href="#cb5-30"></a>         (title (car-safe (org-roam--extract-titles-title)))</span>
+<span id="cb5-31"><a href="#cb5-31"></a>         (category (org-get-category))</span>
+<span id="cb5-32"><a href="#cb5-32"></a>         (result</span>
+<span id="cb5-33"><a href="#cb5-33"></a>          (<span class="kw">or</span> (<span class="kw">if</span> (<span class="kw">and</span></span>
+<span id="cb5-34"><a href="#cb5-34"></a>                   title</span>
+<span id="cb5-35"><a href="#cb5-35"></a>                   (<span class="kw">string-equal</span> category file-name))</span>
+<span id="cb5-36"><a href="#cb5-36"></a>                  title</span>
+<span id="cb5-37"><a href="#cb5-37"></a>                category)</span>
+<span id="cb5-38"><a href="#cb5-38"></a>              <span class="st">&quot;&quot;</span>)))</span>
+<span id="cb5-39"><a href="#cb5-39"></a>    (<span class="kw">if</span> (<span class="kw">numberp</span> len)</span>
+<span id="cb5-40"><a href="#cb5-40"></a>        (s-truncate len (s-pad-right len <span class="st">&quot; &quot;</span> result))</span>
+<span id="cb5-41"><a href="#cb5-41"></a>      result)))</span></code></pre></div>
+<div class="post-image">
+<img src="../images/org-roam-task-management-vol2-4.png" />
+</div>
+
+<p>Now the agenda is clean.</p>
+<p>In the <a href="https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html">next article</a> we are going to talk about tagging tasks related to a person. Stay tuned and keep roaming!</p>
+<h1 id="references">References</h1>
+<ul>
+<li><code>org-roam</code> documentation on <a href="https://github.com/org-roam/org-roam">GitHub</a>.</li>
+<li><code>org-mode</code> documentation on the <a href="https://orgmode.org">official site</a>.</li>
+<li>personal configurations on <a href="https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el">GitHub</a>.</li>
+</ul>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-06-24-task-management-with-roam-vol2.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

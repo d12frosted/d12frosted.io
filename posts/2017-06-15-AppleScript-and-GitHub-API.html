@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>AppleScript and the GitHub API</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Using GitHub API from AppleScript" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Using GitHub API from AppleScript">
+    <meta property="og:description" content="Using GitHub API from AppleScript">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">AppleScript and the GitHub API</h1>
+    <div class="date"><span>June 15, 2017</span></div>
+    <div class="tags"><span>(<a href="../tags/applescript.html">applescript</a>, <a href="../tags/macos.html">macos</a>)</span></div>
+    <article>
+      <section>
+        <p>AppleScript is a powerful scripting language that allows to directly control scriptable applications and some parts of macOS. The language itself can be a little bit frustrating for those who are not familiar with natural language programming paradigm. For example, with AppleScript, you can <code>tell application
+"Preview" to quit</code> or ask someone to <code>print pages 1 thru 5 of document 2</code>.</p>
+<p>But my goal is not to promote or demote AppleScript. Instead, I wish to share a little script that I’ve fetched while <a href="file:///being-an-org-mode-addict">experimenting</a> with <a href="https://www.omnigroup.com/omnifocus">OmniFocus 2</a>. I hate to manually capture issues that I care about, so I started to work on a script that takes URL from an active tab in Safari and sends it to OmniFocus into the right project with useful title and body.</p>
+<p>For example, I want <a href="https://github.com/d12frosted/flyspell-correct/issues/30">d12frosted/flyspell-correct#30</a> to go into the <code>flyspell-correct</code> project with title and description taken from that issue.</p>
+<!--more-->
+
+<p>Without going into too many details about irrelevant parts of that script, I just wish to share the part that communicates with GitHub. Note that this script is not part of any repository and I doubt that it ever will. Mostly because it’s unfinished and I don’t want to maintain full API support. And any feedback is welcome (I am so very new to AppleScript!).</p>
+<hr />
+
+<p>Here is an example of getting the title of <code>d12frosted/private-repository#42</code>. First we setup <code>GitHubClient</code> by setting the path to <a href="https://stedolan.github.io/jq/">jq</a> and by setting credentials. Then we ask it to get a specific issue and select from it the title. Select verb accepts any(?) <code>jq</code> command. The latest verb <code>commit</code> does all the dirty job - sends a request to GitHub and then pipes the result to <code>jq</code>.</p>
+<pre><code>property jqPath : &quot;/usr/local/bin/jq&quot;
+property githubUser : &quot;d12frosted&quot;
+property githubAccessToken : &quot;ACCESS_TOKEN&quot;
+
+tell GitHubClient
+  setupJQ(jqPath)
+  authorise(githubUser, githubAccessToken)
+  getIssue(&quot;d12frosted&quot;, &quot;private-repository&quot;, 42)
+  select(&quot;.title&quot;)
+  commit()
+end tell
+</code></pre>
+<p>Here is the implementation of <code>GitHubClient</code>.</p>
+<pre><code>property _username : missing value
+property _access_token : missing value
+property _api_url : missing value
+property _method : missing value
+property _selector : missing value
+property _jq_path : &quot;jq&quot;
+
+on authorise(username, access_token)
+  set _username to username
+  set _access_token to access_token
+end authorise
+
+on setupJQ(path)
+  set _jq_path to path
+end setupJQ
+
+on select (selector)
+  set _selector to selector
+end select
+
+on commit()
+  local prefix, cmd
+  set prefix to &quot;export LANG='&quot; &amp; user locale of (system info) &amp; &quot;.UTF-8'; shopt -s compat31; &quot;
+  set cmd to &quot;curl &quot;
+  if _username is not missing value and _access_token is not missing value then
+    set cmd to cmd &amp; &quot;-u &quot; &amp; quoted form of (_username &amp; &quot;:&quot; &amp; _access_token) &amp; &quot; &quot;
+  end if
+  set cmd to cmd &amp; quoted form of _api_url
+  if _selector is not missing value then
+    set cmd to cmd &amp; &quot; | &quot; &amp; _jq_path &amp; &quot; &quot; &amp; quoted form of _selector
+  end if
+  tell me to do shell script prefix &amp; cmd
+  return result
+end commit
+
+on apiGET(endpoint)
+  set _method to &quot;GET&quot;
+  set _api_url to &quot;https://api.github.com/&quot; &amp; endpoint
+end apiGET
+</code></pre>
+<p>This is enough to implement different methods like <code>getIssue</code> or <code>getRepoContributors</code>.</p>
+<pre><code># API - Repos
+# https://developer.github.com/v3/repos
+
+on getMyRepos()
+  apiGET(&quot;user/repos&quot;)
+end getMyRepos
+
+on getRepos(owner)
+  apiGET(&quot;users/&quot; &amp; owner &amp; &quot;/repos&quot;)
+end getRepos
+
+on getOrgRepos(org)
+  apiGET(&quot;orgs/&quot; &amp; org &amp; &quot;/repos&quot;)
+end getOrgRepos
+
+on getRepo(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo)
+end getRepo
+
+on getRepoContributors(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/contributors&quot;)
+end getRepoContributors
+
+on getRepoLanguages(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/languages&quot;)
+end getRepoLanguages
+
+on getRepoTags(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/tags&quot;)
+end getRepoTags
+
+# apiGET - Issues
+# https://developer.github.com/v3/issues
+
+on getIssue(owner, repo, issueNumber)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/issues/&quot; &amp; issueNumber)
+end getIssue
+</code></pre>
+<p>And so on.</p>
+<hr />
+
+<p>While this implementation works for me, it has several drawbacks.</p>
+<ul>
+<li>If you wish to get several values from API call, you have to call <code>commit</code> for every <code>select</code> verb. It means that the same request will be sent multiple times.</li>
+<li><code>GitHubClient</code> doesn’t support any other authentication method except for login-pass(token) pair.</li>
+</ul>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2017-06-15-AppleScript-and-GitHub-API.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

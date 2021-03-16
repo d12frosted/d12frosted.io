@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Task management with org-roam Vol. 1: Path to Roam</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Moving tasks to org-roam" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Moving tasks to org-roam">
+    <meta property="og:description" content="Moving tasks to org-roam">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">Task management with org-roam Vol. 1: Path to Roam</h1>
+    <div class="date"><span>June 23, 2020</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+    <article>
+      <section>
+        <p><a href="https://orgmode.org">org-mode</a> is a simple outliner for note taking and list management. It <a href="https://d12frosted.io/posts/2016-12-20-Being-an-org-mode-addict.html">doesn’t impose</a> any complex features on users. This is something users excel at by themselves. My suggestion is to continue this tradition and discover task management capabilities in <a href="https://github.com/org-roam/org-roam">org-roam</a>, an <a href="https://orgmode.org">org-mode</a> extension for non-hierarchical notes management.</p>
+<div class="post-image">
+<img src="../images/org-roam-task-management-vol1-3.png" />
+</div>
+
+<!--more-->
+
+<p>Since org-mode gives a lot of freedom, everyone implements tasks management system differently. In the nutshell, most of the implementations I’ve seen consist of the following elements.</p>
+<ul>
+<li>Task - the simplest actionable item with some <code>TODO</code> state.</li>
+<li>Project - a <code>TODO</code> item with outcome requiring multiple steps to achieve it.</li>
+<li>Meta project - long lasting project without a final outcome. It consists of projects or tasks. Think of it as of an area or a category. For example, personal blog is a meta project, as it doesn’t have any terminating outcome. It does have projects with specific outcome (like setting up your blog or writing a post) or simple tasks (like renewing SSL certificate), but the blog itself doesn’t have an outcome.</li>
+<li>Resource - a person, a tool, a location or whatever possibly related to a task. In plain org-mode usually implemented as a tag.</li>
+</ul>
+<p>Take a look at the following example of <code>org-mode</code> file with all these elements.</p>
+<pre class="org"><code>#+TITLE: Work
+
+* emacs-plus
+:PROPERTIES:
+:CATEGORY:               emacs-plus
+:END:
+
+Emacs Plus is [[https://www.gnu.org/software/emacs/emacs.html][→ GNU Emacs]]
+formulae for macOS [[https://brew.sh][→ Homebrew]] package manager. It offers a
+wide rage of extra functionality over regular
+[[https://formulae.brew.sh/formula/emacs#default][→ Emacs]] package. Emacs Plus
+intent is to give the most of 'plus' stuff by default, leaving only
+controversial options as opt-in.
+
+** TODO Restore icons selection for =emacs-plus@26=          :@FrodoBaggins:
+Frodo Baggins volunteered to help with this.
+
+** TODO [0/3] Automate bottle producing                            :PROJECT:
+*** TODO Create a project on Bintray
+*** TODO Investigate if =brew test-bot= can be used for =emacs-plus=
+*** TODO Write a CI job that creates and uploads bottles
+
+* Blog
+:PROPERTIES:
+:CATEGORY:               blog
+:END:
+
+https://d12frosted.io
+
+** TODO Write a post about org-roam and agenda
+** TODO [0/2] Get rid of embedded HTML for images in posts         :PROJECT:
+*** TODO Write a custom handler of image links
+This should transform link to images into proper HTML.
+
+#+begin_example
+  &lt;div class=&quot;post-image post-image&quot;&gt;
+  &lt;img src=&quot;/images/some-image.png&quot; /&gt;
+  &lt;/div&gt;
+#+end_example
+
+*** TODO Replace all image exports by regular org links
+</code></pre>
+<div class="post-image post-image-split">
+<img src="../images/org-roam-task-management-vol1-1.png" /><img src="../images/org-roam-task-management-vol1-2.png" />
+</div>
+
+<p>As you can see, it has 2 meta projects: <code>emacs-plus</code> and personal blog, each containing a task and a project. Meta projects have their own category property (set by hand or using <code>org-set-property</code> which is bound to <code>C-c C-x p</code> by default), so in agenda view one can quickly distinguish (and filter) tasks from different meta projects (for example, using <code>org-agenda-filter-by-category</code> which is bound to <code>&lt;</code> by default).</p>
+<div class="post-image">
+<img src="../images/org-agenda-filter-by-category.gif" />
+</div>
+
+<p>Formally (and technically) projects might be defined as a <a href="http://doc.norang.ca/org-mode.html#Projects">task having sub-tasks</a>, but in this rare case I vote for simplicity - project is a task tagged as <code>PROJECT</code>.</p>
+<p>When a task relates to a person or some location, I tag it respectively, just use <code>@</code> symbol as a prefix to distinguish from utilitarian tags. Agenda helps to quickly find all tasks with specific tag. Use <code>M-x org-agenda m</code> or <code>M-x
+org-agenda M</code> (to list only TODO items).</p>
+<div class="post-image">
+<img src="../images/org-agenda-filter-by-tags.gif" />
+</div>
+
+<p>With <code>org-roam</code> it makes sense to create a separate file for each meta project. In the endless debate ‘many small’ vs ‘few big’ org files, <code>org-roam</code> favours the former approach (though even this is debatable).</p>
+<pre class="org"><code>#+TITLE: emacs-plus
+
+Emacs Plus is [[https://www.gnu.org/software/emacs/emacs.html][→ GNU Emacs]] formulae for macOS [[https://brew.sh][→ Homebrew]] package manager. It
+offers a wide rage of extra functionality over regular [[https://formulae.brew.sh/formula/emacs#default][→ Emacs]] package. Emacs
+Plus intent is to give the most of 'plus' stuff by default, leaving only
+controversial options as opt-in.
+
+* Tasks
+** TODO Restore icons selection for =emacs-plus@26=          :@FrodoBaggins:
+Frodo Baggins volunteered to help with this.
+
+** TODO [0/3] Automate bottle producing                            :PROJECT:
+*** TODO Create a project on Bintray
+*** TODO Investigate if =brew test-bot= can be used for =emacs-plus=
+*** TODO Write a CI job that creates and uploads bottles
+</code></pre>
+<pre class="org"><code>#+TITLE: Blog
+
+https://d12frosted.io
+
+* Tasks
+** TODO Write a post about org-roam and agenda
+** TODO [0/2] Get rid of embedded HTML for images in posts         :PROJECT:
+*** TODO Write a custom handler of image links
+This should transform link to images into proper HTML.
+
+#+begin_example
+  &lt;div class=&quot;post-image post-image&quot;&gt;
+  &lt;img src=&quot;/images/some-image.png&quot; /&gt;
+  &lt;/div&gt;
+#+end_example
+
+*** TODO Replace all image exports by regular org links
+</code></pre>
+<div class="post-image post-image-split">
+<img src="../images/org-roam-task-management-vol1-3.png" /><img src="../images/org-roam-task-management-vol1-4.png" />
+</div>
+
+<div class="post-image">
+<img src="../images/org-roam-task-management-vol1-5.png" />
+</div>
+
+<p>So far the transition was simple. However as you can see, in agenda buffer the inferred category contains garbage - note id.</p>
+<p>In the <a href="https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html">next article</a> we are going to explore the means to fix the agenda buffer from the unwanted visual garbage. Stay tuned!</p>
+<h1 id="references">References</h1>
+<ul>
+<li><code>org-roam</code> documentation on <a href="https://github.com/org-roam/org-roam">GitHub</a>.</li>
+<li><code>org-mode</code> documentation on the <a href="https://orgmode.org">official site</a>.</li>
+<li><a href="http://doc.norang.ca/org-mode.html#Projects">Org Mode - Organize Your Life In Plain Text!</a> by Bernt Hansen.</li>
+</ul>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-06-23-task-management-with-roam-vol1.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

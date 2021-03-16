@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>emacs-plus: current state</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Overview of current state of emacs-plus project" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Overview of current state of emacs-plus project">
+    <meta property="og:description" content="Overview of current state of emacs-plus project">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">emacs-plus: current state</h1>
+    <div class="date"><span>January  8, 2020</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/emacs-plus.html">emacs-plus</a>)</span></div>
+    <article>
+      <section>
+        <p>Not everyone knows, but emacs-plus is almost an April Fool’s joke that was late for 1 day. Its <a href="https://github.com/d12frosted/homebrew-emacs-plus/commit/6c85ae34d2649512a3088207b5f2a81c23cd8630">initial release</a> was on 2nd April 2016 and the only feature it had compared to the official Emacs formula back in the day was Spacemacs icon (installed by default). Homebrew maintainers didn’t want to increase the complexity of the Emacs formula, so I’ve put that burden on myself, created a tap with one additional icon and after several years info command for <code>emacs-plus</code> prints a wall of options.</p>
+<p>I am very happy to see so many users of this feature-inclusive (and sometimes experimental) formula. I am grateful to all of you. I would’ve abandoned this project a year ago if it would not you! And I think it’s fair to (in)formally share the current state of the project and shed some light on my plans.</p>
+<!--more-->
+
+<h2 id="the-problem">The problem</h2>
+<p>During the last year (or maybe even more), <code>emacs-plus</code> overgrown with issues. Here is my top list.</p>
+<ol>
+<li>Experimental <code>xwidgets</code> build was breaking time to time and only thanks to users (mostly <a href="https://github.com/agzam">Ag Ibragimov</a>) I would acknowledge it.</li>
+<li>While I state that <code>HEAD</code> builds are not supported, I still want this option to work. First of all, for Emacs users to easily get the latest features. And secondly, for Emacs maintainers to get feedback from the users.</li>
+<li>Patches are located outside of the project and their destiny is unclear.</li>
+<li>It’s hard to contribute a new patch or a patch fix inside the <code>emacs-plus</code> repository, because you have to mess with the URLs and branch names.</li>
+<li>Travis builds are very slow. The default build takes 7 minutes, from sources - 13 minutes, build HEAD was impossible. I’d like to test much more build options and their combination.</li>
+<li>Too many options are given to the users, which kind of contradicts my initial idea.</li>
+</ol>
+<p>When it comes to build failures, all of them can be divided into two categories - patch application failure or upstream issue.</p>
+<h2 id="visibility-and-stability">Visibility and stability</h2>
+<p>In order to address the named issues, I’ve performed the following actions.</p>
+<p>I moved from Travis to GitHub Workflows, which gave such a decent boost in compiling time. It also enabled me to add the <code>HEAD</code> and <code>xwidgets</code> options to the build matrix. I would love to add <code>x11</code> as well, but I didn’t figure out how to setup XQuartz on build machines. I haven’t really measured the build time, but here are some examples that I fetched from the build history. Also I’ve heard that Travis improved their machines so more calculating power is given to the users now.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Options</th>
+<th>Travis</th>
+<th>GitHub</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>6m 30s</td>
+<td>3m 14s</td>
+</tr>
+<tr class="even">
+<td><code>--with-no-titlebar</code></td>
+<td>11m 16s</td>
+<td>5m 18s</td>
+</tr>
+<tr class="odd">
+<td><code>--HEAD</code></td>
+<td>-</td>
+<td>11m 18s</td>
+</tr>
+<tr class="even">
+<td><code>--HEAD --with-xwidgets</code></td>
+<td>-</td>
+<td>11m 15s</td>
+</tr>
+</tbody>
+</table>
+<p>This gives me better visibility on the build breakages (both when patch application fails or it’s because of the upstream issue).</p>
+<p>All of the used patches were moved to the <code>emacs-plus</code> repository, so they are always with formula. And I added support for running builds on CI with patches from PR.</p>
+<p>And in order to better maintain the patches I’ve created <a href="https://github.com/d12frosted/emacs-plus-basis">emacs-plus-basis</a> repository, which is basically a fork of Emacs repository with patches applied on top. Everyday CI fetches the latest updates from the upstream and applies the patches on top. And if it fails, I get a notification. So it gives me visibility of patch application failures. And it gives me environment to fix named patches.</p>
+<p>While all these steps should improve stability of the <code>emacs-plus</code>, I am aware that build breakages are impossible to avoid (upstream changes very fast). What I am achieving here is better visibility and tools to address breakages more quickly.</p>
+<h2 id="build-options-zoo">Build options zoo</h2>
+<p>What was not covered yet is the amount of build options. The initial idea behind <code>emacs-plus</code> is that users should not pass many custom options to <code>install</code> command. If you remember, back then everyone recommended to install Emacs from brew using the following command:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a>$ <span class="ex">brew</span> install emacs --with-cocoa --with-gnutls --with-rsvg --with-imagemagick</span></code></pre></div>
+<p>All of these options where recommended to most of the users. So I decided to turn them on by default.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a>$ <span class="ex">brew</span> install emacs-plus</span></code></pre></div>
+<p>In my ideal world, the only options users should pass is the icon choice and experimental or controversial stuff.</p>
+<p>I still don’t have a solution, but I am willing to decrease amount of available options. For example, I think that no one actually installs without cocoa and without x11. So the choice must be between these two options. GnuTLS? Well, why would anyone want to install Emacs without it? <code>librsvg</code> and <code>libxml2</code>? Does it hurt if installed with it? I want <code>emacs-plus</code> be as simple as possible, while still providing things that are not available from the official Emacs formula.</p>
+<p>Unfortunately, I don’t have anonymous statistics about options usage. So I still don’t have any decision in this field. Will keep you posted :)</p>
+<h2 id="cask">Cask</h2>
+<p>This is something people are waiting for. I understand why, but I don’t have time to invest into this project. At least now. If someone wants to step in - I would be super glad and grateful!</p>
+<h2 id="final-words">Final words</h2>
+<p>That being said, all contributions are welcome! Let’s keep in touch ;)</p>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-01-08-emacs-plus-current-state.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

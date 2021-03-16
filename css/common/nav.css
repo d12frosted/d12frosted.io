@@ -1,0 +1,1 @@
+nav{display:block;text-align:center;font-size:1.4rem}nav ul{padding:0px}nav li{display:inline-block;padding-left:1rem;padding-right:1rem;padding-top:1rem;list-style:none}@media (max-width:1024px){nav li{display:block}}nav a{color:#000;border-bottom:1px solid #f3f3f3;padding-bottom:1rem;text-decoration:none}nav a:hover{border-bottom:1px solid #999}

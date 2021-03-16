@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Task management with org-roam Vol. 4: Automatic tagging</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Automatic tagging upon link insertion" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Automatic tagging upon link insertion">
+    <meta property="og:description" content="Automatic tagging upon link insertion">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">Task management with org-roam Vol. 4: Automatic tagging</h1>
+    <div class="date"><span>July  7, 2020</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+    <article>
+      <section>
+        <p>In the <a href="https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html">previous article</a> we covered automatic tagging of notes related to a specific person, and today we are going to cover automatic tagging of an org-mode heading upon insertion of link related to a person. To put it simple, when I mention someone in the task, I would love this task to be automatically tagged with that persons name. As they say, it’s better to see once, than imagine multiple times, so here is a screencast.</p>
+<div class="post-image">
+<img src="../images/org-notes-insert.gif" />
+</div>
+
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-01-24 Sun]</code>: Since some of the functionality mentioned in the original article was merged to <code>org-roam</code>, all code is updated to reflect the current state of affairs.</li>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+</ul>
+<!--more-->
+
+<p>The solution is based on the relatively recent <a href="https://github.com/org-roam/org-roam/pull/839">pull request</a> to the org-roam. Instead of using <code>org-roam-insert</code> directly, we can write a wrapper for it leveraging the return value, name manipulation from the <a href="https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html">previous article</a> and tags lookup from <a href="http://localhost:8000/posts/2020-06-10-org-roam-tags.html">Org-roam tags</a> article.</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-insert </span>()</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="st">&quot;Insert a link to the note.&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>  (interactive)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  (when-let*</span>
+<span id="cb1-5"><a href="#cb1-5"></a>      ((res (org-roam-insert))</span>
+<span id="cb1-6"><a href="#cb1-6"></a>       (path (plist-get res :path))</span>
+<span id="cb1-7"><a href="#cb1-7"></a>       (title (plist-get res :title))</span>
+<span id="cb1-8"><a href="#cb1-8"></a>       (roam-tags (org-roam-with-file path <span class="kw">nil</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>                    (org-roam--extract-tags path))))</span>
+<span id="cb1-10"><a href="#cb1-10"></a>    (<span class="kw">when</span> (seq-contains-p roam-tags <span class="st">&quot;People&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a>      (save-excursion</span>
+<span id="cb1-12"><a href="#cb1-12"></a>        (<span class="kw">ignore-errors</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>          (org-back-to-heading)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>          (org-set-tags</span>
+<span id="cb1-15"><a href="#cb1-15"></a>           (seq-uniq</span>
+<span id="cb1-16"><a href="#cb1-16"></a>            (<span class="kw">cons</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a>             (+org-notes--title-to-tag title)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>             (org-get-tags <span class="kw">nil</span> <span class="kw">t</span>)))))))))</span></code></pre></div>
+<p>The implementation is straight-forward. We start with calling <code>org-roam-insert</code> that asks for the note to insert. Then we parse result and query the roam tags to understand if the inserted note is related to a person. And if the answer is yes, we use <code>org-set-tags</code> to automatically tag the heading.</p>
+<p>In my case, implementation of <code>vulpea--title-to-tag</code> is the following.</p>
+<div class="sourceCode" id="cb2" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea--title-to-tag </span>(title)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="st">&quot;Convert TITLE to tag.&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  (concat <span class="st">&quot;@&quot;</span> (s-replace <span class="st">&quot; &quot;</span> <span class="st">&quot;&quot;</span> title)))</span></code></pre></div>
+<p>And that’s it! Keep in mind, that with this approach automatic tagging does not happen when mentioning people using company interface (e.g. using <code>org-roam-company</code>) and when using <code>vulpea-insert</code> to mention someone unknown to your system (e.g. when you create a new file). Both of the ‘features’ can be implemented using hooks.</p>
+<p>P.S. <code>vulpea-insert</code> can be modified to skip tagging when called with universal argument. Feel free to reach me if you need help with that!</p>
+<h1 id="references">References</h1>
+<ul>
+<li><code>org-roam</code> documentation on <a href="https://github.com/org-roam/org-roam">GitHub</a>.</li>
+<li><code>org-mode</code> documentation on the <a href="https://orgmode.org">official site</a>.</li>
+<li>Org-roam tags on <a href="https://d12frosted.io/posts/2020-06-10-org-roam-tags.html">d12frosted.io</a>.</li>
+<li>personal configurations on <a href="https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el">GitHub</a>.</li>
+</ul>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-07-07-task-management-with-roam-vol4.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

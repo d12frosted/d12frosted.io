@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>environment</title>
+    <link rel="stylesheet" href="../css/index-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="environment" />
+    <meta name="twitter:description" content="environment">
+    <meta property="og:description" content="environment">
+  </head>
+  <body>
+    <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    <h1>Boris Buliga</h1>
+    <div class="info">
+      <p>I grow under the sun. When I am not writing code, I am either drinking wine or drinking tea (with these little cups). Cheese is my bread and tracking everything in Emacs is my cheese.</p>
+<p>P.S. d12frosted means dice with 12 sides from the Chessex™ frosted series. I used to play. Just a little bit.</p>
+    </div>
+    <h1>(tagged 'environment)</h1>
+    <section>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2019-06-26-emacs-helpful.html">Emacs: reusing window for helpful buffers</a></h3>
+      <div class="date"><span>June 26, 2019</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/environment.html">environment</a>)</span></div>
+      <p>Ironically, I find the <a href="https://github.com/Wilfred/helpful">helpful</a> package quite helpful. It boosts Emacs <strong>help</strong> buffer with much more contextual information. If you haven’t tried it out yet, I advice you to do so.</p>
+<p>However, by default, it doesn’t play nicely with windows.</p>
+<p>Usually when I write some Elisp and I want to read the documentation of some function or variable, I hit <code>C-h f</code> or <code>C-h v</code> respectively and the help buffer is shown in the separate window. Which is convenient in my opinion, because I can see the code and the help.</p>
+<p>Sometimes help contains links to other entries that I need to navigate. And when I hit <code>&lt;RET&gt;</code> window containing code shows another help buffer. Which might be good for some people, but I hate this behaviour, because usually I want to see the code that I am editing.</p>
+<p>This is also annoying if you set the value of <code>helpful-max-buffers</code> to <code>1</code>. Help window and the window with code are swapped on every navigation.</p>
+<p>The good thing, it’s configurable (as almost everything in Emacs land).</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1"></a>(<span class="kw">setq</span> helpful-switch-buffer-function #'+helpful-switch-to-buffer)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>(<span class="kw">defun</span><span class="fu"> +helpful-switch-to-buffer </span>(buffer-or-name)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="st">&quot;Switch to helpful BUFFER-OR-NAME.</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="st">The logic is simple, if we are currently in the helpful buffer,</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">reuse it's window, otherwise create new one.&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>  (<span class="kw">if</span> (<span class="kw">eq</span> major-mode 'helpful-mode)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>      (switch-to-buffer buffer-or-name)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>    (pop-to-buffer buffer-or-name)))</span></code></pre></div>
+
+      <p class="read-more"><a href="../posts/2019-06-26-emacs-helpful.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2018-11-04-revisiting-eru.html">Revisiting Eru</a></h3>
+      <div class="date"><span>November  4, 2018</span></div>
+      <div class="tags"><span>(<a href="../tags/shell.html">shell</a>, <a href="../tags/environment.html">environment</a>)</span></div>
+      <p>As you might know, Eru is the supreme deity of Arda. The first things that Eru created where the Ainur. He then bade the Ainur to sing to him. Each Ainu had a particular theme given by Eru. Sure enough, Eru makes the ‘World and All That Is’.</p>
+<p>So when I get a new clean system there is nothing yet. And so I call upon the wisdom and power of <code>Eru.sh</code> - the one who creates Ainur and the ‘World and All That Is’.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a>$ <span class="ex">curl</span> https://raw.githubusercontent.com/d12frosted/environment/master/bootstrap/eru.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div>
+<p>I just have to wait patiently, while everything is being downloaded and installed, while all configuration cogs are being placed on the right spot.</p>
+<div class="post-image">
+<img src="../images/eru-example-1.png" />
+</div>
+
+
+      <p class="read-more"><a href="../posts/2018-11-04-revisiting-eru.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2018-10-13-gifify.html">High quality GIF from video</a></h3>
+      <div class="date"><span>October 13, 2018</span></div>
+      <div class="tags"><span>(<a href="../tags/shell.html">shell</a>, <a href="../tags/ffmpeg.html">ffmpeg</a>, <a href="../tags/utils.html">utils</a>, <a href="../tags/environment.html">environment</a>)</span></div>
+      <div class="post-image post-image-split">
+<img src="../images/gifify-lolcat-regular.gif" /><img src="../images/gifify-lolcat-palette.gif" />
+</div>
+
+<p>When it comes to converting video to GIF, one usually gets a huge file and a questionable quality. Most of the guides suggest to use FFmpeg to do the conversion, but usually, they don’t bother with the quality of the result. As it turns out, folks from FFmpeg made some <a href="http://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html">huge steps</a> in improving the GIF output.</p>
+
+      <p class="read-more"><a href="../posts/2018-10-13-gifify.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2017-06-13-Fish-notify-me-when-you-finish.html">Fish: notify me when you finish</a></h3>
+      <div class="date"><span>June 13, 2017</span></div>
+      <div class="tags"><span>(<a href="../tags/fish.html">fish</a>, <a href="../tags/environment.html">environment</a>)</span></div>
+      <div class="post-image post-image-half">
+<img src="../images/b98438ae-65f5-11e7-975f-0bbc94238d24.png" />
+</div>
+
+<p>Have you ever been in a situation when you called <code>git fetch</code>, stared at the screen for several seconds and then switched to the browser to read something ‘useful’ while <code>git</code> fetches updates? And in five minutes you’re like ‘Oh wait, I was doing something important, no?’. Rings the bell, doesn’t it?</p>
+
+      <p class="read-more"><a href="../posts/2017-06-13-Fish-notify-me-when-you-finish.html">Read more →</a></p>
+    </div>
+  
+</section>
+
+  </body>
+</html>

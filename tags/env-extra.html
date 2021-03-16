@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>env-extra</title>
+    <link rel="stylesheet" href="../css/index-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="env-extra" />
+    <meta name="twitter:description" content="env-extra">
+    <meta property="og:description" content="env-extra">
+  </head>
+  <body>
+    <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    <h1>Boris Buliga</h1>
+    <div class="info">
+      <p>I grow under the sun. When I am not writing code, I am either drinking wine or drinking tea (with these little cups). Cheese is my bread and tracking everything in Emacs is my cheese.</p>
+<p>P.S. d12frosted means dice with 12 sides from the Chessex™ frosted series. I used to play. Just a little bit.</p>
+    </div>
+    <h1>(tagged 'env-extra)</h1>
+    <section>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2020-01-06-env-extra-v1.0.0.0.html">env-extra v1.0.0.0</a></h3>
+      <div class="date"><span>January  6, 2020</span></div>
+      <div class="tags"><span>(<a href="../tags/haskell.html">haskell</a>, <a href="../tags/release.html">release</a>, <a href="../tags/env-extra.html">env-extra</a>)</span></div>
+      <p>It’s hard (though possible) to imagine a script that doesn’t access environment variables. In Haskell ecosystem there is a good built-in module <a href="https://hackage.haskell.org/package/base-4.12.0.0/docs/System-Environment.html">System.Environment</a> that does the job, but it has several drawbacks. First of all, it uses <code>String</code> data type as input and as an output. And secondly, it lives in <code>IO</code>. Both of these drawbacks are not that critical, but calling all these <code>Text.pack</code>, <code>Text.unpack</code> and <code>liftIO</code> in every program drives me nuts. So several years ago (somewhere in 2016) I decided to write a <a href="https://github.com/d12frosted/env-extra">simple library</a> that wraps it for me.</p>
+<p>I’ve been using this library for a long time and today I uploaded it to <a href="https://hackage.haskell.org/package/env-extra">Hackage</a>. While it’s really small, I still think that some of you might find it useful, because it has nice features that original <code>System.Environment</code> doesn’t have. Let’s take a look!</p>
+
+      <p class="read-more"><a href="../posts/2020-01-06-env-extra-v1.0.0.0.html">Read more →</a></p>
+    </div>
+  
+</section>
+
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>flyspell-correct v0.5</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Announcement of new version of flyspell-correct" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Announcement of new version of flyspell-correct">
+    <meta property="og:description" content="Announcement of new version of flyspell-correct">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">flyspell-correct v0.5</h1>
+    <div class="date"><span>October  7, 2018</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/release.html">release</a>, <a href="../tags/flyspell-correct.html">flyspell-correct</a>)</span></div>
+    <article>
+      <section>
+        <p><code>flyspell-correct</code> is a package for distraction-free words correction with flyspell via selected interface. It’s available on <a href="https://github.com/d12frosted/flyspell-correct">GitHub</a> and <a href="http://melpa.org/#/flyspell-correct">MELPA</a>.</p>
+<p>Recently, there was a major release of <code>flyspell-correct</code>. Version 0.5 introduces rapid mode for fixing multiple words in one run, breaking renames and tests. Read further for the complete change list.</p>
+<!--more-->
+
+<ul>
+<li>Skip words that don’t need to be fixed (e.g. duplicates).</li>
+<li>Rename several functions (via name deprecation)
+<ul>
+<li><code>flyspell-correct-next-word-generic</code> -&gt; <code>flyspell-correct-next</code></li>
+<li><code>flyspell-correct-previous-word-generic</code> -&gt; <code>flyspell-correct-previous</code></li>
+<li><code>flyspell-correct-word-generic</code> -&gt; <code>flyspell-correct-at-point</code></li>
+</ul></li>
+<li>Create a wrapper function for most of the cases, namely <code>flyspell-correct-wrapper</code>.</li>
+<li>Implement a ‘rapid mode’ for <code>flyspell-correct-wrapper</code>, allowing user to fix multiple words in one run (<code>skip</code> action can be used to skip current incorrect word and continue to the next one).</li>
+<li>Add some simple tests to cover the most important use cases.</li>
+<li>Fix issue when <code>flyspell-correct-next</code> doesn’t correct word at point.</li>
+</ul>
+<p><a href="./2016-05-09-flyspell-correct-intro.html">Intro post</a> also was updated to better explain key points of <code>flyspell-correct</code>.</p>
+<p>Hopefully, you’ll like the new version. If something doesn’t work for you, please let me know!</p>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2018-10-07-flyspell-correct-v0.5.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

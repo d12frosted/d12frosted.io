@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Structure templates in Org mode</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Fast blocks creation in org-mode" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Fast blocks creation in org-mode">
+    <meta property="og:description" content="Fast blocks creation in org-mode">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">Structure templates in Org mode</h1>
+    <div class="date"><span>July 30, 2017</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+    <article>
+      <section>
+        <p>Anyone would agree that typing <code>#+BEGIN_SRC ... #+END_SRC</code> blocks manually feels <strong>strange</strong>.</p>
+<p>In order to make life easier, some people implement helpers to insert these blocks. For example, Chris Done has <code>org-begin-template</code> function in his <a href="https://github.com/chrisdone/chrisdone-emacs/blob/master/config/org.el#L30">configs</a>. Other people use <a href="https://github.com/mineo/yatemplate">yatemplate</a> to create generic or specific templates for blocks.</p>
+<p>But what is most fascinating, is that <code>org-mode</code> bundles with templates for some structural elements like these blocks. And instead of copy-pasting solutions into your <code>.emacs</code> file, take a look at <a href="https://orgmode.org/org.html#Structure-Templates">Structure Templates</a>.</p>
+<!--more-->
+
+<p>With just a few keystrokes, it is possible to insert empty structural blocks, such as <code>#+BEGIN_SRC’ … ‘#+END_SRC</code>, or to wrap existing text in such a block. Just type <code>C-c C-,</code> (<code>org-insert-structure-template</code>) to prompt for a type of block structure, and insert the block at point. If the region is active, it is wrapped in the block. Available structure types are defined in <code>org-structure-template-alist</code>, see the docstring for adding or changing values.</p>
+<p>You can also use an old Easy Template system, which is disabled by default in Org mode 9.2 and upper. One can turn it back by enabling <code>org-tempo</code> module either by adding it to <code>org-modules</code> variable or by <code>(require 'org-tempo)</code>.</p>
+<p>With this feature, you type <code>&lt;</code> followed by template selector, then hit <code>TAB</code> and voilà. For source blocks, it’s just <code>&lt;s&lt;TAB&gt;</code>.</p>
+<p>Just for reference, here is a list of available templates and their corresponding selectors. Please note that this table might become out of date, so it’s better to refer to the official documentation.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Template</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>s</code></td>
+<td><code>#+BEGIN_SRC ... #+END_SRC</code></td>
+</tr>
+<tr class="even">
+<td><code>e</code></td>
+<td><code>#+BEGIN_EXAMPLE ... #+END_EXAMPLE</code></td>
+</tr>
+<tr class="odd">
+<td><code>q</code></td>
+<td><code>#+BEGIN_QUOTE ... #+END_QUOTE</code></td>
+</tr>
+<tr class="even">
+<td><code>v</code></td>
+<td><code>#+BEGIN_VERSE ... #+END_VERSE</code></td>
+</tr>
+<tr class="odd">
+<td><code>c</code></td>
+<td><code>#+BEGIN_CENTER ... #+END_CENTER</code></td>
+</tr>
+<tr class="even">
+<td><code>l</code></td>
+<td><code>#+BEGIN_LaTeX ... #+END_LaTeX</code></td>
+</tr>
+<tr class="odd">
+<td><code>L</code></td>
+<td><code>#+LaTeX:</code></td>
+</tr>
+<tr class="even">
+<td><code>h</code></td>
+<td><code>#+BEGIN_HTML ... #+END_HTML</code></td>
+</tr>
+<tr class="odd">
+<td><code>H</code></td>
+<td><code>#+HTML:</code></td>
+</tr>
+<tr class="even">
+<td><code>a</code></td>
+<td><code>#+BEGIN_ASCII ... #+END_ASCII</code></td>
+</tr>
+<tr class="odd">
+<td><code>A</code></td>
+<td><code>#+ASCII:</code></td>
+</tr>
+<tr class="even">
+<td><code>i</code></td>
+<td><code>#+INDEX: line</code></td>
+</tr>
+<tr class="odd">
+<td><code>I</code></td>
+<td><code>#+INCLUDE: line</code></td>
+</tr>
+</tbody>
+</table>
+<p>That’s it.</p>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2017-07-30-block-templates-in-org-mode.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

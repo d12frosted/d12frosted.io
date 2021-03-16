@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>org-roam</title>
+    <link rel="stylesheet" href="../css/index-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="org-roam" />
+    <meta name="twitter:description" content="org-roam">
+    <meta property="og:description" content="org-roam">
+  </head>
+  <body>
+    <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    <h1>Boris Buliga</h1>
+    <div class="info">
+      <p>I grow under the sun. When I am not writing code, I am either drinking wine or drinking tea (with these little cups). Cheese is my bread and tracking everything in Emacs is my cheese.</p>
+<p>P.S. d12frosted means dice with 12 sides from the Chessex™ frosted series. I used to play. Just a little bit.</p>
+    </div>
+    <h1>(tagged 'org-roam)</h1>
+    <section>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Task management with org-roam Vol. 6: Select a person and view related tasks</a></h3>
+      <div class="date"><span>January 24, 2021</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+      <p>In one of the previous articles (<a href="https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html">Vol 3</a> to be precise) we talked about automatic setup of <code>FILETAGS</code>, so each of the task in note related to a person is automatically tagged thanks to <a href="https://orgmode.org/manual/Tag-Inheritance.html">tag inheritance</a>. Then, in <a href="https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html">Vol 4</a> we talked about automatic tagging of tasks whenever a person is mentioned either in the title or the body of some task. This all makes <code>org-agenda</code> <a href="https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties">matching capabilities</a> really useful for when we want to see the list of all tasks related to specific person.</p>
+<p>In this article, we are going to write a small utility function that asks user to select a person and then presents and <code>org-agenda</code> buffer with tasks related to selected person.</p>
+<p>Believe me, intro is longer than the content!</p>
+<div class="post-video">
+<video autoplay loop>
+  <source src="../images/org-notes-person-agenda.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+</div>
+
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+</ul>
+
+      <p class="read-more"><a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Task management with org-roam Vol. 5: Dynamic and fast agenda</a></h3>
+      <div class="date"><span>January 16, 2021</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+      <p>In previous articles (<a href="https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html">Vol 1</a> and <a href="https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html">Vol 2</a>) we talked about moving tasks from regular <code>org-mode</code> files to <code>org-roam</code> notes. This relied upon adding all <code>org-roam</code> files to <code>org-agenda-files</code>, which doesn’t scale well, as when you build an agenda buffer, it needs to traverse each file. Once you have more than 1k notes, things become sluggish.</p>
+<p>In my experience, once I reached 1200 note files, <code>org-agenda</code> constantly took more than 50 seconds to build, rendering this tool completely useless. But then I realised that only 3% of those files actually contain any <code>TODO</code> entries, so there is no need to traverse whole <code>org-roam-directory</code>!</p>
+<p>In this article we are going to optimise <code>org-agenda</code> back to less than 1 second by dynamically building <code>org-agenda-files</code> list to include only files with <code>TODO</code> entries. All thanks to the power of <code>org-roam</code> and some hooks I am going to describe.</p>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+<li><code>[2021-03-08 Mon]</code>: <a href="https://github.com/Whil-">Gustav</a> shared that <code>org-element-map</code> has an optional parameter <code>first-match</code> that works like <code>seq-find</code>, meaning that <code>vulpea-project-p</code> can be optimised.</li>
+</ul>
+
+      <p class="read-more"><a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Task management with org-roam Vol. 4: Automatic tagging</a></h3>
+      <div class="date"><span>July  7, 2020</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+      <p>In the <a href="https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html">previous article</a> we covered automatic tagging of notes related to a specific person, and today we are going to cover automatic tagging of an org-mode heading upon insertion of link related to a person. To put it simple, when I mention someone in the task, I would love this task to be automatically tagged with that persons name. As they say, it’s better to see once, than imagine multiple times, so here is a screencast.</p>
+<div class="post-image">
+<img src="../images/org-notes-insert.gif" />
+</div>
+
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-01-24 Sun]</code>: Since some of the functionality mentioned in the original article was merged to <code>org-roam</code>, all code is updated to reflect the current state of affairs.</li>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+</ul>
+
+      <p class="read-more"><a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2020-06-25-task-management-with-roam-vol3.html">Task management with org-roam Vol. 3: FILETAGS</a></h3>
+      <div class="date"><span>June 25, 2020</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+      <p>In the previous articles (<a href="https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html">vol1</a> and <a href="https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html">vol2</a>) we walked the path to <a href="https://github.com/org-roam/org-roam">org-roam</a> and solved the issue with garbage in the category column of agenda. Today we are going to explore meta projects dedicated to specific person, tag inheritance and moving such projects to separate <code>org-roam</code> files. As result, we will have code for automatic tagging based on the title.</p>
+<p>Aside from regular meta projects (like personal blog) I also create meta projects for people and locations. This is helpful, because some of the tasks are really related to someone specifically. For example, when I need to return a borrowed book, I just create a task for this.</p>
+<pre class="org"><code>* Frodo Baggins                                               :@FrodoBaggins:
+
+** TODO Return 'The Lord of the Rings' book
+
+** TODO Farewell party                                             :PROJECT:
+
+It feels like Mr. Frodo is about to live Shire. So we are going to setup a
+farewell party for him.
+
+*** TODO Talk to Samwise Gamgee                            :@SamwiseGamgee:
+
+*** TODO Talk to Meriadoc Brandybuck                  :@MeriadocBrandybuck:
+
+*** TODO Talk to Peregrin Took                              :@PeregrinTook:
+
+*** TODO Tie a pair of wool socks
+
+I am not sure where he is going, so a pair of warm wool socks should be good.
+At least they can be used to protect bottles of wine during journey. That is in
+case Frodo doesn't wear socks. But how could it be? Everyone does!
+</code></pre>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-01-24 Sun]</code>: Since some of the functionality mentioned in the original article was merged to <code>org-roam</code>, all code is updated to reflect the current state of affairs.</li>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+</ul>
+
+      <p class="read-more"><a href="../posts/2020-06-25-task-management-with-roam-vol3.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Task management with org-roam Vol. 2: Categories</a></h3>
+      <div class="date"><span>June 24, 2020</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+      <p>In the <a href="https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html">previous article</a> we set a ground for moving tasks to <a href="https://github.com/org-roam/org-roam">org-roam</a>, and encountered an issue with visual garbage in the agenda buffer. Namely, <code>org-roam</code> file id as part of the category. In this article, we are going to explore the means to overcome this issue.</p>
+<div class="post-image post-image-split">
+<img src="../images/org-roam-task-management-vol2-1.png" /><img src="../images/org-roam-task-management-vol2-2.png" />
+</div>
+
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-03-02 Tue]</code>: Update category extraction function to use <code>TITLE</code> of the note and enforce length limit. Kudos to <a href="https://github.com/real-or-random/">Tim Ruffing</a> for the idea.</li>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+</ul>
+
+      <p class="read-more"><a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Task management with org-roam Vol. 1: Path to Roam</a></h3>
+      <div class="date"><span>June 23, 2020</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+      <p><a href="https://orgmode.org">org-mode</a> is a simple outliner for note taking and list management. It <a href="https://d12frosted.io/posts/2016-12-20-Being-an-org-mode-addict.html">doesn’t impose</a> any complex features on users. This is something users excel at by themselves. My suggestion is to continue this tradition and discover task management capabilities in <a href="https://github.com/org-roam/org-roam">org-roam</a>, an <a href="https://orgmode.org">org-mode</a> extension for non-hierarchical notes management.</p>
+<div class="post-image">
+<img src="../images/org-roam-task-management-vol1-3.png" />
+</div>
+
+
+      <p class="read-more"><a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Read more →</a></p>
+    </div>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2020-06-10-org-roam-tags.html">Org-roam tags</a></h3>
+      <div class="date"><span>June 10, 2020</span></div>
+      <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>)</span></div>
+      <p><a href="https://github.com/org-roam/org-roam">Org-roam</a> is a note-taking tool built on top of Emacs and Org. Essentially, it’s a replica of <a href="https://roamresearch.com">Roam Research</a>. These tools provide an easy way to create and manage non-hierarchical notes. If you wish to learn more, just take a look at the <a href="https://org-roam.github.io/org-roam/manual/">Org-roam manual</a> or watch <a href="https://www.youtube.com/watch?v=Lg61ocfxk3c">Making Connections in your Notes</a> video by Matt Williams. Believe me, Org-roam and Roam Research are game-changers. Or even better, don’t believe me and validate my claim by yourself.</p>
+<p>Since I am already <a href="https://d12frosted.io/posts/2016-12-20-Being-an-org-mode-addict.html">addicted</a>, it was only natural to prefer <code>org-roam</code> over some web application. Apart from being developed on top of mature Org ecosystem, Emacs brings many merits and extensibility is one of them. Once <code>org-roam</code> introduced tags system in <a href="https://github.com/org-roam/org-roam/blob/master/CHANGELOG.md#111-18-05-2020">v1.1.1</a> I felt the lack of functions to manage them. Adding and removing them by hand is not nice. So in this article I am sharing a snippet that I’ve forged to ease the unbearable lightness of being.</p>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2020-10-12 Mon]</code>: Functionality described in this post (and similar functionality to manage aliases) is <a href="https://github.com/org-roam/org-roam/pull/1183">merged to the upstream</a>. Now simply use one of the following functions:
+<ul>
+<li><code>org-roam-tag-add</code></li>
+<li><code>org-roam-tag-delete</code></li>
+<li><code>org-roam-alias-add</code></li>
+<li><code>org-roam-alias-delete</code></li>
+</ul></li>
+</ul>
+
+      <p class="read-more"><a href="../posts/2020-06-10-org-roam-tags.html">Read more →</a></p>
+    </div>
+  
+</section>
+
+  </body>
+</html>

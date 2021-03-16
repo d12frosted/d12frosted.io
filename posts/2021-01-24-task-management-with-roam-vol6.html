@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Task management with org-roam Vol. 6: Select a person and view related tasks</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="How to select a person and list all related tasks" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="How to select a person and list all related tasks">
+    <meta property="og:description" content="How to select a person and list all related tasks">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">Task management with org-roam Vol. 6: Select a person and view related tasks</h1>
+    <div class="date"><span>January 24, 2021</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/org-roam.html">org-roam</a>, <a href="../tags/org-mode.html">org-mode</a>)</span></div>
+    <article>
+      <section>
+        <p>In one of the previous articles (<a href="https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html">Vol 3</a> to be precise) we talked about automatic setup of <code>FILETAGS</code>, so each of the task in note related to a person is automatically tagged thanks to <a href="https://orgmode.org/manual/Tag-Inheritance.html">tag inheritance</a>. Then, in <a href="https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html">Vol 4</a> we talked about automatic tagging of tasks whenever a person is mentioned either in the title or the body of some task. This all makes <code>org-agenda</code> <a href="https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties">matching capabilities</a> really useful for when we want to see the list of all tasks related to specific person.</p>
+<p>In this article, we are going to write a small utility function that asks user to select a person and then presents and <code>org-agenda</code> buffer with tasks related to selected person.</p>
+<p>Believe me, intro is longer than the content!</p>
+<div class="post-video">
+<video autoplay loop>
+  <source src="../images/org-notes-person-agenda.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+</div>
+
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+</ul>
+<!--more-->
+
+<p>Long story short, here is the function you can bind or call by name using <code>M-x</code>:</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-agenda-person </span>()</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="st">&quot;Show main `org-agenda' view.&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>  (interactive)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  (<span class="kw">let*</span> ((person (vulpea-select</span>
+<span id="cb1-5"><a href="#cb1-5"></a>                  <span class="st">&quot;Person&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>                  :filter-fn</span>
+<span id="cb1-7"><a href="#cb1-7"></a>                  (<span class="kw">lambda</span> (note)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>                    (seq-contains-p (vulpea-note-tags note)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>                                    <span class="st">&quot;people&quot;</span>))))</span>
+<span id="cb1-10"><a href="#cb1-10"></a>         (names (seq-map</span>
+<span id="cb1-11"><a href="#cb1-11"></a>                 #'car</span>
+<span id="cb1-12"><a href="#cb1-12"></a>                 (org-roam-db-query</span>
+<span id="cb1-13"><a href="#cb1-13"></a>                  [:select title</span>
+<span id="cb1-14"><a href="#cb1-14"></a>                   :from titles</span>
+<span id="cb1-15"><a href="#cb1-15"></a>                   :where (<span class="op">=</span> file $s1)]</span>
+<span id="cb1-16"><a href="#cb1-16"></a>                  (vulpea-note-path person))))</span>
+<span id="cb1-17"><a href="#cb1-17"></a>         (tags (seq-map #'vulpea--title-to-tag names))</span>
+<span id="cb1-18"><a href="#cb1-18"></a>         (query (string-join tags <span class="st">&quot;|&quot;</span>)))</span>
+<span id="cb1-19"><a href="#cb1-19"></a>    (dlet ((org-agenda-overriding-arguments (<span class="kw">list</span> <span class="kw">t</span> query)))</span>
+<span id="cb1-20"><a href="#cb1-20"></a>      (org-agenda <span class="kw">nil</span> <span class="st">&quot;M&quot;</span>))))</span></code></pre></div>
+<p>Now some explanations.</p>
+<ol>
+<li>This code uses <a href="https://github.com/d12frosted/vulpea">vulpea</a> library<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> to select a person. You can achieve the same result without <code>vulpea</code>, of course, but it saves some effort. <code>vulpea-select</code> asks the user to select a note and accepts a predicate to show only subset of <code>org-roam</code> notes. In this case, we simply present only people notes.</li>
+<li>Once we have a selected <code>vulpea-note</code>, we can get all titles on that file (e.g. main title and aliases). This is important for alias users. For example, in some notes I want use Mr. Frodo instead of Frodo Baggins, but I want to see tasks tagged as <code>@Mr.Forod</code> and <code>@FrodoBaggins</code> at the same time. It’s the same person after all (don’t ask me about Gollum, better use <code>M-x
+  doctor</code>)!</li>
+<li>Now we simply convert those names into tags using <code>vulpea--title-to-tag</code> from <a href="https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html">Vol 4</a>.</li>
+<li>Then we join the tags using <code>|</code> separator into single query string.</li>
+<li>The last step is to execute <code>org-agenda</code> with <code>M</code> argument (match for tags, but list only <code>TODO</code> items). In order to pass a query to relevant agenda function, we use <code>org-agenda-overriding-arguments</code>. Not sure if it’s documented anywhere, but you can read the sources of <code>org-agenda</code> to figure out how to use it. <code>dlet</code> here is used for dynamic binding. If you are not using lexical scope, you can use regular <code>let</code> here.</li>
+</ol>
+<p>That’s it! Now see it in action, again.</p>
+<div class="post-video">
+<video autoplay loop>
+  <source src="../images/org-notes-person-agenda.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+</div>
+
+<h1 id="references">References</h1>
+<ul>
+<li><a href="https://orgmode.org/worg/dev/org-element-api.html">Org Element API</a></li>
+<li><a href="https://github.com/skeeto/emacsql">skeeto/emacsql</a></li>
+<li>Code from this article is available as <a href="https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e">GitHub Gist</a></li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Yikes, I advertise my own libraries on this blog!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2021-01-24-task-management-with-roam-vol6.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

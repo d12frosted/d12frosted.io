@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>High quality GIF from video</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Tool for converting GIFs from video files" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Tool for converting GIFs from video files">
+    <meta property="og:description" content="Tool for converting GIFs from video files">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">High quality GIF from video</h1>
+    <div class="date"><span>October 13, 2018</span></div>
+    <div class="tags"><span>(<a href="../tags/shell.html">shell</a>, <a href="../tags/ffmpeg.html">ffmpeg</a>, <a href="../tags/utils.html">utils</a>, <a href="../tags/environment.html">environment</a>)</span></div>
+    <article>
+      <section>
+        <div class="post-image post-image-split">
+<img src="../images/gifify-lolcat-regular.gif" /><img src="../images/gifify-lolcat-palette.gif" />
+</div>
+
+<p>When it comes to converting video to GIF, one usually gets a huge file and a questionable quality. Most of the guides suggest to use FFmpeg to do the conversion, but usually, they don’t bother with the quality of the result. As it turns out, folks from FFmpeg made some <a href="http://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html">huge steps</a> in improving the GIF output.</p>
+<!--more-->
+
+<blockquote>
+<p>As you probably know, GIF is limited to a palette of 256 colors. And by default, FFmpeg just uses a generic palette that tries to cover the whole color space in order to support the largest variety of content:</p>
+</blockquote>
+<div class="post-image post-image-half">
+<img src="../images/ffmpeg-default-palette.png" />
+</div>
+
+<p>The idea is to generate a custom palette and use it during conversion.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># generate a palette</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>$ <span class="ex">ffmpeg</span> -i input.mov -vf <span class="st">&quot;fps=10,scale=320:-1:flags=lanczos,palettegen palette.png&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># output the GIF using generated palette</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>$ <span class="ex">ffmpeg</span> -i input.mov -i palette.png -filter_complex <span class="st">&quot;fps=10,scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse&quot;</span> output.gif</span></code></pre></div>
+<p>Since I am not good at remembering this kind of commands (and I hate to cycle the history of commands), I’ve created a simple script for doing exactly this. It’s called <code>gifify</code> and you can find it in my <a href="https://github.com/d12frosted/environment/blob/master/bin/gifify">.environment</a> repository.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a>$ <span class="ex">gifify</span> -i file.mov <span class="co"># output is file.gif</span></span></code></pre></div>
+<p>Strong points of this script:</p>
+<ol>
+<li><p>You can pass scaling to <code>ffmpeg</code> (usually I don’t want to mess with the actual size). Default value is <code>1</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a>$ <span class="ex">gifify</span> -i file.mov -s 0.5</span></code></pre></div></li>
+<li><p>You can pass FPS to <code>ffmpeg</code>. Default value is <code>24</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a>$ <span class="ex">gifify</span> -i file.mov -fps 24</span></code></pre></div></li>
+<li><p>The output file is defined automatically (input filename extension is changed to <code>gif</code>), but you can specify it manually.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a>$ <span class="ex">gifify</span> -i file.mov -o /path/to/gifs/mega.gif</span></code></pre></div></li>
+<li><p>Allows using default palette (custom one won’t be generated).</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a>$ <span class="ex">gifify</span> -i file.mov --default-palette</span></code></pre></div></li>
+<li><p>Allows compressing resulting GIF using <code>gifsicle</code>. By default, result is not compressed.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a>$ <span class="ex">gifify</span> -i file.mov --compress</span></code></pre></div></li>
+<li><p>You can pass any additional arguments to <code>ffmpeg</code> (like time).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a>$ <span class="ex">gifify</span> -i file.mov -t 26</span></code></pre></div></li>
+</ol>
+<p>My concern usually is about quality, not about the physical size if the output. But you have several options here:</p>
+<ol>
+<li>The lesser FPS is, the lesser output is. In most cases, 15 FPS is good enough.</li>
+<li>Use scaling. When it comes to screen video, you rarely need the original size, scale it a bit.</li>
+<li>In case you are good with the default palette, just use it.</li>
+<li>Use compression provided by <code>gifsicle</code>.</li>
+</ol>
+<h1 id="palettes-default-vs-custom">Palettes: default vs custom</h1>
+<p>Here are several examples, were the difference between default and custom palette is visible. In the first example, the difference is more obvious than in others, but still.</p>
+<div class="post-image post-image-split">
+<img src="../images/gifify-lolcat-regular.gif" /><img src="../images/gifify-lolcat-palette.gif" />
+</div>
+
+<div class="post-image post-image-split">
+<img src="../images/gifify-screen-regular.gif" /><img src="../images/gifify-screen-palette.gif" />
+</div>
+
+<div class="post-image post-image-split">
+<img src="../images/gifify-monty-regular.gif" /><img src="../images/gifify-monty-palette.gif" />
+</div>
+
+<h1 id="installation">Installation</h1>
+<p>First, you need to install dependencies: <code>ffmpeg</code> and <code>gifsicle</code>. On macOS, you can install them using <code>brew</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a>$ <span class="ex">brew</span> install ffmpeg gifsicle</span></code></pre></div>
+<p>Then you need to grab the latest version of <code>gifify</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a>$ <span class="ex">curl</span> https://raw.githubusercontent.com/d12frosted/environment/master/utils/bin/gifify <span class="op">&gt;</span> /path/to/gifify</span>
+<span id="cb10-2"><a href="#cb10-2"></a>$ <span class="fu">chmod</span> +x /path/to/gifify</span></code></pre></div>
+<p>Note that <code>gifify</code> should be in the folder that is visible from your <code>PATH</code>. I usually put <code>gifify</code> in <code>$HOME/.local/bin</code>.</p>
+<h1 id="source-code">Source code</h1>
+<p>You can find the latest version on <a href="https://github.com/d12frosted/environment/blob/master/bin/gifify">GitHub</a>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co">#</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co"># Convert video to gif</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co">#</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="co"># Usage:</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="co">#</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="co">#  gifify -i FILE [OPTIONS]</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="co">#</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="co"># To the list of all options, use</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="co">#</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="co">#   gifify --help</span></span>
+<span id="cb11-12"><a href="#cb11-12"></a><span class="co">#</span></span>
+<span id="cb11-13"><a href="#cb11-13"></a></span>
+<span id="cb11-14"><a href="#cb11-14"></a><span class="kw">set</span> <span class="ex">-e</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a></span>
+<span id="cb11-16"><a href="#cb11-16"></a><span class="va">POSITIONAL=()</span></span>
+<span id="cb11-17"><a href="#cb11-17"></a><span class="va">SCALE=</span>1</span>
+<span id="cb11-18"><a href="#cb11-18"></a><span class="va">FPS=</span>24</span>
+<span id="cb11-19"><a href="#cb11-19"></a><span class="va">PTS=</span>1</span>
+<span id="cb11-20"><a href="#cb11-20"></a><span class="va">PALETTE=</span><span class="st">&quot;custom&quot;</span></span>
+<span id="cb11-21"><a href="#cb11-21"></a><span class="va">COMPRESS=</span>0</span>
+<span id="cb11-22"><a href="#cb11-22"></a></span>
+<span id="cb11-23"><a href="#cb11-23"></a><span class="kw">while [[</span> <span class="va">$#</span> <span class="ot">-gt</span> 0<span class="kw"> ]]</span></span>
+<span id="cb11-24"><a href="#cb11-24"></a><span class="kw">do</span></span>
+<span id="cb11-25"><a href="#cb11-25"></a>  <span class="va">key=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb11-26"><a href="#cb11-26"></a></span>
+<span id="cb11-27"><a href="#cb11-27"></a>  <span class="kw">case</span> <span class="va">$key</span><span class="kw"> in</span></span>
+<span id="cb11-28"><a href="#cb11-28"></a>    -i<span class="kw">|</span>--input<span class="kw">)</span></span>
+<span id="cb11-29"><a href="#cb11-29"></a>      <span class="va">INPUT=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb11-30"><a href="#cb11-30"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-31"><a href="#cb11-31"></a>      <span class="bu">shift</span> <span class="co"># past value</span></span>
+<span id="cb11-32"><a href="#cb11-32"></a>      <span class="kw">;;</span></span>
+<span id="cb11-33"><a href="#cb11-33"></a>    -o<span class="kw">|</span>--output<span class="kw">)</span></span>
+<span id="cb11-34"><a href="#cb11-34"></a>      <span class="va">OUTPUT=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb11-35"><a href="#cb11-35"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-36"><a href="#cb11-36"></a>      <span class="bu">shift</span> <span class="co"># past value</span></span>
+<span id="cb11-37"><a href="#cb11-37"></a>      <span class="kw">;;</span></span>
+<span id="cb11-38"><a href="#cb11-38"></a>    -s<span class="kw">|</span>--scale<span class="kw">)</span></span>
+<span id="cb11-39"><a href="#cb11-39"></a>      <span class="va">SCALE=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb11-40"><a href="#cb11-40"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-41"><a href="#cb11-41"></a>      <span class="bu">shift</span> <span class="co"># past value</span></span>
+<span id="cb11-42"><a href="#cb11-42"></a>      <span class="kw">;;</span></span>
+<span id="cb11-43"><a href="#cb11-43"></a>    --fps<span class="kw">)</span></span>
+<span id="cb11-44"><a href="#cb11-44"></a>      <span class="va">FPS=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb11-45"><a href="#cb11-45"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-46"><a href="#cb11-46"></a>      <span class="bu">shift</span> <span class="co"># past value</span></span>
+<span id="cb11-47"><a href="#cb11-47"></a>      <span class="kw">;;</span></span>
+<span id="cb11-48"><a href="#cb11-48"></a>    --pts<span class="kw">)</span></span>
+<span id="cb11-49"><a href="#cb11-49"></a>      <span class="va">PTS=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb11-50"><a href="#cb11-50"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-51"><a href="#cb11-51"></a>      <span class="bu">shift</span> <span class="co"># past value</span></span>
+<span id="cb11-52"><a href="#cb11-52"></a>      <span class="kw">;;</span></span>
+<span id="cb11-53"><a href="#cb11-53"></a>    --default-palette<span class="kw">)</span></span>
+<span id="cb11-54"><a href="#cb11-54"></a>      <span class="va">PALETTE=</span><span class="st">&quot;default&quot;</span></span>
+<span id="cb11-55"><a href="#cb11-55"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-56"><a href="#cb11-56"></a>      <span class="kw">;;</span></span>
+<span id="cb11-57"><a href="#cb11-57"></a>    --compress<span class="kw">)</span></span>
+<span id="cb11-58"><a href="#cb11-58"></a>      <span class="va">COMPRESS=</span>1</span>
+<span id="cb11-59"><a href="#cb11-59"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-60"><a href="#cb11-60"></a>      <span class="kw">;;</span></span>
+<span id="cb11-61"><a href="#cb11-61"></a>    *<span class="kw">)</span>    <span class="co"># unknown option</span></span>
+<span id="cb11-62"><a href="#cb11-62"></a>      <span class="va">POSITIONAL+=(</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span><span class="va">)</span> <span class="co"># save it in an array for later</span></span>
+<span id="cb11-63"><a href="#cb11-63"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb11-64"><a href="#cb11-64"></a>      <span class="kw">;;</span></span>
+<span id="cb11-65"><a href="#cb11-65"></a>  <span class="kw">esac</span></span>
+<span id="cb11-66"><a href="#cb11-66"></a><span class="kw">done</span></span>
+<span id="cb11-67"><a href="#cb11-67"></a><span class="kw">set</span> <span class="ex">--</span> <span class="st">&quot;</span><span class="va">${POSITIONAL[@]}</span><span class="st">&quot;</span> <span class="co"># restore positional parameters</span></span>
+<span id="cb11-68"><a href="#cb11-68"></a></span>
+<span id="cb11-69"><a href="#cb11-69"></a><span class="kw">function</span><span class="fu"> print_usage()</span> <span class="kw">{</span></span>
+<span id="cb11-70"><a href="#cb11-70"></a>  <span class="bu">echo</span> <span class="st">&quot;Usage:</span></span>
+<span id="cb11-71"><a href="#cb11-71"></a></span>
+<span id="cb11-72"><a href="#cb11-72"></a><span class="st"> gifify -i FILE [OPTIONS]</span></span>
+<span id="cb11-73"><a href="#cb11-73"></a></span>
+<span id="cb11-74"><a href="#cb11-74"></a><span class="st">   -i, --input FILE     (required) specify input video file</span></span>
+<span id="cb11-75"><a href="#cb11-75"></a></span>
+<span id="cb11-76"><a href="#cb11-76"></a><span class="st">   -o, --output FILE    (optional) specify output gif file</span></span>
+<span id="cb11-77"><a href="#cb11-77"></a></span>
+<span id="cb11-78"><a href="#cb11-78"></a><span class="st">                        defaults to input file with extension changed to gif</span></span>
+<span id="cb11-79"><a href="#cb11-79"></a></span>
+<span id="cb11-80"><a href="#cb11-80"></a><span class="st">   -s, --scale INT      (optional) specify scale of the resulting gif (affects</span></span>
+<span id="cb11-81"><a href="#cb11-81"></a><span class="st">                        both width and height)</span></span>
+<span id="cb11-82"><a href="#cb11-82"></a></span>
+<span id="cb11-83"><a href="#cb11-83"></a><span class="st">                        affects speed of conversion and physical size of the</span></span>
+<span id="cb11-84"><a href="#cb11-84"></a><span class="st">                        resulting gif</span></span>
+<span id="cb11-85"><a href="#cb11-85"></a></span>
+<span id="cb11-86"><a href="#cb11-86"></a><span class="st">                        defaults to 1</span></span>
+<span id="cb11-87"><a href="#cb11-87"></a></span>
+<span id="cb11-88"><a href="#cb11-88"></a><span class="st">   --fps INT            (optional) specify FPS of the resulting gif</span></span>
+<span id="cb11-89"><a href="#cb11-89"></a></span>
+<span id="cb11-90"><a href="#cb11-90"></a><span class="st">                        defaults to 24</span></span>
+<span id="cb11-91"><a href="#cb11-91"></a></span>
+<span id="cb11-92"><a href="#cb11-92"></a><span class="st">   --pts INT            (optional) specify PTS of the resulting gif</span></span>
+<span id="cb11-93"><a href="#cb11-93"></a></span>
+<span id="cb11-94"><a href="#cb11-94"></a><span class="st">                        affects speed of the playback</span></span>
+<span id="cb11-95"><a href="#cb11-95"></a></span>
+<span id="cb11-96"><a href="#cb11-96"></a><span class="st">                        defaults to 1</span></span>
+<span id="cb11-97"><a href="#cb11-97"></a></span>
+<span id="cb11-98"><a href="#cb11-98"></a><span class="st">   --default-palette    (optional) enforce default palette instead of</span></span>
+<span id="cb11-99"><a href="#cb11-99"></a><span class="st">                        specially generated one, may lead to worse quality</span></span>
+<span id="cb11-100"><a href="#cb11-100"></a></span>
+<span id="cb11-101"><a href="#cb11-101"></a><span class="st">   --compress           (optional) compress the gif to make physical size</span></span>
+<span id="cb11-102"><a href="#cb11-102"></a><span class="st">                        lesser, may lead to worse quality</span></span>
+<span id="cb11-103"><a href="#cb11-103"></a><span class="st">&quot;</span></span>
+<span id="cb11-104"><a href="#cb11-104"></a><span class="kw">}</span></span>
+<span id="cb11-105"><a href="#cb11-105"></a></span>
+<span id="cb11-106"><a href="#cb11-106"></a><span class="kw">if [[</span> <span class="ot">-z</span> <span class="va">$INPUT</span><span class="kw"> ]]</span>; <span class="kw">then</span></span>
+<span id="cb11-107"><a href="#cb11-107"></a>  <span class="bu">echo</span> <span class="st">&quot;Missing input&quot;</span></span>
+<span id="cb11-108"><a href="#cb11-108"></a>  <span class="ex">print_usage</span></span>
+<span id="cb11-109"><a href="#cb11-109"></a>  <span class="bu">exit</span> 1</span>
+<span id="cb11-110"><a href="#cb11-110"></a><span class="kw">fi</span></span>
+<span id="cb11-111"><a href="#cb11-111"></a></span>
+<span id="cb11-112"><a href="#cb11-112"></a><span class="kw">if [[</span> <span class="ot">!</span> <span class="ot">-f</span> <span class="va">$INPUT</span><span class="kw"> ]]</span>; <span class="kw">then</span></span>
+<span id="cb11-113"><a href="#cb11-113"></a>  <span class="bu">echo</span> <span class="st">&quot;'</span><span class="va">$INPUT</span><span class="st">' is not a file&quot;</span></span>
+<span id="cb11-114"><a href="#cb11-114"></a>  <span class="ex">print_usage</span></span>
+<span id="cb11-115"><a href="#cb11-115"></a>  <span class="bu">exit</span> 1</span>
+<span id="cb11-116"><a href="#cb11-116"></a><span class="kw">fi</span></span>
+<span id="cb11-117"><a href="#cb11-117"></a></span>
+<span id="cb11-118"><a href="#cb11-118"></a><span class="kw">if [[</span> <span class="ot">-z</span> <span class="va">$OUTPUT</span><span class="kw"> ]]</span>; <span class="kw">then</span></span>
+<span id="cb11-119"><a href="#cb11-119"></a>  <span class="va">OUTPUT=</span><span class="st">&quot;</span><span class="va">${INPUT%</span>.*<span class="va">}</span><span class="st">.gif&quot;</span></span>
+<span id="cb11-120"><a href="#cb11-120"></a><span class="kw">fi</span></span>
+<span id="cb11-121"><a href="#cb11-121"></a></span>
+<span id="cb11-122"><a href="#cb11-122"></a><span class="kw">if [[</span> <span class="va">$COMPRESS</span> <span class="ot">==</span> <span class="st">&quot;1&quot;</span><span class="kw"> ]]</span>; <span class="kw">then</span></span>
+<span id="cb11-123"><a href="#cb11-123"></a>  <span class="va">OUTPUT_TEMP=</span><span class="st">&quot;tmp_</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb11-124"><a href="#cb11-124"></a><span class="kw">else</span></span>
+<span id="cb11-125"><a href="#cb11-125"></a>  <span class="va">OUTPUT_TEMP=</span><span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb11-126"><a href="#cb11-126"></a><span class="kw">fi</span></span>
+<span id="cb11-127"><a href="#cb11-127"></a></span>
+<span id="cb11-128"><a href="#cb11-128"></a><span class="va">PALETTE_FILE=</span><span class="st">&quot;</span><span class="va">${INPUT%</span>.*<span class="va">}</span><span class="st">.png&quot;</span></span>
+<span id="cb11-129"><a href="#cb11-129"></a><span class="va">filters=</span><span class="st">&quot;fps=</span><span class="va">${FPS}</span><span class="st">,scale=iw*</span><span class="va">${SCALE}</span><span class="st">:ih*</span><span class="va">${SCALE}</span><span class="st">:flags=lanczos,setpts=</span><span class="va">${PTS}</span><span class="st">*PTS&quot;</span></span>
+<span id="cb11-130"><a href="#cb11-130"></a></span>
+<span id="cb11-131"><a href="#cb11-131"></a><span class="bu">echo</span> <span class="st">&quot;input    = </span><span class="va">${INPUT}</span><span class="st">&quot;</span></span>
+<span id="cb11-132"><a href="#cb11-132"></a><span class="bu">echo</span> <span class="st">&quot;output   = </span><span class="va">${OUTPUT}</span><span class="st">&quot;</span></span>
+<span id="cb11-133"><a href="#cb11-133"></a><span class="bu">echo</span> <span class="st">&quot;scale    = </span><span class="va">${SCALE}</span><span class="st">&quot;</span></span>
+<span id="cb11-134"><a href="#cb11-134"></a><span class="bu">echo</span> <span class="st">&quot;fps      = </span><span class="va">${FPS}</span><span class="st">&quot;</span></span>
+<span id="cb11-135"><a href="#cb11-135"></a><span class="bu">echo</span> <span class="st">&quot;pts      = </span><span class="va">${PTS}</span><span class="st">&quot;</span></span>
+<span id="cb11-136"><a href="#cb11-136"></a><span class="bu">echo</span> <span class="st">&quot;palette  = </span><span class="va">${PALETTE}</span><span class="st">&quot;</span></span>
+<span id="cb11-137"><a href="#cb11-137"></a><span class="bu">echo</span> <span class="st">&quot;compress = </span><span class="va">${COMPRESS}</span><span class="st">&quot;</span></span>
+<span id="cb11-138"><a href="#cb11-138"></a><span class="bu">echo</span> <span class="st">&quot;args     = </span><span class="va">${POSITIONAL[*]}</span><span class="st">&quot;</span></span>
+<span id="cb11-139"><a href="#cb11-139"></a><span class="bu">echo</span> <span class="st">&quot;filters  = </span><span class="va">$filters</span><span class="st">&quot;</span></span>
+<span id="cb11-140"><a href="#cb11-140"></a><span class="bu">echo</span></span>
+<span id="cb11-141"><a href="#cb11-141"></a></span>
+<span id="cb11-142"><a href="#cb11-142"></a><span class="kw">function</span><span class="fu"> cleanup ()</span> <span class="kw">{</span></span>
+<span id="cb11-143"><a href="#cb11-143"></a>  <span class="fu">rm</span> -f <span class="st">&quot;</span><span class="va">$PALETTE_FILE</span><span class="st">&quot;</span></span>
+<span id="cb11-144"><a href="#cb11-144"></a><span class="kw">}</span></span>
+<span id="cb11-145"><a href="#cb11-145"></a></span>
+<span id="cb11-146"><a href="#cb11-146"></a><span class="bu">trap</span> cleanup INT TERM EXIT</span>
+<span id="cb11-147"><a href="#cb11-147"></a></span>
+<span id="cb11-148"><a href="#cb11-148"></a><span class="kw">case</span> <span class="va">$PALETTE</span><span class="kw"> in</span></span>
+<span id="cb11-149"><a href="#cb11-149"></a>  custom<span class="kw">)</span></span>
+<span id="cb11-150"><a href="#cb11-150"></a>    <span class="co"># shellcheck disable=SC2086</span></span>
+<span id="cb11-151"><a href="#cb11-151"></a>    <span class="ex">ffmpeg</span> <span class="va">${POSITIONAL[*]}</span> \</span>
+<span id="cb11-152"><a href="#cb11-152"></a>      -i <span class="st">&quot;</span><span class="va">$INPUT</span><span class="st">&quot;</span> \</span>
+<span id="cb11-153"><a href="#cb11-153"></a>      -vf <span class="st">&quot;</span><span class="va">$filters</span><span class="st">,palettegen&quot;</span> \</span>
+<span id="cb11-154"><a href="#cb11-154"></a>      <span class="st">&quot;</span><span class="va">$PALETTE_FILE</span><span class="st">&quot;</span></span>
+<span id="cb11-155"><a href="#cb11-155"></a></span>
+<span id="cb11-156"><a href="#cb11-156"></a>    <span class="co"># shellcheck disable=SC2086</span></span>
+<span id="cb11-157"><a href="#cb11-157"></a>    <span class="ex">ffmpeg</span> <span class="va">${POSITIONAL[*]}</span> \</span>
+<span id="cb11-158"><a href="#cb11-158"></a>      -i <span class="st">&quot;</span><span class="va">$INPUT</span><span class="st">&quot;</span> \</span>
+<span id="cb11-159"><a href="#cb11-159"></a>      -i <span class="st">&quot;</span><span class="va">$PALETTE_FILE</span><span class="st">&quot;</span> \</span>
+<span id="cb11-160"><a href="#cb11-160"></a>      -filter_complex <span class="st">&quot;</span><span class="va">$filters</span><span class="st"> [x]; [x][1:v] paletteuse&quot;</span> \</span>
+<span id="cb11-161"><a href="#cb11-161"></a>      <span class="st">&quot;</span><span class="va">$OUTPUT_TEMP</span><span class="st">&quot;</span></span>
+<span id="cb11-162"><a href="#cb11-162"></a>    <span class="kw">;;</span></span>
+<span id="cb11-163"><a href="#cb11-163"></a></span>
+<span id="cb11-164"><a href="#cb11-164"></a>  default<span class="kw">)</span></span>
+<span id="cb11-165"><a href="#cb11-165"></a>    <span class="co"># shellcheck disable=SC2086</span></span>
+<span id="cb11-166"><a href="#cb11-166"></a>    <span class="ex">ffmpeg</span> <span class="va">${POSITIONAL[*]}</span> \</span>
+<span id="cb11-167"><a href="#cb11-167"></a>      -i <span class="st">&quot;</span><span class="va">$INPUT</span><span class="st">&quot;</span> \</span>
+<span id="cb11-168"><a href="#cb11-168"></a>      -filter_complex <span class="st">&quot;</span><span class="va">$filters</span><span class="st">&quot;</span> \</span>
+<span id="cb11-169"><a href="#cb11-169"></a>      <span class="st">&quot;</span><span class="va">$OUTPUT_TEMP</span><span class="st">&quot;</span></span>
+<span id="cb11-170"><a href="#cb11-170"></a>    <span class="kw">;;</span></span>
+<span id="cb11-171"><a href="#cb11-171"></a><span class="kw">esac</span></span>
+<span id="cb11-172"><a href="#cb11-172"></a></span>
+<span id="cb11-173"><a href="#cb11-173"></a><span class="kw">if [[</span> <span class="va">$COMPRESS</span> <span class="ot">==</span> <span class="st">&quot;1&quot;</span><span class="kw"> ]]</span>; <span class="kw">then</span></span>
+<span id="cb11-174"><a href="#cb11-174"></a>  <span class="ex">gifsicle</span> --optimize=3 --delay=3 <span class="st">&quot;</span><span class="va">$OUTPUT_TEMP</span><span class="st">&quot;</span> -o <span class="st">&quot;</span><span class="va">$OUTPUT</span><span class="st">&quot;</span></span>
+<span id="cb11-175"><a href="#cb11-175"></a><span class="kw">fi</span></span></code></pre></div>
+<h1 id="more-quality">More quality</h1>
+<p>In this post, I covered only quality improvements from using a custom palette. But actually, there are other ways to tweak you GIF when using FFmpeg. You can find out more in <a href="http://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html">High quality GIF with FFmpeg</a>.</p>
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2018-10-13-gifify.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

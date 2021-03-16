@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>flyspell-correct v0.1</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Announcement of new version of flyspell-correct" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Announcement of new version of flyspell-correct">
+    <meta property="og:description" content="Announcement of new version of flyspell-correct">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">flyspell-correct v0.1</h1>
+    <div class="date"><span>June 22, 2016</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/release.html">release</a>, <a href="../tags/flyspell-correct.html">flyspell-correct</a>)</span></div>
+    <article>
+      <section>
+        <p><code>flyspell-correct</code> is a package for distraction-free words correction with flyspell via selected interface. It’s available on <a href="https://github.com/d12frosted/flyspell-correct">GitHub</a> and <a href="http://melpa.org/#/flyspell-correct">MELPA</a>.</p>
+<p>Not long ago I have released the first version of <code>flyspell-correct</code>. There are several interesting changes compared to initial implementation. First of all, I divided this package into four different packages - core and interfaces. This allowed me to properly setup dependencies and also solved some problems with <code>helm</code> interface. Second important change - I’ve added a function called <code>flyspell-correct-previous-word-generic</code>, which is useful when the misspelled word is not under point, but long behind it. Right now I realise that it doesn’t work as perfect as I want, so I’ll improve it in the next release.</p>
+<p>You can find more information about <code>flyspell-correct</code> on <a href="https://github.com/d12frosted/flyspell-correct">GitHub</a>.</p>
+<!--more-->
+
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2016-06-22-flyspell-correct-0.1.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>

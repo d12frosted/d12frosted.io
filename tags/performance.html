@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>performance</title>
+    <link rel="stylesheet" href="../css/index-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="performance" />
+    <meta name="twitter:description" content="performance">
+    <meta property="og:description" content="performance">
+  </head>
+  <body>
+    <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    <h1>Boris Buliga</h1>
+    <div class="info">
+      <p>I grow under the sun. When I am not writing code, I am either drinking wine or drinking tea (with these little cups). Cheese is my bread and tracking everything in Emacs is my cheese.</p>
+<p>P.S. d12frosted means dice with 12 sides from the Chessex™ frosted series. I used to play. Just a little bit.</p>
+    </div>
+    <h1>(tagged 'performance)</h1>
+    <section>
+  
+    <div class="recent-post">
+      <h3><a href="../posts/2020-01-20-predicate-composition.html">Predicate composition</a></h3>
+      <div class="date"><span>January 20, 2020</span></div>
+      <div class="tags"><span>(<a href="../tags/haskell.html">haskell</a>, <a href="../tags/semigroup.html">semigroup</a>, <a href="../tags/performance.html">performance</a>)</span></div>
+      <p>They say functional programming has many essences and the composition is one of them. Thanks to the wonderful dot operator, we know how to compose functions like <code>a -&gt; b</code> and <code>b -&gt; c</code> to get a function <code>a -&gt; c</code>. But in some cases functions are not that simple and it becomes tricky to compose them nicely.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1"></a><span class="ot">valid ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>valid <span class="ot">=</span> \a <span class="ot">-&gt;</span> check1 a <span class="op">&amp;&amp;</span> (check2 a <span class="op">||</span> check3 a)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  <span class="kw">where</span> check1 <span class="ot">= undefined ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>        check2 <span class="ot">= undefined ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>        check3 <span class="ot">= undefined ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span></code></pre></div>
+<p>It would be lovely to express it in a more declarative way by abstracting away function application and result combination.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1"></a><span class="ot">valid ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>valid <span class="ot">=</span> check1 <span class="op">.&amp;&amp;</span> (check2 <span class="op">.||</span> check3)</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span></code></pre></div>
+<p>Apart from implementing combinators for predicate composition, we want to avoid any runtime penalty from using abstractions. In this article we are going to implement the following functions and investigate how far we can go with abstractions until performance degrades. Or maybe it won’t degrade. Who knows?</p>
+
+      <p class="read-more"><a href="../posts/2020-01-20-predicate-composition.html">Read more →</a></p>
+    </div>
+  
+</section>
+
+  </body>
+</html>

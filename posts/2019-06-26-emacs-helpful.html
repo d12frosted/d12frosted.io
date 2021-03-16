@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Emacs: reusing window for helpful buffers</title>
+    <link rel="stylesheet" href="../css/post-bundle.css" />
+    <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="blog,programming,Haskell,Emacs,fish,bash">
+<meta property="og:title" content="Boris Buliga">
+<meta property="og:locale" content="es_US">
+<meta property="og:url" content="https://d12frosted.io">
+
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+  MathJax = {
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async src="../library/mathjax/es5/tex-svg.js">
+</script>
+<script src="../library/chart.js/dist/Chart.min.js"></script>
+<script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <meta name="description" content="Tweaking helpful to avoid all windows taken by helpful" />
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Tweaking helpful to avoid all windows taken by helpful">
+    <meta property="og:description" content="Tweaking helpful to avoid all windows taken by helpful">
+  </head>
+  <body>
+    <header>
+      <nav>
+  <ul>
+    <li><a class="fa fa-home" href="../" title="Home">&nbsp Home</a></li>
+    <li><a class="fa fa-suitcase" href="../projects.html" title="Projects">&nbsp Projects</a></li>
+    <li><a class="fa fa-rss" href="../atom.xml" title="RSS">&nbsp RSS</a></li>
+    <li><a class="fa fa-github" href="https://github.com/d12frosted" title="GitHub profile">&nbsp GitHub</a></li>
+  </ul>
+</nav>
+
+    </header>
+
+    <h1 class="post-title">Emacs: reusing window for helpful buffers</h1>
+    <div class="date"><span>June 26, 2019</span></div>
+    <div class="tags"><span>(<a href="../tags/emacs.html">emacs</a>, <a href="../tags/environment.html">environment</a>)</span></div>
+    <article>
+      <section>
+        <p>Ironically, I find the <a href="https://github.com/Wilfred/helpful">helpful</a> package quite helpful. It boosts Emacs <strong>help</strong> buffer with much more contextual information. If you haven’t tried it out yet, I advice you to do so.</p>
+<p>However, by default, it doesn’t play nicely with windows.</p>
+<p>Usually when I write some Elisp and I want to read the documentation of some function or variable, I hit <code>C-h f</code> or <code>C-h v</code> respectively and the help buffer is shown in the separate window. Which is convenient in my opinion, because I can see the code and the help.</p>
+<p>Sometimes help contains links to other entries that I need to navigate. And when I hit <code>&lt;RET&gt;</code> window containing code shows another help buffer. Which might be good for some people, but I hate this behaviour, because usually I want to see the code that I am editing.</p>
+<p>This is also annoying if you set the value of <code>helpful-max-buffers</code> to <code>1</code>. Help window and the window with code are swapped on every navigation.</p>
+<p>The good thing, it’s configurable (as almost everything in Emacs land).</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1"></a>(<span class="kw">setq</span> helpful-switch-buffer-function #'+helpful-switch-to-buffer)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>(<span class="kw">defun</span><span class="fu"> +helpful-switch-to-buffer </span>(buffer-or-name)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="st">&quot;Switch to helpful BUFFER-OR-NAME.</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="st">The logic is simple, if we are currently in the helpful buffer,</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">reuse it's window, otherwise create new one.&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>  (<span class="kw">if</span> (<span class="kw">eq</span> major-mode 'helpful-mode)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>      (switch-to-buffer buffer-or-name)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>    (pop-to-buffer buffer-or-name)))</span></code></pre></div>
+<!--more-->
+
+      </section>
+    </article>
+
+    <div class="footer-separator"></div>
+    <div class="footer">
+      <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2019-06-26-emacs-helpful.org">Sources <i class="fa fa-code fa-lg"></i></a>
+    </div>
+  </body>
+</html>
