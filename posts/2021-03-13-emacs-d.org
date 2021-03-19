@@ -1,0 +1,68 @@
+---
+title: "Towards future-safe emacs.d"
+tags: emacs
+description: "Boosting emacs.d development flow"
+publish: false
+---
+
+*TL;DR* This post describes an approach to make byte compiler and various
+linters happy and *useful* in your =.emacs.d=, while maintaining startup
+performance, ability to write embedded packages and test them. This is going to
+be a long post, so grab a bottle of wine, snacks and follow me.
+
+#+begin_export html
+<hr/>
+#+end_export
+
+The longest project in my life is [[https://github.com/d12frosted/environment][environment]], it started with [[https://github.com/d12frosted/environment/tree/master/emacs][Emacs
+configurations]] - personal frustration and my biggest time +waster+ investment. I
+might be masochistic, but I never felt sorry for falling into this +trap+ world.
+And boy, sometimes it is painful to maintain something in this ever mutating and
+mutable dynamic system.
+
+There are various tools to help maintaining Emacs package, all fall into one of
+four categories - project management tools (e.g. [[https://cask.readthedocs.io/en/latest/][Cask]], [[https://github.com/doublep/eldev/][Eldev]], [[https://github.com/alphapapa/makem.sh][makem.sh]]),
+compiler (e.g. built-in byte compiler), linters (e.g. [[https://github.com/purcell/package-lint][package-lint]], [[https://github.com/mattiase/relint][relint]],
+[[https://github.com/gonewest818/elisp-lint/][elisp-lint]], [[https://github.com/emacs-elsa/Elsa][Elsa]]) and test frameworks (e.g. [[https://www.gnu.org/software/emacs/manual/html_node/ert/index.html][ERT]], [[https://github.com/jorgenschaefer/emacs-buttercup][buttercup]]). The tricky part
+comes when you want to use them for maintaining your own Emacs configurations,
+as they have different requirements from regular packages. At least in my case,
+they do.
+
+First of all, I want Emacs to start quickly, meaning that I need to use tools
+like =use-package= for deferred loading, but I hate to define additional
+functions (and I do that quite a lot) inside =use-packge= macro, meaning that I
+will get byte compiler warnings because of missing =(require 'some-package)=.
+
+Secondly, bootstrap process is different as project management tools isolate
+your package development from your Emacs configurations, which makes sense in
+general, but doesn't make sense when you develop the aforementioned
+configurations.
+
+The closest approach I know about is [[https://github.com/hlissner/doom-emacs][doom-emacs]], but even there =.emacs.d= is
+[[https://github.com/hlissner/doom-emacs/blob/46dedb3e3361535052d199e994b641dca2c2cffd/modules/lang/emacs-lisp/config.el#L14][ignored]]. Let me just quote a docstring from there:
+
+#+begin_quote
+This checker (flycheck) tends to produce a lot of false positives in your
+.emacs.d and private config, so it is mostly useless there. However, special
+hacks are employed so that flycheck still does *some* helpful linting.
+#+end_quote
+
+But it's Emacs, right? Everything is possible! So let's find a way to make byte
+compiler and linters helpful and enable testing of Emacs configurations.
+
+#+BEGIN_EXPORT html
+<div class="post-image post-image-split">
+<img src="/images/emacs-d-1.png" /><img src="/images/emacs-d-2.png" />
+</div>
+#+END_EXPORT
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+Things to cover:
+
+- eldev vs cask vs makemsh
+- straight vs quelpa
+- use-package
+- autoloads
