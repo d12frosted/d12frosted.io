@@ -62,7 +62,15 @@ compiler and linters helpful and enable testing of Emacs configurations.
 
 Things to cover:
 
-- eldev vs cask vs makemsh
-- straight vs quelpa
-- use-package
+- choice of the tools
+  - eldev vs cask vs makemsh
+  - straight vs quelpa (package.el)
+  - use-package vs manual deferred loading
+- naming convention
+- bootstrap process
+- configuring eldev
 - autoloads
+- tests
+- eru (or other custom script to glue)
+- advantages and disadvantages
+- extending this monster further
