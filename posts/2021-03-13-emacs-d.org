@@ -28,13 +28,19 @@ comes when you want to use them for maintaining your own Emacs configurations,
 as they have different requirements from regular packages. At least in my case,
 they do.
 
-First of all, I want Emacs to start quickly, meaning that I need to use tools
-like =use-package= for deferred loading, but I hate to define additional
-functions (and I do that quite a lot) inside =use-packge= macro, meaning that I
-will get byte compiler warnings because of missing =(require 'some-package)=.
+First of all, I want Emacs to start as quickly as possible (e.g. in less than a
+second), meaning that I need to use tools like =use-package= for deferred
+loading. Meaning, I can't =require= most of the packages directly except those
+that are used in the bootstrapping process.
 
-Secondly, bootstrap process is different as project management tools isolate
-your package development from your Emacs configurations, which makes sense in
+Secondly, I have lots of additional functions extending or combining
+functionality of one or more packages. But I hate to define them inside
+=use-packge= macro. Aside from aesthetics, I want to retain functionality of
+=xref-find-definitions=. But having definitions outside of =use-package= means
+that I will get many false byte compiler warnings and errors.
+
+Thirdly, bootstrap process is different as project management tools isolate your
+package development from your Emacs configurations, which makes sense in
 general, but doesn't make sense when you develop the aforementioned
 configurations.
 
