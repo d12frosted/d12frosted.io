@@ -8,7 +8,8 @@ publish: false
 *TL;DR* This post describes an approach to make byte compiler and various
 linters happy and *useful* in your =.emacs.d=, while maintaining startup
 performance, ability to write embedded packages and test them. This is going to
-be a long post, so grab a bottle of wine, snacks and follow me.
+be a long post, so grab a bottle of wine, snacks and follow me. In case you lack
+these things, just take a look at [[https://d12frosted.io/posts/2021-03-13-emacs-d.html#solution][results]].
 
 #+begin_export html
 <hr/>
@@ -37,7 +38,8 @@ Secondly, I have lots of additional functions extending or combining
 functionality of one or more packages. But I hate to define them inside
 =use-packge= macro. Aside from aesthetics, I want to retain functionality of
 =xref-find-definitions=. But having definitions outside of =use-package= means
-that I will get many false byte compiler warnings and errors.
+that I will get many false byte compiler warnings and errors. Which is not
+helpful!
 
 Thirdly, bootstrap process is different as project management tools isolate your
 package development from your Emacs configurations, which makes sense in
@@ -66,12 +68,238 @@ compiler and linters helpful and enable testing of Emacs configurations.
 <!--more-->
 #+END_HTML
 
-Things to cover:
+* Table of Contents :TOC_2:
+- [[#solution][Solution]]
+  - [[#content-of-early-init][Content of =early-init=]]
+  - [[#content-of-initel][Content of =init.el=]]
+  - [[#content-of-init-elpa][Content of =init-elpa=]]
+  - [[#content-of-eldev][Content of Eldev]]
+  - [[#content-of-makefile][Content of Makefile]]
+  - [[#autoloads][autoloads]]
+  - [[#linting][Linting]]
+  - [[#testing][Testing]]
+  - [[#eru][eru]]
+- [[#build-tool][Build tool]]
+- [[#package-management-tool][Package management tool]]
+- [[#package-configuration-tool][Package configuration tool]]
+- [[#linter][Linter]]
+- [[#testing-framework][Testing framework]]
+- [[#whats-next][What's next]]
+
+* Solution
+
+Before we dive into too much details, let me describe the solution from higher
+level.
+
+- [[https://github.com/doublep/eldev/][doublep/eldev]] is a [[#build-tool][build tool]] because it's powerful and extensible.
+- [[https://github.com/raxod502/straight][raxod502/straight]] is a [[#package-management-tool][package management tool]] because it's consistent and
+  reliable.
+- [[https://github.com/jwiegley/use-package][jwiegley/use-package]] is a [[#package-configuration-tool][package configuration tool]] because it's easy to use
+  and widely adopted.
+- [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]] is a [[#linter][linter]] because it aggregates many other linters.
+- [[https://github.com/jorgenschaefer/emacs-buttercup][jorgenschaefer/emacs-buttercup]] is a [[#testing-framework][testing framework]] because it's easy to
+  use.
+
+The structure of my =.emacs.d= looks like this:
+
+#+begin_example
+  .
+  ├── Eldev
+  ├── Makefile
+  ├── README.org
+  ├── early-init.el
+  ├── init.el
+  ├── lisp
+  │   ├── config-aaa.el
+  │   ├── config-bbb.el
+  │   ├── ...
+  │   ├── config-zzz.el
+  │   ├── init-autoloads.el
+  │   ├── init-elpa.el
+  │   ├── init-aaa.el
+  │   ├── init-bbb.el
+  │   ├── ...
+  │   ├── init-zzz.el
+  │   ├── lib-aaa.el
+  │   ├── lib-bbb.el
+  │   ├── ...
+  │   ├── lib-zzz.el
+  ├── templates
+  │   ├── emacs-lisp-mode
+  │   │   ├── template_1
+  │   │   ├── ...
+  │   │   └── template_n
+  │   └── haskell-mode
+  │       ├── template_1
+  │       ├── ...
+  │       └── template_n
+  ├── test
+  │   ├── lib-aaa-test.el
+  │   ├── lib-bbb-test.el
+  │   ├── ...
+  └── └── lib-zzz-test.el
+#+end_example
+
+As you can see, all lisp files are located inside of =lisp= directory (you
+should not put them on the same level as =init.el= file as that directory can't
+be part of =load-path=), and all tests are located inside of =test= directory.
+
+There is a naming convention:
+
+- =init-xxx= is a file lazily initializing =xxx= feature, it can be a
+  programming language (e.g. =init-haskell=) or a feature (e.g. =init-project=)
+  - this is the only file type describing what packages to install, how to
+    initialize and configure them;
+  - it is safe to require these files, as they should deferring any loading as
+    much as possible;
+- =lib-xxx= is a file containing various utilities depending on packages defined
+  in =init-xxx= file
+  - these files are loaded via [[#autoloads][autoloads]], and they should never be required
+    directly;
+  - these files can safely =require= any packages defined in =init-xxx= to help
+    linter and byte compiler;
+  - in some sense, =lib-xxx= are packages that are not distributed via MELPA,
+    but rather located in =emacs.d= folder;
+  - my various extensions around =org-mode= called =vulpea= are good examples:
+    - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa][lib-vulpea-agenda.el]]
+    - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-capture.el][lib-vulpea-capture.el]]
+    - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-refile.el][lib-vulpea-refile.el]]
+    - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-id.el][lib-vulpea-id.el]]
+    - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea.el][lib-vulpea.el]]
+- =config-xxx= is a file containing variables and constants required by both
+  =init-xxx= and =lib-xxx= files, allowing to avoid circular dependencies;
+  - as they do not load any packages, it is safe to require this file from any
+    other file;
+
+The only exception is =init-autoloads.el= file containing [[#autoloads][autoloads]].
+
+** Content of =early-init=
+
+See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][relevant section]] in Emacs Help for more information on The Early Init File,
+introduced in Emacs 27.1. Basically, this file is great for frame
+customizations. In my case I love to disable as much clutter as possible:
+
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+  (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+  (add-to-list 'default-frame-alist '(vertical-scroll-bars))
+#+end_src
+
+This file is totally optional, you can safely omit it in your setup. But if you
+have any frame customization, putting them in =early-init= file might speed up
+your Emacs and fix some visual clutter upon startup.
+
+** Content of =init.el=
+
+The goal of this file is to =require= all =init-xxx= files. The structure of
+this file is trivial:
+
+1. Add =lisp= folder to =load-path=.
+3. Adjust garbage collection thresholds, so things run smoother.
+4. Load =init-elpa= which 'bootstraps' your package and configuration management
+   tools.
+5. Load [[#autoloads][autoloads]].
+6. Load all other =init-xxx= files.
+7. Load =custom-file=, even if you are not using =customize= interface, you
+   need this to use =.dir-locals.el=.
+
+*** Add =lisp= directory to =load-path=
+
+#+begin_src emacs-lisp
+  ;; Since we might be running in CI or other environments, stick to
+  ;; XDG_CONFIG_HOME value if possible.
+  (let ((emacs-home (if-let ((xdg (getenv "XDG_CONFIG_HOME")))
+                        (expand-file-name "emacs/" xdg)
+                      user-emacs-directory)))
+    ;; Add Lisp directory to `load-path'.
+    (add-to-list 'load-path (expand-file-name "lisp" emacs-home)))
+#+end_src
+
+*** Garbage collection thresholds
+
+Garbage collection is a huge contributor to startup time. We temporarily
+increase this value to prevent garbage collection from running, then reset it to
+some big number in =emacs-startup-hook=. I discovered this trick thanks to
+[[https://github.com/hlissner/doom-emacs/][hlissner/doom-emacs]]. But it is widely used by many people, for example
+[[https://github.com/purcell/emacs][purcell/emacs]].
+
+One of the good options is to use [[https://github.com/emacsmirror/gcmh][emacsmirror/gcmh]] (aka Garbage Collector Magic
+Hack).
+
+#+begin_src emacs-lisp
+  ;; Adjust garbage collection thresholds during startup, and thereafter
+  (let ((normal-gc-cons-threshold (* 20 1024 1024))
+        (init-gc-cons-threshold (* 128 1024 1024)))
+    (setq gc-cons-threshold init-gc-cons-threshold)
+    (add-hook 'emacs-startup-hook
+              (lambda () (setq gc-cons-threshold
+                               normal-gc-cons-threshold))))
+#+end_src
+
+*** Bootstrap
+
+#+begin_src emacs-lisp
+  (require 'init-elpa)
+#+end_src
+
+Literally, that's it. Checkout [[#content-of-init-elpa][content of =init-elpa=]] to find out how it works.
+
+*** Loading autoloads
+
+TODO:
+
+- describe =elpa-bootstrap-p=
+- describe =path-autoloads-file=
+
+#+begin_src emacs-lisp
+  ;; load autoloads file
+  (unless elpa-bootstrap-p
+    (unless (file-exists-p path-autoloads-file)
+      (error "Autoloads file doesn't exist, please run '%s'"
+             "eru install emacs"))
+    (load path-autoloads-file nil 'nomessage))
+#+end_src
+
+We load autoloads-file
+
+*** Loading other init files
+
+*** Loading =custom-file=
+
+** Content of =init-elpa=
+
+** Content of Eldev
+
+** Content of Makefile
+
+** autoloads
+
+** Linting
+
+** Testing
+
+** eru
+
+* Build tool
+
+* Package management tool
+
+* Package configuration tool
+
+Do not use =:ensure t=.
+
+* Linter
+
+* Testing framework
+
+* What's next
+
+* Things to cover :noexport:
 
 - choice of the tools
   - eldev vs cask vs makemsh
   - straight vs quelpa (package.el)
-  - use-package vs manual deferred loading
+  - use-package vs leaf vs manual deferred loading
 - naming convention
 - bootstrap process
 - configuring eldev
