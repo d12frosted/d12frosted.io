@@ -1,27 +1,25 @@
 --------------------------------------------------------------------------------
-
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
 
 module Site.Criterion
-  ( loadCriterionMap
-  , renderCriterion
-  ) where
+  ( loadCriterionMap,
+    renderCriterion,
+  )
+where
 
 --------------------------------------------------------------------------------
 
-import           Site.Core
-import           Site.Criterion.Render
-import           Site.Criterion.Types
-
---------------------------------------------------------------------------------
-
-import           Control.Arrow         ((&&&))
-import           Control.Lens          (to, (<&>), (^..), (^?), (^?!))
-import           Data.Aeson.Lens
-import qualified Data.Map.Strict       as M
-import           System.FilePath       (dropExtension)
+import Control.Arrow ((&&&))
+import Control.Lens ((<&>), (^..), (^?), (^?!), to)
+import Data.Aeson.Lens
+import qualified Data.Map.Strict as M
+import Data.Text (Text, unpack)
+import Site.Core
+import Site.Criterion.Render
+import Site.Criterion.Types
+import System.FilePath (dropExtension)
 
 --------------------------------------------------------------------------------
 
@@ -30,7 +28,8 @@ loadCriterionMap = toCriterionMap <$> loadAll "assets/criterion/**"
 
 toCriterionMap :: [Item String] -> M.Map FilePath String
 toCriterionMap is = M.fromList kvs
-  where kvs = ((toFilePath . itemIdentifier) &&& itemBody) <$> is
+  where
+    kvs = ((toFilePath . itemIdentifier) &&& itemBody) <$> is
 
 --------------------------------------------------------------------------------
 
@@ -39,9 +38,10 @@ lookupCriterion a = M.lookup ("assets/criterion/" <> a)
 
 --------------------------------------------------------------------------------
 
-renderCriterion :: [(String, String)] -> M.Map FilePath String -> Maybe String
-renderCriterion kvs criterionMap = lookup "file" kvs >>=
-  \file -> render kvs (dropExtension file) <$> readBenchmarks file criterionMap
+renderCriterion :: [(Text, Text)] -> M.Map FilePath String -> Maybe Text
+renderCriterion kvs criterionMap = do
+  file <- unpack <$> lookup "file" kvs
+  render kvs (dropExtension file) <$> readBenchmarks file criterionMap
 
 --------------------------------------------------------------------------------
 
@@ -52,10 +52,13 @@ readBenchmarks file criterionMap =
 parseBenchmarks :: String -> Maybe [Benchmark]
 parseBenchmarks content =
   let reportName o = o ^?! key "reportName" . _String
-      mean o       = o ^?! key "reportAnalysis"
-                     . key "anMean" . key "estPoint" . _Number
-      benchmark    = to (\o -> (reportName o, mean o))
-      benchmarks   = content ^? nth 2 <&> (^.. values . benchmark)
-  in fmap (uncurry Benchmark) <$> benchmarks
+      mean o =
+        o ^?! key "reportAnalysis"
+          . key "anMean"
+          . key "estPoint"
+          . _Number
+      benchmark = to (\o -> (reportName o, mean o))
+      benchmarks = content ^? nth 2 <&> (^.. values . benchmark)
+   in fmap (uncurry Benchmark) <$> benchmarks
 
 --------------------------------------------------------------------------------

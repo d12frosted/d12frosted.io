@@ -2,4 +2,4 @@
 _cache/
 public/
 node_modules/
-*.cabal
+dist-newstyle/
