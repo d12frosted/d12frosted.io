@@ -18,19 +18,20 @@ executable d12frosted-io
   main-is: Main.hs
   other-modules:
       Site.About
+      Site.CSS
       Site.Config
       Site.Core
       Site.Criterion
       Site.Criterion.Measurement
       Site.Criterion.Render
       Site.Criterion.Types
-      Site.CSS
       Site.Index
       Site.Pandoc
       Site.Posts
       Site.Projects
       Site.RSS
       Site.Static
+      Site.Support
       Site.Tags
       Paths_d12frosted_io
   hs-source-dirs:

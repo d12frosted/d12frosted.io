@@ -1,4 +1,3 @@
---------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
@@ -8,8 +7,6 @@ module Site.Projects
   ( projectsRule,
   )
 where
-
---------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 
@@ -32,6 +29,7 @@ import Site.About
 import Site.Config
 import Site.Core
 import Site.Pandoc
+import Site.Support
 import System.Environment.Extra (envMaybe)
 
 --------------------------------------------------------------------------------
@@ -46,6 +44,7 @@ projectsRule = do
     route (constRoute "projects.html")
     compile $ do
       about <- loadAbout
+      support <- loadSupport
       projects <- loadProjects
       stars <-
         unsafeCompiler $
@@ -53,7 +52,7 @@ projectsRule = do
             (traverseToSnd fetchStargazersCount)
             (getTitle <$> projects)
       projectCtx <- stargazersField stars <+> loadAppCtx
-      indexCtx <- loadProjectsCtx loadAppCtx projectCtx projects about
+      indexCtx <- loadProjectsCtx loadAppCtx projectCtx projects about support
 
       getResourceBody
         >>= applyAsTemplate indexCtx
@@ -71,13 +70,15 @@ loadProjectsCtx ::
   Context String ->
   [Item String] ->
   Item String ->
+  Item String ->
   Compiler (Context String)
-loadProjectsCtx baseCtx projectCtx projects about =
+loadProjectsCtx baseCtx projectCtx projects about support =
   listField "projects-special" projectCtx (withCategory "Special" projects)
     <+> listField "projects-emacs" projectCtx (withCategory "Emacs" projects)
     <+> listField "projects-haskell" projectCtx (withCategory "Haskell" projects)
     <+> listField "projects-other" projectCtx (withCategory "Other" projects)
     <+> field "about" (const . return . itemBody $ about)
+    <+> field "support" (const . return . itemBody $ support)
     <+> baseCtx
 
 --------------------------------------------------------------------------------
