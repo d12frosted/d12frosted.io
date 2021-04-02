@@ -68,12 +68,28 @@ compiler and linters helpful and enable testing of Emacs configurations.
 <!--more-->
 #+END_HTML
 
-* Table of Contents :TOC_2:
+* Table of Contents :TOC_3:
 - [[#solution][Solution]]
   - [[#content-of-early-init][Content of =early-init=]]
   - [[#content-of-initel][Content of =init.el=]]
+    - [[#add-lisp-directory-to-load-path][Add =lisp= directory to =load-path=]]
+    - [[#garbage-collection-thresholds][Garbage collection thresholds]]
+    - [[#bootstrap][Bootstrap]]
+    - [[#setup-custom-file-location][Setup =custom-file= location]]
+    - [[#loading-autoloads][Loading autoloads]]
+    - [[#loading-other-init-files][Loading other init files]]
+    - [[#loading-custom-file][Loading =custom-file=]]
   - [[#content-of-init-elpa][Content of =init-elpa=]]
+    - [[#bootstrap-straightel][Bootstrap =straight.el=]]
+    - [[#setup-use-package][Setup =use-package=]]
+    - [[#popular-packages][Popular packages]]
   - [[#content-of-eldev][Content of Eldev]]
+    - [[#specify-project-files][Specify project files]]
+    - [[#use-melpa][Use MELPA]]
+    - [[#define-bootstrap-command][Define bootstrap command]]
+    - [[#define-upgrade-command][Define upgrade command]]
+    - [[#define-autoloads-plugin][Define autoloads plugin]]
+    - [[#linting-configuration][Linting configuration]]
   - [[#content-of-makefile][Content of Makefile]]
   - [[#autoloads][autoloads]]
   - [[#linting][Linting]]
@@ -191,14 +207,15 @@ your Emacs and fix some visual clutter upon startup.
 
 ** Content of =init.el=
 
-The goal of this file is to =require= all =init-xxx= files. The structure of
-this file is trivial:
+The goal of this file is to =require= all =init-xxx= files. The structure is
+trivial:
 
-1. Add =lisp= folder to =load-path=.
-3. Adjust garbage collection thresholds, so things run smoother.
+1. Add =lisp= folder to =load-path=, so we can use =require=.
+2. Adjust garbage collection thresholds, so things run smoother.
+3. Load =config-path= declaring various path constants.
 4. Load =init-elpa= which 'bootstraps' your package and configuration management
    tools.
-5. Load [[#autoloads][autoloads]].
+5. Load [[#autoloads][autoloads]] file.
 6. Load all other =init-xxx= files.
 7. Load =custom-file=, even if you are not using =customize= interface, you
    need this to use =.dir-locals.el=.
@@ -223,8 +240,8 @@ some big number in =emacs-startup-hook=. I discovered this trick thanks to
 [[https://github.com/hlissner/doom-emacs/][hlissner/doom-emacs]]. But it is widely used by many people, for example
 [[https://github.com/purcell/emacs][purcell/emacs]].
 
-One of the good options is to use [[https://github.com/emacsmirror/gcmh][emacsmirror/gcmh]] (aka Garbage Collector Magic
-Hack).
+In addition it is a good idea to use [[https://github.com/emacsmirror/gcmh][emacsmirror/gcmh]] (aka Garbage Collector
+Magic Hack) to improve performance of interactive functions.
 
 #+begin_src emacs-lisp
   ;; Adjust garbage collection thresholds during startup, and thereafter
@@ -239,17 +256,37 @@ Hack).
 *** Bootstrap
 
 #+begin_src emacs-lisp
+  (require 'config-path)
   (require 'init-elpa)
 #+end_src
 
 Literally, that's it. Checkout [[#content-of-init-elpa][content of =init-elpa=]] to find out how it works.
 
+*** Setup =custom-file= location
+
+Before we load anything, we should setup location of our =custom-file=,
+otherwise Emacs customization system will pollute our =init.el= file.
+
+#+begin_src emacs-lisp
+  (setq custom-file (concat path-local-dir "custom.el"))
+#+end_src
+
+The constant =path-local-dir= is defined in =config-path=:
+
+#+begin_src emacs-lisp
+  (defconst path-local-dir
+    (concat
+     (file-name-as-directory
+      (or (getenv "XDG_CACHE_HOME")
+          (concat path-home-dir ".cache")))
+     "emacs/")
+    "The root directory for local Emacs files.
+
+  Use this as permanent storage for files that are safe to share
+  across systems.")
+#+end_src
+
 *** Loading autoloads
-
-TODO:
-
-- describe =elpa-bootstrap-p=
-- describe =path-autoloads-file=
 
 #+begin_src emacs-lisp
   ;; load autoloads file
@@ -260,17 +297,182 @@ TODO:
     (load path-autoloads-file nil 'nomessage))
 #+end_src
 
-We load autoloads-file
+The most important bit here is the last line, which loads file containing
+[[#autoloads][autoloads]] and errors out if it doesn't exist. We want to load this file before
+any other modules to make autoloaded functions available there. But of course we
+can't load this file during bootstrap process which generates this file.
 
 *** Loading other init files
 
+Now comes the easy part, we just load all =init-xxx= files that we have.
+
+#+begin_src emacs-lisp
+  ;; core
+  (require 'init-env)
+  (require 'init-kbd)
+  (require 'init-editor)
+  ;; ...
+
+  ;; utilities
+  (require 'init-selection)
+  (require 'init-project)
+  (require 'init-vcs)
+  (require 'init-ide)
+  (require 'init-vulpea)
+  (require 'init-vino)
+  (require 'init-pdf)
+  ;; ...
+
+  ;; languages
+  (require 'init-elisp)
+  (require 'init-haskell)
+  (require 'init-sh)
+  ;; ...
+#+end_src
+
+While this might sound stupid to manually load files that has clear naming
+pattern, I still like to do it manually, because it helps byte compiler, it has
+less footprint on runtime performance, the list is not big and I rarely add new
+files. Another option would be to generate this list during 'compilation', but
+again, I would love to avoid any unnecessary complications.
+
 *** Loading =custom-file=
+
+And the last thing to do is to load =custom-file=:
+
+#+begin_src emacs-lisp
+  ;; I don't use `customize' interface, but .dir-locals.el put 'safe'
+  ;; variables into `custom-file'. And to be honest, I hate to allow
+  ;; them every time I restart Emacs.
+  (when (file-exists-p custom-file)
+    (load custom-file nil 'nomessage))
+#+end_src
 
 ** Content of =init-elpa=
 
+Part of our bootstrap process is setting up package management and package
+configuration tools, which is performed in =init-elpa= file.
+
+*** Bootstrap =straight.el=
+
+The bootstrap process of [[https://github.com/raxod502/straight][raxod502/straight]] is quire simple and well documented
+in the official repository. Additionally, we want to avoid any modification
+checks at startup by setting the value of =straight-check-for-modifications= to
+=nil=, so everything runs faster. Also we want to install packages by default in
+=use-package= forms. And then everything is straight-forward.
+
+#+begin_src emacs-lisp
+  (require 'config-path)
+
+  (setq-default
+   straight-repository-branch "develop"
+   straight-check-for-modifications nil
+   straight-use-package-by-default t
+   straight-base-dir path-packages-dir)
+
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el"
+                           path-packages-dir))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           (concat "https://raw.githubusercontent.com/"
+                   "raxod502/straight.el/"
+                   "develop/install.el")
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
+
+The only bit I am not describing here (and I will do it in separate blog post)
+is how I configure retries for networking operations.
+
+*** Setup =use-package=
+
+Now it's easy to setup =use-package=:
+
+#+begin_src emacs-lisp
+  (setq-default
+   use-package-enable-imenu-support t)
+  (straight-use-package 'use-package)
+#+end_src
+
+*** Popular packages
+
+There are packages (or rather libraries) that should be loaded eagerly because
+they are used extensively and they do not provide autoloads.
+
+#+begin_src emacs-lisp
+  (use-package s)
+  (use-package dash)
+#+end_src
+
 ** Content of Eldev
 
+Eldev file defines our project.
+
+*** Specify project files
+
+#+begin_src emacs-lisp
+  (setf eldev-project-main-file "init.el"
+        eldev-main-fileset '("init.el"
+                             "early-init.el"
+                             "lisp/*.el"))
+
+  ;; Emacs doesn't allow to add directory containing init.el to load
+  ;; path, so we have to put other Emacs Lisp files in directory. Help
+  ;; Eldev commands to locate them.
+  (eldev-add-loading-roots 'build "lisp")
+  (eldev-add-loading-roots 'bootstrap "lisp")
+#+end_src
+
+*** Use MELPA
+
+*** Define bootstrap command
+
+*** Define upgrade command
+
+*** Define autoloads plugin
+
+*** Linting configuration
+
 ** Content of Makefile
+
+#+begin_src makefile
+  .PHONY: clean
+  clean:
+    eldev clean all
+
+  .PHONY: bootstrap
+  bootstrap:
+    eldev clean autoloads
+    eldev -C --unstable -a -dtT build :autoloads
+
+  .PHONY: upgrade
+  upgrade:
+    eldev -C --unstable -a -dtT upgrade
+
+  .PHONY: compile
+  compile:
+    eldev clean elc
+    eldev -C --unstable -a -dtT compile
+
+  .PHONY: lint
+  lint:
+    eldev -C --unstable -a -dtT lint
+
+  .PHONY: test
+  test:
+    eldev exec t
+    eldev -C --unstable -a -dtT test
+
+  .PHONY: roam
+  roam:
+    eldev exec "(progn (run-hooks 'after-init-hook) (vulpea-db-build))"
+#+end_src
 
 ** autoloads
 
