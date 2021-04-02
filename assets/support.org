@@ -1,7 +1,7 @@
 Each and every project on this page was created to solve problems I faced. Some
 of them turned out to be useful for other people, which is really great. There
 are various ways to support them - by using, by becoming a stargazer, by
-contributing or becoming a [[https://www.patreon.com/d12frosted][patreon]]. Huge thanks to my public patrons:
+contributing or becoming a [[https://www.patreon.com/d12frosted][patreon]]. Special thanks to patrons, and public ones:
 
 - [[https://github.com/jidicula][Johanan Idicula]]
 - Chris Montgomery
