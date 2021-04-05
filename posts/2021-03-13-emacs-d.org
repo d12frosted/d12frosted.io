@@ -104,7 +104,7 @@ compiler and linters helpful and enable testing of Emacs configurations.
 
 * Solution
 
-Before we dive into too much details, let me describe the solution from higher
+Before we dive too much into details, let me describe the solution from higher
 level.
 
 - [[https://github.com/doublep/eldev/][doublep/eldev]] is a [[#build-tool][build tool]] because it's powerful and extensible.
@@ -160,14 +160,14 @@ As you can see, all lisp files are located inside of =lisp= directory (you
 should not put them on the same level as =init.el= file as that directory can't
 be part of =load-path=), and all tests are located inside of =test= directory.
 
-There is a naming convention:
+The following naming convention is used.
 
 - =init-xxx= is a file lazily initializing =xxx= feature, it can be a
   programming language (e.g. =init-haskell=) or a feature (e.g. =init-project=)
   - this is the only file type describing what packages to install, how to
     initialize and configure them;
-  - it is safe to require these files, as they should deferring any loading as
-    much as possible;
+  - it is safe to require these files, as they should defer any loading as much
+    as possible;
 - =lib-xxx= is a file containing various utilities depending on packages defined
   in =init-xxx= file
   - these files are loaded via [[#autoloads][autoloads]], and they should never be required
@@ -176,7 +176,8 @@ There is a naming convention:
     linter and byte compiler;
   - in some sense, =lib-xxx= are packages that are not distributed via MELPA,
     but rather located in =emacs.d= folder;
-  - my various extensions around =org-mode= called =vulpea= are good examples:
+  - various extensions around =org-mode= called =vulpea= are good examples of
+    =lib= files:
     - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa][lib-vulpea-agenda.el]]
     - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-capture.el][lib-vulpea-capture.el]]
     - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-refile.el][lib-vulpea-refile.el]]
@@ -187,7 +188,8 @@ There is a naming convention:
   - as they do not load any packages, it is safe to require this file from any
     other file;
 
-The only exception is =init-autoloads.el= file containing [[#autoloads][autoloads]].
+The only exception from this convention is =init-autoloads.el= file containing
+[[#autoloads][autoloads]]. Name comes from =init.el= file.
 
 ** Content of =early-init=
 
@@ -412,9 +414,16 @@ they are used extensively and they do not provide autoloads.
 
 ** Content of Eldev
 
-Eldev file defines our project.
+=Eldev= file defines our project. You can read more about this file in
+[[https://github.com/doublep/eldev/][doublep/eldev]] repository.
 
 *** Specify project files
+
+Eldev is quite powerful when it comes to fileset specification, but I find it
+not working properly with extra directories out of box. Since we can not place
+our lisp files in the same directory with =init.el= file, we configure
+=eldev-main-fileset= and add =lisp= folder to loading roots for certain
+commands.
 
 #+begin_src emacs-lisp
   (setf eldev-project-main-file "init.el"
@@ -431,13 +440,199 @@ Eldev file defines our project.
 
 *** Use MELPA
 
+We are going to use certain 3rd party packages for project management (e.g.
+testing and linting), so we must tell Eldev where to load them from. This part
+is a little bit confusing as Eldev will install packages from MELPA and for our
+configurations we are going to use =straight.el=. But Eldev isolates these
+packages in it's working dir and they will not interfere with our
+configurations. Ugly, but safe.
+
+#+begin_src emacs-lisp
+  ;; There are dependencies for testing and linting phases, they should
+  ;; be installed by Eldev from MELPA and GNU ELPA (latter is enabled by
+  ;; default).
+  (eldev-use-package-archive 'melpa)
+#+end_src
+
 *** Define bootstrap command
+
+Bootstrapping Emacs is simple, we just need to load =init.el= file.
+
+#+begin_src emacs-lisp
+  (defun elpa-bootstrap ()
+    "Bootstrap personal configurations."
+    (setq-default
+     elpa-bootstrap-p t
+     load-prefer-newer t)
+    (eldev--inject-loading-roots 'bootstrap)
+    (require 'config-path)
+    (load (expand-file-name "init.el" path-emacs-dir)))
+
+  ;; We want to run this before any build command. This is also needed
+  ;; for `flyspell-eldev` to be aware of packages installed via
+  ;; straight.el.
+  (add-hook 'eldev-build-system-hook #'elpa-bootstrap)
+#+end_src
+
+We set the value of =elpa-bootstrap-p= to =t=, so that autoloads file is not
+required from =init.el= (we are going to generate it during bootstrap flow). We
+also set =load-prefer-newer= to =t= so that Emacs prefers newer files instead of
+byte compiled (again, we are going to compile =.el= to =.elc=).
+
+We hook this function into any build command in order to install packages and
+get proper =load-path= in all phases.
 
 *** Define upgrade command
 
+Upgrade flow is simple and uses =straight.el= functionality, because we use it
+to manage packages.
+
+#+begin_src emacs-lisp
+  (defun elpa-upgrade ()
+    "Bootstrap personal configurations."
+    ;; make sure that bootstrap has completed
+    (elpa-bootstrap)
+
+    ;;  fetch all packages and then merge the latest version
+    (straight-fetch-all)
+    (straight-merge-all)
+
+    ;; in case we pinned some versions, revert any unneccessary merge
+    (straight-thaw-versions)
+
+    ;; rebuild updated packages
+    (delete-file (concat path-packages-dir "straight/build-cache.el"))
+    (delete-directory (concat path-packages-dir "straight/build") 'recursive)
+    (straight-check-all))
+
+  (add-hook 'eldev-upgrade-hook #'elpa-upgrade)
+#+end_src
+
 *** Define autoloads plugin
 
+Now is the most dirty part - autoloads generation. Eldev provides a plugin for
+autoloads generation, but unfortunately it works only with root directory, but
+we need to generate our autoloads for files in =lisp= directory. So we write our
+own plugin.
+
+#+begin_src emacs-lisp
+  ;; We want to generate autoloads file. This line simply loads few
+  ;; helpers.
+  (eldev-use-plugin 'autoloads)
+
+  ;; Eldev doesn't traverse extra loading roots, so we have to modify
+  ;; autoloads plugin a little bit. Basically, this modification
+  ;; achieves specific goal - generate autoloads from files located in
+  ;; Lisp directory.
+  (eldev-defbuilder eldev-builder-autoloads (sources target)
+    :type           many-to-one
+    :short-name     "AUTOLOADS"
+    :message        target
+    :source-files   (:and "lisp/*.el" (:not ("lisp/*autoloads.el")))
+    :targets        (lambda (_sources) "lisp/init-autoloads.el")
+    :define-cleaner (eldev-cleaner-autoloads
+                     "Delete the generated package autoloads files."
+                     :default t)
+    :collect        (":autoloads")
+    ;; To make sure that `update-directory-autoloads' doesn't grab files it shouldn't,
+    ;; override `directory-files' temporarily.
+    (eldev-advised (#'directory-files
+                    :around
+                    (lambda (original directory &rest arguments)
+                      (let ((files (apply original directory arguments)))
+                        (if (file-equal-p directory eldev-project-dir)
+                            (let (filtered)
+                              (dolist (file files)
+                                (when (eldev-any-p (file-equal-p file it) sources)
+                                  (push file filtered)))
+                              (nreverse filtered))
+                          files))))
+      (let ((inhibit-message   t)
+            (make-backup-files nil)
+            (pkg-dir (expand-file-name "lisp/" eldev-project-dir)))
+        (package-generate-autoloads (package-desc-name (eldev-package-descriptor)) pkg-dir)
+        ;; Always load the generated file.  Maybe there are cases when we don't need that,
+        ;; but most of the time we do.
+        (eldev--load-autoloads-file (expand-file-name target eldev-project-dir)))))
+
+  ;; Always load autoloads file.
+  (add-hook
+   'eldev-build-system-hook
+   (lambda ()
+     (eldev--load-autoloads-file
+      (expand-file-name "lisp/init-autoloads.el" eldev-project-dir))))
+#+end_src
+
 *** Linting configuration
+
+And again, we need to tell Eldev which files to lint.
+
+#+begin_src emacs-lisp
+  (defun eldev-lint-find-files-absolute (f &rest args)
+    "Call F with ARGS and ensure that result is absolute paths."
+    (seq-map (lambda (p)
+               (expand-file-name p eldev-project-dir))
+             (seq-filter (lambda (p)
+                           (not (string-suffix-p "autoloads.el" p)))
+                         (apply f args))))
+
+  (advice-add 'eldev-lint-find-files :around #'eldev-lint-find-files-absolute)
+#+end_src
+
+Then we ask Eldev to use [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]] for linting and configure it a
+little bit.
+
+#+begin_src emacs-lisp
+  ;; Use elisp-lint by default
+  (setf eldev-lint-default '(elisp))
+  (with-eval-after-load 'elisp-lint
+    (setf elisp-lint-ignored-validators '("byte-compile")))
+
+  ;; Tell checkdoc not to demand two spaces after a period.
+  (setq sentence-end-double-space nil)
+#+end_src
+
+What I love about [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]] is that it combines multiple linters,
+including [[https://github.com/purcell/package-lint][purcell/package-lint]]. While =package-lint= is a useful linter, it
+enforces naming convention which I don't agree with when it comes to Emacs
+configurations. E.g. it wants every function in =lib-vulpea.el= to have a prefix
+=lib-vulpea=. While in general it makes sense, I want to avoid =lib= part here.
+The same goes for =init= and =config= stuff. So we intrusively change that rule:
+
+#+begin_src emacs-lisp
+  ;; In general, `package-lint' is useful. But package prefix naming
+  ;; policy is not useful for personal configurations. So we chop
+  ;; lib/init part from the package name.
+  ;;
+  ;; And `eval-after-load'. In general it's not a good idea to use it in
+  ;; packages, but these are configurations.
+  (with-eval-after-load 'package-lint
+    (defun package-lint--package-prefix-cleanup (f &rest args)
+      "Call F with ARGS and cleanup it's result."
+      (let ((r (apply f args)))
+        (replace-regexp-in-string "\\(init\\|lib\\|config\\|compat\\)-?" "" r)))
+    (advice-add 'package-lint--get-package-prefix :around #'package-lint--package-prefix-cleanup)
+
+    (defun package-lint--check-eval-after-load ()
+      "Do nothing."))
+#+end_src
+
+We also need =eval-after-load=, so let's just noop. It makes sense to discourage
+usage of =eval-after-load= in packages, but in Emacs configurations it doesn't
+make sense.
+
+And the last bit is =emacsql=. I use =emacsql-fix-vector-indentation= to format
+my SQL statements, and I want linter to be happy about it:
+
+#+begin_src emacs-lisp
+  ;; Teach linter how to properly indent emacsql vectors.
+  (eldev-add-extra-dependencies 'lint 'emacsql)
+  (add-hook 'eldev-lint-hook
+            (lambda ()
+              (eldev-load-project-dependencies 'lint nil t)
+              (require 'emacsql)
+              (call-interactively #'emacsql-fix-vector-indentation)))
+#+end_src
 
 ** Content of Makefile
 
