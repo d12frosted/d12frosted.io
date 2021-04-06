@@ -90,10 +90,13 @@ compiler and linters helpful and enable testing of Emacs configurations.
     - [[#define-upgrade-command][Define upgrade command]]
     - [[#define-autoloads-plugin][Define autoloads plugin]]
     - [[#linting-configuration][Linting configuration]]
-  - [[#content-of-makefile][Content of Makefile]]
   - [[#autoloads][autoloads]]
+  - [[#compiling][Compiling]]
   - [[#linting][Linting]]
   - [[#testing][Testing]]
+  - [[#upgrading][Upgrading]]
+  - [[#makefile][Makefile]]
+  - [[#org-roam][org-roam]]
   - [[#eru][eru]]
 - [[#build-tool][Build tool]]
 - [[#package-management-tool][Package management tool]]
@@ -634,7 +637,217 @@ my SQL statements, and I want linter to be happy about it:
               (call-interactively #'emacsql-fix-vector-indentation)))
 #+end_src
 
-** Content of Makefile
+** autoloads
+
+Now that everything is configured, we can use =eldev= to bootstrap, compile,
+lint and test our configurations. The first thing we do is autoloads generation,
+which is as simple as
+
+#+begin_src bash
+  $ eldev build :autoloads
+#+end_src
+
+Though I prefer to clean autoloads before generating new ones.
+
+#+begin_src bash
+  $ eldev clean autoloads
+  $ eldev build :autoloads
+#+end_src
+
+This generates =lisp/init-autoloads.el= file. And in case you were wondering
+bout its content, then it looks like this:
+
+#+begin_src emacs-lisp
+  ;;; init-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
+  ;;
+  ;;; Code:
+
+  (add-to-list 'load-path (directory-file-name
+                           (or (file-name-directory #$) (car load-path))))
+
+  
+  ;;;### (autoloads nil "config-path" "config-path.el" (0 0 0 0))
+  ;;; Generated autoloads from config-path.el
+
+  (register-definition-prefixes "config-path" '("path-"))
+
+  ;;;***
+  
+  ;;; ...
+  ;;; ...
+  ;;; ...
+  
+  ;;;### (autoloads nil "lib-buffer" "lib-buffer.el" (0 0 0 0))
+  ;;; Generated autoloads from lib-buffer.el
+
+  (autoload 'buffer-lines "lib-buffer" "\
+  Return lines of BUFFER-OR-NAME.
+
+  Each line is a string with properties. Trailing newline character
+  is not present.
+
+  \(fn BUFFER-OR-NAME)" nil nil)
+
+  (autoload 'buffer-lines-map "lib-buffer" "\
+  Call FN on each line of BUFFER-OR-NAME and return resulting list.
+
+  As opposed to `buffer-lines-each', this function accumulates
+  result.
+
+  Each line is a string with properties. Trailing newline character
+  is not present.
+
+  \(fn BUFFER-OR-NAME FN)" nil nil)
+
+  (function-put 'buffer-lines-map 'lisp-indent-function '1)
+
+  ;; ...
+  ;; ...
+  ;; ...
+
+  ;;;***
+  
+  ;;;### (autoloads nil "lib-vulpea-agenda" "lib-vulpea-agenda.el"
+  ;;;;;;  (0 0 0 0))
+  ;;; Generated autoloads from lib-vulpea-agenda.el
+
+  (autoload 'vulpea-agenda-main "lib-vulpea-agenda" "\
+  Show main `org-agenda' view." t nil)
+
+  (autoload 'vulpea-agenda-person "lib-vulpea-agenda" "\
+  Show main `org-agenda' view." t nil)
+
+  (defconst vulpea-agenda-cmd-refile '(tags "REFILE" ((org-agenda-overriding-header "To refile") (org-tags-match-list-sublevels nil))))
+
+  (defconst vulpea-agenda-cmd-today '(agenda "" ((org-agenda-span 'day) (org-agenda-skip-deadline-prewarning-if-scheduled t) (org-agenda-sorting-strategy '(habit-down time-up category-keep todo-state-down priority-down)))))
+
+  ;;; ...
+  ;;; ...
+  ;;; ...
+
+  ;;;***
+  
+  ;; Local Variables:
+  ;; version-control: never
+  ;; no-byte-compile: t
+  ;; no-update-autoloads: t
+  ;; coding: utf-8
+  ;; End:
+  ;;; init-autoloads.el ends here
+#+end_src
+
+As you can see, it uses =autoload= to define a symbol (function or variable) and
+where to load it from. It also sets up indentation based on =decalre= from the
+body of function. And all constants are embedded as is, they are not getting
+autoloaded.
+
+Please note that =eldev= commands need to be run with working directory pointing
+to the directory containing =Eldev= file, e.g. from =$XDG_CONFIG_HOME/emacs= or
+=$HOME/.config/emacs=.
+
+** Compiling
+
+The second operation in the bootstrap process is byte compilation. It is said
+that byte compiled lisp executes [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Speed-of-Byte_002dCode.html][faster]], but there is also an experimental
+branch for native compilation called [[https://akrl.sdf.org/gccemacs.html][gccemacs]], which is also available via
+[[https://github.com/d12frosted/homebrew-emacs-plus/#gccemacs][emacs-plus]]. Another aspect of byte compilation is... well [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Compilation-Functions.html][compilation]] which
+produces valuable [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Compiler-Errors.html][warnings and errors]]. In our setup it is very easy to compile
+all our =.el= files.
+
+#+begin_src bash
+  $ eldev clean elc
+  $ eldev compile
+#+end_src
+
+That's it.
+
+** Linting
+
+The third step of the bootstrap process is linting. Once everything compiles we
+just need to check what linter has to say. Just to remind, we are using
+[[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]]. As you might already figured, with Eldev this step as
+trivial as
+
+#+begin_src bash
+  $ eldev lint
+#+end_src
+
+** Testing
+
+And the last step of the bootstrap process is testing, which has two steps.
+First we simply load our configurations and make sure that nothing errors out
+and then we run test cases, for which we are using
+[[https://github.com/jorgenschaefer/emacs-buttercup][jorgenschaefer/emacs-buttercup]] test framework. Interaction with eldev is
+trivial, again.
+
+#+begin_src emacs-lisp
+  $ eldev exec t
+  $ eldev test
+#+end_src
+
+Example of the test:
+
+#+begin_src emacs-lisp
+  (require 'buttercup)
+
+  (describe "buffer-content"
+    (it "returns an empty string in empty buffer"
+      (let* ((current-buffer (current-buffer))
+             (buffer (generate-new-buffer "test-buffer"))
+             (name (buffer-name buffer)))
+        ;; we can get content of the buffer by name
+        (expect (buffer-content name) :to-equal "")
+
+        ;; we can get content of the buffer by object
+        (expect (buffer-content buffer) :to-equal "")
+
+        ;; current buffer is not modified
+        (expect (current-buffer) :to-equal current-buffer)))
+
+    (it "returns content of non-empty buffer"
+      (let* ((current-buffer (current-buffer))
+             (buffer (generate-new-buffer "test-buffer"))
+             (name (buffer-name buffer))
+             (expected "hello\nmy dear\nfrodo\n"))
+        (with-current-buffer buffer
+          (insert expected))
+
+        ;; we can get content of the buffer by name
+        (expect (buffer-content name) :to-equal expected)
+
+        ;; we can get content of the buffer by object
+        (expect (buffer-content buffer) :to-equal expected)
+
+        ;; current buffer is not modified
+        (expect (current-buffer) :to-equal current-buffer))))
+#+end_src
+
+And the output of testing might look like this:
+
+#+begin_example
+  Running 2 specs.
+
+  buffer-content
+    returns an empty string in empty buffer (27.47ms)
+    returns content of non-empty buffer (0.38ms)
+
+  Ran 2 specs, 0 failed, in 37.85ms.
+#+end_example
+
+** Upgrading
+
+Since we explicitly defined an upgrade command in Eldev, we can execute it as
+any other command:
+
+#+begin_src bash
+  $ eldev upgrade
+#+end_src
+
+** Makefile
+
+Since certain operations consist of two steps (e.g. clean followed by build) and
+I also want to always pass extra arguments to =eldev= for verbosity and
+debuggability, I have a =Makefile= with all available commands.
 
 #+begin_src makefile
   .PHONY: clean
@@ -663,19 +876,131 @@ my SQL statements, and I want linter to be happy about it:
   test:
     eldev exec t
     eldev -C --unstable -a -dtT test
+#+end_src
 
+** org-roam
+
+In addition, I love to build [[https://github.com/org-roam/org-roam/][org-roam]] and [[https://github.com/d12frosted/vino][vino]] databases during bootstrap
+process, so I don't spend time on this when I use Emacs. For this I have defined
+the following function in my =lib-vulpea= file.
+
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (defun vulpea-db-build ()
+    "Update notes database."
+    (when (file-directory-p vulpea-directory)
+      (org-roam-db-build-cache)))
+#+end_src
+
+Now we can evaluate this function from command line via =eldev=:
+
+#+begin_src bash
+  $ eldev exec "(vulpea-db-build)"
+#+end_src
+
+If you are using [[https://github.com/d12frosted/vino][vino]], then =vulpea-db-build= also triggers vino database
+update, but since it =vino-setup= happens in =after-init-hook=, we need to run
+it before executing =vulpea-db-build=.
+
+#+begin_src emacs-lisp
+  (use-package vino
+    ;; unrelated code
+    :hook ((after-init . vino-setup))
+    ;; unrelated code
+    )
+#+end_src
+
+So we change our =eldev= command a little bit.
+
+#+begin_src bash
+  $ eldev exec "(progn (run-hooks 'after-init-hook) (vulpea-db-build))"
+#+end_src
+
+And we can put that into =Makefile=.
+
+#+begin_src makefile
   .PHONY: roam
   roam:
     eldev exec "(progn (run-hooks 'after-init-hook) (vulpea-db-build))"
 #+end_src
 
-** autoloads
-
-** Linting
-
-** Testing
-
 ** eru
+
+And the last yet optional bit of the whole puzzle is [[https://github.com/d12frosted/environment#eru-domain][Eru]], a script I use to
+setup and maintain my environment. I have it in my =PATH=, so I can rely on its
+might whenever I am. In short, I have the following commands:
+
+#+begin_src bash
+  $ eru install emacs # autoloads, compile, lint, roam
+  $ eru upgrade emacs
+  $ eru test emacs
+#+end_src
+
+Since Eru is a beast, you might not want to use it, but the core idea here is
+that you can create an executable that will glue all things together for you.
+
+#+begin_src bash
+  #!/usr/bin/env bash
+
+  set -e
+
+  ACTION=$1
+
+  emacs_d=$HOME/.config/emacs
+  if [[ -d "$XDG_CONFIG_HOME" ]]; then
+    emacs_d="$XDG_CONFIG_HOME/emacs"
+  fi
+
+  function print_usage() {
+    echo "Usage:
+    emacs-eru ACTION
+
+  Actions:
+    install               Install dependencies, compile and lint configurations
+    upgrade               Upgrade dependencies
+    test                  Test configurations
+  "
+  }
+
+  if [ -z "$ACTION" ]; then
+    echo "No ACTION is provided"
+    print_usage
+    exit 1
+  fi
+
+  case "$ACTION" in
+    install)
+      cd "$emacs_d" && {
+        make bootstrap compile lint roam
+      }
+      ;;
+
+    upgrade)
+      cd "$emacs_d" && {
+        make upgrade compile lint
+      }
+      ;;
+
+    test)
+      cd "$emacs_d" && {
+        make test
+      }
+      ;;
+
+    ,*)
+      echo "Unrecognized ACTION $ACTION"
+      print_usage
+      ;;
+  esac
+#+end_src
+
+For convenience, this script is available as a [[https://gist.github.com/d12frosted/b150fcaaf2de06b1b29af487ebbbf9c1][GitHub Gist]], so you can download
+it, save in somewhere in your =PATH=, =chmod= it and use.
+
+#+begin_src bash
+  $ curl -o ~/.local/bin/emacs-eru https://gist.githubusercontent.com/d12frosted/b150fcaaf2de06b1b29af487ebbbf9c1/raw/6fc70215afce2472e4f289c2c8500fbfc9a3f001/emacs-eru
+  $ chmod +x ~/.local/bin/emacs-eru
+#+end_src
 
 * Build tool
 
