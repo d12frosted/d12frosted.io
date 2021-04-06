@@ -6,8 +6,8 @@ Personal site.
 
 ** Building
 
-You need to install [[https://docs.haskellstack.org/en/stable/README/][stack]] (for building Haskell code) and [[https://yarnpkg.com/lang/en/][yarn]] (for downloading
-javascript libraries).
+You need to install [[https://www.haskell.org/ghc/][GHC]] and [[https://www.haskell.org/cabal/][cabal]] for building Haskell code, and [[https://yarnpkg.com/lang/en/][yarn]] for
+downloading javascript libraries.
 
 #+begin_src bash
   $ make build
