@@ -7,9 +7,9 @@ publish: false
 
 *TL;DR* This post describes an approach to make byte compiler and various
 linters happy and *useful* in your =.emacs.d=, while maintaining startup
-performance, ability to write embedded packages and test them. This is going to
-be a long post, so grab a bottle of wine, snacks and follow me. In case you lack
-these things, just take a look at [[https://d12frosted.io/posts/2021-03-13-emacs-d.html#solution][results]].
+performance, the ability to write embedded packages and test them. This is going
+to be a long post, so grab a bottle of wine, snacks and follow me. In case you
+lack these things, just take a look at [[https://d12frosted.io/posts/2021-03-13-emacs-d.html#solution][results]].
 
 #+begin_export html
 <hr/>
@@ -18,7 +18,7 @@ these things, just take a look at [[https://d12frosted.io/posts/2021-03-13-emacs
 The longest project in my life is [[https://github.com/d12frosted/environment][environment]], it started with [[https://github.com/d12frosted/environment/tree/master/emacs][Emacs
 configurations]] - personal frustration and my biggest time +waster+ investment. I
 might be masochistic, but I never felt sorry for falling into this +trap+ world.
-And boy, sometimes it is painful to maintain something in this ever mutating and
+And boy, sometimes it is painful to maintain something in this ever-mutating and
 mutable dynamic system.
 
 There are various tools to help maintaining Emacs package, all fall into one of
@@ -98,11 +98,12 @@ compiler and linters helpful and enable testing of Emacs configurations.
   - [[#makefile][Makefile]]
   - [[#org-roam][org-roam]]
   - [[#eru][eru]]
-- [[#build-tool][Build tool]]
-- [[#package-management-tool][Package management tool]]
-- [[#package-configuration-tool][Package configuration tool]]
-- [[#linter][Linter]]
-- [[#testing-framework][Testing framework]]
+- [[#choice-of-tools][Choice of tools]]
+  - [[#project-management-tool][Project management tool]]
+  - [[#package-management-tool][Package management tool]]
+  - [[#package-configuration-tool][Package configuration tool]]
+  - [[#linter][Linter]]
+  - [[#testing-framework][Testing framework]]
 - [[#whats-next][What's next]]
 
 * Solution
@@ -110,7 +111,8 @@ compiler and linters helpful and enable testing of Emacs configurations.
 Before we dive too much into details, let me describe the solution from higher
 level.
 
-- [[https://github.com/doublep/eldev/][doublep/eldev]] is a [[#build-tool][build tool]] because it's powerful and extensible.
+- [[https://github.com/doublep/eldev/][doublep/eldev]] is a [[#build-tool][project management tool]] because it's powerful and
+  extensible.
 - [[https://github.com/raxod502/straight][raxod502/straight]] is a [[#package-management-tool][package management tool]] because it's consistent and
   reliable.
 - [[https://github.com/jwiegley/use-package][jwiegley/use-package]] is a [[#package-configuration-tool][package configuration tool]] because it's easy to use
@@ -1002,17 +1004,57 @@ it, save in somewhere in your =PATH=, =chmod= it and use.
   $ chmod +x ~/.local/bin/emacs-eru
 #+end_src
 
-* Build tool
+* Choice of tools
 
-* Package management tool
+Previously I never explained my choice of the tools. In this section I am going
+to list alternatives and provide some reasoning. Please keep in mind that the
+list is not full and focuses only on my own experience and values.
 
-* Package configuration tool
+** Project management tool
+
+Project management tool, or a build tool, is an instrument for building, linting
+and testing packages. When it comes to Emacs, there are many options out in the
+wild. Arguably, the most popular options are [[https://cask.readthedocs.io/en/latest/][cask]] and [[https://github.com/alphapapa/makem][alphapapa/makem]], both
+being wonderful tools with different approach.
+
+[[https://github.com/alphapapa/makem][alphapapa/makem]] is a rather small bash script (around 1200 LoC) with aim on
+simplicity and transparency. Many projects have adopted it recently, because it
+is easy to setup (no configuration or initialization needed) and claims to have
+zero dependencies (except for the latest =bash=, which sometimes is not clear
+from the errors). You simply add a bash script to your repository.
+
+I don't use it in my projects anymore simply because there is no good way to
+extend =makem= without modifying its sources. This makes it hard to upgrade
+=makem= to the latest version as you need to deal with potential conflicts. In
+addition, it is written in bash, meaning that Emacs Lisp interop is very dirty
+and hard to maintain. I've hit =makem= limit and decided to switch. Though in
+general it is a very nice project!
+
+[[https://cask.readthedocs.io/en/latest/][Cask]] is a classic Emacs package project management tool. It is sophisticated,
+powerful and well documented. It requires to be installed on each developers
+machine, making it a little bit less approachable, though many package managers
+provide =cask=, so it's as easy as installing latest =bash=.
+
+| tool    | language   | extensible | requires installation |
+|---------+------------+------------+-----------------------|
+| =makem= | bash       | no         | no, but yes           |
+| =cask=  |            | yes        | yes                   |
+| =eldev= | Emacs Lisp | yes        | yes                   |
+
+
+Further readings:
+
+- [[https://github.com/alphapapa/makem.sh#comparisons][makem comparisons]]
+
+** Package management tool
+
+** Package configuration tool
 
 Do not use =:ensure t=.
 
-* Linter
+** Linter
 
-* Testing framework
+** Testing framework
 
 * What's next
 
