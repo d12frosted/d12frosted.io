@@ -22,9 +22,10 @@ And boy, sometimes it is painful to maintain something in this ever-mutating and
 mutable dynamic system.
 
 There are various tools to help maintaining Emacs package, all fall into one of
-four categories - project management tools (e.g. [[https://cask.readthedocs.io/en/latest/][Cask]], [[https://github.com/doublep/eldev/][Eldev]], [[https://github.com/alphapapa/makem.sh][makem.sh]]),
-compiler (e.g. built-in byte compiler), linters (e.g. [[https://github.com/purcell/package-lint][package-lint]], [[https://github.com/mattiase/relint][relint]],
-[[https://github.com/gonewest818/elisp-lint/][elisp-lint]], [[https://github.com/emacs-elsa/Elsa][Elsa]]) and test frameworks (e.g. [[https://www.gnu.org/software/emacs/manual/html_node/ert/index.html][ERT]], [[https://github.com/jorgenschaefer/emacs-buttercup][buttercup]]). The tricky part
+four categories - project management tools (e.g. [[https://cask.readthedocs.io/en/latest/][Cask]], [[https://github.com/doublep/eldev/][doublep/eldev]],
+[[https://github.com/alphapapa/makem.sh][alphapapa/makem.sh]]), compiler (e.g. built-in byte compiler), linters (e.g.
+[[https://github.com/purcell/package-lint][purcell/package-lint]], [[https://github.com/mattiase/relint][mattiase/relint]], [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]], [[https://github.com/emacs-elsa/Elsa][emacs-elsa/Elsa]])
+and test frameworks (e.g. [[https://www.gnu.org/software/emacs/manual/html_node/ert/index.html][ERT]], [[https://github.com/jorgenschaefer/emacs-buttercup][jorgenschaefer/emacs-buttercup]]). The tricky part
 comes when you want to use them for maintaining your own Emacs configurations,
 as they have different requirements from regular packages. At least in my case,
 they do.
@@ -46,8 +47,8 @@ package development from your Emacs configurations, which makes sense in
 general, but doesn't make sense when you develop the aforementioned
 configurations.
 
-The closest approach I know about is [[https://github.com/hlissner/doom-emacs][doom-emacs]], but even there =.emacs.d= is
-[[https://github.com/hlissner/doom-emacs/blob/46dedb3e3361535052d199e994b641dca2c2cffd/modules/lang/emacs-lisp/config.el#L14][ignored]]. Let me just quote a docstring from there:
+The closest approach I know about is [[https://github.com/hlissner/doom-emacs][hlissner/doom-emacs]], but even there
+=.emacs.d= is [[https://github.com/hlissner/doom-emacs/blob/46dedb3e3361535052d199e994b641dca2c2cffd/modules/lang/emacs-lisp/config.el#L14][ignored]]. Let me just quote a docstring from there:
 
 #+begin_quote
 This checker (flycheck) tends to produce a lot of false positives in your
@@ -73,7 +74,7 @@ level.
 
 - [[https://github.com/doublep/eldev/][doublep/eldev]] is a project management tool because it's powerful and
   extensible.
-- [[https://github.com/raxod502/straight][raxod502/straight]] is a package management tool because it's consistent and
+- [[https://github.com/raxod502/straight.el][raxod502/straight.el]] is a package management tool because it's consistent and
   reliable.
 - [[https://github.com/jwiegley/use-package][jwiegley/use-package]] is a package configuration tool because it's easy to use
   and widely adopted.
@@ -143,7 +144,7 @@ The following naming convention is used.
     but rather located in =emacs.d= folder;
   - various extensions around =org-mode= called =vulpea= are good examples of
     =lib= files:
-    - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa][lib-vulpea-agenda.el]]
+    - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-agenda.el][lib-vulpea-agenda.el]]
     - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-capture.el][lib-vulpea-capture.el]]
     - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-refile.el][lib-vulpea-refile.el]]
     - [[https://github.com/d12frosted/environment/blob/6ffa964e77410b71058c3d1c43a2381a90bbc6aa/emacs/lisp/lib-vulpea-id.el][lib-vulpea-id.el]]
@@ -205,7 +206,7 @@ Garbage collection is a huge contributor to startup time. We temporarily
 increase this value to prevent garbage collection from running, then reset it to
 some big number in =emacs-startup-hook=. I discovered this trick thanks to
 [[https://github.com/hlissner/doom-emacs/][hlissner/doom-emacs]]. But it is widely used by many people, for example
-[[https://github.com/purcell/emacs][purcell/emacs]].
+[[https://github.com/purcell/emacs.d][purcell/emacs.d]].
 
 In addition it is a good idea to use [[https://github.com/emacsmirror/gcmh][emacsmirror/gcmh]] (aka Garbage Collector
 Magic Hack) to improve performance of interactive functions.
@@ -322,11 +323,12 @@ configuration tools, which is performed in =init-elpa= file.
 
 ** Bootstrap =straight.el=
 
-The bootstrap process of [[https://github.com/raxod502/straight][raxod502/straight]] is quire simple and well documented
-in the official repository. Additionally, we want to avoid any modification
-checks at startup by setting the value of =straight-check-for-modifications= to
-=nil=, so everything runs faster. Also we want to install packages by default in
-=use-package= forms. And then everything is straight-forward.
+The bootstrap process of [[https://github.com/raxod502/straight.el][raxod502/straight.el]] is quire simple and well
+documented in the official repository. Additionally, we want to avoid any
+modification checks at startup by setting the value of
+=straight-check-for-modifications= to =nil=, so everything runs faster. Also we
+want to install packages by default in =use-package= forms. And then everything
+is straight-forward.
 
 #+begin_src emacs-lisp
   (require 'config-path)
