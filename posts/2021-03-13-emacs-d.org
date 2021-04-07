@@ -68,57 +68,17 @@ compiler and linters helpful and enable testing of Emacs configurations.
 <!--more-->
 #+END_HTML
 
-* Table of Contents :TOC_3:
-- [[#solution][Solution]]
-  - [[#content-of-early-init][Content of =early-init=]]
-  - [[#content-of-initel][Content of =init.el=]]
-    - [[#add-lisp-directory-to-load-path][Add =lisp= directory to =load-path=]]
-    - [[#garbage-collection-thresholds][Garbage collection thresholds]]
-    - [[#bootstrap][Bootstrap]]
-    - [[#setup-custom-file-location][Setup =custom-file= location]]
-    - [[#loading-autoloads][Loading autoloads]]
-    - [[#loading-other-init-files][Loading other init files]]
-    - [[#loading-custom-file][Loading =custom-file=]]
-  - [[#content-of-init-elpa][Content of =init-elpa=]]
-    - [[#bootstrap-straightel][Bootstrap =straight.el=]]
-    - [[#setup-use-package][Setup =use-package=]]
-    - [[#popular-packages][Popular packages]]
-  - [[#content-of-eldev][Content of Eldev]]
-    - [[#specify-project-files][Specify project files]]
-    - [[#use-melpa][Use MELPA]]
-    - [[#define-bootstrap-command][Define bootstrap command]]
-    - [[#define-upgrade-command][Define upgrade command]]
-    - [[#define-autoloads-plugin][Define autoloads plugin]]
-    - [[#linting-configuration][Linting configuration]]
-  - [[#autoloads][autoloads]]
-  - [[#compiling][Compiling]]
-  - [[#linting][Linting]]
-  - [[#testing][Testing]]
-  - [[#upgrading][Upgrading]]
-  - [[#makefile][Makefile]]
-  - [[#org-roam][org-roam]]
-  - [[#eru][eru]]
-- [[#choice-of-tools][Choice of tools]]
-  - [[#project-management-tool][Project management tool]]
-  - [[#package-management-tool][Package management tool]]
-  - [[#package-configuration-tool][Package configuration tool]]
-  - [[#linter][Linter]]
-  - [[#testing-framework][Testing framework]]
-- [[#whats-next][What's next]]
-
-* Solution
-
 Before we dive too much into details, let me describe the solution from higher
 level.
 
-- [[https://github.com/doublep/eldev/][doublep/eldev]] is a [[#build-tool][project management tool]] because it's powerful and
+- [[https://github.com/doublep/eldev/][doublep/eldev]] is a project management tool because it's powerful and
   extensible.
-- [[https://github.com/raxod502/straight][raxod502/straight]] is a [[#package-management-tool][package management tool]] because it's consistent and
+- [[https://github.com/raxod502/straight][raxod502/straight]] is a package management tool because it's consistent and
   reliable.
-- [[https://github.com/jwiegley/use-package][jwiegley/use-package]] is a [[#package-configuration-tool][package configuration tool]] because it's easy to use
+- [[https://github.com/jwiegley/use-package][jwiegley/use-package]] is a package configuration tool because it's easy to use
   and widely adopted.
-- [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]] is a [[#linter][linter]] because it aggregates many other linters.
-- [[https://github.com/jorgenschaefer/emacs-buttercup][jorgenschaefer/emacs-buttercup]] is a [[#testing-framework][testing framework]] because it's easy to
+- [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]] is a linter because it aggregates many other linters.
+- [[https://github.com/jorgenschaefer/emacs-buttercup][jorgenschaefer/emacs-buttercup]] is a testing framework because it's easy to
   use.
 
 The structure of my =.emacs.d= looks like this:
@@ -196,7 +156,7 @@ The following naming convention is used.
 The only exception from this convention is =init-autoloads.el= file containing
 [[#autoloads][autoloads]]. Name comes from =init.el= file.
 
-** Content of =early-init=
+* Content of =early-init=
 
 See [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][relevant section]] in Emacs Help for more information on The Early Init File,
 introduced in Emacs 27.1. Basically, this file is great for frame
@@ -212,7 +172,7 @@ This file is totally optional, you can safely omit it in your setup. But if you
 have any frame customization, putting them in =early-init= file might speed up
 your Emacs and fix some visual clutter upon startup.
 
-** Content of =init.el=
+* Content of =init.el=
 
 The goal of this file is to =require= all =init-xxx= files. The structure is
 trivial:
@@ -227,7 +187,7 @@ trivial:
 7. Load =custom-file=, even if you are not using =customize= interface, you
    need this to use =.dir-locals.el=.
 
-*** Add =lisp= directory to =load-path=
+** Add =lisp= directory to =load-path=
 
 #+begin_src emacs-lisp
   ;; Since we might be running in CI or other environments, stick to
@@ -239,7 +199,7 @@ trivial:
     (add-to-list 'load-path (expand-file-name "lisp" emacs-home)))
 #+end_src
 
-*** Garbage collection thresholds
+** Garbage collection thresholds
 
 Garbage collection is a huge contributor to startup time. We temporarily
 increase this value to prevent garbage collection from running, then reset it to
@@ -260,7 +220,7 @@ Magic Hack) to improve performance of interactive functions.
                                normal-gc-cons-threshold))))
 #+end_src
 
-*** Bootstrap
+** Bootstrap
 
 #+begin_src emacs-lisp
   (require 'config-path)
@@ -269,7 +229,7 @@ Magic Hack) to improve performance of interactive functions.
 
 Literally, that's it. Checkout [[#content-of-init-elpa][content of =init-elpa=]] to find out how it works.
 
-*** Setup =custom-file= location
+** Setup =custom-file= location
 
 Before we load anything, we should setup location of our =custom-file=,
 otherwise Emacs customization system will pollute our =init.el= file.
@@ -293,7 +253,7 @@ The constant =path-local-dir= is defined in =config-path=:
   across systems.")
 #+end_src
 
-*** Loading autoloads
+** Loading autoloads
 
 #+begin_src emacs-lisp
   ;; load autoloads file
@@ -309,7 +269,7 @@ The most important bit here is the last line, which loads file containing
 any other modules to make autoloaded functions available there. But of course we
 can't load this file during bootstrap process which generates this file.
 
-*** Loading other init files
+** Loading other init files
 
 Now comes the easy part, we just load all =init-xxx= files that we have.
 
@@ -343,7 +303,7 @@ less footprint on runtime performance, the list is not big and I rarely add new
 files. Another option would be to generate this list during 'compilation', but
 again, I would love to avoid any unnecessary complications.
 
-*** Loading =custom-file=
+** Loading =custom-file=
 
 And the last thing to do is to load =custom-file=:
 
@@ -355,12 +315,12 @@ And the last thing to do is to load =custom-file=:
     (load custom-file nil 'nomessage))
 #+end_src
 
-** Content of =init-elpa=
+* Content of =init-elpa=
 
 Part of our bootstrap process is setting up package management and package
 configuration tools, which is performed in =init-elpa= file.
 
-*** Bootstrap =straight.el=
+** Bootstrap =straight.el=
 
 The bootstrap process of [[https://github.com/raxod502/straight][raxod502/straight]] is quire simple and well documented
 in the official repository. Additionally, we want to avoid any modification
@@ -397,7 +357,7 @@ checks at startup by setting the value of =straight-check-for-modifications= to
 The only bit I am not describing here (and I will do it in separate blog post)
 is how I configure retries for networking operations.
 
-*** Setup =use-package=
+** Setup =use-package=
 
 Now it's easy to setup =use-package=:
 
@@ -407,7 +367,7 @@ Now it's easy to setup =use-package=:
   (straight-use-package 'use-package)
 #+end_src
 
-*** Popular packages
+** Popular packages
 
 There are packages (or rather libraries) that should be loaded eagerly because
 they are used extensively and they do not provide autoloads.
@@ -417,12 +377,12 @@ they are used extensively and they do not provide autoloads.
   (use-package dash)
 #+end_src
 
-** Content of Eldev
+* Content of Eldev
 
 =Eldev= file defines our project. You can read more about this file in
 [[https://github.com/doublep/eldev/][doublep/eldev]] repository.
 
-*** Specify project files
+** Specify project files
 
 Eldev is quite powerful when it comes to fileset specification, but I find it
 not working properly with extra directories out of box. Since we can not place
@@ -443,7 +403,7 @@ commands.
   (eldev-add-loading-roots 'bootstrap "lisp")
 #+end_src
 
-*** Use MELPA
+** Use MELPA
 
 We are going to use certain 3rd party packages for project management (e.g.
 testing and linting), so we must tell Eldev where to load them from. This part
@@ -459,7 +419,7 @@ configurations. Ugly, but safe.
   (eldev-use-package-archive 'melpa)
 #+end_src
 
-*** Define bootstrap command
+** Define bootstrap command
 
 Bootstrapping Emacs is simple, we just need to load =init.el= file.
 
@@ -487,7 +447,7 @@ byte compiled (again, we are going to compile =.el= to =.elc=).
 We hook this function into any build command in order to install packages and
 get proper =load-path= in all phases.
 
-*** Define upgrade command
+** Define upgrade command
 
 Upgrade flow is simple and uses =straight.el= functionality, because we use it
 to manage packages.
@@ -513,7 +473,7 @@ to manage packages.
   (add-hook 'eldev-upgrade-hook #'elpa-upgrade)
 #+end_src
 
-*** Define autoloads plugin
+** Define autoloads plugin
 
 Now is the most dirty part - autoloads generation. Eldev provides a plugin for
 autoloads generation, but unfortunately it works only with root directory, but
@@ -568,7 +528,7 @@ own plugin.
       (expand-file-name "lisp/init-autoloads.el" eldev-project-dir))))
 #+end_src
 
-*** Linting configuration
+** Linting configuration
 
 And again, we need to tell Eldev which files to lint.
 
@@ -639,7 +599,7 @@ my SQL statements, and I want linter to be happy about it:
               (call-interactively #'emacsql-fix-vector-indentation)))
 #+end_src
 
-** autoloads
+* autoloads
 
 Now that everything is configured, we can use =eldev= to bootstrap, compile,
 lint and test our configurations. The first thing we do is autoloads generation,
@@ -747,7 +707,7 @@ Please note that =eldev= commands need to be run with working directory pointing
 to the directory containing =Eldev= file, e.g. from =$XDG_CONFIG_HOME/emacs= or
 =$HOME/.config/emacs=.
 
-** Compiling
+* Compiling
 
 The second operation in the bootstrap process is byte compilation. It is said
 that byte compiled lisp executes [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Speed-of-Byte_002dCode.html][faster]], but there is also an experimental
@@ -763,7 +723,7 @@ all our =.el= files.
 
 That's it.
 
-** Linting
+* Linting
 
 The third step of the bootstrap process is linting. Once everything compiles we
 just need to check what linter has to say. Just to remind, we are using
@@ -774,7 +734,7 @@ trivial as
   $ eldev lint
 #+end_src
 
-** Testing
+* Testing
 
 And the last step of the bootstrap process is testing, which has two steps.
 First we simply load our configurations and make sure that nothing errors out
@@ -836,7 +796,7 @@ And the output of testing might look like this:
   Ran 2 specs, 0 failed, in 37.85ms.
 #+end_example
 
-** Upgrading
+* Upgrading
 
 Since we explicitly defined an upgrade command in Eldev, we can execute it as
 any other command:
@@ -845,7 +805,7 @@ any other command:
   $ eldev upgrade
 #+end_src
 
-** Makefile
+* Makefile
 
 Since certain operations consist of two steps (e.g. clean followed by build) and
 I also want to always pass extra arguments to =eldev= for verbosity and
@@ -880,7 +840,7 @@ debuggability, I have a =Makefile= with all available commands.
     eldev -C --unstable -a -dtT test
 #+end_src
 
-** org-roam
+* org-roam
 
 In addition, I love to build [[https://github.com/org-roam/org-roam/][org-roam]] and [[https://github.com/d12frosted/vino][vino]] databases during bootstrap
 process, so I don't spend time on this when I use Emacs. For this I have defined
@@ -926,7 +886,7 @@ And we can put that into =Makefile=.
     eldev exec "(progn (run-hooks 'after-init-hook) (vulpea-db-build))"
 #+end_src
 
-** eru
+* eru
 
 And the last yet optional bit of the whole puzzle is [[https://github.com/d12frosted/environment#eru-domain][Eru]], a script I use to
 setup and maintain my environment. I have it in my =PATH=, so I can rely on its
@@ -1004,71 +964,12 @@ it, save in somewhere in your =PATH=, =chmod= it and use.
   $ chmod +x ~/.local/bin/emacs-eru
 #+end_src
 
-* Choice of tools
-
-Previously I never explained my choice of the tools. In this section I am going
-to list alternatives and provide some reasoning. Please keep in mind that the
-list is not full and focuses only on my own experience and values.
-
-** Project management tool
-
-Project management tool, or a build tool, is an instrument for building, linting
-and testing packages. When it comes to Emacs, there are many options out in the
-wild. Arguably, the most popular options are [[https://cask.readthedocs.io/en/latest/][cask]] and [[https://github.com/alphapapa/makem][alphapapa/makem]], both
-being wonderful tools with different approach.
-
-[[https://github.com/alphapapa/makem][alphapapa/makem]] is a rather small bash script (around 1200 LoC) with aim on
-simplicity and transparency. Many projects have adopted it recently, because it
-is easy to setup (no configuration or initialization needed) and claims to have
-zero dependencies (except for the latest =bash=, which sometimes is not clear
-from the errors). You simply add a bash script to your repository.
-
-I don't use it in my projects anymore simply because there is no good way to
-extend =makem= without modifying its sources. This makes it hard to upgrade
-=makem= to the latest version as you need to deal with potential conflicts. In
-addition, it is written in bash, meaning that Emacs Lisp interop is very dirty
-and hard to maintain. I've hit =makem= limit and decided to switch. Though in
-general it is a very nice project!
-
-[[https://cask.readthedocs.io/en/latest/][Cask]] is a classic Emacs package project management tool. It is sophisticated,
-powerful and well documented. It requires to be installed on each developers
-machine, making it a little bit less approachable, though many package managers
-provide =cask=, so it's as easy as installing latest =bash=.
-
-| tool    | language   | extensible | requires installation |
-|---------+------------+------------+-----------------------|
-| =makem= | bash       | no         | no, but yes           |
-| =cask=  |            | yes        | yes                   |
-| =eldev= | Emacs Lisp | yes        | yes                   |
-
-
-Further readings:
-
-- [[https://github.com/alphapapa/makem.sh#comparisons][makem comparisons]]
-
-** Package management tool
-
-** Package configuration tool
-
-Do not use =:ensure t=.
-
-** Linter
-
-** Testing framework
-
 * What's next
 
-* Things to cover :noexport:
+Tinkering with Emacs, of course! This is an endless effort, constant struggle
+but most importantly, divine pleasure. On a serious note, I would love to cover
+most critical parts with tests and integrate [[https://github.com/emacs-elsa/Elsa][emacs-elsa/Elsa]] into my flow. And I
+would love to hear from you, how do you approach safety problem of your
+=emacs.d=?
 
-- choice of the tools
-  - eldev vs cask vs makemsh
-  - straight vs quelpa (package.el)
-  - use-package vs leaf vs manual deferred loading
-- naming convention
-- bootstrap process
-- configuring eldev
-- autoloads
-- tests
-- eru (or other custom script to glue)
-- advantages and disadvantages
-- extending this monster further
+Safe travels!
