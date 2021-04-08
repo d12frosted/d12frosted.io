@@ -15,9 +15,9 @@ So I say, no more, [[https://github.com/raxod502/straight.el/][raxod502/straight
 network! Unfortunately, there is no such option out of box (or at least I could
 not find it). Luckily, it's Emacs!
 
-#+begin_export html
-<hr/>
-#+end_export
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
 
 First, we want to configure how many times we want to retry before actually
 failing.
