@@ -356,8 +356,8 @@ is straight-forward.
     (load bootstrap-file nil 'nomessage))
 #+end_src
 
-The only bit I am not describing here (and I will do it in separate blog post)
-is how I configure retries for networking operations.
+The only bit I am not describing here is how I configure [[https://d12frosted.io/posts/2021-04-08-straight-el-retries.html][retries for networking
+operations]].
 
 ** Setup =use-package=
 
