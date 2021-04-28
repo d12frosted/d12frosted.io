@@ -4,4 +4,4 @@ are various ways to support them - by using, by becoming a stargazer, by
 contributing or becoming a [[https://www.patreon.com/d12frosted][patreon]]. Special thanks to patrons, and public ones:
 
 - [[https://github.com/jidicula][Johanan Idicula]]
-- Chris Montgomery
+- [[https://github.com/montchr][Chris Montgomery]]
