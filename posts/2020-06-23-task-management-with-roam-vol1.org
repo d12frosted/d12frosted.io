@@ -17,6 +17,11 @@ notes management.
 </div>
 #+END_EXPORT
 
+*Change Log:*
+
+- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
+  version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-23-task-management-with-roam-vol1.org][GitHub]].
+
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
@@ -39,7 +44,7 @@ consist of the following elements.
 Take a look at the following example of =org-mode= file with all these elements.
 
 #+begin_src org
-  ,#+TITLE: Work
+  ,#+title: Work
 
   ,* emacs-plus
   :PROPERTIES:
@@ -121,7 +126,7 @@ In the endless debate 'many small' vs 'few big' org files, =org-roam= favours
 the former approach (though even this is debatable).
 
 #+begin_src org
-  ,#+TITLE: emacs-plus
+  ,#+title: emacs-plus
 
   Emacs Plus is [[https://www.gnu.org/software/emacs/emacs.html][→ GNU Emacs]] formulae for macOS [[https://brew.sh][→ Homebrew]] package manager. It
   offers a wide rage of extra functionality over regular [[https://formulae.brew.sh/formula/emacs#default][→ Emacs]] package. Emacs

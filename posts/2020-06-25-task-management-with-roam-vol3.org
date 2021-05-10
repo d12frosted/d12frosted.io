@@ -45,6 +45,8 @@ borrowed book, I just create a task for this.
   article was merged to =org-roam=, all code is updated to reflect the current
   state of affairs.
 - ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
+- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
+  version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-25-task-management-with-roam-vol3.org][GitHub]].
 
 #+BEGIN_HTML
 <!--more-->
@@ -71,9 +73,8 @@ tasks related to Frodo and Samwise. For more information, take a look at the
 With =org-roam=, each person has its own file.
 
 #+begin_src org
-  ,#+TITLE: Frodo Baggins
-  ,#+FILETAGS: @FrodoBaggins
-  ,#+ROAM_TAGS: People
+  ,#+title: Frodo Baggins
+  ,#+filetags: @FrodoBaggins people
 
   ,* Tasks
   ,** TODO Return 'The Lord of the Rings' book
@@ -97,34 +98,31 @@ With =org-roam=, each person has its own file.
 #+end_src
 
 In order to maintain the feature where =@FrodoBaggins= tag is applied to all
-TODO items we have to use =FILETAGS= property. I am also using [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][org-roam tags]] to
-mark Frodo Baggins as a person. This helps me in two ways. First of all, it
-gives me clear understanding that this entity is a person (some people do have
-strange names). Secondly, it serves me in automation and filtering.
+TODO items we have to use =filetags= property. I am also using id to mark Frodo
+Baggins as a person (even though he is a hobbit!). This helps me in two ways.
+First of all, it gives me clear understanding that this entity is a person (some
+people do have strange names). Secondly, it serves me in automation and
+filtering (as example, checkout [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]] post).
 
 Now, when I see a headline with title and tag being literally the same (with few
-programmable exceptions) or the file with =TITLE= and =FILETAGS= being the same
+programmable exceptions) or the file with =title= and =filetags= being the same
 (with few programmable exceptions), I am feeling nervous. Especially since I am
 prone to mistakes.
 
-So what I do - I automate =FILETAGS=. I have a function =vulpea-ensure-filetag=
-which automatically sets the =FILETAGS= buffer property for =org-roam= entries
-tagged as =People=. The following code reuses most of the functions from
-[[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][org-roam tags]] post.
+So what I do - I automate =filetags=. I have a function =vulpea-ensure-filetag=
+which automatically sets the =filetags= buffer property for =org-roam= entries
+tagged as =people=. It uses [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L183][vulpea-buffer-tags-get]] and [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L193][vulpea-buffer-tags-add]]
+from [[https://github.com/d12frosted/vulpea][vulpea]] library.
 
 #+begin_src emacs-lisp
   (defun vulpea-ensure-filetag ()
     "Add respective file tag if it's missing in the current note."
     (interactive)
-    (let ((tags (org-roam--extract-tags-prop
-                 (buffer-file-name
-                  (buffer-base-buffer)))))
-      (when (and (seq-contains-p tags "People")
-                 (null (org-roam--extract-global-props-keyword
-                        '("FILETAGS"))))
-        (org-roam--set-global-prop
-         "FILETAGS"
-         (vulpea--title-to-tag (vulpea-buffer-prop-get "TITLE"))))))
+    (let ((tags (vulpea-buffer-tags-get))
+          (tag (vulpea--title-as-tag)))
+      (when (and (seq-contains-p tags "people")
+                 (not (seq-contains-p tags tag)))
+        (vulpea-buffer-tags-add tag))))
 
   (defun vulpea--title-to-tag (title)
     "Convert TITLE to tag."
@@ -139,7 +137,11 @@ that function.
   (defun vulpea-tags-add ()
     "Add a tag to current note."
     (interactive)
-    (when (org-roam-tag-add)
+    ;; since https://github.com/org-roam/org-roam/pull/1515
+    ;; `org-roam-tag-add' returns added tag, we could avoid reading tags
+    ;; in `vulpea-ensure-filetag', but this way it can be used in
+    ;; different contexts while having simple implementation.
+    (when (call-interactively #'org-roam-tag-add)
       (vulpea-ensure-filetag)))
 #+end_src
 

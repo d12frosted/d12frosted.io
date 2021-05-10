@@ -21,6 +21,8 @@ explore the means to overcome this issue.
 - ~[2021-03-02 Tue]~: Update category extraction function to use =TITLE= of the
   note and enforce length limit. Kudos to [[https://github.com/real-or-random/][Tim Ruffing]] for the idea.
 - ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
+- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
+  version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-24-task-management-with-roam-vol2.org][GitHub]].
 
 #+BEGIN_HTML
 <!--more-->
@@ -33,7 +35,7 @@ On of the simplest solutions is to mimic solution for headlines by setting
   :PROPERTIES:
   :CATEGORY:               emacs-plus
   :END:
-  ,#+TITLE: emacs-plus
+  ,#+title: emacs-plus
 
   ...
 #+end_src
@@ -42,7 +44,7 @@ On of the simplest solutions is to mimic solution for headlines by setting
   :PROPERTIES:
   :CATEGORY:               blog
   :END:
-  ,#+TITLE: Blog
+  ,#+title: Blog
 
   ...
 #+end_src
@@ -104,7 +106,7 @@ Instead of =c= we can use any expression.
     (let* ((file-name (when buffer-file-name
                         (file-name-sans-extension
                          (file-name-nondirectory buffer-file-name))))
-           (title (car-safe (org-roam--extract-titles-title)))
+           (title (vulpea-buffer-prop-get "title"))
            (category (org-get-category)))
       (or (if (and
                title
@@ -112,6 +114,20 @@ Instead of =c= we can use any expression.
               title
             category)
           "")))
+#+end_src
+
+In order to extract title, I am using =vulpea-buffer-prop-get= from [[https://github.com/d12frosted/vulpea][vulpea]]
+library. It's [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L239][defined]] as:
+
+#+begin_src emacs-lisp
+  (defun vulpea-buffer-prop-get (name)
+    "Get a buffer property called NAME as a string."
+    (org-with-point-at 1
+      (when (re-search-forward (concat "^#\\+" name ": \\(.*\\)")
+                               (point-max) t)
+        (buffer-substring-no-properties
+         (match-beginning 1)
+         (match-end 1)))))
 #+end_src
 
 #+BEGIN_EXPORT html
@@ -160,7 +176,7 @@ to achieve this.
     (let* ((file-name (when buffer-file-name
                         (file-name-sans-extension
                          (file-name-nondirectory buffer-file-name))))
-           (title (car-safe (org-roam--extract-titles-title)))
+           (title (vulpea-buffer-prop-get "title"))
            (category (org-get-category))
            (result
             (or (if (and
