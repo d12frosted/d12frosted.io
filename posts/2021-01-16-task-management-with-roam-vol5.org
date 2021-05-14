@@ -40,6 +40,16 @@ that we either add or remove a =project= tag from =filetags= property. And then,
 before calling =org-agenda=, we simply =org-roam-db-query= for files that have a
 =project= tag.
 
+Since =filetags= are [[https://orgmode.org/manual/Tag-Inheritance.html][inherited]] by default (see the value of
+=org-use-tag-inheritance=), every heading in your file will inherit =project=
+tag, which is not desirable. Since tag inheritance is useful in general, my
+advice is to disable inheritance specifically for =project= tag by adding it to
+=org-tags-exclude-from-inheritance=:
+
+#+begin_src emacs-lisp
+  (add-to-list 'org-tags-exclude-from-inheritance "project")
+#+end_src
+
 #+BEGIN_EXPORT html
 <div class="post-image">
 <img src="/images/org-notes-project-tag-update.gif" />
@@ -48,7 +58,7 @@ before calling =org-agenda=, we simply =org-roam-db-query= for files that have a
 
 * Marking a Project
 
-In order to mark a note as a =Project=, we need to check if it contains any
+In order to mark a note as a =project=, we need to check if it contains any
 =TODO= entries. One of the way to do it is to use [[https://orgmode.org/worg/dev/org-element-api.html][Org Element API]], a set of
 parsing functions.
 
