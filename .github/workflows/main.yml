@@ -28,8 +28,8 @@ jobs:
 
       - name: Build site
         env:
-          GITHUB_API_USER: ${{ secrets.GITHUB_API_USER }}
-          GITHUB_API_SECRET: ${{ secrets.GITHUB_API_SECRET }}
+          GITHUB_API_USER: ${{ secrets.API_USER_NAME }}
+          GITHUB_API_SECRET: ${{ secrets.API_USER_TOKEN }}
         run: make build
 
       - name: Deploy
@@ -40,4 +40,4 @@ jobs:
           build_dir: public
           committer: Golem <golem@d12frosted.io>
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.API_USER_TOKEN }}
