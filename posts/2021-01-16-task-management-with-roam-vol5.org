@@ -97,8 +97,8 @@ This might look a little bit too much, so let me explain the code step by step.
 Now we need to use this function to add or to remove =project= tag from a note.
 I think that it should be done in two places - when visiting a note and in
 =before-save-hook=. This way you leave no room for missing a file with =TODO=
-entries. It uses [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L183][vulpea-buffer-tags-get]] and [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L193][vulpea-buffer-tags-add]] from [[https://github.com/d12frosted/vulpea][vulpea]]
-library.
+entries. It uses [[https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L69][vulpea-buffer-tags-get]] and [[https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L79][vulpea-buffer-tags-add]] from [[https://github.com/d12frosted/vulpea][vulpea]]
+library (for now you should use [[https://github.com/d12frosted/vulpea/pull/92][org-roam-v2 branch]]).
 
 #+begin_src emacs-lisp
   (add-hook 'find-file-hook #'vulpea-project-update-tag)
