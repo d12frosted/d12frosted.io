@@ -40,4 +40,4 @@ jobs:
           build_dir: public
           committer: Golem <golem@d12frosted.io>
         env:
-          GH_PAT: ${{ secrets.GITHUB_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT }}
