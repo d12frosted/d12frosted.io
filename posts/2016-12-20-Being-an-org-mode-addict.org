@@ -21,7 +21,7 @@ angry because it forces me to make some uncomfortable decisions.
 <!--more-->
 #+END_HTML
 
-Michael Hall has a nice [[http://mph.puddingbowl.org/2010/02/org-mode-in-your-pocket-is-a-gnu-shaped-devil/][blog post]] about ~org-mode~ being a GNU-shaped devil on
+Michael Hall has a nice [[https://mph.puddingbowl.org/2010/02/03/165139.html][blog post]] about ~org-mode~ being a GNU-shaped devil on
 his [[http://mph.puddingbowl.org][dot unplanned]] blog. It's really an interesting read. My favourite part is
 about all the devilness of Emacs in general and org-mode in particular.
 
