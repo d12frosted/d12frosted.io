@@ -78,6 +78,16 @@ implemented using hooks.
 P.S. =vulpea-insert= can be modified to skip tagging when called with
 universal argument. Feel free to reach me if you need help with that!
 
+* Task Management with org-roam Series
+
+1. [[http://localhost:8000/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
+2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
+3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
+4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
+5. [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Dynamic and fast agenda]]
+6. [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]]
+7. Capture
+
 * References
 
 - =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
