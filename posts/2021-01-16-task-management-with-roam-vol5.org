@@ -307,7 +307,7 @@ Thank you for your patience.
 4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
 5. [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Dynamic and fast agenda]]
 6. [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]]
-7. Capture
+7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
 
 * References
 
