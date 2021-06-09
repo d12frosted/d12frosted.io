@@ -1,3 +1,8 @@
+div.image-container-half {
+  width: 50%;
+  margin: auto;
+}
+
 div.post-image img {
   width: 100%;
   display: block;
