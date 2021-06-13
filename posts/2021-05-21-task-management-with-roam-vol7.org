@@ -298,7 +298,7 @@ That's it!
 
 * Task Management with org-roam Series
 
-1. [[http://localhost:8000/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
+1. [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
 2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
 3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
 4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]

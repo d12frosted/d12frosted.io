@@ -34,7 +34,7 @@ imagine multiple times, so here is a screencast.
 The solution is based on the relatively recent [[https://github.com/org-roam/org-roam/pull/839][pull request]] to the org-roam.
 Instead of using =org-roam-node-insert= directly, we can write a wrapper for it
 leveraging the return value, name manipulation from the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][previous article]] and
-tags lookup from [[http://localhost:8000/posts/2020-06-10-org-roam-tags.html][Org-roam tags]] article.
+tags lookup from [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][Org-roam tags]] article.
 
 #+begin_src emacs-lisp
   (defun vulpea-insert ()
@@ -80,7 +80,7 @@ universal argument. Feel free to reach me if you need help with that!
 
 * Task Management with org-roam Series
 
-1. [[http://localhost:8000/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
+1. [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
 2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
 3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
 4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
