@@ -155,9 +155,9 @@ capture process and then simply query it (just don't forget to [[https://github.
 =immediate-fnish= property).
 
 And the most cool thing about new capture process is that
-=org-roam-capture-templates= became proper Org mode capture template with few
-extra things. Meaning that you can configure capture stuff in so many fancy
-ways... I am yet to discover this new wonderful world.
+=org-roam-capture-templates= became even closer to Org mode capture template,
+meaning that you can configure capture stuff in so many fancy ways... I am yet
+to discover this new wonderful world.
 
 * Notes migration
 
