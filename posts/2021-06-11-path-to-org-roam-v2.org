@@ -295,6 +295,9 @@ release):
   - [[https://github.com/d12frosted/environment/commit/1febc7a5b015d98602cd48cb0143b4424a5e8c03][environment#1febc7a]]
   - ... and many more
 
+And before you jump into changing your code base, I suggest to go over
+[[https://github.com/org-roam/org-roam/blob/ed16ca75d7556b4d831326804543591836b466d5/doc/org-roam.org#developers-guide-to-org-roam][Developer's Guide to Org-roam]].
+
 * What about vulpea?
 
 Some of the core ideas of =vulpea= got implemented in =org-roam= now (definitely
@@ -351,6 +354,7 @@ in my note-taking life.
 
 - [[https://github.com/org-roam/org-roam/pull/1401][org-roam#1401]]
 - [[https://org-roam.discourse.group/t/org-roam-major-redesign/1198][Org-roam major redesign]]
+- [[https://github.com/org-roam/org-roam/blob/ed16ca75d7556b4d831326804543591836b466d5/doc/org-roam.org#developers-guide-to-org-roam][Developer's Guide to Org-roam]]
 - [[https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V2][Hitchhiker's Rough Guide to Org roam V2]]
 - [[https://org-roam.discourse.group/t/the-org-roam-v2-great-migration/1505][The Org-roam v2 Great Migration]]
 
