@@ -20,11 +20,11 @@ solution usable with ever growing collection of tasting notes, and this is what
 I used to build various tools for presenting non-trivial views around my notes
 ([[https://github.com/d12frosted/environment/blob/master/emacs/README.org#managing-litnotes][example of a public one]]).
 
-And now =org-roam= is very [[https://github.com/org-roam/org-roam/pull/1401#issuecomment-857646674][close to release]] of =V2=, the first major redesign
-affecting both users and authors of libraries extending =org-roam=. And while PR
-remains a mere draft, =V2= is so amazing and is so much more stable than =V1=,
-that my advice is to drop the chains of old =org-roam= and embrace all the
-goodness =V2= brings.
+And now =org-roam= has [[https://github.com/org-roam/org-roam/releases/tag/v2.0.0][released]] =V2=, the first major redesign affecting both
+users and authors of libraries extending =org-roam=. And while there are
+breaking changes requiring some effort from users, =V2= is so amazing and is so
+much more stable than =V1=, that my advice is to drop the chains of old
+=org-roam= and embrace all the goodness =V2= brings.
 
 Unfortunately, major redesign means lots of breaking changes and in this post I
 am going to describe my migration experience, code I used to migrate my notes
@@ -35,8 +35,13 @@ icon), so expect some advertisement™.
 NB. Migration process means adapting to and overcoming breaking changes. Since
 =V2= is full of them, this article might look pessimistic or depressing. But
 don't get fooled, I think that =V2= is amazing. I am very happy to use it on a
-daily basis and I never looked back. [[https://github.com/jethrokuan][Jethro]] is doing amazing work! As well as
-all [[https://github.com/org-roam/org-roam/graphs/contributors][contributors]] (with extra kudos to [[https://github.com/nobiot][Noboru Ota]], because Noboru rocks).
+daily basis for several months and I never looked back. [[https://github.com/jethrokuan][Jethro]] is doing amazing
+work! As well as all [[https://github.com/org-roam/org-roam/graphs/contributors][contributors]] (with extra kudos to [[https://github.com/nobiot][Noboru Ota]], because
+Noboru rocks).
+
+*Change Log:*
+
+- ~[2021-07-24 Sat]~ Update post to reflect [[https://github.com/org-roam/org-roam/releases/tag/v2.0.0][release of org-roam v2]].
 
 #+BEGIN_HTML
 <!--more-->
@@ -170,8 +175,8 @@ Migration to =V2= requires changes to your notes:
    1. make sure they do not contain ':' or spaces;
    2. extract path tags;
 
-It can be achieved by using helpers from [[https://github.com/d12frosted/vulpea/pull/92][vulpea for org-roam-v2]] and the
-following script:
+It can be achieved by using helpers from [[https://github.com/d12frosted/vulpea/][vulpea]] and the following script (you
+must be on =org-roam-v2=):
 
 #+begin_src emacs-lisp
   (defun vulpea-migrate-buffer ()
@@ -250,7 +255,7 @@ following script:
 
 Simply run =M-x vulpea-migrate-db= and wait until the dirty work is done. Let me
 know if it doesn't work for you. More discussion around migration can be found
-on [[https://org-roam.discourse.group/t/the-org-roam-v2-great-migration/1505][discourse]], [[https://gist.github.com/jethrokuan/02f41028fb4a6f81787dc420fb99b6e4][GitHub Gist]] and [[https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V2][GitHub Wiki]].
+on [[https://www.orgroam.com/manual.html#Migrating-from-Org_002droam-v1][official guide]], [[https://org-roam.discourse.group/t/the-org-roam-v2-great-migration/1505][discourse]], [[https://gist.github.com/jethrokuan/02f41028fb4a6f81787dc420fb99b6e4][GitHub Gist]] and [[https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V2][GitHub Wiki]].
 
 * Code migration
 
@@ -280,13 +285,12 @@ or extracting them into your own helpers.
 
 With =org-roam-node= and some other data types everything becomes really nice.
 There is no need for indirection for file-level or heading-level nodes anymore.
-You know exactly, what fields you have data you get. The only thing you need to
-keep in mind - not all fields are populated, so there is =org-roam-populate=
-that works with various types.
+You know exactly, what fields you have. The only thing you need to keep in
+mind - not all fields are populated, so there is =org-roam-populate= that works
+with various types.
 
 You can check my PRs related to migration to =V2= for inspiration (unfortunately
-most of them already have new features as I can't wait for new =org-roam=
-release):
+most of them already have new unrelated features):
 
 - [[https://github.com/d12frosted/vulpea/pull/92][vulpea#92]]
 - [[https://github.com/d12frosted/vino/pull/100][vino#100]]
