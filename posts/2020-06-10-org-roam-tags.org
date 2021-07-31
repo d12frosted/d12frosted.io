@@ -28,6 +28,12 @@ snippet that I've forged to ease the unbearable lightness of being.
   - =org-roam-tag-delete=
   - =org-roam-alias-add=
   - =org-roam-alias-delete=
+- ~[2021-07-31 Sat]~: With [[https://github.com/org-roam/org-roam/releases/tag/v2.0.0][release of org-roam v2]] you should use the following
+  functions:
+  - =org-roam-tag-add=
+  - =org-roam-tag-remove=
+  - =org-roam-alias-add=
+  - =org-roam-alias-remove=
 
 #+BEGIN_HTML
 <!--more-->
