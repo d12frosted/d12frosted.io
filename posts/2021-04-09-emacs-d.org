@@ -19,7 +19,7 @@ The longest project in my life is [[https://github.com/d12frosted/environment][e
 configurations]] - personal frustration and my biggest time +waster+ investment. I
 might be masochistic, but I never felt sorry for falling into this +trap+ world.
 And boy, sometimes it is painful to maintain something in this ever-mutating and
-mutable dynamic system.
+dynamic system.
 
 There are various tools to help maintaining Emacs package, all fall into one of
 four categories - project management tools (e.g. [[https://cask.readthedocs.io/en/latest/][Cask]], [[https://github.com/doublep/eldev/][doublep/eldev]],
@@ -27,20 +27,19 @@ four categories - project management tools (e.g. [[https://cask.readthedocs.io/e
 [[https://github.com/purcell/package-lint][purcell/package-lint]], [[https://github.com/mattiase/relint][mattiase/relint]], [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]], [[https://github.com/emacs-elsa/Elsa][emacs-elsa/Elsa]])
 and test frameworks (e.g. [[https://www.gnu.org/software/emacs/manual/html_node/ert/index.html][ERT]], [[https://github.com/jorgenschaefer/emacs-buttercup][jorgenschaefer/emacs-buttercup]]). The tricky part
 comes when you want to use them for maintaining your own Emacs configurations,
-as they have different requirements from regular packages. At least in my case,
-they do.
+as they have different requirements compared to regular Emacs packages. At least
+in my case, they do.
 
 First of all, I want Emacs to start as quickly as possible (e.g. in less than a
 second), meaning that I need to use tools like =use-package= for deferred
-loading. Meaning, I can't =require= most of the packages directly except those
-that are used in the bootstrapping process.
+loading. So I can't =require= most of the packages directly except those that
+are used in the bootstrapping process. This easily makes compiler sad.
 
 Secondly, I have lots of additional functions extending or combining
 functionality of one or more packages. But I hate to define them inside
 =use-packge= macro. Aside from aesthetics, I want to retain functionality of
-=xref-find-definitions=. But having definitions outside of =use-package= means
-that I will get many false byte compiler warnings and errors. Which is not
-helpful!
+=xref-find-definitions=. Having definitions outside of =use-package= means that
+I will get many false byte compiler warnings and errors. Which is not helpful!
 
 Thirdly, bootstrap process is different as project management tools isolate your
 package development from your Emacs configurations, which makes sense in
@@ -48,7 +47,7 @@ general, but doesn't make sense when you develop the aforementioned
 configurations.
 
 The closest approach I know about is [[https://github.com/hlissner/doom-emacs][hlissner/doom-emacs]], but even there
-=.emacs.d= is [[https://github.com/hlissner/doom-emacs/blob/46dedb3e3361535052d199e994b641dca2c2cffd/modules/lang/emacs-lisp/config.el#L14][ignored]]. Let me just quote a docstring from there:
+=.emacs.d= is [[https://github.com/hlissner/doom-emacs/blob/46dedb3e3361535052d199e994b641dca2c2cffd/modules/lang/emacs-lisp/config.el#L14][ignored]] by compiler. Let me just quote a docstring from there:
 
 #+begin_quote
 This checker (flycheck) tends to produce a lot of false positives in your
@@ -76,8 +75,8 @@ level.
   extensible.
 - [[https://github.com/raxod502/straight.el][raxod502/straight.el]] is a package management tool because it's consistent and
   reliable.
-- [[https://github.com/jwiegley/use-package][jwiegley/use-package]] is a package configuration tool because it's easy to use
-  and widely adopted.
+- [[https://github.com/jwiegley/use-package][jwiegley/use-package]] is a package configuration tool with deferred loading
+  because it's easy to use and widely adopted.
 - [[https://github.com/gonewest818/elisp-lint/][gonewest818/elisp-lint]] is a linter because it aggregates many other linters.
 - [[https://github.com/jorgenschaefer/emacs-buttercup][jorgenschaefer/emacs-buttercup]] is a testing framework because it's easy to
   use.
