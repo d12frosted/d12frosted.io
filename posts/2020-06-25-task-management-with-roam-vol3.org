@@ -124,6 +124,10 @@ from [[https://github.com/d12frosted/vulpea][vulpea]] library.
                  (not (seq-contains-p tags tag)))
         (vulpea-buffer-tags-add tag))))
 
+  (defun vulpea--title-as-tag()
+    "gets TITLE and converts it to tag"
+    (vulpea--title-to-tag (vulpea-buffer-title-get)))
+    
   (defun vulpea--title-to-tag (title)
     "Convert TITLE to tag."
     (concat "@" (s-replace " " "" title)))
