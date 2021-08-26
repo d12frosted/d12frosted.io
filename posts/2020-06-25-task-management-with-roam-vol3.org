@@ -119,11 +119,15 @@ from [[https://github.com/d12frosted/vulpea][vulpea]] library.
     "Add respective file tag if it's missing in the current note."
     (interactive)
     (let ((tags (vulpea-buffer-tags-get))
-          (tag (vulpea--title-to-tag)))
+          (tag (vulpea--title-as-tag)))
       (when (and (seq-contains-p tags "people")
                  (not (seq-contains-p tags tag)))
         (vulpea-buffer-tags-add tag))))
 
+  (defun vulpea--title-as-tag()
+    "gets TITLE and converts it to tag"
+    (vulpea--title-to-tag (vulpea-buffer-title-get)))
+    
   (defun vulpea--title-to-tag (title)
     "Convert TITLE to tag."
     (concat "@" (s-replace " " "" title)))
