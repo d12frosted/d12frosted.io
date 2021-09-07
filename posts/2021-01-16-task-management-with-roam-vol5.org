@@ -31,6 +31,8 @@ to describe.
   version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-16-task-management-with-roam-vol5.org][GitHub]].
 - ~[2021-08-19 Thu]~: [[https://github.com/Whil-][Gustav]] proposed to modify buffer only when tags have
   changed. Code was updated accordingly (both in the post and on [[https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e][GitHub Gist]]).
+- ~[2021-09-07 Tue]~: [[https://github.com/rngesus-wept][rngesus-wept]] proposed an interesting [[https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-910213001][solution]] on how to
+  make sure that any extra stuff in =org-agenda-files= are not wiped out.
 
 #+BEGIN_HTML
 <!--more-->
