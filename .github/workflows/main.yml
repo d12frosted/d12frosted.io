@@ -30,7 +30,9 @@ jobs:
         env:
           GITHUB_API_USER: ${{ secrets.API_USER_NAME }}
           GITHUB_API_SECRET: ${{ secrets.API_USER_TOKEN }}
-        run: make build
+        run: |
+          cabal update
+          make build
 
       - name: Deploy
         if: success() && github.ref == 'refs/heads/master'
