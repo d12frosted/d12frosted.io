@@ -26,22 +26,28 @@ imagine multiple times, so here is a screencast.
 - ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
 - ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
   version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-07-07-task-management-with-roam-vol4.org][GitHub]].
+- ~[2021-11-19 Fri]~: Update post to reflect [[https://github.com/d12frosted/vulpea/commit/8ff428f2e9561fdc448627fe780be03a661cc52e][inclusion]] of =vulpea-insert=
+  function to =vulpea= library. You can find previous version of this article in
+  [[https://github.com/d12frosted/d12frosted.io/blob/2d3dad81988e838b8159761cd420bb95ed5bdd83/posts/2020-07-07-task-management-with-roam-vol4.org][git history]].
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
-The solution is based on the relatively recent [[https://github.com/org-roam/org-roam/pull/839][pull request]] to the org-roam.
-Instead of using =org-roam-node-insert= directly, we can write a wrapper for it
-leveraging the return value, name manipulation from the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][previous article]] and
-tags lookup from [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][Org-roam tags]] article.
+Once could just write an advice for =org-roam-node-insert= by using a relatively
+recent [[https://github.com/org-roam/org-roam/pull/839][change]] that makes this function to return what was inserted. This also
+uses name manipulation from the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][previous article]] and tags lookup from [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][Org-roam
+tags]] article.
 
 #+begin_src emacs-lisp
-  (defun vulpea-insert ()
-    "Insert a link to the note."
+  (defun org-roam-node-insert-wrapper (fn)
+    "Insert a link to the note using FN.
+
+  If inserted node has PEOPLE tag on it, tag the current outline
+  accordingly."
     (interactive)
     (when-let*
-        ((node (org-roam-node-insert))
+        ((node (funcall fn))
          (title (org-roam-node-title node))
          (tags (org-roam-node-tags node)))
       (when (seq-contains-p tags "people")
@@ -53,30 +59,83 @@ tags lookup from [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][Or
               (cons
                (vulpea--title-to-tag title)
                (org-get-tags nil t)))))))))
+
+  (advice-add
+   #'org-roam-node-insert
+   :around
+   #'org-roam-node-insert-wrapper)
 #+end_src
 
-The implementation is straight-forward. We start with calling
-=org-roam-node-insert= that asks for the note to insert. Then we parse result
+The implementation is straight-forward. We start with calling =fn= (e.g.
+=org-roam-node-insert=) that asks for the note to insert. Then we parse result
 and query the roam tags to understand if the inserted note is related to a
 person. And if the answer is yes, we use =org-set-tags= to automatically tag the
 heading.
 
-In my case, implementation of =vulpea--title-to-tag= is the following.
+And while advicing is powerful tool and allows us to solve the problem, there is
+slightly different, less intrusive and composable solution provided by =vulpea=
+library - =vulpea-insert= function that acts like =org-roam-node-insert=, but
+provides ability setup hooks on insertion. First, we define a handler (pretty
+much the same as =org-roam-node-insert-wrapper= but without any calls to
+insertion function).
 
 #+begin_src emacs-lisp
+  (defun my-vulpea-insert-handle (note)
+    "Hook to be called on NOTE after `vulpea-insert'."
+    (when-let* ((title (vulpea-note-title note))
+                (tags (vulpea-note-tags note)))
+      (when (seq-contains-p tags "people")
+        (save-excursion
+          (ignore-errors
+            (org-back-to-heading)
+            (when (eq 'todo (org-element-property
+                             :todo-type
+                             (org-element-at-point)))
+              (org-set-tags
+               (seq-uniq
+                (cons
+                 (vulpea--title-to-tag title)
+                 (org-get-tags nil t))))))))))
+#+end_src
+
+And then you just need to add it as a hook:
+
+#+begin_src emacs-lisp
+  (add-hook 'vulpea-insert-handle-functions
+            #'my-vulpea-insert-handle)
+#+end_src
+
+With this approach you can add as many handlers as you wish without the need to
+grow your advice/wrapper too much.
+
+* Complete solution
+
+#+begin_src emacs-lisp
+  (defun my-vulpea-insert-handle (note)
+    "Hook to be called on NOTE after `vulpea-insert'."
+    (when-let* ((title (vulpea-note-title note))
+                (tags (vulpea-note-tags note)))
+      (when (seq-contains-p tags "people")
+        (save-excursion
+          (ignore-errors
+            (org-back-to-heading)
+            (when (eq 'todo (org-element-property
+                             :todo-type
+                             (org-element-at-point)))
+              (org-set-tags
+               (seq-uniq
+                (cons
+                 (vulpea--title-to-tag title)
+                 (org-get-tags nil t))))))))))
+
   (defun vulpea--title-to-tag (title)
     "Convert TITLE to tag."
     (concat "@" (s-replace " " "" title)))
+
+  (add-hook 'vulpea-insert-handle-functions
+            #'my-vulpea-insert-handle)
+
 #+end_src
-
-And that's it! Keep in mind, that with this approach automatic tagging does not
-happen when mentioning people using company interface (e.g. using
-=org-roam-company=) and when using =vulpea-insert= to mention someone unknown to
-your system (e.g. when you create a new file). Both of the 'features' can be
-implemented using hooks.
-
-P.S. =vulpea-insert= can be modified to skip tagging when called with
-universal argument. Feel free to reach me if you need help with that!
 
 * Task Management with org-roam Series
 
