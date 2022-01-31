@@ -211,6 +211,7 @@ of files exactly when we build agenda.
     (setq org-agenda-files (vulpea-project-files)))
 
   (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
+  (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
 #+end_src
 
 And that's all. You =org-agenda= is up to date and fast again!
@@ -311,6 +312,7 @@ For you convenience, the full code is displayed below. It is also available as
   (add-hook 'before-save-hook #'vulpea-project-update-tag)
 
   (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
+  (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
 #+end_src
 
 Thank you for your patience.
