@@ -85,7 +85,7 @@ Instead of =c= we can use any expression.
         '((agenda . " %i %-12(vulpea-agenda-category)%?-12t% s")
           (todo . " %i %-12(vulpea-agenda-category) ")
           (tags . " %i %-12(vulpea-agenda-category) ")
-          (search . " %i %-12(vaulpea-agenda-category) ")))
+          (search . " %i %-12(vulpea-agenda-category) ")))
 
   (defun vulpea-agenda-category ()
     "Get category of item at point for agenda.
@@ -151,7 +151,7 @@ to achieve this.
         '((agenda . " %i %(vulpea-agenda-category 12)%?-12t% s")
           (todo . " %i %(vulpea-agenda-category 12) ")
           (tags . " %i %(vulpea-agenda-category 12) ")
-          (search . " %i %(vaulpea-agenda-category 12) ")))
+          (search . " %i %(vulpea-agenda-category 12) ")))
 
   (defun vulpea-agenda-category (&optional len)
     "Get category of item at point for agenda.
