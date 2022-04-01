@@ -6,17 +6,11 @@ description: "Few words about war in Ukraine"
 
 This blog is definitely not a place to talk about politics. But since war affects my life and ability to contribute to open source, to maintain projects and to communicate with people asking for help, I feel obligated to say few things on this matter.
 
-I am in relative safety. I had to take my family and flee to the west of Ukraine. Every few hours I contact those dear to me who either decided to stay or could not move to the west. Yes, they are doing fine in basements, sometimes without electricity and internet connection, while russians are bombing our cities. Obviously, russian army sees a nationalist in every window.
+My internet connection is rather bad. So I am going to be even less responsive than usually. Yes, even less than usual low. This is the right time to jump in to help with maintenance of the project you would love to stay alive. Just send me an email or open an issue on GitHub and we'll figure that out.
 
-My internet connection is rather bad. So I am going to be even less responsive than usually. Yes, even less than low. This is the right time to jump in to help with maintenance of the project you would love to stay alive. Just send me an email or open an issue on GitHub and we'll figure that out.
+You can help in various ways. Our army is doing miracles while defending Ukraine, but it needs help in form of medicine and equipment (like walkie-talkie, bullet-proof vests, combat helmets, etc.). The most straight-forward way of help is donating money directly to Ukraine's Armed Forces (see extra section). If you wish to help civilians in hot areas, there are many volunteers helping them (by evacuation or humanitarian help), just contact me via email and we'll figure that out.
 
-You can help in various ways. Our army is doing miracles while defending us, but it needs help in form of medicine and equipment (like walkie-talkie, bullet-proof vests, combat helmets, etc.). The most straight-forward and the fastest way of help is donating money directly to Ukraine's Armed Forces (see extra section) or to volunteers like [[https://savelife.in.ua/en/donate/][Save Life]]. In case you wish to send equipment or medicine, just contact me via email and we'll figure out how to make this delivery happen.
-
-Thank you all for support. I appreciate your kind words. I appreciate all the support Ukraine receives in this war.
-
-To all russians and belorussians reading these lines. My feelings are complex, emotions are hard. I am angry, I am tried, I am scared. But in case you want to have a conversation on these events, just contact me. People are not government, ever person responds for their own deeds. So if you wish to have a conversion, I am here.
-
-P.S. Українська Правда (local news portal) has [[https://www.pravda.com.ua/eng/][English]] and [[https://www.pravda.com.ua/rus/][Russian]] versions - in case you wanted to have local perspective on what's happening.
+Thank you all for support. I appreciate your kind words. I appreciate all the support Ukraine receives during this war.
 
 #+BEGIN_HTML
 <!--more-->
