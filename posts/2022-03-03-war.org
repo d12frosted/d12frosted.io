@@ -6,7 +6,7 @@ description: "Few words about war in Ukraine"
 
 This blog is definitely not a place to talk about politics. But since war affects my life and ability to contribute to open source, to maintain projects and to communicate with people asking for help, I feel obligated to say few things on this matter.
 
-I am going to be even less responsive than usually. Yes, even less than usual low. This is the right time to jump in to help with maintenance of the project you would love to stay alive. Just send me an email or open an issue on GitHub and we'll figure that out.
+I am going to be even less responsive than usually. So this is the right time to jump in to help with maintenance of the project you would love to stay alive. Just send me an email or open an issue on GitHub and we'll figure that out.
 
 You can help in various ways. Our army is doing miracles while defending Ukraine, but it needs help in form of medicine and equipment (like walkie-talkie, bullet-proof vests, combat helmets, etc.). The most straight-forward way of help is donating money directly to Ukraine's Armed Forces (see extra section). If you wish to help civilians in hot areas, there are many volunteers helping them (by evacuation or humanitarian help), just contact me via email and we'll figure that out.
 
