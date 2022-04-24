@@ -1,3 +1,7 @@
+#+begin_export html
+<img src="/images/d12frosted.png" class="self-portrait" />
+#+end_export
+
 I grow under the sun. When I am not writing code, I am either drinking wine or
 drinking tea (with these little cups). Cheese is my bread and tracking
 everything in Emacs is my cheese.

@@ -1,3 +1,19 @@
 div.info {
   font-size: 1.2rem;
 }
+
+img.self-portrait {
+  width: 128px;
+  float: left;
+  margin-right: 32px;
+}
+
+@media (max-width: 1024px) {
+  img.self-portrait {
+    width: 50%;
+    max-width: 256px;
+    display: block;
+    float: none;
+    margin: auto;
+  }
+}
