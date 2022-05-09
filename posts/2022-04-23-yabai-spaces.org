@@ -115,7 +115,7 @@ In the internet you may find solution that uses space focus command - =yabai -m 
 
 This is completely optional, but I like to remove extra spaces on startup. First of all, I don't have key bindings to quickly switch to spaces with index bigger than 6. Secondly, if for some reason I am using macOS full screen application, it places the application too far away.
 
-In order to achieve this goal, we have to approaches.
+In order to achieve this goal, we have two approaches.
 
 1. Check if space with index =MAX_SPACES + 1= (for me it's =7=) exists, and if it does - remove it. Repeat the procedure until you run out of spaces with index =MAX_SPACES + 1=. This works because removing a space in the middle, changes index of all that comes after.
 2. Just query all spaces with index => MAX_SPACES= and remove them.

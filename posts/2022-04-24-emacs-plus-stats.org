@@ -40,7 +40,7 @@ Since Emacs 28 was released recently™, there is little wonder that it's being 
 | --without-cocoa         |            32 |            41 |             0 |
 | --without-imagemagick   |            40 |           157 |             0 |
 
-Interestingly, all available options are used, even if some are used rarely. Ann all of them require some analysis.
+Interestingly, all available options are used, even if some are used rarely. And all of them require some analysis.
 
 For example, =--with-x11= and =--without-cocoa= are not straightforward from the formula point of view and they add some complexity. Since they are being rarely used, I might deprecate them in =emacs-plus@29=.
 
