@@ -10,7 +10,7 @@ Ever find that a command works in your shell, but not in Emacs?
 -- [[https://github.com/purcell][@purcell]]
 #+end_quote
 
-There are two known billion-dollar problems in software engineering: null pointer exceptions and caching. Over time of maintaining various Emacs projects I realised that there is a third billion-dollar problem - =PATH= value. Whenever something doesn't build, whenever something doesn't work as expected, the blood trail often leads to... =PATH= value. Sometimes it's some other environment variable, but in most of the cases, it's just =PATH=.
+There are two known billion-dollar problems in software engineering: null pointer exceptions and caching. Over time of maintaining various projects I realised that there is a third billion-dollar problem - =PATH= value. Whenever something doesn't build, whenever something doesn't work as expected, the blood trail often leads to... =PATH= value. Sometimes it's some other environment variable, but in most of the cases, it's just =PATH=.
 
 Time to time I help Emacs+ users with =PATH= related issues, so I figured that Emacs+ should provide some solution out of box. 10 messages from users in an esoteric project is like Maidan in Kyiv (yup, now I am bringing politics in here). So there is a huge problem needs solving. From thought to solution the path is quick.
 
