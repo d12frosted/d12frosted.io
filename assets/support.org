@@ -7,3 +7,4 @@ contributing or becoming a [[https://www.patreon.com/d12frosted][patreon]]. Spec
 - [[https://github.com/montchr][Chris Montgomery]]
 - [[http://github.com/lyndondrake][Lyndon Drake]]
 - [[https://github.com/sainathadapa][Sainath Adapa]]
+- [[https://github.com/jcsims][Chris Sims]]
