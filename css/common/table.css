@@ -8,6 +8,8 @@ table {
 
 table caption {
   text-align: center;
+  margin-block-start: 1rem;
+  margin-block-end: 1rem;
 }
 
 table td, table th {
