@@ -94,7 +94,7 @@ Now that we have the list of ids, we can get list of notes in one transaction by
 
 ** =*-every=
 
-We use [[https://www.sqlite.org/lang_select.html#compound_select_statements][INTERSECT operator]] to get notes tagged by all provided tags. Looks more tricky than =IN= operator, but the idea is simple. We find a list of notes tagged by first tag, a list of notes tagged by second tag, a list of notes tagged by third tag, and so on... And the we calculate intersection of these lists. Voilà!
+We use [[https://www.sqlite.org/lang_select.html#compound_select_statements][INTERSECT operator]] to get notes tagged by all provided tags. Looks more tricky than =IN= operator, but the idea is simple. We find a list of notes tagged by first tag, a list of notes tagged by second tag, a list of notes tagged by third tag, and so on... And then we calculate intersection of these lists. Voilà!
 
 #+begin_src sql
   select distinct node_id
