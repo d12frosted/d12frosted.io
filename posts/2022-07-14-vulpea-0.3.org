@@ -4,7 +4,7 @@ tags: emacs, org-mode, release
 description: 'A new version of Vulpea library that is focused on query performance'
 ---
 
-The time has come to release a new version of Vulpea, a collection of note-taking functions based on Org and Org Roam. Almost a year has passed since the release of v0.2. Over this time, Vulpea got several major features that deserve a dedicated version. In truth, I wanted to release it almost half a year ago, but the war kicked in, and I had more important things to focus on.
+The time has come to release a new version of [[https://github.com/d12frosted/vulpea][Vulpea]], a collection of note-taking functions based on Org and Org Roam. Almost a year has passed since the release of v0.2. Over this time, Vulpea got several major features that deserve a dedicated version. In truth, I wanted to release it almost half a year ago, but the war kicked in, and I had more important things to focus on.
 
 The main focus of this release is the [[https://github.com/d12frosted/vulpea#query-from-database][performance of query operations]]. Expect a 4.5x speed boost for generic =vulpea-db-query= and even more with specialized queries. All that thanks to materialized view table for notes.
 
