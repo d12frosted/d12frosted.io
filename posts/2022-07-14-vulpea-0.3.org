@@ -135,6 +135,6 @@ Vulpea already offers a lot of features. While working on other projects that us
 
 1. Add attachment directory path to =vulpea-note=. This is needed to boost [[https://barberry.io][barberry.io]] construction, so I prioritise this simple feature.
 2. Provide a simple way to add more tables to org-roam-db and improve their initialisation flow.
-3. Provide outline-level metadata.
+3. Provide outline-level [[https://github.com/d12frosted/vulpea#metadata][metadata]]. See [[https://github.com/d12frosted/vulpea/issues/75][vulpea#75]].
 
 Stay tuned and safe travels! Remember to use Emacs responsibly.
