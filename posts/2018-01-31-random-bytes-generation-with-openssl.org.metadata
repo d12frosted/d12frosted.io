@@ -1,0 +1,6 @@
+publish: "true"
+title: "Random bytes generation with OpenSSL"
+update: "2022-07-20"
+date: "2018-01-31"
+description: "Quick random bytes generation from terminal using OpenSSL"
+tags: "shell"

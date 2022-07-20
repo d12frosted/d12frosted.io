@@ -1,9 +1,3 @@
----
-title: "War and World"
-tags: blog
-description: "Few words about war in Ukraine"
----
-
 This blog is definitely not a place to talk about politics. But since war affects my life and ability to contribute to open source, to maintain projects and to communicate with people asking for help, I feel obligated to say few things on this matter.
 
 I am going to be even less responsive than usually. So this is the right time to jump in to help with maintenance of the project you would love to stay alive. Just send me an email or open an issue on GitHub and we'll figure that out.
@@ -17,18 +11,30 @@ Thank you all for support. I appreciate your kind words. I appreciate all the su
 #+END_HTML
 
 *** Donate to Ukraine's Armed Forces
+:PROPERTIES:
+:ID:                     b995cf7d-9bf6-4961-9fa2-f75968ff5f60
+:END:
 
 > The National Bank of Ukraine has decided to open a special fundraising account to support the Armed Forces of Ukraine. The central bank's decision comes after the Ukrainian government imposed martial law throughout Ukraine in response to armed aggression by Russia and the renewed threat to Ukraine's independence and territorial integrity. NBU Governor Kyrylo Shevchenko announced the opening of this special account in his 24 February video address. The number of the special account: UA843000010000000047330992708 This account accepts multiple currencies. It has been established and opened to receive transfers from international partners and donors in both foreign currency (U.S. dollars, euros, UK pounds) and hryvnias. Support the Armed Forces of Ukraine!
 
 **** Credit Cards from any country
+:PROPERTIES:
+:ID:                     2882081a-baad-442a-8a09-d5fc898c5a28
+:END:
 
 Monobank created a simple way of donating by credit cards. Just visit [[https://uahelp.monobank.ua/][special page]].
 
 **** SEPA for EUR and GBP
+:PROPERTIES:
+:ID:                     4864fa1a-b249-4080-a84e-cb329ebc71a8
+:END:
 
 Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.monobank.ua/][special page]].
 
 **** For UAH remittances
+:PROPERTIES:
+:ID:                     25aeb26a-b8f5-4379-ad1e-9db0bcd36125
+:END:
 
 - Bank: National Bank of Ukraine
 - MFO: 300001
@@ -37,6 +43,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - Payee: National Bank of Ukraine
 
 **** For USD remittances
+:PROPERTIES:
+:ID:                     c098c3ff-470c-42e7-a5b1-04bd07a08874
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX
@@ -48,6 +57,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - PURPOSE OF PAYMENT: for crediting account 47330992708
 
 **** For EUR remittances
+:PROPERTIES:
+:ID:                     9f944710-75c9-428a-8383-f9e7bddba573
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX
@@ -60,6 +72,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - PURPOSE OF PAYMENT: for crediting account 47330992708
 
 **** For GBP remittances
+:PROPERTIES:
+:ID:                     8aa3b935-8945-4609-a133-70bf2aaebd93
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX
@@ -73,6 +88,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - PURPOSE OF PAYMENT: for crediting account 47330992708
 
 **** For CHF remittances
+:PROPERTIES:
+:ID:                     021b36b7-5626-4133-ac83-cc3ea3305ab8
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX
@@ -85,6 +103,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - PURPOSE OF PAYMENT: for crediting account 47330992708
 
 **** For AUD remittances
+:PROPERTIES:
+:ID:                     b6c41a6e-0479-4a11-a5d8-44036ab9c87e
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX
@@ -96,6 +117,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - PURPOSE OF PAYMENT: for crediting account 47330992708
 
 **** For CNY remittances
+:PROPERTIES:
+:ID:                     ecb81c34-0d10-4ed2-b893-4e1d4e0bec54
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX
@@ -107,6 +131,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - PURPOSE OF PAYMENT: for crediting account 47330992708
 
 **** For CAD remittances
+:PROPERTIES:
+:ID:                     846eb947-a040-4b8f-85ba-0691c10b84b5
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX
@@ -118,6 +145,9 @@ Monobank created a simple way of donating by SEPA. Just visit [[https://uahelp.m
 - PURPOSE OF PAYMENT: for crediting account 47330992708
 
 **** For JPY remittances
+:PROPERTIES:
+:ID:                     5197b5e8-f88e-4dc5-9c14-2e95bacc1989
+:END:
 
 - BENEFICIARY: National Bank of Ukraine
 - BENEFICIARY BIC: NBUA UA UX

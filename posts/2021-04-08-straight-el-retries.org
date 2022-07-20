@@ -1,10 +1,3 @@
----
-title: "Retries with straight.el"
-tags: emacs
-description: "Snippet adding retries to network operations of straight.el - Emacs package manager"
-publish: true
----
-
 We all know, network is unreliable. I love those moments when I decide to
 upgrade all my Emacs packages while connected via 3G. And since I am using
 [[https://github.com/raxod502/straight.el/][raxod502/straight.el]], the process requires to process each repository one by

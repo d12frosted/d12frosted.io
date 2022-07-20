@@ -1,15 +1,4 @@
----
-title: "Automatic setup of spaces with yabai"
-tags: yabai, macos
-description: "Automatic setup of spaces with yabai"
-publish: true
----
-
-#+begin_export html
-<div class="image-container-half">
-<img src="/images/yabai-banner.svg" />
-</div>
-#+end_export
+[[file:/images/2022-04-23-yabai-spaces/2022-07-19-22-18-40-yabai-banner.svg]]
 
 The idea behind tiling window managers is brilliant - frames on the screen are organised in a non-overlapping fashion. In practice that means productivity boost because (1) all non-hidden frames are always visible and (2) all resizing and movement is done automatically by window manager whenever a frame becomes visible or hidden. It might take some time to get used to this approach, but in the end it's love or hate relationship without position in-between.
 
@@ -24,6 +13,9 @@ In this article we are going to learn how to achieve these goals.
 #+END_HTML
 
 * Prerequisites
+:PROPERTIES:
+:ID:                     a95f07f6-72ea-4aa6-a106-48bdf1aa85ef
+:END:
 
 In order to achieve defined goals, you need to complete the following steps.
 
@@ -34,6 +26,9 @@ In order to achieve defined goals, you need to complete the following steps.
 5. Install [[https://stedolan.github.io/jq/][jq]] (JSON processor).
 
 * Setting up preferred spaces
+:PROPERTIES:
+:ID:                     e42c4064-21ed-4430-b709-4c608c83d88d
+:END:
 
 In my setup I have 6 spaces, one is for Emacs, one for terminal emulators, one for web, one for social stuff, one for media stuff and one for various trash. Yabai [[https://github.com/koekeishiya/yabai/wiki/Configuration#configuration-file][configuration file]] must be an executable and in order to make things easy, let it be shell executable.
 
@@ -112,6 +107,9 @@ All extra spaces should be created.
 In the internet you may find solution that uses space focus command - =yabai -m space --focus "$idx" || yabai -m space --create=, but keep in mind that this doesn't work as intended and leads to creation of extra spaces on each run of =yabairc=. Aside for producing undesired result, this approach also has two extra drawbacks. Firstly, it's slower because focus switching is not free. Secondly, focus switching leads to screen flickering. That's why you should avoid this command in setup script as much as possible.
 
 * Cleaning up extra spaces
+:PROPERTIES:
+:ID:                     13de5bb6-3350-4ae4-91a0-93690a11c1cc
+:END:
 
 This is completely optional, but I like to remove extra spaces on startup. First of all, I don't have key bindings to quickly switch to spaces with index bigger than 6. Secondly, if for some reason I am using macOS full screen application, it places the application too far away.
 
@@ -139,6 +137,9 @@ Keep an eye for =sort -nr=. We want to remove spaces in reversed order, otherwis
 In that case you don't need to rely on =sort= and =jq= selector just acts as a way to repeat action =SPACES_COUNT - MAX_SPACES= times.
 
 * Moving applications on start
+:PROPERTIES:
+:ID:                     c1943fde-9fda-425a-b8d4-950a716338c7
+:END:
 
 As I said, I love my browser to start on specific space. What makes yabai so wonderful is system of events and rules. You can read more about rules and signals by running =man yabai= or by checking official wiki on [[https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#66-rule][rules]] and [[https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#67-signal][signals]].
 
@@ -155,6 +156,9 @@ If you put "^" before space number, the space will be focused after application 
 In general, rules and signal are quite powerful, so I urge you to play around with them. I am yet to discover more possibilities. Would love to hear from you if you have ideas to share.
 
 * Full configuration
+:PROPERTIES:
+:ID:                     e8ba4a8e-6cc9-466b-afb9-56809171de7c
+:END:
 
 #+begin_src sh
   #!/usr/bin/env bash

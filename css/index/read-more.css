@@ -1,9 +1,0 @@
-p.read-more {
-  font-weight: bold;
-  text-align: right;
-}
-
-p.read-more a:link, p.read-more a:visited {
-  text-decoration: none;
-  color: #aaa;
-}

@@ -1,0 +1,6 @@
+publish: "true"
+title: "Fish: notify me when you finish"
+update: "2022-07-20"
+date: "2017-06-13"
+description: "Getting notifications when the command finishes in Fish"
+tags: "fish, environment"

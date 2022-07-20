@@ -1,24 +1,10 @@
----
-title: "Task management with org-roam Vol. 6: Select a person and view related tasks"
-tags: emacs, org-roam, org-mode
-description: "How to select a person and list all related tasks"
-publish: true
----
-
 In one of the previous articles ([[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][Vol 3]] to be precise) we talked about automatic setup of =filetags=, so each of the task in note related to a person is automatically tagged thanks to [[https://orgmode.org/manual/Tag-Inheritance.html][tag inheritance]]. Then, in [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Vol 4]] we talked about automatic tagging of tasks whenever a person is mentioned either in the title or the body of some task. This all makes =org-agenda= [[https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties][matching capabilities]] really useful for when we want to see the list of all tasks related to specific person.
 
 In this article, we are going to write a small utility function that asks user to select a person and then presents and =org-agenda= buffer with tasks related to selected person.
 
 Believe me, intro is longer than the content!
 
-#+BEGIN_EXPORT html
-<div class="post-video">
-<video autoplay loop>
-  <source src="/images/org-notes-person-agenda.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-</div>
-#+END_EXPORT
+[[file:/images/2021-01-24-task-management-with-roam-vol6/2022-07-19-21-16-52-org-notes-person-agenda.mp4]]
 
 *Change Log:*
 
@@ -58,16 +44,12 @@ Now some explanations.
 
 That's it! Now see it in action, again.
 
-#+BEGIN_EXPORT html
-<div class="post-video">
-<video autoplay loop>
-  <source src="/images/org-notes-person-agenda.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-</div>
-#+END_EXPORT
+[[file:/images/2021-01-24-task-management-with-roam-vol6/2022-07-19-21-16-52-org-notes-person-agenda.mp4]]
 
 * Task Management with org-roam Series
+:PROPERTIES:
+:ID:                     1cb9db63-7bdd-4cf4-808a-419fda15422a
+:END:
 
 1. [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
 2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
@@ -78,6 +60,9 @@ That's it! Now see it in action, again.
 7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
 
 * References
+:PROPERTIES:
+:ID:                     b39705d3-52e9-4b45-85fd-b0b65e8cde40
+:END:
 
 - [[https://orgmode.org/worg/dev/org-element-api.html][Org Element API]]
 - [[https://github.com/skeeto/emacsql][skeeto/emacsql]]

@@ -1,26 +1,10 @@
----
-title: "Fixing PATH in fish with nix-darwin"
-tags: nix, fish
-description: "Fixing PATH entries order when using fish and nix-darwin"
-publish: true
----
-
-During migration to =nix= for package and system management in [[https://github.com/d12frosted/environment/pull/11][environment#11]],
-I've encountered an issue with =PATH= variable containing seemingly correct
-entries, but in incorrect order when using =fish=. Basically,
-=$HOME/.nix-profile/bin= is put in the end. Since I am very new to =nix=
-ecosystem (using it for few days), it was not clear what is causing this issue
-(my configuration, =nix-home-manager=, =nix-darwin= or =fish= itself), so I
-decided to investigate. While it turned out to be a [[https://github.com/LnL7/nix-darwin/issues/122][known issue]], I learned a
-little bit in the process and found a local fix, which I am sharing in the end
-of the post.
+During migration to =nix= for package and system management in [[https://github.com/d12frosted/environment/pull/11][environment#11]], I've encountered an issue with =PATH= variable containing seemingly correct entries, but in incorrect order when using =fish=. Basically, =$HOME/.nix-profile/bin= is put in the end. Since I am very new to =nix= ecosystem (using it for few days), it was not clear what is causing this issue (my configuration, =nix-home-manager=, =nix-darwin= or =fish= itself), so I decided to investigate. While it turned out to be a [[https://github.com/LnL7/nix-darwin/issues/122][known issue]], I learned a little bit in the process and found a local fix, which I am sharing in the end of the post.
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
-When =bash= is set as user shell, the value of =PATH= is good expect for
-repeating values.
+When =bash= is set as user shell, the value of =PATH= is good expect for repeating values.
 
 #+begin_src bash
   $ echo $PATH
@@ -40,14 +24,9 @@ repeating values.
     /nix/var/nix/profiles/default/bin
 #+end_src
 
-The important part here is =$HOME/.nix-profile/bin= being the first item in this
-list, which is expected and desired, because we want binaries installed via
-package manager (in this case =nix=) to shadow any built-in binaries (common
-with =coreutils= package).
+The important part here is =$HOME/.nix-profile/bin= being the first item in this list, which is expected and desired, because we want binaries installed via package manager (in this case =nix=) to shadow any built-in binaries (common with =coreutils= package).
 
-But when =fish= is used as user shell, the list doesn't contain any duplicates,
-but =$HOME/.nix-profile/bin= and =/nix/var/nix/profiles/default/bin= are placed
-in the end.
+But when =fish= is used as user shell, the list doesn't contain any duplicates, but =$HOME/.nix-profile/bin= and =/nix/var/nix/profiles/default/bin= are placed in the end.
 
 #+begin_src fish
   $ echo $PATH
@@ -65,15 +44,7 @@ in the end.
     /nix/var/nix/profiles/default/bin
 #+end_src
 
-And I become curious about reasons behind difference of these values and
-possible solution. Since I am very new to =nix= ecosystem, I decided to start
-with something more familiar - =fish=. It turns out, that it's possible to debug
-variable modifications with =fish= by using [[https://fishshell.com/docs/current/index.html#event][event handlers]], which we can put
-somewhere in the very beginning of [[https://fishshell.com/docs/current/index.html#initialization][initialization]] process, which is
-=$__fish_data_dir/config.fish= - configuration file shipped with =fish= itself
-that is loaded first. In general no one should ever modify this file, but we are
-debugging, so it's fine. I also use [[https://fishshell.com/docs/current/cmds/status.html#cmd-status][status]] function to display extra information
-(mostly interested in stack trace).
+And I become curious about reasons behind difference of these values and possible solution. Since I am very new to =nix= ecosystem, I decided to start with something more familiar - =fish=. It turns out, that it's possible to debug variable modifications with =fish= by using [[https://fishshell.com/docs/current/index.html#event][event handlers]], which we can put somewhere in the very beginning of [[https://fishshell.com/docs/current/index.html#initialization][initialization]] process, which is =$__fish_data_dir/config.fish= - configuration file shipped with =fish= itself that is loaded first. In general no one should ever modify this file, but we are debugging, so it's fine. I also use [[https://fishshell.com/docs/current/cmds/status.html#cmd-status][status]] function to display extra information (mostly interested in stack trace).
 
 #+begin_src fish
   # Add these lines to the very beginning of $__fish_data_dir/config.fish
@@ -86,8 +57,7 @@ debugging, so it's fine. I also use [[https://fishshell.com/docs/current/cmds/st
   end
 #+end_src
 
-After firing a new =fish= session, I see the following output in terminal
-emulator.
+After firing a new =fish= session, I see the following output in terminal emulator.
 
 #+begin_example
   PATH before initialisation > /Users/d12frosted/.nix-profile/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/Users/d12frosted/.config/bin:/Users/d12frosted/.local/bin
@@ -112,14 +82,9 @@ emulator.
   λ
 #+end_example
 
-So as you can see, the value of =PATH= is almost correct before =fish= is
-loaded. The value is in correct order, but lacks few entries. And then it gets
-the missing entries, but also gets reordered on line 198 of
-=$__fish_data_dir/config.fish=.
+So as you can see, the value of =PATH= is almost correct before =fish= is loaded. The value is in correct order, but lacks few entries. And then it gets the missing entries, but also gets reordered on line 198 of =$__fish_data_dir/config.fish=.
 
-Turns out, =fish= mimics behaviour of =path_helper= macOS (BSD) utility, which
-makes sure that entries from =/etc/paths= file and all files under
-=/etc/paths.d/= are present in the =PATH=.
+Turns out, =fish= mimics behaviour of =path_helper= macOS (BSD) utility, which makes sure that entries from =/etc/paths= file and all files under =/etc/paths.d/= are present in the =PATH=.
 
 #+begin_example
   path_helper(8)                       Nixpkgs System Manager's Manual                       path_helper(8)
@@ -203,23 +168,13 @@ And this is how it's implemented in =fish= (inside =$__fish_data_dir/config.fish
   end
 #+end_src
 
-In short, it constructs a list of entries from =/etc/paths= file plus files from
-=/etc/paths.d= and appends to the result all missing entries from =PATH=
-variable. Since =$HOME/.nix-profile/bin= is not in =/etc/paths=, it is added to
-the end of the result.
+In short, it constructs a list of entries from =/etc/paths= file plus files from =/etc/paths.d= and appends to the result all missing entries from =PATH= variable. Since =$HOME/.nix-profile/bin= is not in =/etc/paths=, it is added to the end of the result.
 
-I am not sure why this mechanism exists in the first place, I suspect that it's
-needed for building proper =PATH= during system loading and for operation of
-macOS applications (which is a constant source of confusion). If anyone knows
-more, please share your knowledge via comments or email, I will include better
-explanations instead of my speculations.
+I am not sure why this mechanism exists in the first place, I suspect that it's needed for building proper =PATH= during system loading and for operation of macOS applications (which is a constant source of confusion). If anyone knows more, please share your knowledge via comments or email, I will include better explanations instead of my speculations.
 
-While we learned the reason this value is incorrect, it's still unclear how and
-by whom =PATH= is fixed when using =bash= and how to fix it in =fish=.
+While we learned the reason this value is incorrect, it's still unclear how and by whom =PATH= is fixed when using =bash= and how to fix it in =fish=.
 
-By quick inspection of contents of =/run/current-system= and
-=/run/current-system/etc=, I find an interesting file
-=/run/current-system/etc/bashrc=.
+By quick inspection of contents of =/run/current-system= and =/run/current-system/etc=, I find an interesting file =/run/current-system/etc/bashrc=.
 
 #+begin_example
   λ la /run/current-system/
@@ -285,10 +240,7 @@ By quick inspection of contents of =/run/current-system= and
   fi
 #+end_src
 
-As you can see, it sources
-=/nix/store/arcg1b2dbhmhj31xnm2f4xxgfsrzpnph-set-environment= file, which
-basically makes sure that =$HOME/.nix-profile/bin= is at the beginning of
-=PATH=:
+As you can see, it sources =/nix/store/arcg1b2dbhmhj31xnm2f4xxgfsrzpnph-set-environment= file, which basically makes sure that =$HOME/.nix-profile/bin= is at the beginning of =PATH=:
 
 #+begin_src bash
   # content of /nix/store/arcg1b2dbhmhj31xnm2f4xxgfsrzpnph-set-environment
@@ -319,13 +271,9 @@ basically makes sure that =$HOME/.nix-profile/bin= is at the beginning of
   ~
 #+end_src
 
-So it seems that =nix-darwin= is fixing =PATH= for =bash=, but it doesn't fix
-=PATH= for =fish=. While the issue is not fixed in the upstream, it's easy to
-fix it locally by adding required values in =programs.fish.shellInit=.
+So it seems that =nix-darwin= is fixing =PATH= for =bash=, but it doesn't fix =PATH= for =fish=. While the issue is not fixed in the upstream, it's easy to fix it locally by adding required values in =programs.fish.shellInit=.
 
-Since I didn't want to mess too much with specific values, instead, I simply
-remember the original value of =PATH= before =fish= reconstructed its path and
-then in my user =init= code I fix the order like this:
+Since I didn't want to mess too much with specific values, instead, I simply remember the original value of =PATH= before =fish= reconstructed its path and then in my user =init= code I fix the order like this:
 
 #+begin_src nix
   programs = {

@@ -1,0 +1,6 @@
+publish: "true"
+title: "Asking for input in Bash"
+update: "2022-07-20"
+date: "2019-04-12"
+description: "A little black magic to ease the burden of asking user for some input"
+tags: "shell"

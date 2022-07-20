@@ -1,9 +1,3 @@
----
-title: 'Vulpea v0.3'
-tags: emacs, org-mode, release
-description: 'A new version of Vulpea library that is focused on query performance'
----
-
 The time has come to release a new version of [[https://github.com/d12frosted/vulpea][Vulpea]], a collection of note-taking functions based on Org and Org Roam. Almost a year has passed since the release of v0.2. Over this time, Vulpea got several major features that deserve a dedicated version. In truth, I wanted to release it almost half a year ago, but the war kicked in, and I had more important things to focus on.
 
 The main focus of this release is the [[https://github.com/d12frosted/vulpea#query-from-database][performance of query operations]]. Expect a 4.5x speed boost for generic =vulpea-db-query= and even more with specialized queries. All that thanks to materialized view table for notes.
@@ -33,6 +27,9 @@ Checkout [[https://github.com/d12frosted/vulpea/blob/master/CHANGELOG.org][CHANG
 #+END_HTML
 
 * Materialized view table
+:PROPERTIES:
+:ID:                     2d871a32-af63-4d05-9f99-65e1f5510921
+:END:
 
 Materialized view table, huh? The concept is actually pretty simple. But first, you need to understand how Org Roam DB is designed.
 
@@ -57,6 +54,9 @@ This penalty can be omitted if [[https://github.com/org-roam/org-roam/issues/199
 See [[https://github.com/d12frosted/vulpea/pull/116][vulpea#116]] for benchmarks.
 
 * Specialized queries
+:PROPERTIES:
+:ID:                     88017151-c3a0-42db-b16d-a8ddbf4ee66f
+:END:
 
 As I already mentioned, all this performance mumbo jumbo started because of [[https://github.com/d12frosted/vulpea/discussions/106][the inclusion of links]] to =vulpea-note=. I literally was [[https://github.com/d12frosted/vulpea/discussions/106#discussioncomment-1601429][disappointed]] with the performance. And I decided to take the path of least resistance and provided some specialized queries (because they kind of solve the problem for my most used patterns).
 
@@ -79,6 +79,9 @@ These are [[https://github.com/d12frosted/vulpea/discussions/106#discussioncomme
 What exactly makes specialized queries so fast? We start by narrowing down all notes in the fastest possible way. And then, we exchange this list of ids to list of notes in a single transaction.
 
 ** =*-some=
+:PROPERTIES:
+:ID:                     8f413ca0-cc75-42ea-9d61-38a27e4d04b7
+:END:
 
 We use [[https://www.sqlite.org/lang_expr.html#the_in_and_not_in_operators][IN operator]] to get notes tagged by at least one of the provided tags.
 
@@ -93,6 +96,9 @@ Ignore serialisation of the string data. It is related to [[https://github.com/s
 Now that we have the list of ids, we can get list of notes in one transaction by using =vulpea-db-query-by-ids=.
 
 ** =*-every=
+:PROPERTIES:
+:ID:                     821ef746-268c-4966-864b-7c7c79bc9fe4
+:END:
 
 We use [[https://www.sqlite.org/lang_select.html#compound_select_statements][INTERSECT operator]] to get notes tagged by all provided tags. Looks more tricky than =IN= operator, but the idea is simple. We find a list of notes tagged by first tag, a list of notes tagged by second tag, a list of notes tagged by third tag, and so on... And then we calculate intersection of these lists. Voilà!
 
@@ -113,6 +119,9 @@ We use [[https://www.sqlite.org/lang_select.html#compound_select_statements][INT
 Now that we have the list of ids, we can get list of notes in one transaction by using =vulpea-db-query-by-ids=.
 
 * Other goodies
+:PROPERTIES:
+:ID:                     145a3aa9-9201-4511-acee-0ee4c2688fa7
+:END:
 
 - More data is available in =vulpea-note=: properties and links.
 - Note meta is persisted in =org-roam-db= in =meta= table.
@@ -130,6 +139,9 @@ Now that we have the list of ids, we can get list of notes in one transaction by
   - =vulpea-note-tagged-any-p= - return non-nil if a =NOTE= is tagged by any of the =TAGS=.
 
 * Next steps
+:PROPERTIES:
+:ID:                     f9589a65-e67a-4ba9-b4dd-b0b51a97f909
+:END:
 
 Vulpea already offers a lot of features. While working on other projects that use Vulpea, I discover new missing features that I would love to implement. And issue tracker is not empty. Unless something changes, my plan is the following.
 

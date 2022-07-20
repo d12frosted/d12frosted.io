@@ -1,9 +1,3 @@
----
-title: 'emacs-plus: PATH injection'
-tags: emacs, emacs-plus
-description: 'A new feature provided by Emacs+ that injects PATH value during build'
----
-
 #+begin_quote
 Ever find that a command works in your shell, but not in Emacs?
 

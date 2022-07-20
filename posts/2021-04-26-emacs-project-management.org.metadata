@@ -1,0 +1,6 @@
+publish: "false"
+title: "Project management tool for Emacs packages"
+update: "2022-07-20"
+date: "2021-04-26"
+description: "Comparison of project management tools for Emacs"
+tags: "emacs"

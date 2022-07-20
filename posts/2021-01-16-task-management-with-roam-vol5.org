@@ -1,70 +1,37 @@
----
-title: "Task management with org-roam Vol. 5: Dynamic and fast agenda"
-tags: emacs, org-roam, org-mode
-description: "Dynamically building org-agenda-files with only relevant files"
-publish: true
----
+In previous articles ([[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Vol 1]] and [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Vol 2]]) we talked about moving tasks from regular =org-mode= files to =org-roam= notes. This relied upon adding all =org-roam= files to =org-agenda-files=, which doesn't scale well, as when you build an agenda buffer, it needs to traverse each file. Once you have more than 1k notes, things become sluggish.
 
-In previous articles ([[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Vol 1]] and [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Vol 2]]) we talked about moving tasks from regular
-=org-mode= files to =org-roam= notes. This relied upon adding all =org-roam=
-files to =org-agenda-files=, which doesn't scale well, as when you build an
-agenda buffer, it needs to traverse each file. Once you have more than 1k notes,
-things become sluggish.
+In my experience, once I reached 1200 note files, =org-agenda= constantly took more than 50 seconds to build, rendering this tool completely useless. But then I realised that only 3% of those files actually contain any =TODO= entries, so there is no need to traverse whole =org-roam-directory=!
 
-In my experience, once I reached 1200 note files, =org-agenda= constantly took
-more than 50 seconds to build, rendering this tool completely useless. But then
-I realised that only 3% of those files actually contain any =TODO= entries, so
-there is no need to traverse whole =org-roam-directory=!
-
-In this article we are going to optimise =org-agenda= back to less than 1 second
-by dynamically building =org-agenda-files= list to include only files with
-=TODO= entries. All thanks to the power of =org-roam= and some hooks I am going
-to describe.
+In this article we are going to optimise =org-agenda= back to less than 1 second by dynamically building =org-agenda-files= list to include only files with =TODO= entries. All thanks to the power of =org-roam= and some hooks I am going to describe.
 
 *Change Log:*
 
 - ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
-- ~[2021-03-08 Mon]~: [[https://github.com/Whil-][Gustav]] shared that =org-element-map= has an optional
-  parameter =first-match= that works like =seq-find=, meaning that
-  =vulpea-project-p= can be optimised.
-- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
-  version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-16-task-management-with-roam-vol5.org][GitHub]].
-- ~[2021-08-19 Thu]~: [[https://github.com/Whil-][Gustav]] proposed to modify buffer only when tags have
-  changed. Code was updated accordingly (both in the post and on [[https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e][GitHub Gist]]).
-- ~[2021-09-07 Tue]~: [[https://github.com/rngesus-wept][rngesus-wept]] proposed an interesting [[https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-910213001][solution]] on how to
-  make sure that any extra stuff in =org-agenda-files= are not wiped out.
+- ~[2021-03-08 Mon]~: [[https://github.com/Whil-][Gustav]] shared that =org-element-map= has an optional parameter =first-match= that works like =seq-find=, meaning that =vulpea-project-p= can be optimised.
+- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-16-task-management-with-roam-vol5.org][GitHub]].
+- ~[2021-08-19 Thu]~: [[https://github.com/Whil-][Gustav]] proposed to modify buffer only when tags have changed. Code was updated accordingly (both in the post and on [[https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e][GitHub Gist]]).
+- ~[2021-09-07 Tue]~: [[https://github.com/rngesus-wept][rngesus-wept]] proposed an interesting [[https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-910213001][solution]] on how to make sure that any extra stuff in =org-agenda-files= are not wiped out.
 
-#+BEGIN_HTML
+#+begin_html
 <!--more-->
-#+END_HTML
+#+end_html
 
-The core idea is very simple - optimising reads during writes. So every time a
-file is modified, we check if it contains any =TODO= entries, and depending on
-that we either add or remove a =project= tag from =filetags= property. And then,
-before calling =org-agenda=, we simply =org-roam-db-query= for files that have a
-=project= tag.
+The core idea is very simple - optimising reads during writes. So every time a file is modified, we check if it contains any =TODO= entries, and depending on that we either add or remove a =project= tag from =filetags= property. And then, before calling =org-agenda=, we simply =org-roam-db-query= for files that have a =project= tag.
 
-Since =filetags= are [[https://orgmode.org/manual/Tag-Inheritance.html][inherited]] by default (see the value of
-=org-use-tag-inheritance=), every heading in your file will inherit =project=
-tag, which is not desirable. Since tag inheritance is useful in general, my
-advice is to disable inheritance specifically for =project= tag by adding it to
-=org-tags-exclude-from-inheritance=:
+Since =filetags= are [[https://orgmode.org/manual/Tag-Inheritance.html][inherited]] by default (see the value of =org-use-tag-inheritance=), every heading in your file will inherit =project= tag, which is not desirable. Since tag inheritance is useful in general, my advice is to disable inheritance specifically for =project= tag by adding it to =org-tags-exclude-from-inheritance=:
 
 #+begin_src emacs-lisp
   (add-to-list 'org-tags-exclude-from-inheritance "project")
 #+end_src
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-notes-project-tag-update.gif" />
-</div>
-#+END_EXPORT
+[[file:/images/2021-01-16-task-management-with-roam-vol5/2022-07-19-21-14-37-org-notes-project-tag-update.gif]]
 
 * Marking a Project
+:PROPERTIES:
+:ID:                     3f2c978b-9937-4985-b1d7-0845e317fa76
+:END:
 
-In order to mark a note as a =project=, we need to check if it contains any
-=TODO= entries. One of the way to do it is to use [[https://orgmode.org/worg/dev/org-element-api.html][Org Element API]], a set of
-parsing functions.
+In order to mark a note as a =project=, we need to check if it contains any =TODO= entries. One of the way to do it is to use [[https://orgmode.org/worg/dev/org-element-api.html][Org Element API]], a set of parsing functions.
 
 #+begin_src emacs-lisp
   (defun vulpea-project-p ()
@@ -84,25 +51,11 @@ parsing functions.
 
 This might look a little bit too much, so let me explain the code step by step.
 
-1. We parse the buffer using =org-element-parse-buffer=. It returns an abstract
-   syntax tree of the current Org buffer. But sine we care only about headings,
-   we ask it to return only them by passing a =GRANULARITY= parameter -
-   ='headline=. This makes things faster.
-2. Then we extract information about =TODO= keyword from =headline= AST, which
-   [[https://orgmode.org/worg/dev/org-element-api.html#org658999f][contains a property]] we are interested in - =:todo-type=, which returns the
-   type of =TODO= keyword according to =org-todo-keywords= - ='done=, ='todo= or
-   =nil= (when keyword is not present).
-3. Now all we have to do is to check if the buffer list contains at least one
-   keyword with ='todo= type. We could use =seq=find= on the result of
-   =org-element-map=, but it turns out that it provides an optional
-   =first-match= argument that can be used for our needs. Thanks [[https://github.com/Whil-][Gustav]] for
-   pointing that out.
+1. We parse the buffer using =org-element-parse-buffer=. It returns an abstract syntax tree of the current Org buffer. But sine we care only about headings, we ask it to return only them by passing a =GRANULARITY= parameter - ='headline=. This makes things faster.
+2. Then we extract information about =TODO= keyword from =headline= AST, which [[https://orgmode.org/worg/dev/org-element-api.html#org658999f][contains a property]] we are interested in - =:todo-type=, which returns the type of =TODO= keyword according to =org-todo-keywords= - ='done=, ='todo= or =nil= (when keyword is not present).
+3. Now all we have to do is to check if the buffer list contains at least one keyword with ='todo= type. We could use =seq=find= on the result of =org-element-map=, but it turns out that it provides an optional =first-match= argument that can be used for our needs. Thanks [[https://github.com/Whil-][Gustav]] for pointing that out.
 
-Now we need to use this function to add or to remove =project= tag from a note.
-I think that it should be done in two places - when visiting a note and in
-=before-save-hook=. This way you leave no room for missing a file with =TODO=
-entries. It uses [[https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L69][vulpea-buffer-tags-get]] and [[https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L79][vulpea-buffer-tags-add]] from [[https://github.com/d12frosted/vulpea][vulpea]]
-library (for now you should use [[https://github.com/d12frosted/vulpea/pull/92][org-roam-v2 branch]]).
+Now we need to use this function to add or to remove =project= tag from a note. I think that it should be done in two places - when visiting a note and in =before-save-hook=. This way you leave no room for missing a file with =TODO= entries. It uses [[https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L69][vulpea-buffer-tags-get]] and [[https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L79][vulpea-buffer-tags-add]] from [[https://github.com/d12frosted/vulpea][vulpea]] library (for now you should use [[https://github.com/d12frosted/vulpea/pull/92][org-roam-v2 branch]]).
 
 #+begin_src emacs-lisp
   (add-hook 'find-file-hook #'vulpea-project-update-tag)
@@ -136,8 +89,7 @@ library (for now you should use [[https://github.com/d12frosted/vulpea/pull/92][
           (file-name-directory buffer-file-name))))
 #+end_src
 
-That's it. Now whenever we modify or visit a notes buffer, this code will update
-the presence of =project= tag. See it in action:
+That's it. Now whenever we modify or visit a notes buffer, this code will update the presence of =project= tag. See it in action:
 
 #+BEGIN_EXPORT html
 <div class="post-image">
@@ -150,10 +102,7 @@ the presence of =project= tag. See it in action:
 :ID:                     1388e376-45f5-4b43-b172-52e98b240732
 :END:
 
-In order to dynamically build =org-agenda-files=, we need to query all files
-containing =project= tag. =org-roam= uses uses [[https://github.com/skeeto/emacsql][skeeto/emacsql]], and provides a
-convenient function =org-roam-db-query= to execute SQL statements against
-=org-roam-db-location= file.
+In order to dynamically build =org-agenda-files=, we need to query all files containing =project= tag. =org-roam= uses uses [[https://github.com/skeeto/emacsql][skeeto/emacsql]], and provides a convenient function =org-roam-db-query= to execute SQL statements against =org-roam-db-location= file.
 
 #+begin_src emacs-lisp
   (defun vulpea-project-files ()
@@ -169,9 +118,7 @@ convenient function =org-roam-db-query= to execute SQL statements against
         :where (like tag (quote "%\"project\"%"))]))))
 #+end_src
 
-This function simply returns a list of files containing =project= tag. Sure
-enough it can be generalised for other needs, but it's good enough for our
-simple use case. The query is run against the following schemes:
+This function simply returns a list of files containing =project= tag. Sure enough it can be generalised for other needs, but it's good enough for our simple use case. The query is run against the following schemes:
 
 #+begin_src emacs-lisp
   (nodes
@@ -200,10 +147,7 @@ Now we can set the list of agenda files:
   (setq org-agenda-files (vulpea-project-files))
 #+end_src
 
-But the real question is - when to do it? Some might put it in the =init.el=
-file and call it a day, but unless you are restarting Emacs like crazy, I would
-argue that it's not the best place to do it. Because we need an up to date list
-of files exactly when we build agenda.
+But the real question is - when to do it? Some might put it in the =init.el= file and call it a day, but unless you are restarting Emacs like crazy, I would argue that it's not the best place to do it. Because we need an up to date list of files exactly when we build agenda.
 
 #+begin_src emacs-lisp
   (defun vulpea-agenda-files-update (&rest _)
@@ -217,10 +161,11 @@ of files exactly when we build agenda.
 And that's all. You =org-agenda= is up to date and fast again!
 
 * Migration
+:PROPERTIES:
+:ID:                     c84864d3-e6c3-488b-a783-26869541227c
+:END:
 
-So far we covered what to do with notes we edit. But when you have more than 10
-notes it becomes tedious to visit each of them and make sure that they have
-update state of =Project= tag. Fortunately, this task is easily automated.
+So far we covered what to do with notes we edit. But when you have more than 10 notes it becomes tedious to visit each of them and make sure that they have update state of =Project= tag. Fortunately, this task is easily automated.
 
 #+begin_src emacs-lisp
   (dolist (file (org-roam-list-files))
@@ -235,19 +180,13 @@ This will visit each of your files and update the presence of =Project= tag
 according to presence of =TODO= entry. Now you are ready to go.
 
 * Result
+:PROPERTIES:
+:ID:                     82ee42b2-c69a-4e4f-98c0-1688dc4d4f65
+:END:
 
-With little amount of =emacs-lisp= code we dramatically optimized =org-agenda=
-loading from $> 50$ seconds to $< 1$ second. Effectiveness of this approach
-depends on amount of files with =TODO= entries (the more you have, the less
-effective this approach becomes). One of the drawbacks is small (in my
-experience, neglectable) performance degradation of note visiting and note
-saving. Obviously, if a file contains thousands of headings, it affects
-performance. In defence, I would argue that such files are against the
-philosophy of =org-roam=, where you keep lots of small files as opposed to few
-huge files.
+With little amount of =emacs-lisp= code we dramatically optimized =org-agenda= loading from $> 50$ seconds to $< 1$ second. Effectiveness of this approach depends on amount of files with =TODO= entries (the more you have, the less effective this approach becomes). One of the drawbacks is small (in my experience, neglectable) performance degradation of note visiting and note saving. Obviously, if a file contains thousands of headings, it affects performance. In defence, I would argue that such files are against the philosophy of =org-roam=, where you keep lots of small files as opposed to few huge files.
 
-For you convenience, the full code is displayed below. It is also available as
-[[https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e][GitHub Gist]].
+For you convenience, the full code is displayed below. It is also available as [[https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e][GitHub Gist]].
 
 #+begin_src emacs-lisp
   (defun vulpea-project-p ()
@@ -318,6 +257,9 @@ For you convenience, the full code is displayed below. It is also available as
 Thank you for your patience.
 
 * Task Management with org-roam Series
+:PROPERTIES:
+:ID:                     2f8ad16f-05ef-406e-8783-55cba1050e60
+:END:
 
 1. [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
 2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
@@ -328,6 +270,9 @@ Thank you for your patience.
 7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
 
 * References
+:PROPERTIES:
+:ID:                     6b7c1ffb-61e8-4e39-8a70-7d47f9ce829c
+:END:
 
 - [[https://orgmode.org/worg/dev/org-element-api.html][Org Element API]]
 - [[https://github.com/skeeto/emacsql][skeeto/emacsql]]

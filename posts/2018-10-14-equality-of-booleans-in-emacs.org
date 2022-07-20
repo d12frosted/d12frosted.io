@@ -1,51 +1,33 @@
----
-title: Equality of booleans in Emacs
-tags: emacs
-description: About booleans in Emacs
----
+[[file:/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp]]
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-half">
-<img src="/images/emacs-booleans.png" />
-</div>
-#+END_EXPORT
-
-There is a fun story about booleans in Emacs Lisp - there are no booleans in
-Emacs Lisp. Sort of. Because we have a symbol =nil=, which means an empty
-list. You can write it as =nil= or =()= - they both stand for the same object,
-the symbol =nil=.
+There is a fun story about booleans in Emacs Lisp - there are no booleans in Emacs Lisp. Sort of. Because we have a symbol =nil=, which means an empty list. You can write it as =nil= or =()= - they both stand for the same object, the symbol =nil=.
 
 #+BEGIN_SRC emacs-lisp
   (eq nil ())                             ; => t
 #+END_SRC
 
-Since LISP is all about list processing, empty list is something very =false=.
-So =false= that we don't have special symbol for =false= values, as empty list
-serves this purpose well.
+Since LISP is all about list processing, empty list is something very =false=. So =false= that we don't have special symbol for =false= values, as empty list serves this purpose well.
 
-Everything that is not an empty list has a meaning of =true=. However, there is
-a symbol =t= which is the preferred way to represent the truth value =true=.
+Everything that is not an empty list has a meaning of =true=. However, there is a symbol =t= which is the preferred way to represent the truth value =true=.
 
-So =nil= and =t= are considered canonical boolean values. There is a function
-=booleanp= that returns =t= if the argument is a canonical boolean value and
-=nil= otherwise.
+So =nil= and =t= are considered canonical boolean values. There is a function =booleanp= that returns =t= if the argument is a canonical boolean value and =nil= otherwise.
 
-The fun begins when you need to check if two boolean values are equal. Since
-non-nil (or not an empty list) can mean many different things (like ="Emacs is
-the only true editor"=) you can't just do regular equality check.
+The fun begins when you need to check if two boolean values are equal. Since non-nil (or not an empty list) can mean many different things (like ="Emacs is the only true editor"=) you can't just do regular equality check.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (equal t "Emacs is the only true editor") ; => nil
-#+END_SRC
+#+end_src
 
-There are, however, several tricks to get it working. The most obvious solution
-is to convert value to a canonical boolean value.
+There are, however, several tricks to get it working. The most obvious solution is to convert value to a canonical boolean value.
 
-#+BEGIN_HTML
+#+begin_html
 <!--more-->
-#+END_HTML
+#+end_html
 
 * if/when
+:PROPERTIES:
+:ID:                     bc520927-e740-4277-b68b-95b8f4864358
+:END:
 
 We can directly use =if= function.
 
@@ -68,12 +50,11 @@ We can directly use =if= function.
     (boolean-eq a b))                     ; => t
 #+END_SRC
 
-Directly using =if= is a little bit cumbersome, but when we hide it inside of a
-helper function it's not that bad, actually.
+Directly using =if= is a little bit cumbersome, but when we hide it inside of a helper function it's not that bad, actually.
 
 The same result can be achieved by using =when=.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when "Some truth" t)                   ; => t
   (when 42 t)                             ; => t
   (when t t)                              ; => t
@@ -90,16 +71,16 @@ The same result can be achieved by using =when=.
   (let ((a t)
         (b "Emacs is the only true editor"))
     (boolean-eq a b))                     ; => t
-#+END_SRC
+#+end_src
 
 * not
+:PROPERTIES:
+:ID:                     5df95342-80ac-426a-83bb-ee3f24ec1c69
+:END:
 
-There is another function we can use - =not=, which returns =t= if the
-argument is =nil=, and returns =nil= otherwise. Yes, it negates the value, but
-the result is one of the canonical booleans, so we are good.
+There is another function we can use - =not=, which returns =t= if the argument is =nil=, and returns =nil= otherwise. Yes, it negates the value, but the result is one of the canonical booleans, so we are good.
 
-Since $a \equiv b$ is equivalent to $\neg a \equiv \neg b$, we can just compare
-negated values.
+Since $a \equiv b$ is equivalent to $\neg a \equiv \neg b$, we can just compare negated values.
 
 | $a$ | $b$ | $\neg a$ | $\neg b$ | $a \equiv b$ | $\neg a \equiv \neg b$ |
 |-----+-----+----------+----------+--------------+------------------------|
@@ -108,7 +89,7 @@ negated values.
 |   1 |   0 |        0 |        1 |            0 |                      0 |
 |   1 |   1 |        0 |        0 |            1 |                      1 |
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (not "Some truth")                      ; => nil
   (not 42)                                ; => nil
   (not t)                                 ; => nil
@@ -124,26 +105,27 @@ negated values.
   (let ((a t)
         (b "Emacs is the only true editor"))
     (boolean-eq a b))                     ; => t
-#+END_SRC
+#+end_src
 
-This one looks a little bit better when used without a helper function, at least
-in my opinion.
+This one looks a little bit better when used without a helper function, at least in my opinion.
 
 * xor/or/and
+:PROPERTIES:
+:ID:                     e5f058d5-b129-44bf-976f-b87605d47866
+:END:
 
 Sometimes you want to do something when two 'boolean' values are not equal.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (let ((a nil)
         (b "Emacs is the only true editor"))
     (unless (equal (not a) (not b))
       (message "Some real work begins"))) ; => Some real work begins
-#+END_SRC
+#+end_src
 
-For such situations, there is a =xor= function, which returns =nil= when both
-arguments are equal in the canonical boolean form and =t= otherwise.
+For such situations, there is a =xor= function, which returns =nil= when both arguments are equal in the canonical boolean form and =t= otherwise.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (xor nil nil)                           ; => nil
   (xor nil t)                             ; => t
   (xor t nil)                             ; => t
@@ -159,12 +141,13 @@ arguments are equal in the canonical boolean form and =t= otherwise.
         (b "Emacs is the only true editor"))
     (when (xor a b)
       (message "Some real work begins"))) ; => Some real work begins
-#+END_SRC
+#+end_src
 
-Other functions (like =or=, =and=) also convert values to canonical boolean
-values. So you can keep it in mind.
+Other functions (like =or=, =and=) also convert values to canonical boolean values. So you can keep it in mind.
 
 * Epilogue
+:PROPERTIES:
+:ID:                     b674b1f5-ae33-4811-9865-3d993c1fc31c
+:END:
 
-The sole purpose of this post is fun. If you didn't get your portion of fun,
-then it's not funny at all. Please fix it somehow.
+The sole purpose of this post is fun. If you didn't get your portion of fun, then it's not funny at all. Please fix it somehow.

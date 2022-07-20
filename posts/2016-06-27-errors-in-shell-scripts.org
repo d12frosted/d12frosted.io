@@ -1,24 +1,12 @@
----
-title: Errors in shell scripts
-tags: shell
-description: Handing errors in shell scripts
----
-
-Writing shell scripts might be pretty tedious because of all those failing
-commands leading to a corrupted state. And it gets even worse when you
-overpopulate your script with =if= statements which distract you from solving
-your initial problem. And fortunately, there are several neat tricks for
-handling errors in shell scripts that everyone should be familiar with.
+Writing shell scripts might be pretty tedious because of all those failing commands leading to a corrupted state. And it gets even worse when you overpopulate your script with =if= statements which distract you from solving your initial problem. And fortunately, there are several neat tricks for handling errors in shell scripts that everyone should be familiar with.
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
-Before we start investigating these tricks, let's define two helper functions -
-=success= and =failure=. We will use them in our examples to represent abstract
-commands that always succeeds and always fails respectively.
+Before we start investigating these tricks, let's define two helper functions - =success= and =failure=. We will use them in our examples to represent abstract commands that always succeeds and always fails respectively.
 
-#+BEGIN_SRC sh
+#+begin_src sh
 # just like true, but also echoes
 function success {
   echo "success"
@@ -30,11 +18,11 @@ function failure {
   echo "failure"
   return 1
 }
-#+END_SRC
+#+end_src
 
 Now let's implement our first script.
 
-#+BEGIN_SRC sh
+#+begin_src sh
 success
 failure
 success
@@ -44,13 +32,11 @@ success
 # failure
 # success
 # result is 0 (success)
-#+END_SRC
+#+end_src
 
-All commands will be executed, even the last =success= despite the fact that
-=failure=, well, failed. In most cases, this is not what we want. The usual
-solution is to use =&&= operator that conditionally executes the second command.
+All commands will be executed, even the last =success= despite the fact that =failure=, well, failed. In most cases, this is not what we want. The usual solution is to use =&&= operator that conditionally executes the second command.
 
-#+BEGIN_SRC sh
+#+begin_src sh
 success &&
 failure &&
 success
@@ -59,20 +45,13 @@ success
 # success
 # failure
 # result is 1 (failure)
-#+END_SRC
+#+end_src
 
-This was quite easy, wasn't it? Such behaviour looks just like imperative code
-in pretty much any language. Whenever one piece of execution chain fails - the
-whole chain fails unless we handle it somehow. And here is a fundamental problem
-about the previous script - you must be explicit about behaviour that should be
-on by default.
+This was quite easy, wasn't it? Such behaviour looks just like imperative code in pretty much any language. Whenever one piece of execution chain fails - the whole chain fails unless we handle it somehow. And here is a fundamental problem about the previous script - you must be explicit about behaviour that should be on by default.
 
-And you'll be pleased to know that it's possible to enable such behaviour. =Sh=
-has a special exit-on-error mode, which when enabled forces the shell to exit
-when the simple command returns non-zero status code. In order to enable this
-mode run =sh= with =-e= option or just call =set -e=.
+And you'll be pleased to know that it's possible to enable such behaviour. =Sh= has a special exit-on-error mode, which when enabled forces the shell to exit when the simple command returns non-zero status code. In order to enable this mode run =sh= with =-e= option or just call =set -e=.
 
-#+BEGIN_SRC sh
+#+begin_src sh
 set -e
 success
 failure
@@ -82,49 +61,25 @@ success
 # success
 # failure
 # result is 1 (failure)
-#+END_SRC
+#+end_src
 
-This looks much better. Just for reference, I would like to quote [[https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html][manual]] for
-the =set -e=.
+This looks much better. Just for reference, I would like to quote [[https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html][manual]] for the =set -e=.
 
-#+BEGIN_QUOTE
-Exit immediately if a pipeline (see [[https://www.gnu.org/software/bash/manual/html_node/Pipelines.html#Pipelines][Pipelines]]), which may consist of a single
-simple command (see [[https://www.gnu.org/software/bash/manual/html_node/Simple-Commands.html#Simple-Commands][Simple Commands]]), a list (see [[https://www.gnu.org/software/bash/manual/html_node/Lists.html#Lists][Lists]]), or a compound command
-(see [[https://www.gnu.org/software/bash/manual/html_node/Compound-Commands.html#Compound-Commands][Compound Commands]]) returns a non-zero status. The shell does not exit if
-the command that fails is part of the command list immediately following a while
-or until keyword, part of the test in an if statement, part of any command
-executed in a && or || list except the command following the final && or ||, any
-command in a pipeline but the last, or if the command’s return status is being
-inverted with !. If a compound command other than a subshell returns a non-zero
-status because a command failed while -e was being ignored, the shell does not
-exit. A trap on ERR, if set, is executed before the shell exits.
+#+begin_quote
+Exit immediately if a pipeline (see [[https://www.gnu.org/software/bash/manual/html_node/Pipelines.html#Pipelines][Pipelines]]), which may consist of a single simple command (see [[https://www.gnu.org/software/bash/manual/html_node/Simple-Commands.html#Simple-Commands][Simple Commands]]), a list (see [[https://www.gnu.org/software/bash/manual/html_node/Lists.html#Lists][Lists]]), or a compound command (see [[https://www.gnu.org/software/bash/manual/html_node/Compound-Commands.html#Compound-Commands][Compound Commands]]) returns a non-zero status. The shell does not exit if the command that fails is part of the command list immediately following a while or until keyword, part of the test in an if statement, part of any command executed in a && or || list except the command following the final && or ||, any command in a pipeline but the last, or if the command’s return status is being inverted with !. If a compound command other than a subshell returns a non-zero status because a command failed while -e was being ignored, the shell does not exit. A trap on ERR, if set, is executed before the shell exits.
 
-This option applies to the shell environment and each subshell environment
-separately (see [[https://www.gnu.org/software/bash/manual/html_node/Command-Execution-Environment.html#Command-Execution-Environment][Command Execution Environment]]), and may cause subshells to exit
-before executing all the commands in the subshell.
+This option applies to the shell environment and each subshell environment separately (see [[https://www.gnu.org/software/bash/manual/html_node/Command-Execution-Environment.html#Command-Execution-Environment][Command Execution Environment]]), and may cause subshells to exit before executing all the commands in the subshell.
 
-If a compound command or shell function executes in a context where -e is being
-ignored, none of the commands executed within the compound command or function
-body will be affected by the -e setting, even if -e is set and a command returns
-a failure status. If a compound command or shell function sets -e while
-executing in a context where -e is ignored, that setting will not have any
-effect until the compound command or the command containing the function call
-completes.
-#+END_QUOTE
+If a compound command or shell function executes in a context where -e is being ignored, none of the commands executed within the compound command or function body will be affected by the -e setting, even if -e is set and a command returns a failure status. If a compound command or shell function sets -e while executing in a context where -e is ignored, that setting will not have any effect until the compound command or the command containing the function call completes.
+#+end_quote
 
-Just as a side note, there are several other useful options, like =-u= (to fail
-when any undefined variable is referenced) and =-x= (to print each command before
-it's executed).
+Just as a side note, there are several other useful options, like =-u= (to fail when any undefined variable is referenced) and =-x= (to print each command before it's executed).
 
-Using exit-on-error mode helps to mitigate lots of problems caused by executing
-commands in a corrupted state. If you ever need to disable it after enabling it -
-just call =set +e= (note =+= instead of =-=).
+Using exit-on-error mode helps to mitigate lots of problems caused by executing commands in a corrupted state. If you ever need to disable it after enabling it - just call =set +e= (note =+= instead of =-=).
 
-There is also another problem that must be solved. Sometimes we need to handle
-specific signal (like pressing =C-c= to stop script execution). Let's investigate
-pretty classical example.
+There is also another problem that must be solved. Sometimes we need to handle specific signal (like pressing =C-c= to stop script execution). Let's investigate pretty classical example.
 
-#+BEGIN_SRC sh
+#+begin_src sh
 set -e
 
 TMPFILE="path/to/tmp_file"
@@ -145,15 +100,11 @@ failure
 # oh, this always fails
 
 cleanup
-#+END_SRC
+#+end_src
 
-As a result of running this script - there will be a temporary file that wasn't
-removed due to the failure during execution. The good thing is that it's
-possible to handle even such problem using =trap= command which allows
-performing an action when a specific signal is received. You can check the list
-of supported signals by calling =trap -l=.
+As a result of running this script - there will be a temporary file that wasn't removed due to the failure during execution. The good thing is that it's possible to handle even such problem using =trap= command which allows performing an action when a specific signal is received. You can check the list of supported signals by calling =trap -l=.
 
-#+BEGIN_SRC sh
+#+begin_src sh
 set -e
 
 TMPFILE="tmp_file"
@@ -177,22 +128,19 @@ failure
 # oh, this always fails
 
 cleanup
-#+END_SRC
+#+end_src
 
-If you press =C-c=, the program immediately stops the execution, but the
-=cleanup= function is still called. It is also called when =failure= is
-executed. And this is really nice.
+If you press =C-c=, the program immediately stops the execution, but the =cleanup= function is still called. It is also called when =failure= is executed. And this is really nice.
 
-Note that you can only set one trap per signal. If you set a new trap you're
-implicitly disabling the old one. You can also disable a trap by specifying - as
-the argument, like this:
+Note that you can only set one trap per signal. If you set a new trap you're implicitly disabling the old one. You can also disable a trap by specifying - as the argument, like this:
 
-#+BEGIN_SRC sh
+#+begin_src sh
 trap - INT TERM EXIT
-#+END_SRC
+#+end_src
 
 * Conclusion
-As you can see, the shell provides several good tricks for dealing with errors
-and corrupted state. In simple situations, it's good enough to just use =&&= and
-=||= operators, but with more complicated problems exit-on-error mode combined
-with =trap= command is a very powerful tool.
+:PROPERTIES:
+:ID:                     f542d860-a1b4-45c8-b999-55e197e60167
+:END:
+
+As you can see, the shell provides several good tricks for dealing with errors and corrupted state. In simple situations, it's good enough to just use =&&= and =||= operators, but with more complicated problems exit-on-error mode combined with =trap= command is a very powerful tool.

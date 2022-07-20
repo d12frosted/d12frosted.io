@@ -1,20 +1,9 @@
----
-title: "Emacs: moving to beginning of line"
-tags: emacs
-description: Convenient functions to move cursor
-publish: true
----
-
 In stocks Emacs there is a function =move-to-beginning-of-line= which is bound
 to =C-a= by default. It does exactly what its name implies - moves the cursor to
 the beginning of line. In case of indented code this is usually not what I want,
 but instead I would love to move the first visible character of line.
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-half">
-<img src="/images/beginning-of-line-haskell.gif" />
-</div>
-#+END_EXPORT
+[[file:/images/2020-06-04-beginning-of-line/2022-07-19-20-59-00-beginning-of-line-haskell.gif]]
 
 There are packages that does this and even more (for example, [[https://github.com/alezost/mwim.el][mwim]]), but if for
 some reason you don't want to add one more package to your dependencies, or you
@@ -22,15 +11,7 @@ care only about moving to the beginning of line, then you might grab the code
 that I share in the details. There is a version that also knows how to work with
 org mode headers and lists.
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-half">
-<img src="/images/beginning-of-line-org.gif" />
-</div>
-#+END_EXPORT
-
-#+BEGIN_HTML
-<!--more-->
-#+END_HTML
+[[file:/images/2020-06-04-beginning-of-line/2022-07-19-20-59-20-beginning-of-line-org.gif]]
 
 The implementation is pretty straight-forward. We just disable visual movement
 and jump to first visible character using =back-to-indentation= and if we

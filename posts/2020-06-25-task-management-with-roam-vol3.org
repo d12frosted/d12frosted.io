@@ -1,20 +1,6 @@
----
-title: "Task management with org-roam Vol. 3: FILETAGS"
-tags: emacs, org-roam, org-mode
-description: "Automatic FILETAGS application in org-roam"
-publish: true
----
+In the previous articles ([[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][vol1]] and [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][vol2]]) we walked the path to [[https://github.com/org-roam/org-roam][org-roam]] and solved the issue with garbage in the category column of agenda. Today we are going to explore meta projects dedicated to specific person, tag inheritance and moving such projects to separate =org-roam= files. As result, we will have code for automatic tagging based on the title.
 
-In the previous articles ([[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][vol1]] and [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][vol2]]) we walked the path to [[https://github.com/org-roam/org-roam][org-roam]] and
-solved the issue with garbage in the category column of agenda. Today we are
-going to explore meta projects dedicated to specific person, tag inheritance and
-moving such projects to separate =org-roam= files. As result, we will have code
-for automatic tagging based on the title.
-
-Aside from regular meta projects (like personal blog) I also create meta
-projects for people and locations. This is helpful, because some of the tasks
-are really related to someone specifically. For example, when I need to return a
-borrowed book, I just create a task for this.
+Aside from regular meta projects (like personal blog) I also create meta projects for people and locations. This is helpful, because some of the tasks are really related to someone specifically. For example, when I need to return a borrowed book, I just create a task for this.
 
 #+begin_src org
   ,* Frodo Baggins                                               :@FrodoBaggins:
@@ -41,34 +27,26 @@ borrowed book, I just create a task for this.
 
 *Change Log:*
 
-- ~[2021-01-24 Sun]~: Since some of the functionality mentioned in the original
-  article was merged to =org-roam=, all code is updated to reflect the current
-  state of affairs.
+- ~[2021-01-24 Sun]~: Since some of the functionality mentioned in the original article was merged to =org-roam=, all code is updated to reflect the current state of affairs.
 - ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
-- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
-  version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-25-task-management-with-roam-vol3.org][GitHub]].
+- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-25-task-management-with-roam-vol3.org][GitHub]].
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
-Now, apart from some misconception about hobbits, there are few important points
-to note.
+Now, apart from some misconception about hobbits, there are few important points to note.
 
-1. Due to [[https://orgmode.org/manual/Tag-Inheritance.html][tags inheritance]], all of the subheadings of =Frodo Baggins= have
-   =@FrodoBaggins= tag.
+1. Due to [[https://orgmode.org/manual/Tag-Inheritance.html][tags inheritance]], all of the subheadings of =Frodo Baggins= have =@FrodoBaggins= tag.
 2. Tasks tagged with other people also have the =@FrodoBaggins= tag.
 
-Thanks to inheritance, it's easy to find all tasks related to Frodo Baggins via
-=org-agenda=. It even enables the search of overlapping tasks. For example,
-tasks related to Frodo and Samwise. For more information, take a look at the
-[[https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties][matching tags and properties]] section of the manual.
+Thanks to inheritance, it's easy to find all tasks related to Frodo Baggins via =org-agenda=. It even enables the search of overlapping tasks. For example, tasks related to Frodo and Samwise. For more information, take a look at the [[https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties][matching tags and properties]] section of the manual.
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/org-roam-task-management-vol3-1.png" /><img src="/images/org-roam-task-management-vol3-2.png" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-left
+[[file:/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-2.webp]]
+
+#+attr_html: :class img-half img-float-right
+[[file:/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-1.webp]]
 
 With =org-roam=, each person has its own file.
 
@@ -97,22 +75,11 @@ With =org-roam=, each person has its own file.
   case Frodo doesn't wear socks. But how could it be? Everyone does!
 #+end_src
 
-In order to maintain the feature where =@FrodoBaggins= tag is applied to all
-TODO items we have to use =filetags= property. I am also using id to mark Frodo
-Baggins as a person (even though he is a hobbit!). This helps me in two ways.
-First of all, it gives me clear understanding that this entity is a person (some
-people do have strange names). Secondly, it serves me in automation and
-filtering (as example, checkout [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]] post).
+In order to maintain the feature where =@FrodoBaggins= tag is applied to all TODO items we have to use =filetags= property. I am also using id to mark Frodo Baggins as a person (even though he is a hobbit!). This helps me in two ways. First of all, it gives me clear understanding that this entity is a person (some people do have strange names). Secondly, it serves me in automation and filtering (as example, checkout [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]] post).
 
-Now, when I see a headline with title and tag being literally the same (with few
-programmable exceptions) or the file with =title= and =filetags= being the same
-(with few programmable exceptions), I am feeling nervous. Especially since I am
-prone to mistakes.
+Now, when I see a headline with title and tag being literally the same (with few programmable exceptions) or the file with =title= and =filetags= being the same (with few programmable exceptions), I am feeling nervous. Especially since I am prone to mistakes.
 
-So what I do - I automate =filetags=. I have a function =vulpea-ensure-filetag=
-which automatically sets the =filetags= buffer property for =org-roam= entries
-tagged as =people=. It uses [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L183][vulpea-buffer-tags-get]] and [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L193][vulpea-buffer-tags-add]]
-from [[https://github.com/d12frosted/vulpea][vulpea]] library.
+So what I do - I automate =filetags=. I have a function =vulpea-ensure-filetag= which automatically sets the =filetags= buffer property for =org-roam= entries tagged as =people=. It uses [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L183][vulpea-buffer-tags-get]] and [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L193][vulpea-buffer-tags-add]] from [[https://github.com/d12frosted/vulpea][vulpea]] library.
 
 #+begin_src emacs-lisp
   (defun vulpea-ensure-filetag ()
@@ -133,9 +100,7 @@ from [[https://github.com/d12frosted/vulpea][vulpea]] library.
     (concat "@" (s-replace " " "" title)))
 #+end_src
 
-This function can be called interactively, but since I usually place the tag
-using =vulpea-tags-add=, I just add the =vulpea-ensure-filetag= to the end of
-that function.
+This function can be called interactively, but since I usually place the tag using =vulpea-tags-add=, I just add the =vulpea-ensure-filetag= to the end of that function.
 
 #+begin_src emacs-lisp
   (defun vulpea-tags-add ()
@@ -149,15 +114,16 @@ that function.
       (vulpea-ensure-filetag)))
 #+end_src
 
-Though for other purposes one can put this function to the file visit hook. But
-hooks are sensitive, so I am going to stop here.
+Though for other purposes one can put this function to the file visit hook. But hooks are sensitive, so I am going to stop here.
 
-In the [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][next article]] we are going to talk about automatic insertion of person tag
-(e.g. =@FrodoBaggins=) when mentioning this person in other task.
+In the [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][next article]] we are going to talk about automatic insertion of person tag (e.g. =@FrodoBaggins=) when mentioning this person in other task.
 
 * Task Management with org-roam Series
+:PROPERTIES:
+:ID:                     acfa02d9-4213-4050-8093-10dcc1e6aea1
+:END:
 
-1. [[http://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
+1. Path to Roam
 2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
 3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
 4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
@@ -166,6 +132,9 @@ In the [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.h
 7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
 
 * References
+:PROPERTIES:
+:ID:                     1bb4536b-4b35-490c-b8c4-d0aeeef34784
+:END:
 
 - =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
 - =org-mode= documentation on the [[https://orgmode.org][official site]].

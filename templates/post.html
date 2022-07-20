@@ -1,41 +1,39 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>$title$</title>
-    <link rel="stylesheet" href="/css/post-bundle.css" />
-    $partial("templates/header.html")$
-    <meta name="description" content="$description$" />
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:description" content="$description$">
-    <meta property="og:description" content="$description$">
-  </head>
-  <body>
-    <header>
-      $partial("templates/nav.html")$
-    </header>
+<article>
+  <h1>$title$</h1>
+  <section class="subtitle">
+    Posted on $date$
+    $if(author)$
+      by $author$
+    $endif$
+  </section>
+  $if(update)$
+  <section class="subtitle">
+    Updated on $update$
+  </section>
+  $endif$
+  $if(tags)$
+  <section class="subtitle">
+    Tagged as $tags$
+  </section>
+  $endif$
+  <section>
+    $body$
+  </section>
 
-    <h1 class="post-title">$title$</h1>
-    <div class="date"><span>$date$</span></div>
-    <div class="tags"><span>($tags$)</span></div>
-    <article>
-      <section>
-        $body$
-      </section>
-    </article>
+  <hr/>
 
-    <div class="footer-separator"></div>
-    <div class="footer">
-      <a target="_blank" class="post-footer-sources" href="$sourcesRoot$/$path$">Sources <i class="fa fa-code fa-lg"></i></a>
-    </div>
-    <script src="https://utteranc.es/client.js"
-        repo="d12frosted/d12frosted.io"
-        issue-term="pathname"
-        label="comments"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-    </script>
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="$sourcesRoot$/$path$">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
 
-    $partial("templates/footer.html")$
-  </body>
-</html>
+  <script src="https://utteranc.es/client.js"
+          repo="d12frosted/d12frosted.io"
+          issue-term="pathname"
+          label="comments"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</article>

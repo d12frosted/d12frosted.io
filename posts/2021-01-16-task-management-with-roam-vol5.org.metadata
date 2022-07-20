@@ -1,0 +1,6 @@
+publish: "true"
+title: "Task management with org-roam Vol. 5: Dynamic and fast agenda"
+update: "2022-07-20"
+date: "2021-01-16"
+description: "Dynamically building org-agenda-files with only relevant files"
+tags: "emacs, org-roam"

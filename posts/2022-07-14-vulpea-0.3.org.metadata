@@ -1,0 +1,6 @@
+publish: "true"
+title: "Vulpea v0.3"
+update: "2022-07-20"
+date: "2022-07-14"
+description: "A new version of Vulpea library that is focused on query performance"
+tags: "emacs, org-roam, vulpea"

@@ -1,48 +1,24 @@
----
-title: flyspell-correct
-tags: emacs, release, flyspell-correct
-description: Announcement of flyspell-correct package for Emacs
----
+[[https://github.com/d12frosted/flyspell-correct][flyspell-correct]] is a package for distraction-free words correction with flyspell via selected interface. It's available on [[https://github.com/d12frosted/flyspell-correct][GitHub]] and MELPA.
 
-~flyspell-correct~ is a package for distraction-free words correction with
-flyspell via selected interface. It's available on [[https://github.com/d12frosted/flyspell-correct][GitHub]] and [[http://melpa.org/#/flyspell-correct][MELPA]].
+It's very common to make mistakes while writing notes, comments or whatever. And a desire to have spell checking software is natural. In Emacs, we usually use [[https://www.emacswiki.org/emacs/FlySpell][Flyspell]] for that purpose. It's a great piece of software, but sometimes it lacks better interface for correcting words. Especially since there are completion packages like [[https://github.com/auto-complete/popup-el][popup.el]], [[https://github.com/emacs-helm/helm][helm]], [[https://github.com/abo-abo/swiper][ivy]] etc. There are already available separate packages for correcting words via ~popup.el~ ([[https://www.emacswiki.org/emacs/FlySpell#toc11][wiki]], [[https://github.com/xuchunyang/flyspell-popup][flyspell-popup]]) and ~helm~ ([[https://github.com/pronobis/helm-flyspell][helm-flyspell]]). Since recently I have switched from ~helm~ to ~ivy~, I've found a lack of similar package for ~ivy~, so I decided to write my own.
 
-It's very common to make mistakes while writing notes, comments or whatever. And
-a desire to have spell checking software is natural. In [[http://www.gnu.org/software/emacs/index.html][Emacs]], we usually use
-[[https://www.emacswiki.org/emacs/FlySpell][Flyspell]] for that purpose. It's a great piece of software, but sometimes it
-lacks better interface for correcting words. Especially since there are
-completion packages like [[https://github.com/auto-complete/popup-el][popup.el]], [[https://github.com/emacs-helm/helm][helm]], [[https://github.com/abo-abo/swiper][ivy]] etc. There are already available
-separate packages for correcting words via ~popup.el~ ([[https://www.emacswiki.org/emacs/FlySpell#toc11][wiki]], [[https://github.com/xuchunyang/flyspell-popup][flyspell-popup]]) and
-~helm~ ([[https://github.com/pronobis/helm-flyspell][helm-flyspell]]). Since recently I have switched from ~helm~ to ~ivy~,
-I've found a lack of similar package for ~ivy~, so I decided to write my own.
+But available packages are all the same, except the part that calls completion front-end, so my goal was to provide a generic package allowing usage of any interface. Either from the predefined set (~ivy~, ~helm~, ~popup~ or ~dummy~) or any user-defined.
 
-But available packages are all the same, except the part that calls completion
-front-end, so my goal was to provide a generic package allowing usage of any
-interface. Either from the predefined set (~ivy~, ~helm~, ~popup~ or ~dummy~) or
-any user-defined.
+This is an introduction post, for more up-to-date documentation, please refer to [[https://github.com/d12frosted/flyspell-correct][README]] file.
 
-This is an introduction post, for more up-to-date documentation, please refer to
-[[https://github.com/d12frosted/flyspell-correct][README]] file.
-
-#+BEGIN_HTML
+#+begin_html
 <!--more-->
-#+END_HTML
+#+end_html
 
-In order to use this package, just install it from [[http://melpa.org/#/flyspell-correct][MELPA]], setup
-~flyspell-correct-interface~ variable to one of predefined
-(~flyspell-correct-ivy~, ~flyspell-correct-helm~, ~flyspell-correct-popup~,
-~flyspell-correct-ido~, ~flyspell-correct-dummy~) or your own interface
-function. Then all you have to do is to call ~flyspell-correct-wrapper~ from any
-point of the buffer. You can also bind ~flyspell-correct-wrapper~ to any key
-binding.
+In order to use this package, just install it from MELPA, setup ~flyspell-correct-interface~ variable to one of predefined (~flyspell-correct-ivy~, ~flyspell-correct-helm~, ~flyspell-correct-popup~, ~flyspell-correct-ido~, ~flyspell-correct-dummy~) or your own interface function. Then all you have to do is to call ~flyspell-correct-wrapper~ from any point of the buffer. You can also bind ~flyspell-correct-wrapper~ to any key binding.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; set ivy as correcting interface
   (setq flyspell-correct-interface #'flyspell-correct-ivy)
 
   ;; bind flyspell-correct-wrapper
   (define-key flyspell-mode-map (kbd "C-;") #'flyspell-correct-wrapper)
-#+END_SRC
+#+end_src
 
 * Implementing custom interfaces
 :PROPERTIES:
@@ -50,10 +26,7 @@ binding.
 :ID:                     21D95C0C-B29B-4AA5-AE2B-F21B8752D01E
 :END:
 
-As it was already said, you can implement your own interface for correcting
-words. It has to be a function that takes two arguments - candidates and
-incorrect word. It has to return either replacement word or ~(command, word)~
-tuple, where ~command~ can be one of the following:
+As it was already said, you can implement your own interface for correcting words. It has to be a function that takes two arguments - candidates and incorrect word. It has to return either replacement word or ~(command, word)~ tuple, where ~command~ can be one of the following:
 
 - ~skip~ - meaning that no action is required for current incorrect ~word~;
 - ~save~ - meaning that the ~word~ must be saved in a dictionary;
@@ -62,7 +35,7 @@ tuple, where ~command~ can be one of the following:
 
 Let's check ~flyspell-correct-ivy~ as an example of a custom interface.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun flyspell-correct-ivy (candidates word)
     "Run `ivy-read' for the given CANDIDATES.
 
@@ -90,11 +63,9 @@ Let's check ~flyspell-correct-ivy~ as an example of a custom interface.
                 :action action
                 :caller 'flyspell-correct-ivy)
       result))
-#+END_SRC
+#+end_src
 
-As you see, it's pretty straightforward. Just run ~ivy-read~ with candidates
-provided by ~flyspell~ for the incorrect word. Default action just returns selected
-replacement word. While other actions return mentioned tuple of ~(command, word)~.
+As you see, it's pretty straightforward. Just run ~ivy-read~ with candidates provided by ~flyspell~ for the incorrect word. Default action just returns selected replacement word. While other actions return mentioned tuple of ~(command, word)~.
 
 * Distraction-free meaning
 :PROPERTIES:
@@ -102,20 +73,11 @@ replacement word. While other actions return mentioned tuple of ~(command, word)
 :CUSTOM_ID:              h:E78D60DB-88B0-4F55-B0F3-4DB97EB8D38F
 :END:
 
-One of the most important parts of the ~flyspell-correct~ package is the ability
-to correct words that are far from the point. By default,
-~flyspell-correct-wrapper~ jumps to the first incorrect word before the point.
-So you don't have to move the point manually to correct a mistake made several
-words or lines before.
+One of the most important parts of the ~flyspell-correct~ package is the ability to correct words that are far from the point. By default, ~flyspell-correct-wrapper~ jumps to the first incorrect word before the point. So you don't have to move the point manually to correct a mistake made several words or lines before.
 
-Also, if you happen to have multiple mistakes before the point, you can use
-~flyspell-correct-wrapper~ in a so-called 'rapid mode'. Just call it with a
-universal argument (e.g. ~C-u C-;~) and you'll get an option to correct all
-mistakes one by one in a current direction. If you want to leave incorrect word
-as is, just use ~skip~ command.
+Also, if you happen to have multiple mistakes before the point, you can use ~flyspell-correct-wrapper~ in a so-called 'rapid mode'. Just call it with a universal argument (e.g. ~C-u C-;~) and you'll get an option to correct all mistakes one by one in a current direction. If you want to leave incorrect word as is, just use ~skip~ command.
 
-The direction of the spelling can be changed by calling ~flyspell-correct-wrapper~
-with ~C-u C-u~.
+The direction of the spelling can be changed by calling ~flyspell-correct-wrapper~ with ~C-u C-u~.
 
 * Screenshots
 :PROPERTIES:
@@ -129,17 +91,9 @@ with ~C-u C-u~.
 :CUSTOM_ID:              h:5E98E522-A77E-4400-9B74-359BED124F41
 :END:
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/screenshot-ivy-1.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-1.webp]]
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/screenshot-ivy-2.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-2.webp]]
 
 ** Popup interface
 :PROPERTIES:
@@ -147,11 +101,7 @@ with ~C-u C-u~.
 :CUSTOM_ID:              h:0299DF7E-1363-44CB-8C3B-BE32FB4940D8
 :END:
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/screenshot-popup.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-45-screenshot-popup.webp]]
 
 ** Helm interface
 :PROPERTIES:
@@ -159,11 +109,7 @@ with ~C-u C-u~.
 :CUSTOM_ID:              h:A541869C-F481-4693-89FB-E9D17E97252B
 :END:
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/screenshot-helm.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-59-screenshot-helm.webp]]
 
 ** Ido interface
 :PROPERTIES:
@@ -171,11 +117,7 @@ with ~C-u C-u~.
 :CUSTOM_ID:              h:04DB7CA3-ACE6-4313-8FA2-9CF1AC104079
 :END:
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/screenshot-ido.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp]]
 
 * Last few words
 :PROPERTIES:

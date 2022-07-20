@@ -1,0 +1,6 @@
+publish: "true"
+title: "CanonicalPath v0.3.0.0"
+update: "2022-07-20"
+date: "2015-02-04"
+description: "Announcement of the third major version of CanonicalPath"
+tags: "haskell, release"

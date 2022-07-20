@@ -1,0 +1,6 @@
+publish: "true"
+title: "Errors in shell scripts"
+update: "2022-07-20"
+date: "2016-06-27"
+description: "Handing errors in shell scripts"
+tags: "shell"

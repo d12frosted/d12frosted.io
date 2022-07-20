@@ -1,0 +1,37 @@
+---
+title: Projects
+---
+
+<h1>Projects</h1>
+
+<div class="info">
+  $support$
+</div>
+
+<h2>Special projects</h2>
+<div class="projects flex-container">
+  $for(projects-special)$
+  $partial("templates/project.html")$
+  $endfor$
+</div>
+
+<h2>Haskell-related projects</h2>
+<div class="projects flex-container">
+  $for(projects-haskell)$
+  $partial("templates/project.html")$
+  $endfor$
+</div>
+
+<h2>Emacs-related projects</h2>
+<div class="projects flex-container">
+  $for(projects-emacs)$
+  $partial("templates/project.html")$
+  $endfor$
+</div>
+
+<h2>Other projects</h2>
+<div class="projects flex-container">
+  $for(projects-other)$
+  $partial("templates/project.html")$
+  $endfor$
+</div>

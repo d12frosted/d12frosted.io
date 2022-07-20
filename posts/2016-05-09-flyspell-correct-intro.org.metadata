@@ -1,0 +1,6 @@
+publish: "true"
+title: "flyspell-correct"
+update: "2022-07-20"
+date: "2016-05-09"
+description: "Announcement of flyspell-correct package for Emacs"
+tags: "emacs, release, flyspell-correct"

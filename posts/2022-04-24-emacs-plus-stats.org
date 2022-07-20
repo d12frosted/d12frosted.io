@@ -1,9 +1,3 @@
----
-title: 'emacs-plus: stats'
-tags: emacs, emacs-plus
-description: 'emacs-plus usage statistics'
----
-
 Over time [[https://github.com/d12frosted/homebrew-emacs-plus][Emacs Plus]] has grown into quite heavy [[https://brew.sh][homebrew]] formula supporting 4 Emacs versions (starting with Emacs 26), 13 compilation options and 53 icons. For a long time I was accepting new options, patches and icons. Now in the process of rethinking maintenance approach I decided to take a look at how people are using this formula. Luckily, =brew= provides public [[https://formulae.brew.sh/docs/api/#analytics][analytics]] even for taps, which is being sent by users unless they decide to disable it.
 
 Of course, it's not covering 100% of =emacs-plus= user base, but I still found it interesting and since I might change few things in =emacs-plus= based on this, I thought that other might be interested in it as well. Enjoy.
@@ -13,6 +7,9 @@ Of course, it's not covering 100% of =emacs-plus= user base, but I still found i
 #+END_HTML
 
 * Versions
+:PROPERTIES:
+:ID:                     a1076a9d-1c1e-46ed-b972-70645959490a
+:END:
 
 | version       | 30 days | 90 days | 365 days |
 |---------------+---------+---------+----------|
@@ -24,6 +21,9 @@ Of course, it's not covering 100% of =emacs-plus= user base, but I still found i
 Since Emacs 28 was released recently™, there is little wonder that it's being the most popular version among =emacs-plus= users. What interests me is that people are still using Emacs 26. Since it has zero footprint on maintenance, I am not going to remove older version, though I urge you to switch to latest version.
 
 * Options
+:PROPERTIES:
+:ID:                     7f8772d5-a10f-4f48-8d9a-29c047c0d41a
+:END:
 
 | option (365 days)       | emacs-plus@27 | emacs-plus@28 | emacs-plus@29 |
 |-------------------------+---------------+---------------+---------------|
@@ -51,6 +51,9 @@ Obviously =--with-native-comp= and =--with-xwidgets= will stay with us, even tho
 You may notice that Emacs 26 is not mentioned in this table, but this is simply because of issue [[https://github.com/d12frosted/homebrew-emacs-plus/issues/195][#195]].
 
 * Icons
+:PROPERTIES:
+:ID:                     6fbc8589-c30b-402d-8edb-116a238a75c9
+:END:
 
 | icon                            | installs |
 |---------------------------------+----------|
@@ -83,9 +86,13 @@ Only 23 icons out of 53 are present here, and I am 100% sure some are missing fr
 In any case, I have [[https://github.com/d12frosted/homebrew-emacs-plus/blob/328a0beee56a4f099f9a6eb31290223238dd24bc/iconset][simplified]] the process of maintaining available icons and I might also provide a way to (easily?) install =emacs-plus= with any icon, even those that are not part of =emacs-plus= repository. If that works, I will cleanup icons a little bit based on usage stats and my personal preferences.
 
 * So what are the plans?
+:PROPERTIES:
+:ID:                     a3f4bade-1e4d-403b-89fc-7a831ed8b778
+:END:
 
 First of all, I am not going to remove any option without informing you in all possible ways (message in the build log and issue/PR in =emacs-plus= repository, as I did with =--with-no-titlebar= option [[https://github.com/d12frosted/homebrew-emacs-plus/pull/434][here]] and [[https://github.com/d12frosted/homebrew-emacs-plus/pull/435][here]]). If you find out that I am going to remove an option that you are using - just let me know, either via email or GitHub issues! =emacs-plus= still exists only because of its user base. And I want to support your needs to possible extent.
 
 Secondly, I am thinking about providing a wrapper to install =emacs-plus= with stuff not support by this formula. Nothing fancy, just simple options like =--with-dbus= and local icons. Unfortunately, =brew= seems not powerful enough for this task, so I will have to investigate that a bit.
 
 No ETA, as always, but stay tuned. Safe travels!
+

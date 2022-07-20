@@ -1,0 +1,6 @@
+publish: "true"
+title: "Task management with org-roam Vol. 6: Select a person and view related tasks"
+update: "2022-07-20"
+date: "2021-01-24"
+description: "How to select a person and list all related tasksrelevant files"
+tags: "emacs, org-roam"

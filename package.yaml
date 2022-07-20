@@ -8,6 +8,10 @@ executables:
   d12frosted-io:
     main:                Main.hs
     source-dirs:         app
+    ghc-options:
+      - -Wall
+      - -Werror
+      - -fwarn-incomplete-uni-patterns
     dependencies:
       - aeson
       - base >= 4.7 && < 5

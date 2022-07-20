@@ -1,20 +1,2 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>$title$</title>
-    <link rel="stylesheet" href="/css/index-bundle.css" />
-    $partial("templates/header.html")$
-    <meta name="description" content="$tag$" />
-    <meta name="twitter:description" content="$tag$">
-    <meta property="og:description" content="$tag$">
-  </head>
-  <body>
-    $partial("templates/nav.html")$
-    <h1>$siteTitle$</h1>
-    <div class="info">
-      $about$
-    </div>
-    <h1>(tagged '$tag$)</h1>
-    $partial("templates/post-list.html")$
-  </body>
-</html>
+<h1>Posts tagged as "$tag$"</h1>
+$partial("templates/post-list.html")$

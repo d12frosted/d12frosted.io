@@ -1,9 +1,3 @@
----
-title: Deep in the black bashic
-tags: blog
-description: Procrastination leads to no updates in this blog
----
-
 It's been a while since my latest blog post. You know how it works, right?
 Family to care about, work to be done, places to visit, nature to explore, tea
 to experience, wine to enjoy, WoW to waste your time on... And then you think to
@@ -19,6 +13,6 @@ something new, something I can share with folks later'.
 
 That's how it works, isn't it?
 
-#+BEGIN_HTML
+#+begin_html
 <!--more-->
-#+END_HTML
+#+end_html

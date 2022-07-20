@@ -1,5 +1,9 @@
 cabal-version: 1.12
 
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
 name:           d12frosted-io
 version:        0.1.0.0
 homepage:       https://github.com/d12frosted/d12frosted.io#readme
@@ -17,25 +21,16 @@ source-repository head
 executable d12frosted-io
   main-is: Main.hs
   other-modules:
-      Site.About
-      Site.CSS
+      Site.ChartJS.Parse
+      Site.ChartJS.Render
+      Site.ChartJS.Types
       Site.Config
       Site.Core
-      Site.Criterion
-      Site.Criterion.Measurement
-      Site.Criterion.Render
-      Site.Criterion.Types
-      Site.Index
-      Site.Pandoc
-      Site.Posts
-      Site.Projects
-      Site.RSS
-      Site.Static
-      Site.Support
-      Site.Tags
+      Site.Web.Template.Context
       Paths_d12frosted_io
   hs-source-dirs:
       app
+  ghc-options: -Wall -Werror -fwarn-incomplete-uni-patterns
   build-depends:
       aeson
     , base >=4.7 && <5
@@ -46,7 +41,7 @@ executable d12frosted-io
     , containers
     , env-extra
     , filepath
-    , hakyll >=4.14
+    , hakyll
     , hashable
     , http-conduit
     , lens

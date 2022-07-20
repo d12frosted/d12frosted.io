@@ -1,35 +1,22 @@
----
-title: "Task management with org-roam Vol. 2: Categories"
-tags: emacs, org-roam, org-mode
-description: "Automatic category extraction from org-roam"
-publish: true
----
+In the [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][previous article]] we set a ground for moving tasks to [[https://github.com/org-roam/org-roam][org-roam]], and encountered an issue with visual garbage in the agenda buffer. Namely, =org-roam= file id as part of the category. In this article, we are going to explore the means to overcome this issue.
 
-In the [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][previous article]] we set a ground for moving tasks to [[https://github.com/org-roam/org-roam][org-roam]], and
-encountered an issue with visual garbage in the agenda buffer. Namely,
-=org-roam= file id as part of the category. In this article, we are going to
-explore the means to overcome this issue.
+#+attr_html: :class img-half img-float-left
+[[file:/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-1.webp]]
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/org-roam-task-management-vol2-1.png" /><img src="/images/org-roam-task-management-vol2-2.png" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-right
+[[file:/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-2.webp]]
 
 *Change Log:*
 
-- ~[2021-03-02 Tue]~: Update category extraction function to use =TITLE= of the
-  note and enforce length limit. Kudos to [[https://github.com/real-or-random/][Tim Ruffing]] for the idea.
+- ~[2021-03-02 Tue]~: Update category extraction function to use =TITLE= of the note and enforce length limit. Kudos to [[https://github.com/real-or-random/][Tim Ruffing]] for the idea.
 - ~[2021-03-02 Tue]~: Update naming convention to match [[https://github.com/d12frosted/environment/tree/master/emacs][personal configurations]].
-- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
-  version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-24-task-management-with-roam-vol2.org][GitHub]].
+- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-24-task-management-with-roam-vol2.org][GitHub]].
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
-On of the simplest solutions is to mimic solution for headlines by setting
-=CATEGORY= property on the file level (manually or by using =org-set-property=).
+On of the simplest solutions is to mimic solution for headlines by setting =CATEGORY= property on the file level (manually or by using =org-set-property=).
 
 #+begin_src org
   :PROPERTIES:
@@ -49,19 +36,9 @@ On of the simplest solutions is to mimic solution for headlines by setting
   ...
 #+end_src
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-roam-task-management-vol2-2.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-37-org-roam-task-management-vol2-2.webp]]
 
-While this works, it is a manual labor. And in most cases we want to use =TITLE=
-as =CATEGORY=, at least for agenda buffer. Fortunately, we can help agenda to
-properly parse the category by modifying the value of
-=org-agenda-prefix-format=, which allows to specify how to render each line in
-the different agenda buffers (e.g. regular agenda, in the list of todo tasks
-etc). We are looking for the capability to evaluate arbitrary lisp expressions.
-The default value of this variable is
+While this works, it is a manual labor. And in most cases we want to use =TITLE= as =CATEGORY=, at least for agenda buffer. Fortunately, we can help agenda to properly parse the category by modifying the value of =org-agenda-prefix-format=, which allows to specify how to render each line in the different agenda buffers (e.g. regular agenda, in the list of todo tasks etc). We are looking for the capability to evaluate arbitrary lisp expressions. The default value of this variable is
 
 #+begin_src emacs-lisp
   ((agenda . " %i %-12:c%?-12t% s")
@@ -72,11 +49,9 @@ The default value of this variable is
 
 The interesting part is =%-12:c= which means:
 
-- Give the category (because of =c=) a 12 chars wide field, padded with
-  whitespace on the right (because of =-=).
+- Give the category (because of =c=) a 12 chars wide field, padded with whitespace on the right (because of =-=).
 - Append a colon if there is a category (because of =:=).
-- Finally, append the category of the item, or as given by the =CATEGORY=
-  property, or derived from the file name.
+- Finally, append the category of the item, or as given by the =CATEGORY= property, or derived from the file name.
 
 Instead of =c= we can use any expression.
 
@@ -116,8 +91,7 @@ Instead of =c= we can use any expression.
           "")))
 #+end_src
 
-In order to extract title, I am using =vulpea-buffer-prop-get= from [[https://github.com/d12frosted/vulpea][vulpea]]
-library. It's [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L239][defined]] as:
+In order to extract title, I am using =vulpea-buffer-prop-get= from [[https://github.com/d12frosted/vulpea][vulpea]] library. It's [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L239][defined]] as:
 
 #+begin_src emacs-lisp
   (defun vulpea-buffer-prop-get (name)
@@ -130,21 +104,12 @@ library. It's [[https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vu
          (match-end 1)))))
 #+end_src
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-roam-task-management-vol2-3.png" />
-</div>
-#+END_EXPORT
 
-Now if we remove the manually set =CATEGORY= property from both files we will
-get the same result with nicely parsed categories. Please note that these two
-approaches can be mixed. For example, if you wish to override the category, just
-set this property explicitly and call it a day.
+[[file:/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-55-org-roam-task-management-vol2-3.webp]]
 
-Additionally, it's easy to extend this function to truncate overly long
-categories (in the screenshot above, =Some project with ridiculously long title=
-and =Frodo Baggins= are examples of long categories). We will use [[https://github.com/magnars/s.el][s.el]] library
-to achieve this.
+Now if we remove the manually set =CATEGORY= property from both files we will get the same result with nicely parsed categories. Please note that these two approaches can be mixed. For example, if you wish to override the category, just set this property explicitly and call it a day.
+
+Additionally, it's easy to extend this function to truncate overly long categories (in the screenshot above, =Some project with ridiculously long title= and =Frodo Baggins= are examples of long categories). We will use [[https://github.com/magnars/s.el][s.el]] library to achieve this.
 
 #+begin_src emacs-lisp
   (setq org-agenda-prefix-format
@@ -190,20 +155,18 @@ to achieve this.
         result)))
 #+end_src
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-roam-task-management-vol2-4.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-09-09-org-roam-task-management-vol2-4.webp]]
 
 Now the agenda is clean.
 
-In the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][next article]] we are going to talk about tagging tasks related to a
-person. Stay tuned and keep roaming!
+In the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][next article]] we are going to talk about tagging tasks related to a person. Stay tuned and keep roaming!
 
 * Task Management with org-roam Series
+:PROPERTIES:
+:ID:                     f6e0ff03-10cd-48cd-a761-b2e2dcf0440f
+:END:
 
-1. [[http://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
+1. Path to Roam
 2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
 3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
 4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
@@ -212,6 +175,9 @@ person. Stay tuned and keep roaming!
 7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
 
 * References
+:PROPERTIES:
+:ID:                     c2fc5175-d329-4c50-8bfd-2f283ab77a2c
+:END:
 
 - =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
 - =org-mode= documentation on the [[https://orgmode.org][official site]].

@@ -1,10 +1,3 @@
----
-title: "Project management tool for Emacs packages"
-tags: emacs
-description: "Comparison of project management tools for Emacs"
-publish: false
----
-
 Project management tool, or a build tool, is an instrument for building, linting
 and testing packages. When it comes to Emacs, there are many options out in the
 wild. Arguably, the most popular options are [[https://cask.readthedocs.io/en/latest/][cask]] and [[https://github.com/alphapapa/makem.sh][alphapapa/makem.sh]], both
@@ -43,7 +36,6 @@ provide =cask=, so it's as easy as installing latest =bash=.
 | =makem= | bash       | no         | no, but yes           |
 | =cask=  |            | yes        | yes                   |
 | =eldev= | Emacs Lisp | yes        | yes                   |
-
 
 Further readings:
 

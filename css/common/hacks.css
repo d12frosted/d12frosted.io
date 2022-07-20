@@ -1,6 +1,0 @@
-/* Firefox needs this for right margin in code blocks
- * but chrome doesn't need it and ends up with twice
- * the margin. What should I do? */
-a.sourceLine {
-  margin-right: 16px;
-}

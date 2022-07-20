@@ -1,0 +1,6 @@
+publish: "true"
+title: "Git: conditional configurations"
+update: "2022-07-20"
+date: "2017-06-11"
+description: "Two approaches of having different configurations in different repositories"
+tags: "git"

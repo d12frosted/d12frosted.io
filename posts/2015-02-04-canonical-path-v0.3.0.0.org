@@ -1,31 +1,18 @@
----
-title: CanonicalPath v0.3.0.0
-tags: haskell, release, CanonicalPath
-description: Announcement of the third major version of CanonicalPath
----
+Recently there was the third major release of ~CanonicalPath~ library introducing some good stuff, but unfortunately breaking API (just a tiny little bit).
 
-Recently there was the third major release of ~CanonicalPath~ library
-introducing some good stuff, but unfortunately breaking API (just a tiny little
-bit).
+The new version is available on [[https://github.com/d12frosted/CanonicalPath][Github]], [[https://hackage.haskell.org/package/system-canonicalpath][Hackage]] and [[https://www.stackage.org/package/system-canonicalpath][Stackage]].
 
-New version is available on [[https://github.com/d12frosted/CanonicalPath][Github]], [[https://hackage.haskell.org/package/system-canonicalpath][Hackage]] and [[https://www.stackage.org/package/system-canonicalpath][Stackage]].
-
-#+BEGIN_HTML
+#+begin_html
 <!--more-->
-#+END_HTML
+#+end_html
 
-New version has the following changes:
-
-- Remove ~UnsafePath~ data type. It was a synonym to ~FilePath~ and was
-  confusing me sometimes, so I decided to cut it off.
+- Remove ~UnsafePath~ data type. It was a synonym to ~FilePath~ and was confusing me sometimes, so I decided to cut it off.
 - Rename ~cpathToText~ to ~toText'~.
 - Remove ~pathToText~ and ~textToPath~.
 - Export ~toText~ and ~fromText~ from ~Filesystem.Path.CurrentOS~.
 - Export ~fromPrelude~ and ~toPrelude~ functions.
-- Improve performance (path canonicalization now is performed 1.6x faster than
-  before). Now that I have tests and criterion, I can measure performance.
-- Improve ~canonicalPath~ error messages. Most important - now it respects
-  errors from ~System.Directory.canonicalizePath~.
+- Improve performance (path canonicalization now is performed 1.6x faster than before). Now that I have tests and criterion, I can measure performance.
+- Improve ~canonicalPath~ error messages. Most important - now it respects errors from ~System.Directory.canonicalizePath~.
 - Add tests.
 - Add Travis support.
 - Update documentation.

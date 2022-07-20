@@ -1,45 +1,21 @@
----
-title: "Task management with org-roam Vol. 1: Path to Roam"
-tags: emacs, org-roam, org-mode
-description: "Moving tasks to org-roam"
-publish: true
----
+[[https://orgmode.org][org-mode]] is a simple outliner for note taking and list management. It [[https://d12frosted.io/posts/2016-12-20-Being-an-org-mode-addict.html][doesn't impose]] any complex features on users. This is something users excel at by themselves. My suggestion is to continue this tradition and discover task management capabilities in [[https://github.com/org-roam/org-roam][org-roam]], an [[https://orgmode.org][org-mode]] extension for non-hierarchical notes management.
 
-[[https://orgmode.org][org-mode]] is a simple outliner for note taking and list management. It [[https://d12frosted.io/posts/2016-12-20-Being-an-org-mode-addict.html][doesn't
-impose]] any complex features on users. This is something users excel at by
-themselves. My suggestion is to continue this tradition and discover task
-management capabilities in [[https://github.com/org-roam/org-roam][org-roam]], an [[https://orgmode.org][org-mode]] extension for non-hierarchical
-notes management.
-
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-roam-task-management-vol1-3.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-03-45-org-roam-task-management-vol1-3.webp]]
 
 *Change Log:*
 
-- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous
-  version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-23-task-management-with-roam-vol1.org][GitHub]].
+- ~[2021-05-10 Mon]~: Update post to reflect changes in [[https://github.com/org-roam/org-roam/pull/1401][org-roam v2]]. Previous version of this article is available on [[https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-23-task-management-with-roam-vol1.org][GitHub]].
 
-#+BEGIN_HTML
+#+begin_html
 <!--more-->
-#+END_HTML
+#+end_html
 
-Since org-mode gives a lot of freedom, everyone implements tasks management
-system differently. In the nutshell, most of the implementations I've seen
-consist of the following elements.
+Since org-mode gives a lot of freedom, everyone implements tasks management system differently. In the nutshell, most of the implementations I've seen consist of the following elements.
 
 - Task - the simplest actionable item with some =TODO= state.
 - Project - a =TODO= item with outcome requiring multiple steps to achieve it.
-- Meta project - long lasting project without a final outcome. It consists of
-  projects or tasks. Think of it as of an area or a category. For example,
-  personal blog is a meta project, as it doesn't have any terminating outcome.
-  It does have projects with specific outcome (like setting up your blog or
-  writing a post) or simple tasks (like renewing SSL certificate), but the blog
-  itself doesn't have an outcome.
-- Resource - a person, a tool, a location or whatever possibly related to a
-  task. In plain org-mode usually implemented as a tag.
+- Meta project - long lasting project without a final outcome. It consists of projects or tasks. Think of it as of an area or a category. For example, personal blog is a meta project, as it doesn't have any terminating outcome. It does have projects with specific outcome (like setting up your blog or writing a post) or simple tasks (like renewing SSL certificate), but the blog itself doesn't have an outcome.
+- Resource - a person, a tool, a location or whatever possibly related to a task. In plain org-mode usually implemented as a tag.
 
 Take a look at the following example of =org-mode= file with all these elements.
 
@@ -87,43 +63,23 @@ Take a look at the following example of =org-mode= file with all these elements.
   ,*** TODO Replace all image exports by regular org links
 #+end_src
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/org-roam-task-management-vol1-1.png" /><img src="/images/org-roam-task-management-vol1-2.png" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-left
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-2.webp]]
 
-As you can see, it has 2 meta projects: =emacs-plus= and personal blog, each
-containing a task and a project. Meta projects have their own category property
-(set by hand or using =org-set-property= which is bound to =C-c C-x p= by
-default), so in agenda view one can quickly distinguish (and filter) tasks from
-different meta projects (for example, using =org-agenda-filter-by-category=
-which is bound to =<= by default).
+#+attr_html: :class img-half img-float-right
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-1.webp]]
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-agenda-filter-by-category.gif" />
-</div>
-#+END_EXPORT
+As you can see, it has 2 meta projects: =emacs-plus= and personal blog, each containing a task and a project. Meta projects have their own category property (set by hand or using =org-set-property= which is bound to =C-c C-x p= by default), so in agenda view one can quickly distinguish (and filter) tasks from different meta projects (for example, using =org-agenda-filter-by-category= which is bound to =<= by default).
 
-Formally (and technically) projects might be defined as a [[http://doc.norang.ca/org-mode.html#Projects][task having sub-tasks]],
-but in this rare case I vote for simplicity - project is a task tagged as
-=PROJECT=.
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-00-org-agenda-filter-by-category.gif]]
 
-When a task relates to a person or some location, I tag it respectively, just
-use =@= symbol as a prefix to distinguish from utilitarian tags. Agenda helps to
-quickly find all tasks with specific tag. Use =M-x org-agenda m= or =M-x
-org-agenda M= (to list only TODO items).
+Formally (and technically) projects might be defined as a task having sub-tasks, but in this rare case I vote for simplicity - project is a task tagged as =PROJECT=.
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-agenda-filter-by-tags.gif" />
-</div>
-#+END_EXPORT
+When a task relates to a person or some location, I tag it respectively, just use =@= symbol as a prefix to distinguish from utilitarian tags. Agenda helps to quickly find all tasks with specific tag. Use =M-x org-agenda m= or =M-x org-agenda M= (to list only TODO items).
 
-With =org-roam= it makes sense to create a separate file for each meta project.
-In the endless debate 'many small' vs 'few big' org files, =org-roam= favours
-the former approach (though even this is debatable).
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-13-org-agenda-filter-by-tags.gif]]
+
+With =org-roam= it makes sense to create a separate file for each meta project. In the endless debate 'many small' vs 'few big' org files, =org-roam= favours the former approach (though even this is debatable).
 
 #+begin_src org
   ,#+title: emacs-plus
@@ -163,25 +119,22 @@ the former approach (though even this is debatable).
   ,*** TODO Replace all image exports by regular org links
 #+end_src
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/org-roam-task-management-vol1-3.png" /><img src="/images/org-roam-task-management-vol1-4.png" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-left
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-4.webp]]
 
-#+BEGIN_EXPORT html
-<div class="post-image">
-<img src="/images/org-roam-task-management-vol1-5.png" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-right
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-3.webp]]
 
-So far the transition was simple. However as you can see, in agenda buffer the
-inferred category contains garbage - note id.
+[[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-55-org-roam-task-management-vol1-5.webp]]
 
-In the [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][next article]] we are going to explore the means to fix the agenda buffer
-from the unwanted visual garbage. Stay tuned!
+So far the transition was simple. However as you can see, in agenda buffer the inferred category contains garbage - note id.
+
+In the [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][next article]] we are going to explore the means to fix the agenda buffer from the unwanted visual garbage. Stay tuned!
 
 * Task Management with org-roam Series
+:PROPERTIES:
+:ID:                     02f55939-bc5a-4696-9570-65e359a8056b
+:END:
 
 1. [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
 2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
@@ -192,7 +145,10 @@ from the unwanted visual garbage. Stay tuned!
 7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
 
 * References
+:PROPERTIES:
+:ID:                     86a38b8e-efce-491d-b189-679a4b8a60c5
+:END:
 
 - =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
 - =org-mode= documentation on the [[https://orgmode.org][official site]].
-- [[http://doc.norang.ca/org-mode.html#Projects][Org Mode - Organize Your Life In Plain Text!]] by Bernt Hansen.
+- Org Mode - Organize Your Life In Plain Text! by Bernt Hansen.

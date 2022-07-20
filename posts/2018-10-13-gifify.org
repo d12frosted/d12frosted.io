@@ -1,35 +1,20 @@
----
-title: High quality GIF from video
-tags: shell, ffmpeg, utils, environment
-description: Tool for converting GIFs from video files
----
+#+attr_html: :class img-half img-float-left
+[[file:/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-regular.gif]]
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/gifify-lolcat-regular.gif" /><img src="/images/gifify-lolcat-palette.gif" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-right
+[[file:/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-palette.gif]]
 
-When it comes to converting video to GIF, one usually gets a huge file and a
-questionable quality. Most of the guides suggest to use FFmpeg to do the
-conversion, but usually, they don't bother with the quality of the result. As it
-turns out, folks from FFmpeg made some [[http://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html][huge steps]] in improving the GIF output.
+When it comes to converting video to GIF, one usually gets a huge file and a questionable quality. Most of the guides suggest to use FFmpeg to do the conversion, but usually, they don't bother with the quality of the result. As it turns out, folks from FFmpeg made some huge steps in improving the GIF output.
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
 #+BEGIN_QUOTE
-As you probably know, GIF is limited to a palette of 256 colors. And by default,
-FFmpeg just uses a generic palette that tries to cover the whole color space in
-order to support the largest variety of content:
+As you probably know, GIF is limited to a palette of 256 colors. And by default, FFmpeg just uses a generic palette that tries to cover the whole color space in order to support the largest variety of content:
 #+END_QUOTE
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-half">
-<img src="/images/ffmpeg-default-palette.png" />
-</div>
-#+END_EXPORT
+[[file:/images/2018-10-13-gifify/2022-07-19-20-29-03-ffmpeg-default-palette.webp]]
 
 The idea is to generate a custom palette and use it during conversion.
 
@@ -41,18 +26,15 @@ The idea is to generate a custom palette and use it during conversion.
   $ ffmpeg -i input.mov -i palette.png -filter_complex "fps=10,scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse" output.gif
 #+END_SRC
 
-Since I am not good at remembering this kind of commands (and I hate to cycle
-the history of commands), I've created a simple script for doing exactly this.
-It's called =gifify= and you can find it in my [[https://github.com/d12frosted/environment/blob/master/bin/gifify][.environment]] repository.
+Since I am not good at remembering this kind of commands (and I hate to cycle the history of commands), I've created a simple script for doing exactly this. It's called =gifify= and you can find it in my [[https://github.com/d12frosted/environment/blob/master/bin/gifify][.environment]] repository.
 
-#+BEGIN_SRC bash
+#+begin_src bash
   $ gifify -i file.mov # output is file.gif
 #+END_SRC
 
 Strong points of this script:
 
-1. You can pass scaling to =ffmpeg= (usually I don't want to mess with the
-   actual size). Default value is =1=.
+1. You can pass scaling to =ffmpeg= (usually I don't want to mess with the actual size). Default value is =1=.
    #+BEGIN_SRC bash
      $ gifify -i file.mov -s 0.5
    #+END_SRC
@@ -60,8 +42,7 @@ Strong points of this script:
    #+BEGIN_SRC bash
      $ gifify -i file.mov -fps 24
    #+END_SRC
-3. The output file is defined automatically (input filename extension is changed
-   to =gif=), but you can specify it manually.
+3. The output file is defined automatically (input filename extension is changed to =gif=), but you can specify it manually.
    #+BEGIN_SRC bash
      $ gifify -i file.mov -o /path/to/gifs/mega.gif
    #+END_SRC
@@ -69,8 +50,7 @@ Strong points of this script:
    #+BEGIN_SRC bash
      $ gifify -i file.mov --default-palette
    #+END_SRC
-5. Allows compressing resulting GIF using =gifsicle=. By default, result is not
-   compressed.
+5. Allows compressing resulting GIF using =gifsicle=. By default, result is not compressed.
    #+BEGIN_SRC bash
      $ gifify -i file.mov --compress
    #+END_SRC
@@ -79,43 +59,46 @@ Strong points of this script:
      $ gifify -i file.mov -t 26
    #+END_SRC
 
-My concern usually is about quality, not about the physical size if the output.
-But you have several options here:
+My concern usually is about quality, not about the physical size if the output. But you have several options here:
 
 1. The lesser FPS is, the lesser output is. In most cases, 15 FPS is good enough.
-2. Use scaling. When it comes to screen video, you rarely need the original
-   size, scale it a bit.
+2. Use scaling. When it comes to screen video, you rarely need the original size, scale it a bit.
 3. In case you are good with the default palette, just use it.
 4. Use compression provided by =gifsicle=.
 
 * Palettes: default vs custom
+:PROPERTIES:
+:ID:                     f1273041-5435-4b8f-8d36-83b49e65a996
+:END:
 
 Here are several examples, were the difference between default and custom
 palette is visible. In the first example, the difference is more obvious than in
 others, but still.
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/gifify-lolcat-regular.gif" /><img src="/images/gifify-lolcat-palette.gif" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-left
+[[file:/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-regular.gif]]
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/gifify-screen-regular.gif" /><img src="/images/gifify-screen-palette.gif" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-right
+[[file:/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-palette.gif]]
 
-#+BEGIN_EXPORT html
-<div class="post-image post-image-split">
-<img src="/images/gifify-monty-regular.gif" /><img src="/images/gifify-monty-palette.gif" />
-</div>
-#+END_EXPORT
+#+attr_html: :class img-half img-float-left
+[[file:/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-regular.gif]]
+
+#+attr_html: :class img-half img-float-right
+[[file:/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-palette.gif]]
+
+#+attr_html: :class img-half img-float-left
+[[file:/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-regular.gif]]
+
+#+attr_html: :class img-half img-float-right
+[[file:/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-palette.gif]]
 
 * Installation
+:PROPERTIES:
+:ID:                     6731df79-e44e-4829-ad36-f9ceeb69c862
+:END:
 
-First, you need to install dependencies: =ffmpeg= and =gifsicle=. On macOS, you
-can install them using =brew=.
+First, you need to install dependencies: =ffmpeg= and =gifsicle=. On macOS, you can install them using =brew=.
 
 #+BEGIN_SRC bash
   $ brew install ffmpeg gifsicle
@@ -128,10 +111,12 @@ Then you need to grab the latest version of =gifify=.
   $ chmod +x /path/to/gifify
 #+END_SRC
 
-Note that =gifify= should be in the folder that is visible from your =PATH=. I
-usually put =gifify= in =$HOME/.local/bin=.
+Note that =gifify= should be in the folder that is visible from your =PATH=. I usually put =gifify= in =$HOME/.local/bin=.
 
 * Source code
+:PROPERTIES:
+:ID:                     a6441284-0456-47c4-9f24-4c7f9a3eafe7
+:END:
 
 You can find the latest version on [[https://github.com/d12frosted/environment/blob/master/bin/gifify][GitHub]].
 
@@ -314,7 +299,8 @@ You can find the latest version on [[https://github.com/d12frosted/environment/b
 #+END_SRC
 
 * More quality
+:PROPERTIES:
+:ID:                     baf8cf36-9534-4963-a41f-365cdd5b0c68
+:END:
 
-In this post, I covered only quality improvements from using a custom palette.
-But actually, there are other ways to tweak you GIF when using FFmpeg. You can
-find out more in [[http://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html][High quality GIF with FFmpeg]].
+In this post, I covered only quality improvements from using a custom palette. But actually, there are other ways to tweak you GIF when using FFmpeg. You can find out more in High quality GIF with FFmpeg.
