@@ -447,9 +447,12 @@ article table {
   font-size: 1.4rem;
   font-family: var(--header-font);
   margin: 0 auto;
-  overflow: auto;
   border-spacing: 0rem;
   margin-block-start: 1.2rem;
+}
+
+.table-container {
+  overflow: auto;
 }
 
 article table thead tr th {
