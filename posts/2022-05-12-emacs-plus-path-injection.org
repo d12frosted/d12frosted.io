@@ -18,7 +18,7 @@ Even though I talk about problems related to =PATH= value, it's value is actuall
 
 Disclaimer. In the next few paragraphs I am explaining how macOS runs applications, but it might be not fully accurate as I am not an expert in these low level details. At least, speculation stands, so bear with me. And if you know better then me, please do tell me, so we can improve this information.
 
-User applications in macOS are running in the login shell environment. From =PATH= perspective, it means that it's value is inherited from login shell. So what's the value? If we take a look at =/etc/profile= and =/etc/zshenv= we see that they all run =path_helper=, which already appeared on my blog in [[https://d12frosted.io/posts/2021-05-21-path-in-fish-with-nix-darwin.html][Fixing PATH in fish with nix-darwin]] post. In short, it's a helper for constructing =PATH= environment variable by taking entries from =/etc/paths= file and all files under =/etc/paths.d/=. It actually also constructs =MANPATH= entries, but it's not important right now.
+User applications in macOS are running in the login shell environment. From =PATH= perspective, it means that it's value is inherited from login shell. So what's the value? If we take a look at =/etc/profile= and =/etc/zshenv= we see that they all run =path_helper=, which already appeared on my blog in [[d12frosted:/posts/2021-05-21-path-in-fish-with-nix-darwin][Fixing PATH in fish with nix-darwin]] post. In short, it's a helper for constructing =PATH= environment variable by taking entries from =/etc/paths= file and all files under =/etc/paths.d/=. It actually also constructs =MANPATH= entries, but it's not important right now.
 
 So by default, applications have =PATH= value defined by result of =path_helper= invocation.
 

@@ -1,4 +1,4 @@
-[[https://orgmode.org][org-mode]] is a simple outliner for note taking and list management. It [[https://d12frosted.io/posts/2016-12-20-Being-an-org-mode-addict.html][doesn't impose]] any complex features on users. This is something users excel at by themselves. My suggestion is to continue this tradition and discover task management capabilities in [[https://github.com/org-roam/org-roam][org-roam]], an [[https://orgmode.org][org-mode]] extension for non-hierarchical notes management.
+[[https://orgmode.org][org-mode]] is a simple outliner for note taking and list management. It [[d12frosted:/posts/2016-12-20-Being-an-org-mode-addict][doesn't impose]] any complex features on users. This is something users excel at by themselves. My suggestion is to continue this tradition and discover task management capabilities in [[https://github.com/org-roam/org-roam][org-roam]], an [[https://orgmode.org][org-mode]] extension for non-hierarchical notes management.
 
 [[file:/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-03-45-org-roam-task-management-vol1-3.webp]]
 
@@ -129,20 +129,20 @@ With =org-roam= it makes sense to create a separate file for each meta project. 
 
 So far the transition was simple. However as you can see, in agenda buffer the inferred category contains garbage - note id.
 
-In the [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][next article]] we are going to explore the means to fix the agenda buffer from the unwanted visual garbage. Stay tuned!
+In the [[d12frosted:/posts/2020-06-24-task-management-with-roam-vol2][next article]] we are going to explore the means to fix the agenda buffer from the unwanted visual garbage. Stay tuned!
 
 * Task Management with org-roam Series
 :PROPERTIES:
 :ID:                     02f55939-bc5a-4696-9570-65e359a8056b
 :END:
 
-1. [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
-2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
-3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
-4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
-5. [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Dynamic and fast agenda]]
-6. [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]]
-7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
+1. [[d12frosted:/posts/2020-06-23-task-management-with-roam-vol1][Path to Roam]]
+2. [[d12frosted:/posts/2020-06-24-task-management-with-roam-vol2][Categories]]
+3. [[d12frosted:/posts/2020-06-25-task-management-with-roam-vol3][FILETAGS]]
+4. [[d12frosted:/posts/2020-07-07-task-management-with-roam-vol4][Automatic tagging]]
+5. [[d12frosted:/posts/2021-01-16-task-management-with-roam-vol5][Dynamic and fast agenda]]
+6. [[d12frosted:/posts/2021-01-24-task-management-with-roam-vol6][Select a person and view related tasks]]
+7. [[d12frosted:/posts/2021-05-21-task-management-with-roam-vol7][Capture]]
 
 * References
 :PROPERTIES:

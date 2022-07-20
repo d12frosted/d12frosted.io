@@ -1,4 +1,4 @@
-In the previous articles ([[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][vol1]] and [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][vol2]]) we walked the path to [[https://github.com/org-roam/org-roam][org-roam]] and solved the issue with garbage in the category column of agenda. Today we are going to explore meta projects dedicated to specific person, tag inheritance and moving such projects to separate =org-roam= files. As result, we will have code for automatic tagging based on the title.
+In the previous articles ([[d12frosted:/posts/2020-06-23-task-management-with-roam-vol1][Vol. 1]] and [[d12frosted:/posts/2020-06-24-task-management-with-roam-vol2][Vol. 2]]) we walked the path to [[https://github.com/org-roam/org-roam][org-roam]] and solved the issue with garbage in the category column of agenda. Today we are going to explore meta projects dedicated to specific person, tag inheritance and moving such projects to separate =org-roam= files. As result, we will have code for automatic tagging based on the title.
 
 Aside from regular meta projects (like personal blog) I also create meta projects for people and locations. This is helpful, because some of the tasks are really related to someone specifically. For example, when I need to return a borrowed book, I just create a task for this.
 
@@ -75,7 +75,7 @@ With =org-roam=, each person has its own file.
   case Frodo doesn't wear socks. But how could it be? Everyone does!
 #+end_src
 
-In order to maintain the feature where =@FrodoBaggins= tag is applied to all TODO items we have to use =filetags= property. I am also using id to mark Frodo Baggins as a person (even though he is a hobbit!). This helps me in two ways. First of all, it gives me clear understanding that this entity is a person (some people do have strange names). Secondly, it serves me in automation and filtering (as example, checkout [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]] post).
+In order to maintain the feature where =@FrodoBaggins= tag is applied to all TODO items we have to use =filetags= property. I am also using id to mark Frodo Baggins as a person (even though he is a hobbit!). This helps me in two ways. First of all, it gives me clear understanding that this entity is a person (some people do have strange names). Secondly, it serves me in automation and filtering (as example, checkout [[d12frosted:/posts/2021-01-24-task-management-with-roam-vol6][Select a person and view related tasks]] post).
 
 Now, when I see a headline with title and tag being literally the same (with few programmable exceptions) or the file with =title= and =filetags= being the same (with few programmable exceptions), I am feeling nervous. Especially since I am prone to mistakes.
 
@@ -116,20 +116,20 @@ This function can be called interactively, but since I usually place the tag usi
 
 Though for other purposes one can put this function to the file visit hook. But hooks are sensitive, so I am going to stop here.
 
-In the [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][next article]] we are going to talk about automatic insertion of person tag (e.g. =@FrodoBaggins=) when mentioning this person in other task.
+In the [[d12frosted:/posts/2020-07-07-task-management-with-roam-vol4][next article]] we are going to talk about automatic insertion of person tag (e.g. =@FrodoBaggins=) when mentioning this person in other task.
 
 * Task Management with org-roam Series
 :PROPERTIES:
 :ID:                     acfa02d9-4213-4050-8093-10dcc1e6aea1
 :END:
 
-1. Path to Roam
-2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
-3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
-4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
-5. [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Dynamic and fast agenda]]
-6. [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]]
-7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
+1. [[d12frosted:/posts/2020-06-23-task-management-with-roam-vol1][Path to Roam]]
+2. [[d12frosted:/posts/2020-06-24-task-management-with-roam-vol2][Categories]]
+3. [[d12frosted:/posts/2020-06-25-task-management-with-roam-vol3][FILETAGS]]
+4. [[d12frosted:/posts/2020-07-07-task-management-with-roam-vol4][Automatic tagging]]
+5. [[d12frosted:/posts/2021-01-16-task-management-with-roam-vol5][Dynamic and fast agenda]]
+6. [[d12frosted:/posts/2021-01-24-task-management-with-roam-vol6][Select a person and view related tasks]]
+7. [[d12frosted:/posts/2021-05-21-task-management-with-roam-vol7][Capture]]
 
 * References
 :PROPERTIES:
@@ -138,5 +138,5 @@ In the [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.h
 
 - =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
 - =org-mode= documentation on the [[https://orgmode.org][official site]].
-- Org-roam tags on [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][d12frosted.io]].
+- Org-roam tags [[d12frosted:/posts/2020-06-10-org-roam-tags][post]].
 - personal configurations on [[https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el][GitHub]].

@@ -1,9 +1,4 @@
-In the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][previous article]] we covered automatic tagging of notes related to a
-specific person, and today we are going to cover automatic tagging of an
-org-mode heading upon insertion of link related to a person. To put it simple,
-when I mention someone in the task, I would love this task to be automatically
-tagged with that persons name. As they say, it's better to see once, than
-imagine multiple times, so here is a screencast.
+In the [[d12frosted:/posts/2020-06-25-task-management-with-roam-vol3][previous article]] we covered automatic tagging of notes related to a specific person, and today we are going to cover automatic tagging of an org-mode heading upon insertion of link related to a person. To put it simple, when I mention someone in the task, I would love this task to be automatically tagged with that persons name. As they say, it's better to see once, than imagine multiple times, so here is a screencast.
 
 [[file:/images/2020-07-07-task-management-with-roam-vol4/2022-07-19-21-13-09-org-notes-insert.gif]]
 
@@ -18,7 +13,7 @@ imagine multiple times, so here is a screencast.
 <!--more-->
 #+END_HTML
 
-Once could just write an advice for =org-roam-node-insert= by using a relatively recent [[https://github.com/org-roam/org-roam/pull/839][change]] that makes this function to return what was inserted. This also uses name manipulation from the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][previous article]] and tags lookup from [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][Org-roam tags]] article.
+Once could just write an advice for =org-roam-node-insert= by using a relatively recent [[https://github.com/org-roam/org-roam/pull/839][change]] that makes this function to return what was inserted. This also uses name manipulation from the [[d12frosted:/posts/2020-06-25-task-management-with-roam-vol3][previous article]] and tags lookup from [[d12frosted:/posts/2020-06-10-org-roam-tags][Org-roam tags]] article.
 
 #+begin_src emacs-lisp
   (defun org-roam-node-insert-wrapper (fn)
@@ -116,13 +111,13 @@ With this approach you can add as many handlers as you wish without the need to 
 :ID:                     88d27bea-d629-4b1d-a0b1-0658ac23d1fd
 :END:
 
-1. [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][Path to Roam]]
-2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
-3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
-4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
-5. [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Dynamic and fast agenda]]
-6. [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]]
-7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
+1. [[d12frosted:/posts/2020-06-23-task-management-with-roam-vol1][Path to Roam]]
+2. [[d12frosted:/posts/2020-06-24-task-management-with-roam-vol2][Categories]]
+3. [[d12frosted:/posts/2020-06-25-task-management-with-roam-vol3][FILETAGS]]
+4. [[d12frosted:/posts/2020-07-07-task-management-with-roam-vol4][Automatic tagging]]
+5. [[d12frosted:/posts/2021-01-16-task-management-with-roam-vol5][Dynamic and fast agenda]]
+6. [[d12frosted:/posts/2021-01-24-task-management-with-roam-vol6][Select a person and view related tasks]]
+7. [[d12frosted:/posts/2021-05-21-task-management-with-roam-vol7][Capture]]
 
 * References
 :PROPERTIES:
@@ -131,5 +126,5 @@ With this approach you can add as many handlers as you wish without the need to 
 
 - =org-roam= documentation on [[https://github.com/org-roam/org-roam][GitHub]].
 - =org-mode= documentation on the [[https://orgmode.org][official site]].
-- Org-roam tags on [[https://d12frosted.io/posts/2020-06-10-org-roam-tags.html][d12frosted.io]].
+- [[d12frosted:/posts/2020-06-10-org-roam-tags][Org-roam tags]] post.
 - personal configurations on [[https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el][GitHub]].

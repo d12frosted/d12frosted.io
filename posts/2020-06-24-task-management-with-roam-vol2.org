@@ -1,4 +1,4 @@
-In the [[https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html][previous article]] we set a ground for moving tasks to [[https://github.com/org-roam/org-roam][org-roam]], and encountered an issue with visual garbage in the agenda buffer. Namely, =org-roam= file id as part of the category. In this article, we are going to explore the means to overcome this issue.
+In the [[d12frosted:/posts/2020-06-23-task-management-with-roam-vol1][previous article]] we set a ground for moving tasks to [[https://github.com/org-roam/org-roam][org-roam]], and encountered an issue with visual garbage in the agenda buffer. Namely, =org-roam= file id as part of the category. In this article, we are going to explore the means to overcome this issue.
 
 #+attr_html: :class img-half img-float-left
 [[file:/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-1.webp]]
@@ -159,20 +159,20 @@ Additionally, it's easy to extend this function to truncate overly long categori
 
 Now the agenda is clean.
 
-In the [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][next article]] we are going to talk about tagging tasks related to a person. Stay tuned and keep roaming!
+In the [[d12frosted:/posts/2020-06-25-task-management-with-roam-vol3][next article]] we are going to talk about tagging tasks related to a person. Stay tuned and keep roaming!
 
 * Task Management with org-roam Series
 :PROPERTIES:
 :ID:                     f6e0ff03-10cd-48cd-a761-b2e2dcf0440f
 :END:
 
-1. Path to Roam
-2. [[https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html][Categories]]
-3. [[https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html][FILETAGS]]
-4. [[https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html][Automatic tagging]]
-5. [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][Dynamic and fast agenda]]
-6. [[https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html][Select a person and view related tasks]]
-7. [[https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html][Capture]]
+1. [[d12frosted:/posts/2020-06-23-task-management-with-roam-vol1][Path to Roam]]
+2. [[d12frosted:/posts/2020-06-24-task-management-with-roam-vol2][Categories]]
+3. [[d12frosted:/posts/2020-06-25-task-management-with-roam-vol3][FILETAGS]]
+4. [[d12frosted:/posts/2020-07-07-task-management-with-roam-vol4][Automatic tagging]]
+5. [[d12frosted:/posts/2021-01-16-task-management-with-roam-vol5][Dynamic and fast agenda]]
+6. [[d12frosted:/posts/2021-01-24-task-management-with-roam-vol6][Select a person and view related tasks]]
+7. [[d12frosted:/posts/2021-05-21-task-management-with-roam-vol7][Capture]]
 
 * References
 :PROPERTIES:

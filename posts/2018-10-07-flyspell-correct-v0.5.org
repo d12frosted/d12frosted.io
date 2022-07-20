@@ -16,6 +16,6 @@ Recently, there was a major release of ~flyspell-correct~. Version 0.5 introduce
 - Add some simple tests to cover the most important use cases.
 - Fix issue when =flyspell-correct-next= doesn't correct word at point.
 
-Intro post also was updated to better explain key points of ~flyspell-correct~.
+[[d12frosted:/posts/2016-05-09-flyspell-correct-intro][Intro post]] also was updated to better explain key points of ~flyspell-correct~.
 
 Hopefully, you'll like the new version. If something doesn't work for you, please let me know!
