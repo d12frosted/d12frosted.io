@@ -50,7 +50,7 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
           target_branch: gh-pages
-          build_dir: public
+          build_dir: _site
           committer: Golem <golem@d12frosted.io>
         env:
           GH_PAT: ${{ secrets.API_USER_TOKEN }}
