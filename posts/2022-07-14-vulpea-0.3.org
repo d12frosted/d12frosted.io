@@ -2,7 +2,7 @@ The time has come to release a new version of [[https://github.com/d12frosted/vu
 
 The main focus of this release is the [[https://github.com/d12frosted/vulpea#query-from-database][performance of query operations]]. Expect a 4.5x speed boost for generic =vulpea-db-query= and even more with specialized queries. All that thanks to materialized view table for notes.
 
-#+caption: =vulpea-db-query= performance on a set of 9554 notes
+#+caption: =vulpea-db-query= performance on a set of 9554 notes (in seconds)
 | test          | result size |            [[https://github.com/d12frosted/vulpea/blob/551495a59fb8c3bcd49a091b233e24e4cb8b584c/vulpea-db.el#L76-L187][regular]] |         view table |     ratio |
 |---------------+-------------+--------------------+--------------------+-----------|
 | =tags-some=   | 30 notes    | 4.6693460650999995 |       1.0112478712 | 4.6174100 |
@@ -11,7 +11,7 @@ The main focus of this release is the [[https://github.com/d12frosted/vulpea#que
 | =links-every= | 92 notes    | 4.5517473337999995 |       1.0204833089 | 4.4603839 |
 #+TBLFM: $5=$3/$4
 
-#+caption: specialized queries performance on a set of 9554 notes
+#+caption: specialized queries performance on a set of 9554 notes (in seconds)
 | test          | result size |            generic |        specialized |     ratio |
 |---------------+-------------+--------------------+--------------------+-----------|
 | =tags-some=   | 30 notes    |       1.0112478712 |       0.0066033426 | 153.14182 |
@@ -41,6 +41,7 @@ After [[https://github.com/d12frosted/vulpea/commit/e2e82fb1288e68f4b84fcd003226
 
 This is a game changer with only one downside - write performance degradation. Of course, we write the same data twice - in Org Roam tables and then in materialised view table. But there is more to writing performance degradation. It is hard to hook into Org Roam parsing and writing routine, so I had to duplicate buffer parsing. And this is the biggest performance offender. In most cases, when you simply modify a single note, this is hardly noticeable. But syncing 9k notes takes x2 time.
 
+#+caption: synchronisation performance (in seconds)
 | test        |            regular |     view table |         diff |     ratio |
 |-------------+--------------------+----------------+--------------+-----------|
 | 9554 notes  | 172.79389154999998 |   337.61603822 |    164.82215 | 1.9538656 |
@@ -69,12 +70,12 @@ What are the most used patterns? Get the list of notes tagged by all/any given t
 
 These are [[https://github.com/d12frosted/vulpea/discussions/106#discussioncomment-1601429][benchmark]] results on a set of 8390 notes before the materialized view was introduced.
 
+#+caption: query by links performance (in seconds)
 | test             | =org-roam= API | =vulpea-db-query= | specialized  |
 |------------------+----------------+-------------------+--------------|
 | simple           |     0.28974334 |        2.28282158 | *0.02278065* |
 | popular          |     1.85930086 |        2.34636907 | *1.42250805* |
 | big intersection |     4.53420141 |        2.27249325 | *0.46843158* |
-#+TBLFM: $2=org-roam= API
 
 What exactly makes specialized queries so fast? We start by narrowing down all notes in the fastest possible way. And then, we exchange this list of ids to list of notes in a single transaction.
 
