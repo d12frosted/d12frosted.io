@@ -110,7 +110,7 @@ main = hakyll $ do
     match "assets/index.html" $ do
       route $ gsubRoute "assets/" (const "")
       compile $ do
-        posts <- recentFirst =<< loadAllPosts now
+        posts <- fmap (take 16) . recentFirst =<< loadAllPosts now
         intro <- load "assets/about.org"
         appCtx <- loadAppCtx
         postCtx <- loadPostCtx tags
