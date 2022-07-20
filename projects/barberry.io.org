@@ -1,0 +1,9 @@
+---
+languages: Haskell, Emacs Lisp
+category: Special
+priority: 2
+---
+
+[[https://barberry.io][Barberry Garden]] is an independent (self-funded) website focused on the wine world.
+
+Personal tasting notes, event reports and in-depth wine-related articles.
