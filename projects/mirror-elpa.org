@@ -2,7 +2,7 @@
 tag: mirror-elpa
 languages: Bash
 category: Emacs
-priority: 3
+priority: 9
 ---
 
 Bash script that is used to maintain =elpa-mirror= project.

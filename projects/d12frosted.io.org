@@ -1,8 +1,8 @@
 ---
 tag: blog
-languages: Haskell
+languages: Haskell, Emacs Lisp
 category: Special
-priority: 2
+priority: 3
 ---
 
 Repository containing source code of this site. It is built using [[https://jaspervdj.be/hakyll/][Hakyll]] - a
