@@ -24,145 +24,15 @@
   --h2-size: 2.4rem;
   --h3-size: 2.0rem;
   --h4-size: 1.6rem;
-  --default-size: 1.6rem;
-  --small-size: 1.4rem;
-
   --code-size: 1.4rem;
-  --code-h1-size: 2.6rem;
-  --code-h2-size: 2.2rem;
-  --code-h3-size: 1.8rem;
+  --default-size: 1.6rem;
+  --small-size: 1.2rem;
+
 
   --header-font: "Alegreya Sans", sans-serif;
   --code-font: "Source Code Pro", monospace;
-  --default-font: "Cormorant Garamond", serif;
-}
-
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Cormorant Garamond';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Cormorant Garamond Regular'), local('CormorantGaramond-Regular'), url(https://fonts.gstatic.com/s/cormorantgaramond/v6/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpHtKgS4.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Cormorant Garamond';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Cormorant Garamond Regular'), local('CormorantGaramond-Regular'), url(https://fonts.gstatic.com/s/cormorantgaramond/v6/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYrXtKgS4.woff2) format('woff2');
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Cormorant Garamond';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Cormorant Garamond Regular'), local('CormorantGaramond-Regular'), url(https://fonts.gstatic.com/s/cormorantgaramond/v6/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYp3tKgS4.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Cormorant Garamond';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Cormorant Garamond Regular'), local('CormorantGaramond-Regular'), url(https://fonts.gstatic.com/s/cormorantgaramond/v6/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Alegreya Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/alegreyasans/v21/5aUz9_-1phKLFgshYDvh6Vwt7VdtvWdUhm97sg.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Alegreya Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/alegreyasans/v21/5aUz9_-1phKLFgshYDvh6Vwt7V5tvWdUhm97sg.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Alegreya Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/alegreyasans/v21/5aUz9_-1phKLFgshYDvh6Vwt7VZtvWdUhm97sg.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Alegreya Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/alegreyasans/v21/5aUz9_-1phKLFgshYDvh6Vwt7VltvWdUhm97sg.woff2) format('woff2');
-  unicode-range: U+0370-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Alegreya Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/alegreyasans/v21/5aUz9_-1phKLFgshYDvh6Vwt7VVtvWdUhm97sg.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Alegreya Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/alegreyasans/v21/5aUz9_-1phKLFgshYDvh6Vwt7VRtvWdUhm97sg.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Alegreya Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/alegreyasans/v21/5aUz9_-1phKLFgshYDvh6Vwt7VptvWdUhm8.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* latin-ext */
-@font-face {
-  font-family: 'Source Code Pro';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Source Code Pro'), local('SourceCodePro-Regular'), url(https://fonts.gstatic.com/s/sourcecodepro/v9/HI_SiYsKILxRpg3hIP6sJ7fM7PqlM-vWjMY.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Source Code Pro';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Source Code Pro'), local('SourceCodePro-Regular'), url(https://fonts.gstatic.com/s/sourcecodepro/v9/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevW.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: 'Material Symbols Outlined';
-  font-style: normal;
-  font-weight: 100 700;
-  font-display: swap;
-  src: url(/fonts/MaterialSymbols.woff) format('woff');
+  --default-font: "M PLUS Rounded 1c", sans-serif;
+  /* --default-font: "Alegreya Sans", sans-serif; */
 }
 
 html {
@@ -219,8 +89,14 @@ a:hover {
   text-decoration: underline;
 }
 
-nav a span {
-  padding-right: 0.6rem;
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+
+sub {
+  top: 0.4em;
 }
 
 img.bg-logo {
@@ -249,7 +125,7 @@ nav {
 
 nav a {
   font-size: 1.8rem;
-  font-weight: bold;
+  /* font-weight: bold; */
   color: var(--foreground);
   text-decoration: none;
   text-transform: uppercase;
@@ -278,6 +154,7 @@ h3 {
 
 .h {
   font-family: var(--header-font);
+  margin-block-start: 0.6rem;
   margin-block-end: 0.6rem;
 }
 
@@ -327,21 +204,39 @@ hr {
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  vertical-align: sub;
+  vertical-align: baseline;
   -moz-font-feature-settings: 'liga';
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1 span.material-symbols-outlined {
   font-size: var(--h1-size) !important;
+  vertical-align: middle !important;
 }
 
 h2 span.material-symbols-outlined {
   font-size: var(--h2-size) !important;
+  vertical-align: middle !important;
 }
 
 h3 span.material-symbols-outlined {
   font-size: var(--h3-size) !important;
+  vertical-align: middle !important;
+}
+
+.h1 span.material-symbols-outlined {
+  font-size: var(--h1-size) !important;
+  vertical-align: middle !important;
+}
+
+.h2 span.material-symbols-outlined {
+  font-size: var(--h2-size) !important;
+  vertical-align: middle !important;
+}
+
+.h3 span.material-symbols-outlined {
+  font-size: var(--h3-size) !important;
+  vertical-align: middle !important;
 }
 
 .text-subtle {
@@ -350,14 +245,6 @@ h3 span.material-symbols-outlined {
 
 .text-faded {
   color: var(--faded);
-}
-
-.text-right {
-  text-align: right;
-}
-
-article p {
-  text-align: justify;
 }
 
 article .subtitle {
@@ -419,6 +306,11 @@ article .img-float-right {
   }
 }
 
+figure {
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
+
 figcaption {
   color: var(--faded);
   font-size: var(--small-size);
@@ -445,22 +337,7 @@ article blockquote {
 
 article table {
   font-size: 1.4rem;
-  font-family: var(--header-font);
   margin: 0 auto;
-  border-spacing: 0rem;
-  margin-block-start: 1.2rem;
-}
-
-.table-container {
-  overflow: auto;
-}
-
-article table thead tr th {
-  border-bottom: 0.1rem solid var(--subtle);
-}
-
-article td, th {
-  padding: 0.6rem;
 }
 
 article caption {
@@ -468,8 +345,21 @@ article caption {
   color: var(--faded);
 }
 
-ul {
-  text-align: justify;
+.table-container {
+  overflow: auto;
+}
+
+table.tasting-scores {
+  border-spacing: 0rem;
+  margin-block-start: 1.2rem;
+}
+
+table.tasting-scores thead tr th {
+  border-bottom: 0.2rem solid var(--subtle);
+}
+
+table.tasting-scores td, th {
+  padding: 0.6rem;
 }
 
 main dt {
@@ -515,14 +405,63 @@ article dd {
   margin: 0;
 }
 
+.favourite {
+  background: var(--highlight-successful);
+}
+
+.outcast {
+  background: var(--highlight-critical);
+}
+
+.bottle-right {
+  max-width: 100%;
+  max-height: 256px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
 .logo a {
   font-weight: bold;
   color: var(--foreground);
   text-decoration: none;
 }
 
-.project a i {
-  padding-right: 0.6rem;
+.wine-main-image {
+  width: 75%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+ul li {
+  margin-block-end: 0.2rem;
+}
+
+ul.wine-list {
+  list-style: none;
+}
+
+ul.rating-list {
+  list-style: none;
+}
+
+.bootstrap-table table.table-hover tbody tr:hover {
+  background: var(--highlight-default) !important;
+}
+
+.bootstrap-table .btn, .bootstrap-table input.form-control, .bootstrap-table select.form-control {
+  border: 1px solid var(--subtle) !important;
+}
+
+.bootstrap-table table.table-bordered tbody tr td, .bootstrap-table table.table-bordered thead tr th {
+  border: 1px solid var(--subtle) !important;
+}
+
+.wines-table {
+  font-size: var(--small-size);
+  font-family: var(--default-font);
 }
 
 .flex-container, .flex-item {
@@ -532,15 +471,21 @@ article dd {
 .flex-container {
   display: flex;
   flex-wrap: wrap;
+  text-align: center;
 }
 
 .flex-item {
   padding: 1.2rem;
   flex: calc(50% - 0.6rem);
+  max-width: calc(50% - 0.6rem);
   border: var(--subtle);
   border-width: 1px;
   /* border-style: solid; */
-  margin-block-end: 0.6rem;
+  /* margin-block-end: 0.6rem; */
+}
+
+.flex-bottle {
+  max-width: 75%;
 }
 
 .flex-item:hover {
@@ -548,11 +493,11 @@ article dd {
 }
 
 .flex-item-left {
-  margin-inline-end: 0.3rem;
+  /* margin-inline-end: 0.3rem; */
 }
 
 .flex-item-right {
-  margin-inline-start: 0.3rem;
+  /* margin-inline-start: 0.3rem; */
 }
 
 @media (max-width: 319px) {
@@ -648,14 +593,30 @@ article dd {
     margin-right: 1em;
     max-width: 128px;
   }
+  .bottle-right {
+    float: right;
+    margin-right: 2rem;
+    margin-left: 2rem;
+  }
+  .wine-main-image {
+    width: 37.5%;
+    float: right;
+    margin-left: 2rem;
+    margin-bottom: 2rem;
+  }
 }
 
 @media (max-width: 800px) {
   .flex-item {
     flex: 100%;
+    max-width: 100%;
   }
   .flex-item-right, .flex-item-left {
     margin-inline-start: 0;
     margin-inline-end: 0;
   }
+}
+
+mark {
+  background: var(--highlight-salient);
 }
