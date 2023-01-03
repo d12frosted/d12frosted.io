@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - uses: actions/setup-node@v3
-      - uses: haskell/actions/setup@v2.1.0
+      - uses: haskell/actions/setup@v2.2.0
         with:
           ghc-version: ${{ matrix.ghc }}
           enable-stack: true
