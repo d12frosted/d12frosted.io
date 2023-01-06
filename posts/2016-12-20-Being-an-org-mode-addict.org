@@ -1,17 +1,12 @@
 [[file:/images/2016-12-20-Being-an-org-mode-addict/2022-07-19-18-39-02-59ca88ab-671f-4c5e-9bf8-25547bbadbc2.webp]]
 
-It is funny how I vainly try to escape devilish ~org-mode~. I have several major
-concerns regarding it as a GTD system and a note taking system, but after all,
-whatever I try to replace it with, I always return to ~org-mode~. Mostly because
-it's simple (at least at the top level) and makes me feel more confident about
-my thoughts, tasks and the future. But on the other hand, it makes me really
-angry because it forces me to make some uncomfortable decisions.
+It is funny how I vainly try to escape devilish ~org-mode~. I have several major concerns regarding it as a GTD system and a note taking system, but after all, whatever I try to replace it with, I always return to ~org-mode~. Mostly because it's simple (at least at the top level) and makes me feel more confident about my thoughts, tasks and the future. But on the other hand, it makes me really angry because it forces me to make some uncomfortable decisions.
 
 #+BEGIN_HTML
 <!--more-->
 #+END_HTML
 
-Michael Hall has a nice [[https://mph.puddingbowl.org/2010/02/03/165139.html][blog post]] about ~org-mode~ being a GNU-shaped devil on his dot unplanned blog. It's really an interesting read. My favourite part is about all the devilness of Emacs in general and org-mode in particular.
+Michael Hall has a nice [[https://mike.puddingtime.org/vintage/2010/02/03/orgmode-in-your][blog post]] about ~org-mode~ being a GNU-shaped devil on his dot unplanned blog. It's really an interesting read. My favourite part is about all the devilness of Emacs in general and org-mode in particular.
 
 #+BEGIN_QUOTE
 With Emacs, you don’t just go “la la la … I’m gonna add org mode back and call it a day!” You think to yourself, “I love org mode. I wish there was an easy way to turn an e-mail message into a todo …” and the next thing you know you’re dealing with how to configure GNUS.

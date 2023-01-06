@@ -362,4 +362,4 @@ Just by extracting checks into separate function, by using =declare= to define v
 :ID:                     97c5e886-e5b3-4de9-9380-b92900d0c813
 :END:
 
-Fortunately, our actions didn't lead to Saruman taking control over the Shire, so we are good. This post is already long enough, so I am going to finish here. If you have any questions, just email me.
+Fortunately, our actions didn't lead to Saruman taking control over the Shire, so we are good. This post is already long enough, so I am going to finish here. If you have any questions, just [[mailto:boris@d12frosted.io][email]] me.

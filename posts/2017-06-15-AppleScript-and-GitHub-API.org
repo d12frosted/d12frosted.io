@@ -1,6 +1,6 @@
 AppleScript is a powerful scripting language that allows to directly control scriptable applications and some parts of macOS. The language itself can be a little bit frustrating for those who are not familiar with natural language programming paradigm. For example, with AppleScript, you can =tell application "Preview" to quit= or ask someone to =print pages 1 thru 5 of document 2=.
 
-But my goal is not to promote or demote AppleScript. Instead, I wish to share a little script that I've fetched while experimenting with [[https://www.omnigroup.com/omnifocus][OmniFocus 2]]. I hate to manually capture issues that I care about, so I started to work on a script that takes URL from an active tab in Safari and sends it to OmniFocus into the right project with useful title and body.
+But my goal is not to promote or demote AppleScript. Instead, I wish to share a little script that I've fetched while [[file:/being-an-org-mode-addict][experimenting]] with [[https://www.omnigroup.com/omnifocus][OmniFocus 2]]. I hate to manually capture issues that I care about, so I started to work on a script that takes URL from an active tab in Safari and sends it to OmniFocus into the right project with useful title and body.
 
 For example, I want [[https://github.com/d12frosted/flyspell-correct/issues/30][d12frosted/flyspell-correct#30]] to go into the =flyspell-correct= project with title and description taken from that issue.
 
