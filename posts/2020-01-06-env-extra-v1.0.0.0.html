@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Announcement of new version of env-extra">
+    <meta property="og:title" content="Boris Buliga - env-extra v1.0.0.0" />
+    <meta property="og:description" content="Announcement of new version of env-extra" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2020-01-06-env-extra-v1.0.0.0.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - env-extra v1.0.0.0</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>env-extra v1.0.0.0</h1>
+  <section class="subtitle">
+    Posted on January  6, 2020
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'haskell'." href="../tags/haskell.html">#haskell</a>, <a title="All pages tagged 'release'." href="../tags/release.html">#release</a>, <a title="All pages tagged 'env-exta'." href="../tags/env-exta.html">#env-exta</a>
+  </section>
+  
+  <section>
+    <p>It’s hard (though possible) to imagine a script that doesn’t access environment variables. In Haskell ecosystem there is a good built-in module <a href="https://hackage.haskell.org/package/base-4.12.0.0/docs/System-Environment.html">System.Environment</a> that does the job, but it has several drawbacks. First of all, it uses <code class="verbatim">String</code> data type as input and as an output. And secondly, it lives in <code class="verbatim">IO</code>. Both of these drawbacks are not that critical, but calling all these <code class="verbatim">Text.pack</code>, <code class="verbatim">Text.unpack</code> and <code class="verbatim">liftIO</code> in every program drives me nuts. So several years ago (somewhere in 2016) I decided to write a <a href="https://github.com/d12frosted/env-extra">simple library</a> that wraps it for me.</p>
+<p>I’ve been using this library for a long time and today I uploaded it to <a href="https://hackage.haskell.org/package/env-extra">Hackage</a>. While it’s really small, I still think that some of you might find it useful, because it has nice features that original <code class="verbatim">System.Environment</code> doesn’t have. Let’s take a look!</p>
+<!--more-->
+
+<p>So in the nutshell, there are three functions to access environment variables:</p>
+<ul>
+<li><code class="verbatim">envMaybe</code> of type <code class="verbatim">( MonadIO m, IsString a ) =&gt; Text -&gt; m (Maybe a)</code> - a wrapper for <code class="verbatim">lookupEnv</code>. Aside from working with <code class="verbatim">Text</code> input it also lives in <code class="verbatim">MonadIO</code> and returns an <code class="verbatim">IsString</code>, which the most interesting part here. I will talk about it shortly.</li>
+<li><code class="verbatim">getEnv</code> of type <code class="verbatim">( MonadThrow m, MonadIO m, IsString a ) =&gt; Text -&gt; m a</code> - the unsafe version of <code class="verbatim">envMaybe</code>.</li>
+<li><code class="verbatim">envRead</code> of type <code class="verbatim">( MonadIO m ) =&gt; Reader a -&gt; Text -&gt; m (Maybe a)</code> - a helper function that also reads (or parses) a value from environment variable by specifying the <a href="https://hackage.haskell.org/package/text-1.2.4.0/docs/Data-Text-Read.html">Reader</a>.</li>
+</ul>
+<p>In most cases my choice is between <code class="verbatim">envMaybe</code> and <code class="verbatim">getEnv</code> depending on my desire to handle missing variable.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> envMaybe <span class="st">&quot;NAME&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Nothing</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> setEnv <span class="st">&quot;NAME&quot;</span> <span class="st">&quot;Boris&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> envMaybe <span class="st">&quot;NAME&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="dt">Just</span> <span class="st">&quot;Boris&quot;</span></span></code></pre></div>
+<p>What’s interesting, <code class="verbatim">envMaybe</code> is polymorphic in it’s return type, which means that it plays nicely in composition chains and you don’t need to explicitly convert between <code class="verbatim">Text</code>, <code class="verbatim">String</code>, <code class="verbatim">ByteString</code> data types.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">:</span>t <span class="fu">putStrLn</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">putStrLn</span><span class="ot"> ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> getEnv <span class="st">&quot;NAME&quot;</span> <span class="op">&gt;&gt;=</span> <span class="fu">putStrLn</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">Boris</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> setEnv <span class="st">&quot;SOME_VAR&quot;</span> <span class="st">&quot;NAME&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> getEnv <span class="st">&quot;SOME_VAR&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;NAME&quot;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> getEnv <span class="st">&quot;SOME_VAR&quot;</span> <span class="op">&gt;&gt;=</span> getEnv</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;Boris&quot;</span></span></code></pre></div>
+<p>The other function that I use (though not that often) is <code class="verbatim">envRead</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> setEnv <span class="st">&quot;AGE&quot;</span> <span class="st">&quot;10&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> envRead decimal <span class="st">&quot;AGE&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">Just</span> <span class="dv">10</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> envRead hexadecimal <span class="st">&quot;AGE&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="dt">Just</span> <span class="dv">16</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> envRead hexadecimal <span class="st">&quot;HOME&quot;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="dt">Nothing</span></span></code></pre></div>
+<p>In some rare cases you might want to use the <code class="verbatim">Read</code> instance for parsing. Though
+it’s not advisable.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="kw">data</span> <span class="dt">Status</span> <span class="ot">=</span> <span class="dt">SomeStatus1</span> <span class="op">|</span> <span class="dt">SomeStatus2</span> <span class="kw">deriving</span> (<span class="dt">Show</span>, <span class="dt">Read</span>, <span class="dt">Eq</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> getEnv <span class="st">&quot;STATUS&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;SomeStatus2&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> envRead <span class="fu">read</span> <span class="st">&quot;STATUS&quot;</span><span class="ot"> ::</span> <span class="dt">IO</span> (<span class="dt">Maybe</span> <span class="dt">Status</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="dt">Just</span> <span class="dt">SomeStatus2</span></span></code></pre></div>
+<p>I hope you’ll find this library helpful. Please do send me your comments, idea and thoughts! And any contribution is welcome!</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-01-06-env-extra-v1.0.0.0.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

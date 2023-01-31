@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A new feature provided by Emacs+ that injects PATH value during build">
+    <meta property="og:title" content="Boris Buliga - emacs-plus: PATH injection" />
+    <meta property="og:description" content="A new feature provided by Emacs+ that injects PATH value during build" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2022-05-12-emacs-plus-path-injection.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - emacs-plus: PATH injection</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>emacs-plus: PATH injection</h1>
+  <section class="subtitle">
+    Posted on May 12, 2022
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs-plus'." href="../tags/emacs-plus.html">#emacs-plus</a>
+  </section>
+  
+  <section>
+    <blockquote>
+<p>Ever find that a command works in your shell, but not in Emacs?</p>
+<p>– <a href="https://github.com/purcell">@purcell</a></p>
+</blockquote>
+<p>There are two known billion-dollar problems in software engineering: null pointer exceptions and caching. Over time of maintaining various projects I realised that there is a third billion-dollar problem - <code class="verbatim">PATH</code> value. Whenever something doesn’t build, whenever something doesn’t work as expected, the blood trail often leads to… <code class="verbatim">PATH</code> value. Sometimes it’s some other environment variable, but in most of the cases, it’s just <code class="verbatim">PATH</code>.</p>
+<p>Time to time I help Emacs+ users with <code class="verbatim">PATH</code> related issues, so I figured that Emacs+ should provide some solution out of box. 10 messages from users in an esoteric project is like Maidan in Kyiv (yup, now I am bringing politics in here). So there is a huge problem needs solving. From thought to solution the path is quick.</p>
+<p>TL;DR, your <code class="verbatim">PATH</code> value is now being injected into <code class="verbatim">Emacs.app</code> during build, so it is picked up by Emacs whenever you run it from Finder, Docker, Spotlight or <code class="verbatim">launchd</code> system. Works for <code class="verbatim">emacs-plus@28</code> and <code class="verbatim">emacs-plus@29</code>.</p>
+<!--more-->
+
+<p>Even though I talk about problems related to <code class="verbatim">PATH</code> value, it’s value is actually correct, just not something we expect when it comes to using external binaries from within Emacs.</p>
+<p>Disclaimer. In the next few paragraphs I am explaining how macOS runs applications, but it might be not fully accurate as I am not an expert in these low level details. At least, speculation stands, so bear with me. And if you know better then me, please do tell me, so we can improve this information.</p>
+<p>User applications in macOS are running in the login shell environment. From <code class="verbatim">PATH</code> perspective, it means that it’s value is inherited from login shell. So what’s the value? If we take a look at <code class="verbatim">/etc/profile</code> and <code class="verbatim">/etc/zshenv</code> we see that they all run <code class="verbatim">path_helper</code>, which already appeared on my blog in <a href="../posts/2021-05-21-path-in-fish-with-nix-darwin.html">Fixing PATH in fish with nix-darwin</a> post. In short, it’s a helper for constructing <code class="verbatim">PATH</code> environment variable by taking entries from <code class="verbatim">/etc/paths</code> file and all files under <code class="verbatim">/etc/paths.d/</code>. It actually also constructs <code class="verbatim">MANPATH</code> entries, but it’s not important right now.</p>
+<p>So by default, applications have <code class="verbatim">PATH</code> value defined by result of <code class="verbatim">path_helper</code> invocation.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat /etc/paths</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/local/bin</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/bin</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">/bin</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/sbin</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/sbin</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-l</span> /etc/paths.d</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">-rwxr-xr-x</span> 1 root wheel 23 Apr 22 20:47 100-rvictl<span class="pp">*</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat /etc/paths.d/100-rvictl</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ex">/Library/Apple/usr/bin</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> /usr/libexec/path_helper <span class="at">-s</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="va">PATH</span><span class="op">=</span><span class="st">&quot;/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin&quot;</span><span class="kw">;</span> <span class="bu">export</span> <span class="va">PATH</span><span class="kw">;</span></span></code></pre></div>
+<p>And this is pretty much the same <code class="verbatim">PATH</code> most users see unless they tweak things. As it turns out there are several ways to do it. I am not going to dig into each of them, but roughly, you have the following options:</p>
+<ol type="1">
+<li>Add a file to <code class="verbatim">/etc/paths.d/</code> with values you want to append to <code class="verbatim">PATH</code> by default. This method affects everything, so use cautiously.</li>
+<li>Create a <code class="verbatim">my.startup.plist</code> in <code class="verbatim">~/Library/LaunchAgents</code> that calls <code class="verbatim">launchctl setenv</code> to modify <code class="verbatim">PATH</code>. This method affects all applications run by user.</li>
+<li>Set <a href="https://developer.apple.com/documentation/bundleresources/information_property_list/lsenvironment">LSEnvironment</a> property in applications <code class="verbatim">Info.plist</code> file. This method affects only specific application.</li>
+<li><a href="https://github.com/purcell/exec-path-from-shell">purcell/exec-path-from-shell</a>, which is a great alternative of previous method, but for Emacs specifically. The biggest added value is that it works dynamically and is based on your current shell settings.</li>
+</ol>
+<p>At this point it might become obvious, which method Emacs+ takes to solve <code class="verbatim">PATH</code> problem for its users. No, it’s not the last option, as it’s up to user to install external packages and setup them. Less intrusive, but more error-prone solution is to modify <code class="verbatim">Emacs.apo/Info.plist</code> file to include the value of the <code class="verbatim">PATH</code> during installation.</p>
+<p>Turns out, <code class="verbatim">brew</code> uses a sanitized environment, which they call <code class="verbatim">superenv</code>. If you think about it, such environment makes a lot of sense as you want to avoid any environment dependent stuff to mess up installation process. But that also means that Emacs+ formula can’t access user <code class="verbatim">PATH</code> value.</p>
+<p>The good part is that it’s possible to switch to standard environment in formula definition:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">class</span> <span class="dt">EmacsPlusAt29</span> <span class="kw">&lt;</span> <span class="dt">EmacsBase</span> <span class="co"># which is actually just Formula</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ...</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  env <span class="wa">:std</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ...</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
+<p>Now it’s possible to access <code class="verbatim">PATH</code> value and inject it to the <code class="verbatim">Info.plist</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>prefix<span class="at">.install</span> <span class="st">&quot;nextstep/Emacs.app&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># inject PATH to Info.plist</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>path <span class="kw">=</span> <span class="cn">ENV</span><span class="kw">[</span><span class="vs">'PATH'</span><span class="kw">]</span><span class="at">.split</span>(<span class="st">&quot;</span><span class="sc">#{</span><span class="cn">HOMEBREW_PREFIX</span><span class="sc">}</span><span class="st">/Library/Homebrew/shims/shared:&quot;</span>)<span class="at">.last</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span> <span class="st">&quot;/usr/libexec/PlistBuddy -c 'Add :LSEnvironment dict' '</span><span class="sc">#{</span>prefix<span class="sc">}</span><span class="st">/Emacs.app/Contents/Info.plist'&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span> <span class="st">&quot;/usr/libexec/PlistBuddy -c 'Add :LSEnvironment:PATH string' '</span><span class="sc">#{</span>prefix<span class="sc">}</span><span class="st">/Emacs.app/Contents/Info.plist'&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span> <span class="st">&quot;/usr/libexec/PlistBuddy -c 'Set :LSEnvironment:PATH </span><span class="sc">#{</span>path<span class="sc">}</span><span class="st">' '</span><span class="sc">#{</span>prefix<span class="sc">}</span><span class="st">/Emacs.app/Contents/Info.plist'&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span> <span class="st">&quot;/usr/libexec/PlistBuddy -c 'Print :LSEnvironment' '</span><span class="sc">#{</span>prefix<span class="sc">}</span><span class="st">/Emacs.app/Contents/Info.plist'&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span> <span class="st">&quot;touch '</span><span class="sc">#{</span>prefix<span class="sc">}</span><span class="st">/Emacs.app'&quot;</span></span></code></pre></div>
+<p>Notice that I remove all entries from <code class="verbatim">PATH</code> that come before (inclusive) <code class="verbatim">#{HOMEBREW_PREFIX}/Library/Homebrew/shims/shared</code>. This is because <code class="verbatim">brew</code> still appends some stuff to the <code class="verbatim">PATH</code> during build process and we definitely don’t want that stuff to be part of <code class="verbatim">PATH</code>, right?</p>
+<p>That’s basically it. With these small changes you can enjoy expected <code class="verbatim">PATH</code> value without the need to use <a href="https://github.com/purcell/exec-path-from-shell">purcell/exec-path-from-shell</a>. Though this package should be used if you want to get other stuff from your interactive shell.</p>
+<p>While it all might sounds like an effort not worth result, this change actually provides two extra points.</p>
+<p>I could at last remove flags manipulations related to <code class="verbatim">native-comp</code> feature:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> build<span class="at">.with?</span> <span class="st">&quot;native-comp&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  gcc_ver <span class="kw">=</span> <span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;gcc&quot;</span><span class="kw">]</span><span class="at">.any_installed_version</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  gcc_ver_major <span class="kw">=</span> gcc_ver<span class="at">.major</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  gcc_lib<span class="kw">=</span><span class="st">&quot;</span><span class="sc">#{</span><span class="cn">HOMEBREW_PREFIX</span><span class="sc">}</span><span class="st">/lib/gcc/</span><span class="sc">#{</span>gcc_ver_major<span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;CFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;gcc&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;CFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;libgccjit&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;CFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;gmp&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;CFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;libjpeg&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;LDFLAGS&quot;</span>, <span class="st">&quot;-L</span><span class="sc">#{</span>gcc_lib<span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;LDFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;gcc&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;LDFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;libgccjit&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;LDFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;gmp&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="cn">ENV</span><span class="at">.append</span> <span class="st">&quot;LDFLAGS&quot;</span>, <span class="st">&quot;-I</span><span class="sc">#{</span><span class="dt">Formula</span><span class="kw">[</span><span class="st">&quot;libjpeg&quot;</span><span class="kw">]</span><span class="at">.include</span><span class="sc">}</span><span class="st">&quot;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
+<p>It’s not that bad to have them, but since Emacs own <code class="verbatim">configuration.ac</code> supports <code class="verbatim">brew</code> during <code class="verbatim">libgccjit</code> check, I’d rather let Emacs developers do the work that they know how to do (in contrast with my doings).</p>
+<p>Another perk is also related to <code class="verbatim">native-comp</code> feature, but now it affects users in a more direct fashion. Native compilation normally starts <strong>before</strong> any custom user code in <code class="verbatim">init.el</code> and people <a href="https://github.com/d12frosted/homebrew-emacs-plus/issues?q=native-comp">often run into problems</a> related to <a href="https://github.com/d12frosted/homebrew-emacs-plus/issues/378">environment troubles</a>.</p>
+<p>So all that is nice. Hopefully I will not need to revert this injection. Because at this point of time, injection happens in <code class="verbatim">emacs-plus@28</code> and <code class="verbatim">emacs-plus@29</code>. But most importantly, there is a blog post about <code class="verbatim">PATH</code> injection. So business here is serious, you can’t simply step back.</p>
+<p>Safe travels folks! And use Emacs responsibly.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2022-05-12-emacs-plus-path-injection.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Dynamically building org-agenda-files with only relevant files">
+    <meta property="og:title" content="Boris Buliga - Task management with org-roam Vol. 5: Dynamic and fast agenda" />
+    <meta property="og:description" content="Dynamically building org-agenda-files with only relevant files" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Task management with org-roam Vol. 5: Dynamic and fast agenda</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Task management with org-roam Vol. 5: Dynamic and fast agenda</h1>
+  <section class="subtitle">
+    Posted on January 16, 2021
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'org-roam'." href="../tags/org-roam.html">#org-roam</a>
+  </section>
+  
+  <section>
+    <p>In previous articles (<a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Vol. 1</a> and <a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Vol. 2</a>) we talked about moving tasks from regular <code class="verbatim">org-mode</code> files to <code class="verbatim">org-roam</code> notes. This relied upon adding all <code class="verbatim">org-roam</code> files to <code class="verbatim">org-agenda-files</code>, which doesn’t scale well, as when you build an agenda buffer, it needs to traverse each file. Once you have more than 1k notes, things become sluggish.</p>
+<p>In my experience, once I reached 1200 note files, <code class="verbatim">org-agenda</code> constantly took more than 50 seconds to build, rendering this tool completely useless. But then I realised that only 3% of those files actually contain any <code class="verbatim">TODO</code> entries, so there is no need to traverse whole <code class="verbatim">org-roam-directory</code>!</p>
+<p>In this article we are going to optimise <code class="verbatim">org-agenda</code> back to less than 1 second by dynamically building <code class="verbatim">org-agenda-files</code> list to include only files with <code class="verbatim">TODO</code> entries. All thanks to the power of <code class="verbatim">org-roam</code> and some hooks I am going to describe.</p>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+<li><code>[2021-03-08 Mon]</code>: <a href="https://github.com/Whil-">Gustav</a> shared that <code class="verbatim">org-element-map</code> has an optional parameter <code class="verbatim">first-match</code> that works like <code class="verbatim">seq-find</code>, meaning that <code class="verbatim">vulpea-project-p</code> can be optimised.</li>
+<li><code>[2021-05-10 Mon]</code>: Update post to reflect changes in <a href="https://github.com/org-roam/org-roam/pull/1401">org-roam v2</a>. Previous version of this article is available on <a href="https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-16-task-management-with-roam-vol5.org">GitHub</a>.</li>
+<li><code>[2021-08-19 Thu]</code>: <a href="https://github.com/Whil-">Gustav</a> proposed to modify buffer only when tags have changed. Code was updated accordingly (both in the post and on <a href="https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e">GitHub Gist</a>).</li>
+<li><code>[2021-09-07 Tue]</code>: <a href="https://github.com/rngesus-wept">rngesus-wept</a> proposed an interesting <a href="https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-910213001">solution</a> on how to make sure that any extra stuff in <code class="verbatim">org-agenda-files</code> are not wiped out.</li>
+</ul>
+<!--more-->
+
+<p>The core idea is very simple - optimising reads during writes. So every time a file is modified, we check if it contains any <code class="verbatim">TODO</code> entries, and depending on that we either add or remove a <code class="verbatim">project</code> tag from <code class="verbatim">filetags</code> property. And then, before calling <code class="verbatim">org-agenda</code>, we simply <code class="verbatim">org-roam-db-query</code> for files that have a <code class="verbatim">project</code> tag.</p>
+<p>Since <code class="verbatim">filetags</code> are <a href="https://orgmode.org/manual/Tag-Inheritance.html">inherited</a> by default (see the value of <code class="verbatim">org-use-tag-inheritance</code>), every heading in your file will inherit <code class="verbatim">project</code> tag, which is not desirable. Since tag inheritance is useful in general, my advice is to disable inheritance specifically for <code class="verbatim">project</code> tag by adding it to <code class="verbatim">org-tags-exclude-from-inheritance</code>:</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(add-to-list 'org-tags-exclude-from-inheritance <span class="st">&quot;project&quot;</span>)</span></code></pre></div>
+<p><img src="../images/2021-01-16-task-management-with-roam-vol5/2022-07-19-21-14-37-org-notes-project-tag-update.gif" /></p>
+<h1 id="3f2c978b-9937-4985-b1d7-0845e317fa76" id="marking-a-project">Marking a Project</h1>
+<p>In order to mark a note as a <code class="verbatim">project</code>, we need to check if it contains any <code class="verbatim">TODO</code> entries. One of the way to do it is to use <a href="https://orgmode.org/worg/dev/org-element-api.html">Org Element API</a>, a set of parsing functions.</p>
+<div class="sourceCode" id="cb2" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-project-p </span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return non-nil if current buffer has any todo entry.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">TODO entries marked as done are ignored, meaning the this</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">function returns nil if current buffer contains only completed</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">tasks.&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  (org-element-map                          <span class="co">; (2)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>       (org-element-parse-buffer 'headline) <span class="co">; (1)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>       'headline</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>     (<span class="kw">lambda</span> (h)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">eq</span> (org-element-property :todo-type h)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>           'todo))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>     <span class="kw">nil</span> 'first-match))                     <span class="co">; (3)</span></span></code></pre></div>
+<p>This might look a little bit too much, so let me explain the code step by step.</p>
+<ol type="1">
+<li>We parse the buffer using <code class="verbatim">org-element-parse-buffer</code>. It returns an abstract syntax tree of the current Org buffer. But sine we care only about headings, we ask it to return only them by passing a <code class="verbatim">GRANULARITY</code> parameter - <code class="verbatim">'headline</code>. This makes things faster.</li>
+<li>Then we extract information about <code class="verbatim">TODO</code> keyword from <code class="verbatim">headline</code> AST, which <a href="https://orgmode.org/worg/dev/org-element-api.html#org658999f">contains a property</a> we are interested in - <code class="verbatim">:todo-type</code>, which returns the type of <code class="verbatim">TODO</code> keyword according to <code class="verbatim">org-todo-keywords</code> - <code class="verbatim">'done</code>, <code class="verbatim">'todo</code> or <code class="verbatim">nil</code> (when keyword is not present).</li>
+<li>Now all we have to do is to check if the buffer list contains at least one keyword with <code class="verbatim">'todo</code> type. We could use <code class="verbatim">seq=find</code> on the result of <code class="verbatim">org-element-map</code>, but it turns out that it provides an optional <code class="verbatim">first-match</code> argument that can be used for our needs. Thanks <a href="https://github.com/Whil-">Gustav</a> for pointing that out.</li>
+</ol>
+<p>Now we need to use this function to add or to remove <code class="verbatim">project</code> tag from a note. I think that it should be done in two places - when visiting a note and in <code class="verbatim">before-save-hook</code>. This way you leave no room for missing a file with <code class="verbatim">TODO</code> entries. It uses <a href="https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L69">vulpea-buffer-tags-get</a> and <a href="https://github.com/d12frosted/vulpea/blob/6a735c34f1f64e1f70da77989e9ce8da7864e5ff/vulpea-buffer.el#L79">vulpea-buffer-tags-add</a> from <a href="https://github.com/d12frosted/vulpea">vulpea</a> library (for now you should use <a href="https://github.com/d12frosted/vulpea/pull/92">org-roam-v2 branch</a>).</p>
+<div class="sourceCode" id="cb3" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(add-hook 'find-file-hook #'vulpea-project-update-tag)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>(add-hook 'before-save-hook #'vulpea-project-update-tag)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-project-update-tag </span>()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Update PROJECT tag in the current buffer.&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">when</span> (<span class="kw">and</span> (<span class="kw">not</span> (active-minibuffer-window))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                 (vulpea-buffer-p))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        (save-excursion</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>          (goto-char (point-min))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">let*</span> ((tags (vulpea-buffer-tags-get))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                 (original-tags tags))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">if</span> (vulpea-project-p)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                (<span class="kw">setq</span> tags (<span class="kw">cons</span> <span class="st">&quot;project&quot;</span> tags))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">setq</span> tags (<span class="kw">remove</span> <span class="st">&quot;project&quot;</span> tags)))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="co">;; cleanup duplicates</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">setq</span> tags (seq-uniq tags))</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>            <span class="co">;; update tags if changed</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">when</span> (<span class="kw">or</span> (seq-difference tags original-tags)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                      (seq-difference original-tags tags))</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">apply</span> #'vulpea-buffer-tags-set tags))))))</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-buffer-p </span>()</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return non-nil if the currently visited buffer is a note.&quot;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">and</span> buffer-file-name</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>       (string-prefix-p</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        (expand-file-name (file-name-as-directory org-roam-directory))</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        (file-name-directory buffer-file-name))))</span></code></pre></div>
+<p>That’s it. Now whenever we modify or visit a notes buffer, this code will update the presence of <code class="verbatim">project</code> tag. See it in action:</p>
+<div class="post-image">
+<img src="../images/org-notes-project-tag-update.gif" />
+</div>
+
+<h1 id="1388e376-45f5-4b43-b172-52e98b240732" id="building-agenda">Building agenda</h1>
+<p>In order to dynamically build <code class="verbatim">org-agenda-files</code>, we need to query all files containing <code class="verbatim">project</code> tag. <code class="verbatim">org-roam</code> uses uses <a href="https://github.com/skeeto/emacsql">skeeto/emacsql</a>, and provides a convenient function <code class="verbatim">org-roam-db-query</code> to execute SQL statements against <code class="verbatim">org-roam-db-location</code> file.</p>
+<div class="sourceCode" id="cb4" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-project-files </span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return a list of note files containing 'project' tag.&quot;</span> <span class="co">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  (seq-uniq</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   (seq-map</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    #'car</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    (org-roam-db-query</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>     [:select [nodes:file]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      :from tags</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      :left-join nodes</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      :on (<span class="op">=</span> tags:node-id nodes:id)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      :where (like tag (<span class="kw">quote</span> <span class="st">&quot;%</span><span class="sc">\&quot;</span><span class="st">project</span><span class="sc">\&quot;</span><span class="st">%&quot;</span>))]))))</span></code></pre></div>
+<p>This function simply returns a list of files containing <code class="verbatim">project</code> tag. Sure enough it can be generalised for other needs, but it’s good enough for our simple use case. The query is run against the following schemes:</p>
+<div class="sourceCode" id="cb5" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(nodes</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> ([(id :not-null :primary-key)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   (file :not-null)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   (level :not-null)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>   (pos :not-null)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>   todo</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>   priority</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>   (scheduled text)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>   (deadline text)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>   title</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>   properties</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>   olp]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  (:foreign-key [file] :references files [file] :on-delete :cascade)))</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>(tags</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a> ([(node-id :not-null)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>   tag]</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  (:foreign-key [node-id] :references nodes [id] :on-delete :cascade)))</span></code></pre></div>
+<p>Now we can set the list of agenda files:</p>
+<div class="sourceCode" id="cb6" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> org-agenda-files (vulpea-project-files))</span></code></pre></div>
+<p>But the real question is - when to do it? Some might put it in the <code class="verbatim">init.el</code> file and call it a day, but unless you are restarting Emacs like crazy, I would argue that it’s not the best place to do it. Because we need an up to date list of files exactly when we build agenda.</p>
+<div class="sourceCode" id="cb7" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-agenda-files-update </span>(&amp;<span class="kw">rest</span> _)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Update the value of `org-agenda-files'.&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> org-agenda-files (vulpea-project-files)))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>(advice-add 'org-agenda :before #'vulpea-agenda-files-update)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>(advice-add 'org-todo-list :before #'vulpea-agenda-files-update)</span></code></pre></div>
+<p>And that’s all. You <code class="verbatim">org-agenda</code> is up to date and fast again!</p>
+<h1 id="c84864d3-e6c3-488b-a783-26869541227c" id="migration">Migration</h1>
+<p>So far we covered what to do with notes we edit. But when you have more than 10 notes it becomes tedious to visit each of them and make sure that they have update state of <code class="verbatim">Project</code> tag. Fortunately, this task is easily automated.</p>
+<div class="sourceCode" id="cb8" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">dolist</span> (file (org-roam-list-files))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;processing %s&quot;</span> file)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  (with-current-buffer (<span class="kw">or</span> (find-buffer-visiting file)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                           (find-file-noselect file))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    (vulpea-project-update-tag)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    (save-buffer)))</span></code></pre></div>
+<p>This will visit each of your files and update the presence of <code class="verbatim">Project</code> tag
+according to presence of <code class="verbatim">TODO</code> entry. Now you are ready to go.</p>
+<h1 id="82ee42b2-c69a-4e4f-98c0-1688dc4d4f65" id="result">Result</h1>
+<p>With little amount of <code class="verbatim">emacs-lisp</code> code we dramatically optimized <code class="verbatim">org-agenda</code> loading from <span class="math inline"> &gt; 50</span> seconds to <span class="math inline"> &lt; 1</span> second. Effectiveness of this approach depends on amount of files with <code class="verbatim">TODO</code> entries (the more you have, the less effective this approach becomes). One of the drawbacks is small (in my experience, neglectable) performance degradation of note visiting and note saving. Obviously, if a file contains thousands of headings, it affects performance. In defence, I would argue that such files are against the philosophy of <code class="verbatim">org-roam</code>, where you keep lots of small files as opposed to few huge files.</p>
+<p>For you convenience, the full code is displayed below. It is also available as <a href="https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e">GitHub Gist</a>.</p>
+<div class="sourceCode" id="cb9" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-project-p </span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return non-nil if current buffer has any todo entry.</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="st">TODO entries marked as done are ignored, meaning the this</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="st">function returns nil if current buffer contains only completed</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="st">tasks.&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  (seq-find                                 <span class="co">; (3)</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>   (<span class="kw">lambda</span> (<span class="kw">type</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>     (<span class="kw">eq</span> <span class="kw">type</span> 'todo))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>   (org-element-map                         <span class="co">; (2)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>       (org-element-parse-buffer 'headline) <span class="co">; (1)</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>       'headline</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>     (<span class="kw">lambda</span> (h)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>       (org-element-property :todo-type h)))))</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-project-update-tag </span>()</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Update PROJECT tag in the current buffer.&quot;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (<span class="kw">and</span> (<span class="kw">not</span> (active-minibuffer-window))</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>               (vulpea-buffer-p))</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>      (save-excursion</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        (goto-char (point-min))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">let*</span> ((tags (vulpea-buffer-tags-get))</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>               (original-tags tags))</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">if</span> (vulpea-project-p)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">setq</span> tags (<span class="kw">cons</span> <span class="st">&quot;project&quot;</span> tags))</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">setq</span> tags (<span class="kw">remove</span> <span class="st">&quot;project&quot;</span> tags)))</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>          <span class="co">;; cleanup duplicates</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">setq</span> tags (seq-uniq tags))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>          <span class="co">;; update tags if changed</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">when</span> (<span class="kw">or</span> (seq-difference tags original-tags)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>                    (seq-difference original-tags tags))</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">apply</span> #'vulpea-buffer-tags-set tags))))))</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-buffer-p </span>()</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return non-nil if the currently visited buffer is a note.&quot;</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">and</span> buffer-file-name</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>       (string-prefix-p</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        (expand-file-name (file-name-as-directory org-roam-directory))</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        (file-name-directory buffer-file-name))))</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-project-files </span>()</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Return a list of note files containing 'project' tag.&quot;</span> <span class="co">;</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    (seq-uniq</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>     (seq-map</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>      #'car</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>      (org-roam-db-query</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>       [:select [nodes:file]</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        :from tags</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>        :left-join nodes</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>        :on (<span class="op">=</span> tags:node-id nodes:id)</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>        :where (like tag (<span class="kw">quote</span> <span class="st">&quot;%</span><span class="sc">\&quot;</span><span class="st">project</span><span class="sc">\&quot;</span><span class="st">%&quot;</span>))]))))</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-agenda-files-update </span>(&amp;<span class="kw">rest</span> _)</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Update the value of `org-agenda-files'.&quot;</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> org-agenda-files (vulpea-project-files)))</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>(add-hook 'find-file-hook #'vulpea-project-update-tag)</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>(add-hook 'before-save-hook #'vulpea-project-update-tag)</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>(advice-add 'org-agenda :before #'vulpea-agenda-files-update)</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>(advice-add 'org-todo-list :before #'vulpea-agenda-files-update)</span></code></pre></div>
+<p>Thank you for your patience.</p>
+<h1 id="2f8ad16f-05ef-406e-8783-55cba1050e60" id="task-management-with-org-roam-series">Task Management with org-roam Series</h1>
+<ol type="1">
+<li><a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Path to Roam</a></li>
+<li><a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Categories</a></li>
+<li><a href="../posts/2020-06-25-task-management-with-roam-vol3.html">FILETAGS</a></li>
+<li><a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Automatic tagging</a></li>
+<li><a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Dynamic and fast agenda</a></li>
+<li><a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Select a person and view related tasks</a></li>
+<li><a href="../posts/2021-05-21-task-management-with-roam-vol7.html">Capture</a></li>
+</ol>
+<h1 id="6b7c1ffb-61e8-4e39-8a70-7d47f9ce829c" id="references">References</h1>
+<ul>
+<li><a href="https://orgmode.org/worg/dev/org-element-api.html">Org Element API</a></li>
+<li><a href="https://github.com/skeeto/emacsql">skeeto/emacsql</a></li>
+<li>Code from this article is available as <a href="https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e">GitHub Gist</a></li>
+</ul>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2021-01-16-task-management-with-roam-vol5.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

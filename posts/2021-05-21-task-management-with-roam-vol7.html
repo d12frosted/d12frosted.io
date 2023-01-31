@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="How to setup capture flow with org-roam">
+    <meta property="og:title" content="Boris Buliga - Task management with org-roam Vol. 7: Capture" />
+    <meta property="og:description" content="How to setup capture flow with org-roam" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2021-05-21-task-management-with-roam-vol7.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Task management with org-roam Vol. 7: Capture</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Task management with org-roam Vol. 7: Capture</h1>
+  <section class="subtitle">
+    Posted on May 21, 2021
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'org-roam'." href="../tags/org-roam.html">#org-roam</a>
+  </section>
+  
+  <section>
+    <p>Capturing is one of the most important activities in the task management process. Previously we talked about storing and querying tasks and now it’s time to cover capturing of tasks, meeting notes and inbox.</p>
+<p>Please note that the goal is not to discuss GTD or any other methodology, but rather to discover how org-roam combined with everything we talked previously may help you to improve your capturing process regardless of methodology you are using.</p>
+<!--more-->
+
+<p>Org Mode <a href="https://orgmode.org/manual/Capture.html#Capture">Capture</a> lets you quickly store notes with zero interruption of your work flow. And capture is ridiculously powerful in Org Mode, as you can build so many things on top of it. For example, you can setup a full-blown journal with simple template, automatically put TODO entries when capturing a link to GitHub or Jira issue, etc.</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; you don't really need much, do you?</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> org-capture-templates</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>      '((<span class="st">&quot;j&quot;</span> <span class="st">&quot;Journal entry&quot;</span> plain</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>         (file+olp+datetree <span class="st">&quot;~/path/to/journal.org&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;%K - %a</span><span class="sc">\n</span><span class="st">%i</span><span class="sc">\n</span><span class="st">%?</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>         :unnarrowed <span class="kw">t</span>)))</span></code></pre></div>
+<p>Over the years of using Org Mode for task management I’ve got a habit of clearing my head of any actionable items and thoughts that I can’t allow myself to spend time and cognitive resources now thus highly reducing my stress level. For some people it allows to maintain focus, and since my work is mostly about constant context switching, it also allows me to stay sane.</p>
+<p>For this to work, any task management system must have the following properties.</p>
+<ul>
+<li>Capturing must be as fast as possible, which also implies ease of capturing.</li>
+<li>There must be a way to easily review all captured items and process them when you have time.</li>
+</ul>
+<p>The speed and convenience of capture process is plain simple to understand. If it takes more than few seconds, it disturbs you from the current task at hand more and more, meaning that you will stop capturing at some point of time. If you need to go to the 6th floor and unlock your precious planner from the safe in order to capture something, it means that you will stop capturing.</p>
+<p>In general, this means that it’s totally fine to use phone (even non-org based solution) or piece of paper to write something down. You’ll just have few sources to process captured items from when you have time.</p>
+<p>Due to the nature of capture process, where you do it as fast as possible, these captured items might be… lacking better description, located in wrong place, irrelevant or beginning of something bigger. This is why it’s important to process all captured items and process them when you have time for that.</p>
+<h1 id="728ecca2-dcf2-41d4-84da-5ba35d537c26" id="inbox">Inbox</h1>
+<p>When it comes to Org Mode, I prefer to have a dedicated inbox file per machine, so I can avoid sync issues as I might capture without internet connection. So I define my inbox file:</p>
+<div class="sourceCode" id="cb2" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defvar</span><span class="fu"> vulpea-capture-inbox-file</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">format</span> <span class="st">&quot;inbox-%s.org&quot;</span> (system-name))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;The path to the inbox file.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">It is relative to `org-directory', unless it is absolute.&quot;</span>)</span></code></pre></div>
+<p>Every inbox file has a title to distinguish between multiple inbox files and <code class="verbatim">filetags</code> that is <a href="https://orgmode.org/manual/Tag-Inheritance.html#Tag-Inheritance">inherited</a> by all TODO entries in this file, so that I can quickly pull whatever I need to process. In my case I am using <code class="verbatim">REFILE</code> tag.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode org"><code class="sourceCode orgmode"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>:PROPERTIES:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>:ID:                     d272271d-7585-4913-9445-d7d97b59295d</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>:END:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>#+title: Inbox (personal)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>#+filetags: REFILE</span></code></pre></div>
+<h1 id="41b59f6d-1ea0-4d99-8485-9d2cb06384bf" id="capturing-into-inbox">Capturing into inbox</h1>
+<video autoplay loop><source src="../images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-03-org-roam-task-management-vol7-1.mp4" type="video/mp4"></video>
+<p>In order for items to end up in the inbox file, I am using a simple capture template for TODO entries. And since I want to avoid picking template when I have more than one, I have a wrapper <code class="verbatim">vulpea-capture-task</code> function that picks up specific template. There are other ways to achieve that, if you are interested let me know.</p>
+<div class="sourceCode" id="cb4" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> org-capture-templates</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>      '((<span class="st">&quot;t&quot;</span> <span class="st">&quot;todo&quot;</span> plain (file vulpea-capture-inbox-file)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;* TODO %?</span><span class="sc">\n</span><span class="st">%U</span><span class="sc">\n</span><span class="st">&quot;</span> :clock-in <span class="kw">t</span> :clock-resume <span class="kw">t</span>)))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-capture-task </span>()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Capture a task.&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  (interactive)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  (org-capture <span class="kw">nil</span> <span class="st">&quot;t&quot;</span>))</span></code></pre></div>
+<h1 id="4c8e2021-7879-4759-a9e7-987a48b5d228" id="processing-inbox">Processing inbox</h1>
+<p><img src="../images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp" /></p>
+<p>In order to process all inbox files managed by Org Mode we have wonderful <code class="verbatim">org-agenda</code>. My default agenda consists of various blocks, but the very first one lists all entries with <code class="verbatim">REFILE</code> tag (thanks to <code class="verbatim">filetags</code> all entries in inbox files are tagged accordingly).</p>
+<div class="sourceCode" id="cb5" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> org-agenda-custom-commands</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>      '((<span class="st">&quot; &quot;</span> <span class="st">&quot;Agenda&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         ((tags</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>           <span class="st">&quot;REFILE&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           ((org-agenda-overriding-header <span class="st">&quot;To refile&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            (org-tags-match-list-sublevels <span class="kw">nil</span>)))))))</span></code></pre></div>
+<p>Now I can perform my routine on inbox entries by removing irrelevant entries, performing actions that can be performed now, moving tasks to relevant projects, processing meeting notes by producing more notes or tasks. Well, routine.</p>
+<p>Agenda builds fast thanks to trick described in <a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Dynamic and fast agenda</a>.</p>
+<h1 id="e8460c6c-c9c1-4fa6-858a-dab6ba7fecc7" id="dynamically-selecting-capture-location">Dynamically selecting capture location</h1>
+<p>At this point you might be wondering how it’s related to Org Roam. After all, up to this moment we didn’t use any Org Roam features. And what is the core feature of Org Roam? IMO, it’s fast query capabilities - this is something we’ve been using in almost every post of series.</p>
+<p>It’s hard to come up with generic example, and I hate examples from the void of someones imagination, so let me describe where exactly in the capturing process I use it (apart from <a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Automatic tagging</a>). Hopefully, it’s easy to adapt this idea for other use cases, and if you experience any troubles, don’t hesitate to contact me.</p>
+<p>Meeting notes. Whenever I am on a meeting, I love to keep meeting notes (thanks to Org Mode my memory is ephemeral). I divide all meetings in two categories - one-on-ones (e.g. <span class="math inline"><em>p</em> = 2</span>) and meetings with multiple participants (e.g. <span class="math inline"><em>p</em> &gt; 2</span>). And in the end, all meetings from one-on-ones are moved under <code class="verbatim">Meetings</code> outline in the file related to person I have a meeting with. And since it is so common I decided to save myself from unnecessary refile action by adapting my capture flow.</p>
+<video autoplay loop><source src="../images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-33-org-roam-task-management-vol7-3.mp4" type="video/mp4"></video>
+<p>So when a have a meeting, I simply hit <code class="verbatim">M-m c m</code> (short for ‘capture meeting’ which calls <code class="verbatim">vulpea-capture-meeting</code>), select a person or type any other phrase (e.g. project name) and let the capture process to place my notes in the right location. If I select a person, meeting notes are going to be located under <code class="verbatim">Meetings</code> heading in the file dedicated to the selected person. If I type something else, my notes go straight the inbox.</p>
+<p>Person selection is possible by using <code class="verbatim">vulpea-select</code> from <a href="https://github.com/d12frosted/vulpea">vulpea</a> library (the same as we did in <a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Select a person and view related tasks</a>). In order for my meetings notes related to specific person to fall into my inbox, I tag them with <code class="verbatim">REFILE</code> tag directly (unlike notes in inbox file, which get tag via inheritance).</p>
+<p>The code is pretty straightforward and available on <a href="https://github.com/d12frosted/environment/blob/ec30dc1218c86578b4f655c717147cd70012a12e/emacs/lisp/lib-vulpea-capture.el">GitHub</a>. First we setup a new template, which is responsible for capturing meeting notes. The cool part about capture process in Org Mode is that you can use functions to determine capture location and capture body, so this is what we are using here - <code class="verbatim">vulpea-capture-meeting-target</code> and <code class="verbatim">vulpea-capture-meeting-template</code>.</p>
+<div class="sourceCode" id="cb6" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> org-capture-templates</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>      '((<span class="st">&quot;t&quot;</span> <span class="st">&quot;todo&quot;</span> plain (file vulpea-capture-inbox-file)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;* TODO %?</span><span class="sc">\n</span><span class="st">%U</span><span class="sc">\n</span><span class="st">&quot;</span> :clock-in <span class="kw">t</span> :clock-resume <span class="kw">t</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;m&quot;</span> <span class="st">&quot;Meeting&quot;</span> entry</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">function</span> vulpea-capture-meeting-target)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">function</span> vulpea-capture-meeting-template)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>         :clock-in <span class="kw">t</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>         :clock-resume <span class="kw">t</span>)))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-capture-meeting </span>()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Capture a meeting.&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  (interactive)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  (org-capture <span class="kw">nil</span> <span class="st">&quot;m&quot;</span>))</span></code></pre></div>
+<p>The funny thing is that these functions are called in the following order:</p>
+<ul>
+<li><code class="verbatim">vulpea-capture-meeting-template</code></li>
+<li><code class="verbatim">vulpea-capture-meeting-target</code></li>
+</ul>
+<p>Meaning that we need to present a list of people in the <code class="verbatim">template</code> phase and then access it somehow in <code class="verbatim">target</code> phase. Fortunately, there is an API in capture process allowing to store extra information for the duration of capture process - <code class="verbatim">org-capture-put</code> and <code class="verbatim">org-capture-get</code>.</p>
+<div class="sourceCode" id="cb7" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-capture-meeting-template </span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return a template for a meeting capture.&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> ((person (vulpea-select</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Person&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                 :filter-fn</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                 (<span class="kw">lambda</span> (note)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                   (<span class="kw">let</span> ((tags (vulpea-note-tags note)))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                     (seq-contains-p tags <span class="st">&quot;people&quot;</span>))))))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    (org-capture-put :meeting-person person)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">if</span> (vulpea-note-id person)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;* MEETING [%&lt;%Y-%m-%d %a&gt;] :REFILE:MEETING:</span><span class="sc">\n</span><span class="st">%U</span><span class="sc">\n\n</span><span class="st">%?&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      (concat <span class="st">&quot;* MEETING with &quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>              (vulpea-note-title person)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot; on [%&lt;%Y-%m-%d %a&gt;] :MEETING:</span><span class="sc">\n</span><span class="st">%U</span><span class="sc">\n\n</span><span class="st">%?&quot;</span>))))</span></code></pre></div>
+<p>So first we select a person via <code class="verbatim">vulpea-select</code> and store it via <code class="verbatim">org-capture-put</code>, so we can access it in <code class="verbatim">vulpea-capture-meeting-target</code> function. <code class="verbatim">vulpea-select</code> always return a note, but in case result doesn’t contain an <code class="verbatim">id</code>, it means that the note doesn’t exist. In our case that means that we want to place meeting notes in the inbox file and the heading must contain the name of the group we are having meeting with. In case it’s a real person, there is no need to add name in the heading, but we need an extra tag - <code class="verbatim">REFILE</code>, so Inbox agenda picks it up.</p>
+<div class="sourceCode" id="cb8" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-capture-meeting-target </span>()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return a target for a meeting capture.&quot;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> ((person (org-capture-get :meeting-person)))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; unfortunately, I could not find a way to reuse</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; `org-capture-set-target-location'</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">if</span> (vulpea-note-id person)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">let</span> ((path (vulpea-note-path person))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>              (headline <span class="st">&quot;Meetings&quot;</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>          (set-buffer (org-capture-target-buffer path))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>          <span class="co">;; Org expects the target file to be in Org mode, otherwise</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>          <span class="co">;; it throws an error. However, the default notes files</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>          <span class="co">;; should work out of the box. In this case, we switch it to</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>          <span class="co">;; Org mode.</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">unless</span> (derived-mode-p 'org-mode)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            (org-display-warning</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>             (<span class="kw">format</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;Capture requirement: switching buffer %S to Org mode&quot;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>              (current-buffer)))</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>            (org-mode))</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>          (org-capture-put-target-region-and-position)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>          (widen)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>          (goto-char (point-min))</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">if</span> (re-search-forward</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>               (<span class="kw">format</span> org-complex-heading-regexp-format</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                       (regexp-quote headline))</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>               <span class="kw">nil</span> <span class="kw">t</span>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>              (beginning-of-line)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>            (goto-char (point-max))</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">unless</span> (bolp) (insert <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>))</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>            (insert <span class="st">&quot;* &quot;</span> headline <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>            (beginning-of-line <span class="dv">0</span>)))</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">let</span> ((path vulpea-capture-inbox-file))</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        (set-buffer (org-capture-target-buffer path))</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        (org-capture-put-target-region-and-position)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>        (widen)))))</span></code></pre></div>
+<p>Now it become a little bit more verbose, but this code is actually dead simple. It is borrowed from <code class="verbatim">org-capture-set-target-location</code> and unfortunately, I could not find a way to properly reuse it.</p>
+<p>First we get a person note that we selected in <code class="verbatim">vulpea-capture-meeting-template</code> via <code class="verbatim">org-capture-get</code> and if it has an id, that means that we need to place the note under Meetings headline, otherwise it just goes straight to <code class="verbatim">vulpea-capture-inbox-file</code>.</p>
+<p>That’s it!</p>
+<h1 id="6a06edc5-1a15-4cc1-b504-ac82fc0934da" id="task-management-with-org-roam-series">Task Management with org-roam Series</h1>
+<ol type="1">
+<li><a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Path to Roam</a></li>
+<li><a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Categories</a></li>
+<li><a href="../posts/2020-06-25-task-management-with-roam-vol3.html">FILETAGS</a></li>
+<li><a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Automatic tagging</a></li>
+<li><a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Dynamic and fast agenda</a></li>
+<li><a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Select a person and view related tasks</a></li>
+<li><a href="../posts/2021-05-21-task-management-with-roam-vol7.html">Capture</a></li>
+</ol>
+<h1 id="e5cd7e8b-f059-4d64-aadf-1efeebc9dc62" id="references">References</h1>
+<ul>
+<li><a href="https://orgmode.org/manual/Capture.html#Capture">Org Mode Capture</a></li>
+<li><a href="https://orgmode.org/manual/Tag-Inheritance.html#Tag-Inheritance">Org Mode Tag Inheritance</a></li>
+<li><a href="https://github.com/d12frosted/environment/blob/ec30dc1218c86578b4f655c717147cd70012a12e/emacs/lisp/lib-vulpea-capture.el">lib-vulpea-capture</a> - personal configurations for Org capture process</li>
+</ul>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2021-05-21-task-management-with-roam-vol7.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

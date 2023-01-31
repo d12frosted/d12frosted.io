@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Quick random bytes generation from terminal using OpenSSL">
+    <meta property="og:title" content="Boris Buliga - Random bytes generation with OpenSSL" />
+    <meta property="og:description" content="Quick random bytes generation from terminal using OpenSSL" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2018-01-31-random-bytes-generation-with-openssl.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Random bytes generation with OpenSSL</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Random bytes generation with OpenSSL</h1>
+  <section class="subtitle">
+    Posted on January 31, 2018
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'shell'." href="../tags/shell.html">#shell</a>
+  </section>
+  
+  <section>
+    <p>Sometimes you just have to generate some random bytes with high entropy. And OpenSSL can help you with this task.</p>
+<!--more-->
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> openssl rand [options] num</span></code></pre></div>
+<p>The <code class="verbatim">rand</code> command outputs <code class="verbatim">num</code> pseudo-random bytes. Since in most cases we don’t want to deal with edge bytes, it’s better to use either <code class="verbatim">-hex</code> or <code class="verbatim">-base64</code> option in order to encode output and thus lead to a valid password.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> openssl rand 16</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">fӤ?v</span> <span class="pp">???</span>^@<span class="pp">?</span>y<span class="pp">??</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> openssl rand <span class="at">-hex</span> 16</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">b4ef65a47a327727bf4ad77d8d3352b2</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> openssl rand <span class="at">-base64</span> 16</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="va">o1DqThmx1DWGoPAidi6DKQ</span><span class="op">=</span>=</span></code></pre></div>
+<p>Another problem is the length. When you use <code class="verbatim">-hex</code> or <code class="verbatim">-base64</code> option the output string is longer than passed <code class="verbatim">num</code>. In order to keep the desired length, you have to chop it. For example, using the <code class="verbatim">cut</code> command.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> openssl rand <span class="at">-hex</span> 16 <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-c1-16</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ce8ad63b50cbe611</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> openssl rand <span class="at">-base64</span> 16 <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-c1-16</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">4HIcmt4vTcmchbHU</span></span></code></pre></div>
+<p>Some useful links:</p>
+<ul>
+<li><a href="https://wiki.openssl.org/index.php/Manual:Rand(1)">Rand command manual</a></li>
+<li><a href="https://wiki.openssl.org/index.php/Random_Numbers">OpenSSL random numbers</a></li>
+<li><a href="https://www.grc.com/haystack.htm">Password Haystack</a></li>
+</ul>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2018-01-31-random-bytes-generation-with-openssl.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Comparison of project management tools for Emacs">
+    <meta property="og:title" content="Boris Buliga - Project management tool for Emacs packages" />
+    <meta property="og:description" content="Comparison of project management tools for Emacs" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2021-04-26-emacs-project-management.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Project management tool for Emacs packages</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Project management tool for Emacs packages</h1>
+  <section class="subtitle">
+    Posted on April 26, 2021
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>
+  </section>
+  
+  <section>
+    <p>Project management tool, or a build tool, is an instrument for building, linting and testing packages. When it comes to Emacs, there are many options out in the wild. Arguably, the most popular options are <a href="https://cask.readthedocs.io/en/latest/">cask</a> and <a href="https://github.com/alphapapa/makem.sh">alphapapa/makem.sh</a>, both being wonderful tools with different approach. There is also a relatively new star in the field - <a href="https://github.com/doublep/eldev/">doublep/eldev</a>.</p>
+<p>In my <a href="../posts/2021-04-09-emacs-d.html">recent post</a> I have described an approach to convert <code class="verbatim">emacs.d</code> into proper project with useful byte compiler, linting and tests, but I never really explored other options.</p>
+<!--more-->
+
+<p><a href="https://github.com/alphapapa/makem.sh">alphapapa/makem.sh</a> is a rather small bash script (around 1200 LoC) with aim on simplicity and transparency. Many projects have adopted it recently, because it is easy to setup (no configuration or initialization needed) and it claims to have zero dependencies (except for the latest <code class="verbatim">bash</code>, which sometimes is not clear from the errors). You simply add a bash script to your repository and that’s it!</p>
+<p>I don’t use it in my projects anymore simply because there is no good way to extend <code class="verbatim">makem.sh</code> without modifying its sources. This makes it hard to upgrade <code class="verbatim">makem.sh</code> to the latest version as you need to deal with potential merge conflicts. In addition, it is written in bash, meaning that Emacs Lisp interop is very dirty and hard to maintain. I’ve hit <code class="verbatim">makem.sh</code> limit and decided to switch. Though for many use cases it is a very nice project!</p>
+<p><a href="https://cask.readthedocs.io/en/latest/">Cask</a> is a classic Emacs package project management tool. It is sophisticated, powerful and well documented. It requires to be installed on each developers machine, making it a little bit less approachable, though many package managers provide <code class="verbatim">cask</code>, so it’s as easy as installing latest <code class="verbatim">bash</code>.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr class="header">
+<th>tool</th>
+<th>language</th>
+<th>extensible</th>
+<th>requires installation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="verbatim">makem</code></td>
+<td>bash</td>
+<td>no</td>
+<td>no, but yes</td>
+</tr>
+<tr class="even">
+<td><code class="verbatim">cask</code></td>
+<td></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="odd">
+<td><code class="verbatim">eldev</code></td>
+<td>Emacs Lisp</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Further readings:</p>
+<ul>
+<li><a href="https://github.com/alphapapa/makem.sh#comparisons">makem comparisons</a></li>
+</ul>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2021-04-26-emacs-project-management.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

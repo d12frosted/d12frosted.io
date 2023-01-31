@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Fast blocks creation in org-mode">
+    <meta property="og:title" content="Boris Buliga - Structure templates in Org mode" />
+    <meta property="og:description" content="Fast blocks creation in org-mode" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2017-07-30-block-templates-in-org-mode.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Structure templates in Org mode</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Structure templates in Org mode</h1>
+  <section class="subtitle">
+    Posted on July 30, 2017
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'org-mode'." href="../tags/org-mode.html">#org-mode</a>
+  </section>
+  
+  <section>
+    <p>Anyone would agree that typing <code class="verbatim">#+begin_src ... #+end_src</code> blocks manually feels <strong>strange</strong>.</p>
+<p>In order to make life easier, some people implement helpers to insert these blocks. For example, Chris Done has <code class="verbatim">org-begin-template</code> function in his <a href="https://github.com/chrisdone/chrisdone-emacs/blob/master/config/org.el#L30">configs</a>. Other people use <a href="https://github.com/mineo/yatemplate">yatemplate</a> to create generic or specific templates for blocks.</p>
+<p>But what is most fascinating, is that <code class="verbatim">org-mode</code> bundles with templates for some structural elements like these blocks. And instead of copy-pasting solutions into your <code class="verbatim">.emacs</code> file, take a look at <a href="https://orgmode.org/org.html#Structure-Templates">Structure Templates</a>.</p>
+<!--more-->
+
+<p>With just a few keystrokes, it is possible to insert empty an structural block, such as <code class="verbatim">#+begin_src ... #+end_src</code>, or to wrap existing text in such a block. Just type <code>C-c C-,</code> (<code class="verbatim">org-insert-structure-template</code>) to prompt for a type of block structure, and insert the block at point. If the region is active, it is wrapped in the block. Available structure types are defined in <code class="verbatim">org-structure-template-alist</code>, see the docstring for adding or changing values.</p>
+<p>You can also use an old Easy Template system, which is disabled by default in Org mode 9.2 and upper. One can turn it back by enabling <code class="verbatim">org-tempo</code> module either by adding it to <code class="verbatim">org-modules</code> variable or by <code class="verbatim">(require 'org-tempo)</code>.</p>
+<p>With this feature, you type <code class="verbatim">&lt;</code> followed by template selector, then hit <code class="verbatim">TAB</code> and voilà. For source blocks, it’s just <code class="verbatim">&lt;s&lt;TAB&gt;</code>.</p>
+<p>Just for reference, here is a list of available templates and their corresponding selectors. Please note that this table might become out of date, so it’s better to refer to the official documentation.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Template</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code class="verbatim">s</code></td>
+<td><code class="verbatim">#+BEGIN_SRC ... #+END_SRC</code></td>
+</tr>
+<tr class="even">
+<td><code class="verbatim">e</code></td>
+<td><code class="verbatim">#+BEGIN_EXAMPLE ... #+END_EXAMPLE</code></td>
+</tr>
+<tr class="odd">
+<td><code class="verbatim">q</code></td>
+<td><code class="verbatim">#+BEGIN_QUOTE ... #+END_QUOTE</code></td>
+</tr>
+<tr class="even">
+<td><code class="verbatim">v</code></td>
+<td><code class="verbatim">#+BEGIN_VERSE ... #+END_VERSE</code></td>
+</tr>
+<tr class="odd">
+<td><code class="verbatim">c</code></td>
+<td><code class="verbatim">#+BEGIN_CENTER ... #+END_CENTER</code></td>
+</tr>
+<tr class="even">
+<td><code class="verbatim">l</code></td>
+<td><code class="verbatim">#+BEGIN_LaTeX ... #+END_LaTeX</code></td>
+</tr>
+<tr class="odd">
+<td><code class="verbatim">L</code></td>
+<td><code class="verbatim">#+LaTeX:</code></td>
+</tr>
+<tr class="even">
+<td><code class="verbatim">h</code></td>
+<td><code class="verbatim">#+BEGIN_HTML ... #+END_HTML</code></td>
+</tr>
+<tr class="odd">
+<td><code class="verbatim">H</code></td>
+<td><code class="verbatim">#+HTML:</code></td>
+</tr>
+<tr class="even">
+<td><code class="verbatim">a</code></td>
+<td><code class="verbatim">#+BEGIN_ASCII ... #+END_ASCII</code></td>
+</tr>
+<tr class="odd">
+<td><code class="verbatim">A</code></td>
+<td><code class="verbatim">#+ASCII:</code></td>
+</tr>
+<tr class="even">
+<td><code class="verbatim">i</code></td>
+<td><code class="verbatim">#+INDEX: line</code></td>
+</tr>
+<tr class="odd">
+<td><code class="verbatim">I</code></td>
+<td><code class="verbatim">#+INCLUDE: line</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>That’s it.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2017-07-30-block-templates-in-org-mode.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

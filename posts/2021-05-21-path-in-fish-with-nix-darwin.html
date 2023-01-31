@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Fixing PATH entries order when using fish and nix-darwin">
+    <meta property="og:title" content="Boris Buliga - Fixing PATH in fish with nix-darwin" />
+    <meta property="og:description" content="Fixing PATH entries order when using fish and nix-darwin" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2021-05-21-path-in-fish-with-nix-darwin.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Fixing PATH in fish with nix-darwin</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Fixing PATH in fish with nix-darwin</h1>
+  <section class="subtitle">
+    Posted on May 21, 2021
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>
+  </section>
+  
+  <section>
+    <p>During migration to <code class="verbatim">nix</code> for package and system management in <a href="https://github.com/d12frosted/environment/pull/11">environment#11</a>, I’ve encountered an issue with <code class="verbatim">PATH</code> variable containing seemingly correct entries, but in incorrect order when using <code class="verbatim">fish</code>. Basically, <code class="verbatim">$HOME/.nix-profile/bin</code> is put in the end. Since I am very new to <code class="verbatim">nix</code> ecosystem (using it for few days), it was not clear what is causing this issue (my configuration, <code class="verbatim">nix-home-manager</code>, <code class="verbatim">nix-darwin</code> or <code class="verbatim">fish</code> itself), so I decided to investigate. While it turned out to be a <a href="https://github.com/LnL7/nix-darwin/issues/122">known issue</a>, I learned a little bit in the process and found a local fix, which I am sharing in the end of the post.</p>
+<!--more-->
+
+<p>When <code class="verbatim">bash</code> is set as user shell, the value of <code class="verbatim">PATH</code> is good expect for repeating values.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$PATH</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/Users/d12frosted/.nix-profile/bin:</span> <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  /nix/var/nix/profiles/default/bin: <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  /usr/local/bin: <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  /usr/bin: <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  /bin: <span class="dt">\</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  /usr/sbin: <span class="dt">\</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  /sbin: <span class="dt">\</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  /Library/TeX/texbin: <span class="dt">\</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  /usr/local/MacGPG2/bin: <span class="dt">\</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  /opt/X11/bin: <span class="dt">\</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  /Library/Apple/usr/bin: <span class="dt">\</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  /Users/d12frosted/.nix-profile/bin: <span class="dt">\</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  /run/current-system/sw/bin: <span class="dt">\</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  /nix/var/nix/profiles/default/bin</span></code></pre></div>
+<p>The important part here is <code class="verbatim">$HOME/.nix-profile/bin</code> being the first item in this list, which is expected and desired, because we want binaries installed via package manager (in this case <code class="verbatim">nix</code>) to shadow any built-in binaries (common with <code class="verbatim">coreutils</code> package).</p>
+<p>But when <code class="verbatim">fish</code> is used as user shell, the list doesn’t contain any duplicates, but <code class="verbatim">$HOME/.nix-profile/bin</code> and <code class="verbatim">/nix/var/nix/profiles/default/bin</code> are placed in the end.</p>
+<pre class="fish"><code>$ echo $PATH
+/usr/local/bin \
+  /usr/bin \
+  /bin \
+  /usr/sbin \
+  /sbin \
+  /opt/X11/bin \
+  /Library/Apple/usr/bin \
+  /usr/local/MacGPG2/bin \
+  /Library/TeX/texbin \
+  /Users/d12frosted/.nix-profile/bin \
+  /run/current-system/sw/bin \
+  /nix/var/nix/profiles/default/bin
+</code></pre>
+<p>And I become curious about reasons behind difference of these values and possible solution. Since I am very new to <code class="verbatim">nix</code> ecosystem, I decided to start with something more familiar - <code class="verbatim">fish</code>. It turns out, that it’s possible to debug variable modifications with <code class="verbatim">fish</code> by using <a href="https://fishshell.com/docs/current/index.html#event">event handlers</a>, which we can put somewhere in the very beginning of <a href="https://fishshell.com/docs/current/index.html#initialization">initialization</a> process, which is <code class="verbatim">$__fish_data_dir/config.fish</code> - configuration file shipped with <code class="verbatim">fish</code> itself that is loaded first. In general no one should ever modify this file, but we are debugging, so it’s fine. I also use <a href="https://fishshell.com/docs/current/cmds/status.html#cmd-status">status</a> function to display extra information (mostly interested in stack trace).</p>
+<pre class="fish"><code># Add these lines to the very beginning of $__fish_data_dir/config.fish
+# /nix/store/r5brs3gn4amxbl1mrl4433inlghwl1r0-fish-3.2.2/share/fish/config.fish
+echo &quot;PATH before initialisation &gt; $PATH&quot;
+
+function __notice_path_change -d &quot;Notice PATH changes&quot; --on-variable PATH
+  echo &quot;PATH has changed to $PATH&quot;
+  status
+end
+</code></pre>
+<p>After firing a new <code class="verbatim">fish</code> session, I see the following output in terminal emulator.</p>
+<pre class="example"><code>PATH before initialisation &gt; /Users/d12frosted/.nix-profile/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/Users/d12frosted/.config/bin:/Users/d12frosted/.local/bin
+PATH has changed to /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Apple/usr/bin:/usr/local/MacGPG2/bin:/Library/TeX/texbin:/Users/d12frosted/.nix-profile/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/Users/d12frosted/.config/bin:/Users/d12frosted/.local/bin
+This is a login shell
+Job control: Only on interactive jobs
+in function '__notice_path_change' with arguments 'VARIABLE SET PATH'
+  called on line 1 of file /nix/store/r5brs3gn4amxbl1mrl4433inlghwl1r0-fish-3.2.2/share/fish/config.fish
+in event handler: handler for variable “PATH”
+  called on line 198 of file /nix/store/r5brs3gn4amxbl1mrl4433inlghwl1r0-fish-3.2.2/share/fish/config.fish
+PATH has changed to /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Apple/usr/bin:/usr/local/MacGPG2/bin:/Library/TeX/texbin:/Users/d12frosted/.nix-profile/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/Users/d12frosted/.config/bin:/Users/d12frosted/.local/bin
+This is a login shell
+Job control: Only on interactive jobs
+in function '__notice_path_change' with arguments 'VARIABLE SET PATH'
+  called on line 1 of file /nix/store/r5brs3gn4amxbl1mrl4433inlghwl1r0-fish-3.2.2/share/fish/config.fish
+in event handler: handler for variable “PATH”
+  called on line 129 of file /nix/store/r5brs3gn4amxbl1mrl4433inlghwl1r0-fish-3.2.2/share/fish/config.fish
+Welcome to fish, the friendly interactive shell
+Type help for instructions on how to use fish
+
+[17:37:38] @MacBook-Pro ~
+λ
+</code></pre>
+<p>So as you can see, the value of <code class="verbatim">PATH</code> is almost correct before <code class="verbatim">fish</code> is loaded. The value is in correct order, but lacks few entries. And then it gets the missing entries, but also gets reordered on line 198 of <code class="verbatim">$__fish_data_dir/config.fish</code>.</p>
+<p>Turns out, <code class="verbatim">fish</code> mimics behaviour of <code class="verbatim">path_helper</code> macOS (BSD) utility, which makes sure that entries from <code class="verbatim">/etc/paths</code> file and all files under <code class="verbatim">/etc/paths.d/</code> are present in the <code class="verbatim">PATH</code>.</p>
+<pre class="example"><code>path_helper(8)                       Nixpkgs System Manager's Manual                       path_helper(8)
+
+NAME
+     path_helper — helper for constructing PATH environment variable
+
+SYNOPSIS
+     path_helper [-c | -s]
+
+DESCRIPTION
+     The path_helper utility reads the contents of the files in the directories /etc/paths.d and
+     /etc/manpaths.d and appends their contents to the PATH and MANPATH environment variables respec‐
+     tively.  (The MANPATH environment variable will not be modified unless it is already set in the en‐
+     vironment.)
+
+     Files in these directories should contain one path element per line.
+
+     Prior to reading these directories, default PATH and MANPATH values are obtained from the files
+     /etc/paths and /etc/manpaths respectively.
+
+     Options:
+
+     -c      Generate C-shell commands on stdout.  This is the default if SHELL ends with &quot;csh&quot;.
+
+     -s      Generate Bourne shell commands on stdout.  This is the default if SHELL does not end with
+             &quot;csh&quot;.
+
+NOTE
+     The path_helper utility should not be invoked directly.  It is intended only for use by the shell
+     profile.
+
+Mac OS X                                      March 15, 2007                                     Mac OS X
+</code></pre>
+<p>And this is how it’s implemented in <code class="verbatim">fish</code> (inside <code class="verbatim">$__fish_data_dir/config.fish</code>):</p>
+<pre class="fish"><code>#
+# Some things should only be done for login terminals
+# This used to be in etc/config.fish - keep it here to keep the semantics
+#
+if status --is-login
+    if command -sq /usr/libexec/path_helper
+        # Adapt construct_path from the macOS /usr/libexec/path_helper
+        # executable for fish; see
+        # https://opensource.apple.com/source/shell_cmds/shell_cmds-203/path_helper/path_helper.c.auto.html .
+        function __fish_macos_set_env -d &quot;set an environment variable like path_helper does (macOS only)&quot;
+            set -l result
+
+            # Populate path according to config files
+            for path_file in $argv[2] $argv[3]/*
+                if [ -f $path_file ]
+                    while read -l entry
+                        if not contains -- $entry $result
+                            test -n &quot;$entry&quot;
+                            and set -a result $entry
+                        end
+                    end &lt;$path_file
+                end
+            end
+
+            # Merge in any existing path elements
+            for existing_entry in $$argv[1]
+                if not contains -- $existing_entry $result
+                    set -a result $existing_entry
+                end
+            end
+
+            set -xg $argv[1] $result
+        end
+
+        __fish_macos_set_env PATH /etc/paths '/etc/paths.d'
+        if [ -n &quot;$MANPATH&quot; ]
+            __fish_macos_set_env MANPATH /etc/manpaths '/etc/manpaths.d'
+        end
+        functions -e __fish_macos_set_env
+    end
+
+    # ...
+end
+</code></pre>
+<p>In short, it constructs a list of entries from <code class="verbatim">/etc/paths</code> file plus files from <code class="verbatim">/etc/paths.d</code> and appends to the result all missing entries from <code class="verbatim">PATH</code> variable. Since <code class="verbatim">$HOME/.nix-profile/bin</code> is not in <code class="verbatim">/etc/paths</code>, it is added to the end of the result.</p>
+<p>I am not sure why this mechanism exists in the first place, I suspect that it’s needed for building proper <code class="verbatim">PATH</code> during system loading and for operation of macOS applications (which is a constant source of confusion). If anyone knows more, please share your knowledge via comments or email, I will include better explanations instead of my speculations.</p>
+<p>While we learned the reason this value is incorrect, it’s still unclear how and by whom <code class="verbatim">PATH</code> is fixed when using <code class="verbatim">bash</code> and how to fix it in <code class="verbatim">fish</code>.</p>
+<p>By quick inspection of contents of <code class="verbatim">/run/current-system</code> and <code class="verbatim">/run/current-system/etc</code>, I find an interesting file <code class="verbatim">/run/current-system/etc/bashrc</code>.</p>
+<pre class="example"><code>λ la /run/current-system/
+total 68K
+dr-xr-xr-x    15 root wheel   480 Jan  1  1970 .
+drwxrwxr-t 11741 root nixbld 367K May 20 09:14 ..
+lrwxr-xr-x     1 root wheel    76 Jan  1  1970 Applications -&gt; /nix/store/4w1af25hb32hqd31sh7pwm4vd00dpzw2-system-applications/Applications
+dr-xr-xr-x     5 root wheel   160 Jan  1  1970 Library
+-r-xr-xr-x     1 root wheel   40K Jan  1  1970 activate
+-r-xr-xr-x     1 root wheel  6.9K Jan  1  1970 activate-user
+dr-xr-xr-x     2 root wheel    64 Jan  1  1970 darwin
+-r--r--r--     1 root wheel  4.2K Jan  1  1970 darwin-changes
+-r--r--r--     1 root wheel    38 Jan  1  1970 darwin-version
+lrwxr-xr-x     1 root wheel    51 Jan  1  1970 etc -&gt; /nix/store/5069ikh9adm1m98fjxisgp6m7bn5jzwa-etc/etc
+lrwxr-xr-x     1 root wheel    59 Jan  1  1970 patches -&gt; /nix/store/l4dwcgs0zqh5z6b2b4z1wax4fwamg5fg-patches/patches
+lrwxr-xr-x     1 root wheel    55 Jan  1  1970 sw -&gt; /nix/store/jj97rcxh8z2fnn45bcd9xwm08xi3vdcy-system-path
+-r--r--r--     1 root wheel    13 Jan  1  1970 system
+-r--r--r--     1 root wheel    96 Jan  1  1970 systemConfig
+dr-xr-xr-x     3 root wheel    96 Jan  1  1970 user
+</code></pre>
+<pre class="example"><code>λ la /run/current-system/etc/
+total 0
+dr-xr-xr-x 9 root wheel 288 Jan  1  1970 .
+dr-xr-xr-x 3 root wheel  96 Jan  1  1970 ..
+lrwxr-xr-x 1 root wheel  54 Jan  1  1970 bashrc -&gt; /nix/store/b17sn0hfampy7fl1y0lf7nbckv2gfyvb-etc-bashrc
+dr-xr-xr-x 5 root wheel 160 Jan  1  1970 fish
+dr-xr-xr-x 4 root wheel 128 Jan  1  1970 nix
+lrwxr-xr-x 1 root wheel  54 Jan  1  1970 shells -&gt; /nix/store/dyprd01kgm00asrnd7dv0rdmg1fk8855-etc-shells
+lrwxr-xr-x 1 root wheel  54 Jan  1  1970 skhdrc -&gt; /nix/store/dd9hd30wlgbv4f2qfp1v863wm2wi8pkk-etc-skhdrc
+dr-xr-xr-x 3 root wheel  96 Jan  1  1970 ssh
+dr-xr-xr-x 3 root wheel  96 Jan  1  1970 ssl
+</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># content of /run/current-system/etc/bashrc</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># /etc/bashrc: DO NOT EDIT -- this file has been generated automatically.</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This file is read for interactive shells.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-r</span> <span class="st">&quot;/etc/bashrc_</span><span class="va">$TERM_PROGRAM</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">.</span> <span class="st">&quot;/etc/bashrc_</span><span class="va">$TERM_PROGRAM</span><span class="st">&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Only execute this file once per shell.</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$__ETC_BASHRC_SOURCED</span><span class="st">&quot;</span> -o <span class="er">-n</span> <span class="st">&quot;</span><span class="va">$NOSYSBASHRC</span><span class="st">&quot;</span> ]<span class="kw">;</span> <span class="cf">then</span> <span class="cf">return</span><span class="kw">;</span> <span class="cf">fi</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="va">__ETC_BASHRC_SOURCED</span><span class="op">=</span>1</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Don't execute this file when running in a pure nix-shell.</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="at">-n</span> <span class="st">&quot;</span><span class="va">$IN_NIX_SHELL</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">then</span> <span class="cf">return</span><span class="kw">;</span> <span class="cf">fi</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-z</span> <span class="st">&quot;</span><span class="va">$__NIX_DARWIN_SET_ENVIRONMENT_DONE</span><span class="st">&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="bu">.</span> /nix/store/arcg1b2dbhmhj31xnm2f4xxgfsrzpnph-set-environment</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Return early if not running interactively, but after basic nix setup.</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="kw">[[</span> <span class="va">$-</span> <span class="ot">!=</span> <span class="pp">*</span>i<span class="pp">*</span> <span class="kw">]]</span> <span class="kw">&amp;&amp;</span> <span class="cf">return</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Make bash check its window size after a process completes</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="bu">shopt</span> <span class="at">-s</span> checkwinsize</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Read system-wide modifications.</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="at">-f</span> /etc/bash.local<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="bu">source</span> /etc/bash.local</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div>
+<p>As you can see, it sources <code class="verbatim">/nix/store/arcg1b2dbhmhj31xnm2f4xxgfsrzpnph-set-environment</code> file, which basically makes sure that <code class="verbatim">$HOME/.nix-profile/bin</code> is at the beginning of <code class="verbatim">PATH</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># content of /nix/store/arcg1b2dbhmhj31xnm2f4xxgfsrzpnph-set-environment</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Prevent this file from being sourced by child shells.</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">__NIX_DARWIN_SET_ENVIRONMENT_DONE</span><span class="op">=</span>1</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="va">$HOME</span>/.nix-profile/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">EDITOR</span><span class="op">=</span><span class="st">&quot;nano&quot;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NIX_PATH</span><span class="op">=</span><span class="st">&quot;ssh-auth-sock=/Users/d12frosted/.config/gnupg/S.gpg-agent.ssh:ssh-config-file=/Users/d12frosted/.config/.ssh/config&quot;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NIX_SSL_CERT_FILE</span><span class="op">=</span><span class="st">&quot;/etc/ssl/certs/ca-certificates.crt&quot;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PAGER</span><span class="op">=</span><span class="st">&quot;less -R&quot;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">XDG_CONFIG_DIRS</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/.nix-profile/etc/xdg:/run/current-system/sw/etc/xdg:/nix/var/nix/profiles/default/etc/xdg&quot;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">XDG_DATA_DIRS</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/.nix-profile/share:/run/current-system/sw/share:/nix/var/nix/profiles/default/share&quot;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Extra initialisation</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># reset TERM with new TERMINFO available (if any)</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TERM</span><span class="op">=</span><span class="va">$TERM</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NIX_USER_PROFILE_DIR</span><span class="op">=</span><span class="st">&quot;/nix/var/nix/profiles/per-user/</span><span class="va">$USER</span><span class="st">&quot;</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NIX_PROFILES</span><span class="op">=</span><span class="st">&quot;/nix/var/nix/profiles/default /run/current-system/sw </span><span class="va">$HOME</span><span class="st">/.nix-profile&quot;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up secure multi-user builds: non-root users build through the</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Nix daemon.</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-w</span> /nix/var/nix/db <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">export</span> <span class="va">NIX_REMOTE</span><span class="op">=</span>daemon</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="ex">~</span></span></code></pre></div>
+<p>So it seems that <code class="verbatim">nix-darwin</code> is fixing <code class="verbatim">PATH</code> for <code class="verbatim">bash</code>, but it doesn’t fix <code class="verbatim">PATH</code> for <code class="verbatim">fish</code>. While the issue is not fixed in the upstream, it’s easy to fix it locally by adding required values in <code class="verbatim">programs.fish.shellInit</code>.</p>
+<p>Since I didn’t want to mess too much with specific values, instead, I simply remember the original value of <code class="verbatim">PATH</code> before <code class="verbatim">fish</code> reconstructed its path and then in my user <code class="verbatim">init</code> code I fix the order like this:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode nix"><code class="sourceCode nix"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>programs = <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">fish</span>.<span class="va">enable</span> <span class="op">=</span> <span class="cn">true</span><span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">fish</span>.<span class="va">shellInit</span> <span class="op">=</span> <span class="st">''</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">__nixos_path_fix</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="st">  ''</span><span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>;</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># see https://github.com/LnL7/nix-darwin/issues/122</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>environment.etc.<span class="st">&quot;fish/nixos-env-preinit.fish&quot;</span>.text = lib.mkMerge <span class="op">[</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>lib.mkBefore <span class="st">''</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="st">set -g __nixos_path_original $PATH</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="st">    ''</span><span class="op">)</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>lib.mkAfter <span class="st">''</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="st">function __nixos_path_fix -d &quot;fix PATH value&quot;</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="st">set -l result (string replace '$HOME' &quot;$HOME&quot; $__nixos_path_original)</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="st">for elt in $PATH</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="st">  if not contains -- $elt $result</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="st">    set -a result $elt</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="st">  end</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="st">set -g PATH $result</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="st"> ''</span><span class="op">)</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="op">]</span>;</span></code></pre></div>
+<p>Rebuild and enjoy <code class="verbatim">coreutils</code> and alike!</p>
+<p>Safe travels.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2021-05-21-path-in-fish-with-nix-darwin.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

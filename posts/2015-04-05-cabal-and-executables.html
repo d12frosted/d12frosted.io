@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Simple script for installing exectuables from Hackage without running into cabal hellnotifications when the command finishes in Fish">
+    <meta property="og:title" content="Boris Buliga - Cabal and executables" />
+    <meta property="og:description" content="Simple script for installing exectuables from Hackage without running into cabal hellnotifications when the command finishes in Fish" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2015-04-05-cabal-and-executables.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Cabal and executables</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Cabal and executables</h1>
+  <section class="subtitle">
+    Posted on April  5, 2015
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'haskell'." href="../tags/haskell.html">#haskell</a>
+  </section>
+  
+  <section>
+    <p>Maybe I did something really wrong in my life, because I constantly run into <strong>Cabal Hell</strong>. That feeling of powerlessness is refreshing, though depressing. And I hate it the most when I just need to install an executable from Hackage, like <code>pandoc</code>.</p>
+<p>But hey, we are software engineers after all. So I decided to write a little helper script to avoid world destruction and get desired executable in my <code class="verbatim">$PATH</code>.</p>
+<p><strong>Important note.</strong> In the last few years Haskell community did a great job in order to fight the <strong>Cabal Hell</strong>. And thanks to <a href="https://haskell.fpcomplete.com/get-started">Stack</a> and <a href="https://cabal.readthedocs.io/en/latest/nix-local-build-overview.html">Nix-style Local Builds</a> my solution is no longer required. I keep it just for historical reference (and to keep my blog relatively busy).</p>
+<!--more-->
+
+<blockquote>
+<p><strong>Cabal Hell</strong></p>
+<p>The feeling of powerlessness one has when Cabal does not do what one wanted and
+one does not know how to fix it.</p>
+<p>Well Typed</p>
+</blockquote>
+<blockquote>
+<p><strong>What is the difficulty caused by Cabal-install?</strong></p>
+<p>The main difficulty with Cabal is otherwise known as ‘dependency hell’, in which the cabal-install does not manage to install a desired package for a reason or another, leading to large amount of manual work. As an example of this difficulty, consider a case where the user wishes to install packages A and B. Both of these work with package C, but not with the same version of C.</p>
+<p><a href="https://wiki.haskell.org/Cabal/Survival">Haskell Wiki</a></p>
+</blockquote>
+<p><img src="../images/2015-04-05-cabal-and-executables/2022-07-19-17-49-57-1428233775.webp" /></p>
+<p>I need to confess. Sometimes I solve <strong><strong>Cabal Hell</strong></strong> by using this method with <code>rm -rf</code>. <strong><strong>Cabal Hell</strong></strong> is like cancer - it’s very hard to cure this disease without ruining your environment (in our case - packages database). But with <strong>Cabal Hell</strong> comes one good thing - you can use some tools in order to prevent this bizarre to happen with you. For such purposes, you can use cabal sandboxes, Stackage or nixos. Probably there are some other handy solutions or tools, but this is all I know.</p>
+<p><code>Stackage</code> is great, but it doesn’t work for me very well because sometimes I need to install ‘heavy’ packages that are not on <code>Stackage</code>. Also, I work on a reliably fast computer, so I don’t mind to waste thirty seconds more on the compilation. Safety is more preferable. As for <code>nixos</code> – I haven’t tried it yet. But I know that it helps to find compilation problems very good. So actually, many thanks to the people that made <code>Stackage</code> and <code>nixos</code>.</p>
+<h1 id="030bea29-238d-4f88-a08d-784e519f66ef" id="h:C8979740-1B98-4944-A425-BD2E1E40082F">Sandboxes</h1>
+<p>I think that sandboxes are really great. Usually, I install globally only commonly used packages. Everything else comes via sandboxes. Sometimes the project I am working on has dependencies that can’t be installed from Hackage. In such cases I use</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cabal sandbox add-source path/to/non-hackage/dependency</span></code></pre></div>
+<p>So I don’t need to install such dependencies globally. And if this dependency is very heavy and problem-bringing, then it can save my global packages database.</p>
+<p>But you use Haskell not only for writing libraries (funny, isn’t it?). Sometimes you need to install some executables. So here comes the ‘executables’ part.</p>
+<p>Usually, I install executables by using the following sequence of commands:</p>
+<pre class="fish"><code>$ cd path/to/cabal/project
+$ cabal sandbox init
+$ cabal install --only-dependencies
+$ cabal install
+$ cp .cabal-sandbox/bin/executable ~/.bin/executable
+</code></pre>
+<p>This works because, executables are usually completely stand-alone, so you can build them in a sandbox and then move them to any location of your choice. This approach helps to keep the system (or user) wide packages database clean and free from conflicts. I move executable into <code>~/.bin</code> (but make sure that <code>~/.bin</code> is in <code>$PATH</code>), because when something breaks in my packages database I want to keep these executables (they made nothing bad!).</p>
+<p>But it’s very boring to call this commands every time I want to install any executables, so I wrote a simple <code>fish</code> function that installs executable from <code>.cabal</code> file in the current directory for you.</p>
+<pre class="fish"><code>function cabal-install-bin -d &quot;Install executables from .cabal file in current directory&quot;
+  # set some color settings
+  set -l error_color red
+  set -l msg_color blue
+
+  # get cabal file in current directory
+  set -l cb *.cabal
+
+  set -l c (count *.cabal)
+  # we expect only 1 cabal file to be existing
+  if test c -ne 1
+    set_color $error_color
+    if test c -eq 0
+      echo &quot;Couldn' find cabal file in (pwd)&quot;
+    else
+      echo &quot;Found $c cabal files. Think about it!&quot;
+    end
+    set_color normal
+    return 1
+  end
+
+  set_color $msg_color
+  echo &quot;Using $cb&quot;
+
+  # check if sandbox is not created yet
+  if test ! \( -e .cabal-sandbox \) -o ! \( -e cabal.sandbox.config \)
+    echo &quot;It looks like there is no sandbox, so creating one&quot;
+    set_color normal
+    # create sandbox
+    cabal sandbox init
+  end
+
+  # todo add support of multiple executables
+  set -l name (cabal info *.cabal | sed -ne &quot;s/ *Executables: *\(.*\)/\1/p&quot;)
+
+  # check that the name is not empty
+  if test ! \( -n $name \)
+    set_color $error_color
+    echo &quot;Couldn't find any executable in cabal file&quot;
+    set_color normal
+    return 1
+  end
+
+  set_color $msg_color
+  echo &quot;Found executables: $name&quot;
+  echo &quot;Installing dependencies&quot;
+  set_color normal
+
+  # first we want to install dependencies
+  # we could just ~cabal install~
+  # but I find separate installation
+  # more satisfying
+  cabal install --only-dependencies
+
+  if test $status -ne 0
+    return 1
+  end
+
+  set_color $msg_color
+  echo &quot;Building application&quot;
+  set_color normal
+
+  # install package
+  cabal install
+
+  if test $status -ne 0
+    return 1
+  end
+
+  set_color $msg_color
+  echo &quot;Copying $name to ~/.bin&quot;
+  set_color normal
+  # now copy executable to ~/.bing
+  cp &quot;.cabal-sandbox/bin/$name&quot; &quot;$HOME/.bin/$name&quot;
+end
+</code></pre>
+<p>But for situations when I don’t care about package sources and it’s available on hackage, I wrote another function (that reuses <code>cabal-install-bin</code>).</p>
+<pre class="fish"><code>function cabal-unpack-and-install-bin -a package -d &quot;Unpack and install specified executable package from cabal.&quot;
+  set -l current_dir (pwd)
+  cd $TMPDIR
+  set -l dir $package*
+
+  if test (count $dir) -ne 0
+    echo &quot;Found $TMPDIR$dir&quot;
+    echo &quot;Looks like the package already unpacked in \$TMPDIR&quot;
+    cd $current_dir
+    return 1
+  end
+
+  cabal unpack $package
+
+  if test $status -ne 0
+    cd $current_dir
+    return 1
+  end
+
+  set -l dir $package*
+
+  cd $TMPDIR/$dir
+
+  cabal-install-bin
+
+  cd $TMPDIR
+  rm -rf $dir
+
+  cd $current_dir
+end
+</code></pre>
+<p>It just downloads sources of a single package to the <code>$TMPDIR</code> (you might want to change this to something different, depending on your system), then installs executable (using <code>cabal-install-bin</code> function) and removes sources dir. Useful, isn’t it?</p>
+<p>You can grab the latest version of these function on <a href="https://github.com/d12frosted/environment/tree/master/fish/functions">GitHub</a>.</p>
+<p><strong>Happy Haskell coding!</strong></p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2015-04-05-cabal-and-executables.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

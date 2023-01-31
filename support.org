@@ -1,0 +1,8 @@
+<p>Each and every project on this page was created to solve problems I faced. Some of them turned out to be useful for other people, which is really great. There are various ways to support them - by using, by becoming a stargazer, by contributing or becoming a <a href="https://www.patreon.com/d12frosted">patreon</a>. Special thanks to all patrons. And here are those patrons that agreed to be mentioned publicly:</p>
+<ul>
+<li><a href="https://github.com/jidicula">Johanan Idicula</a></li>
+<li><a href="https://github.com/montchr">Chris Montgomery</a></li>
+<li><a href="http://github.com/lyndondrake">Lyndon Drake</a></li>
+<li><a href="https://github.com/sainathadapa">Sainath Adapa</a></li>
+<li><a href="https://github.com/jcsims">Chris Sims</a></li>
+</ul>

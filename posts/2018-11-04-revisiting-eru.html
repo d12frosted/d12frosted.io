@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Overview of my computer configuration maintenance system">
+    <meta property="og:title" content="Boris Buliga - Revisiting Eru" />
+    <meta property="og:description" content="Overview of my computer configuration maintenance system" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2018-11-04-revisiting-eru.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Revisiting Eru</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Revisiting Eru</h1>
+  <section class="subtitle">
+    Posted on November  4, 2018
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on January  6, 2023
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'shell'." href="../tags/shell.html">#shell</a>
+  </section>
+  
+  <section>
+    <p>As you might know, Eru is the supreme deity of Arda. The first things that Eru created where the Ainur. He then bade the Ainur to sing to him. Each Ainu had a particular theme given by Eru. Sure enough, Eru makes the ‘World and All That Is’.</p>
+<p>So when I get a new clean system there is nothing yet. And so I call upon the wisdom and power of <code class="verbatim">Eru.sh</code> - the one who creates Ainur and the ‘World and All That Is’.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> curl https://raw.githubusercontent.com/d12frosted/environment/master/bootstrap/eru.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div>
+<p>I just have to wait patiently, while everything is being downloaded and installed, while all configuration cogs are being placed on the right spot.</p>
+<p><img src="../images/2018-11-04-revisiting-eru/2022-07-19-20-39-33-eru-example-1.webp" /></p>
+<!--more-->
+
+<p>The good thing about <code class="verbatim">Eru.sh</code> is that after the ‘World and All That Is’ creation you can still call upon his help and you can even ask him to help with specific theme or themes only.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./bootstrap/eru.sh                   <span class="co"># to help with all themes</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./bootstrap/eru.sh repositories      <span class="co"># to help with repositories</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./bootstrap/eru.sh repositories brew <span class="co"># to help with repositories and brew</span></span></code></pre></div>
+<p><code class="verbatim">Eru.sh</code> reveals all available themes. For example,</p>
+<pre class="text"><code>=&gt; Guardian Theme :: Checking operating system
+=&gt; Supporting Theme :: Defining helpers
+=&gt; Supporting Theme :: Defining variables
+=&gt; Guardian Theme :: Ensure all directories exists
+-&gt; SSH Theme :: Checking SSH keys
+-&gt; Repositories Theme :: Sync environment repository
+-&gt; Repositories Theme :: Sync repositories from Repofile
+-&gt; Linking Theme :: Link all files as defined in Linkfile
+</code></pre>
+<p>Every theme that begins with <code>=&gt;</code> is a mandatory theme - the one you can’t skip. Every theme prefixed with <code>-&gt;</code> is an optional one. If you don’t specify any themes, all optional themes are sung. If you do specify at leas t one theme - only specified are sang.</p>
+<p><img src="../images/2018-11-04-revisiting-eru/2022-07-19-20-39-54-eru-example-2.webp" /></p>
+<p>You can find the latest version of <code class="verbatim">Eru.sh</code> on <a href="https://github.com/d12frosted/environment/blob/master/bootstrap/eru.sh">GitHub</a>.</p>
+<h1 id="adb3ae18-ca0c-4e11-95e0-d659bd0ffc37" id="interesting-stuff">Interesting stuff</h1>
+<p>Mythology is great, but let’s check what’s cool about <code class="verbatim">Eru.sh</code>.</p>
+<ol type="1">
+<li>It installs and updates a lot of applications and utilities that I use on a daily basis.</li>
+<li>It installs my configurations for these applications. The most important ones are <code class="verbatim">Emacs</code>, <code class="verbatim">fish</code>, <code class="verbatim">skhd</code>, <code class="verbatim">chunkwm</code>. Plus it tries to set up different parts of macOS for my liking.</li>
+<li>It works in an incremental fashion. In general, it installs only what is missing. So in case when my environment is up to date, <code class="verbatim">Eru.sh</code> is almost instant.</li>
+<li>It allows you to setup only specific parts. For example, you can only install dependencies or sync mandatory repositories. Or do both.</li>
+</ol>
+<p>This means, that on a fresh system I can easily get my environment just by running one command and waiting for a long time. But in a working environment, I can easily get the latest version of it. This comes in handy since I use more than one computer.</p>
+<h2 id="765189bf-c6e3-4e83-a5b4-60f653750025" id="bash-magic">Bash magic</h2>
+<p><code class="verbatim">Eru.sh</code> is written in bash because it must work on systems without Haskell preinstalled. Features of bash4 are not used, because of the same reasons, it is not available on a clean macOS.</p>
+<p><code class="verbatim">Eru.sh</code> is mostly a boring bash script. But there are several points that I find interesting myself.</p>
+<h3 id="3efb40e8-0b67-4572-9028-602bf5061c7b" id="mapping-files">Mapping files</h3>
+<p>There are themes that perform the same action over a set of arguments. In order to avoid noise in <code class="verbatim">Eru.sh</code> these arguments are stored in external files (rule files). For example, <code class="verbatim">repositories</code> theme synchronises repositories by rules specified in the <code class="verbatim">Repofile</code>, which looks like the following.</p>
+<pre class="text"><code>$HOME/.spacemacs syl20bnr/spacemacs develop
+$DEVELOPER/fancy-yank d12frosted/fancy-yank
+$DEVELOPER/orgability d12frosted/orgability
+$DEVELOPER/org-drawer-list d12frosted/org-drawer-list
+$DEVELOPER/flyspell-correct d12frosted/flyspell-correct
+</code></pre>
+<p>Every line specifies a rule - target location of the repository, remote repository URL (fir GitHub one case specify only <code class="verbatim">owner/repo</code> instead of a full HTTPS/SSH URL) and branch to use.</p>
+<p>There is also a function that gets these value as arguments and does all the job. In the case of <code class="verbatim">repositories</code> theme, the function is called <code class="verbatim">sync_repo</code>.</p>
+<p>One can easily write a script reading a given file line by line and passing them to a function. For example,</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">IFS</span><span class="op">=</span><span class="st">''</span> <span class="bu">read</span> <span class="at">-r</span> <span class="va">line</span> <span class="kw">||</span> <span class="kw">[[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$line</span><span class="st">&quot;</span> <span class="kw">]];</span> <span class="cf">do</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">sync_repo</span> <span class="va">$line</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&lt;</span> <span class="st">&quot;Repofile&quot;</span></span></code></pre></div>
+<p>Please note that <code class="verbatim">$line</code> should not be put in parenthesis otherwise whole line will be passed as a first argument, but we want to split it into multiple arguments by a space.</p>
+<p>While this works, it doesn’t scale, requires repetition and decreases the level of code readability. Let’s abstract it a little bit by extracting the logic of reading the lines and passing them to a function.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> map_lines()</span> <span class="kw">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> <span class="va">IFS</span><span class="op">=</span><span class="st">''</span> <span class="bu">read</span> <span class="at">-r</span> <span class="va">line</span> <span class="kw">||</span> <span class="kw">[[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$line</span><span class="st">&quot;</span> <span class="kw">]];</span> <span class="cf">do</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">$1</span> <span class="va">$line</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span> <span class="op">&lt;</span> <span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ex">map_lines</span> sync_repo <span class="st">&quot;Repofile&quot;</span></span></code></pre></div>
+<p>Now it looks like a Functor for a file. No repetition, it does scale well and we know exactly what is the purpose of <code class="verbatim">map_lines sync_repo "RepoFile"</code>.</p>
+<h3 id="25a8e072-56d9-44ff-bc10-383930466c60" id="dealing-with-multiple-optional-themes">Dealing with multiple optional themes</h3>
+<p>So in <code class="verbatim">Eru.sh</code>, we have multiple optional themes. The easiest way to deal with them is to create a separate variable for every theme and then use it to check if we should run an action for a given theme.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">ALL</span><span class="op">=</span><span class="st">&quot;true&quot;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="va">REPOSITORIES</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="va">LINKING</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="va">BREW</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="va">POSITIONAL</span><span class="op">=</span><span class="va">()</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">[[</span> <span class="va">$#</span> <span class="ot">-gt</span> 0 <span class="kw">]]</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="va">key</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="va">$key</span> <span class="kw">in</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="ss">repo</span><span class="kw">)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="va">ALL</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="va">REPOSITORIES</span><span class="op">=</span><span class="st">&quot;true&quot;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">;;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="ss">link</span><span class="kw">)</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      <span class="va">ALL</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      <span class="va">LINKING</span><span class="op">=</span><span class="st">&quot;true&quot;</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>      <span class="cf">;;</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="ss">brew</span><span class="kw">)</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>      <span class="va">ALL</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      <span class="va">BREW</span><span class="op">=</span><span class="st">&quot;true&quot;</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">;;</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="pp">*</span><span class="kw">)</span>    <span class="co"># unknown option</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>      <span class="va">POSITIONAL</span><span class="op">+=</span><span class="va">(</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span><span class="va">)</span> <span class="co"># save it in an array for later</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>      <span class="bu">shift</span> <span class="co"># past argument</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>      <span class="cf">;;</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">esac</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">--</span> <span class="st">&quot;</span><span class="va">${POSITIONAL</span><span class="op">[@]</span><span class="va">}</span><span class="st">&quot;</span> <span class="co"># restore positional parameters</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$ALL</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">||</span> <span class="st">&quot;</span><span class="va">$REPOSITORIES</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="ex">optional_theme</span> <span class="st">&quot;Repositories&quot;</span> <span class="co"># logging</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> sync_repo <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Repofile&quot;</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  <span class="ex">inactive_theme</span> <span class="st">&quot;Repositories&quot;</span> <span class="co"># logging</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$ALL</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">||</span> <span class="st">&quot;</span><span class="va">$LINKING</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  <span class="ex">optional_theme</span> <span class="st">&quot;Linking&quot;</span> <span class="co"># logging</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> safe_link  <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Linkfile&quot;</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  <span class="ex">inactive_theme</span> <span class="st">&quot;Linking&quot;</span> <span class="co"># logging</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$ALL</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">||</span> <span class="st">&quot;</span><span class="va">$BREW</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>  <span class="ex">optional_theme</span> <span class="st">&quot;Brew&quot;</span> <span class="co"># logging</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap&quot;</span> <span class="kw">&amp;&amp;</span> <span class="ex">brew</span> bundle</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>  <span class="ex">inactive_theme</span> <span class="st">&quot;Brew&quot;</span> <span class="co"># logging</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div>
+<p>But this gets nasty every time a new theme is added (though it happens rarely). And most importantly, it looks so redundant, so repetitive that I almost fall asleep while writing it.</p>
+<p>We can improve it a little bit. Let’s focus on the part where we check for a variable value.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> theme_guard()</span> <span class="kw">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$ALL</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">||</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">optional_theme</span> <span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span> <span class="co"># logging</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">inactive_theme</span> <span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span> <span class="co"># logging</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;</span><span class="va">$REPOSITORIES</span><span class="st">&quot;</span> <span class="st">&quot;Repositores&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> sync_repo <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Repofile&quot;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;</span><span class="va">$LINKING</span><span class="st">&quot;</span> <span class="st">&quot;Linking&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> safe_link  <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Linkfile&quot;</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;</span><span class="va">$BREW</span><span class="st">&quot;</span> <span class="st">&quot;Brew&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap&quot;</span> <span class="kw">&amp;&amp;</span> <span class="ex">brew</span> bundle</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>So we moved out all the checks and logging to a helper function. It is already good enough as an improvement, but we can do even better.</p>
+<p>Bash provides an ability to evaluate arbitrary code by using <code class="verbatim">eval</code>. Please note though, that <code class="verbatim">eval</code> is a bane of shell programming and should be avoided like leprosy. In general, it’s okayish to use <code class="verbatim">eval</code> when you fully control what is passed to it. If you pass user input to <code class="verbatim">eval</code> then you have a problem, because now you need to deal with code injection.</p>
+<p>We can use <code class="verbatim">eval</code> to get the value of a variable by a string.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> CUSTOM_VAR=42</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">'$CUSTOM_VAR'</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">$CUSTOM_VAR</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> eval echo <span class="st">'$CUSTOM_VAR'</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">42</span></span></code></pre></div>
+<p>While this is good enough, it’s possible to avoid <code class="verbatim">eval</code> in this particular case, when we just want to get the value of variable by name.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> CUSTOM_VAR=42</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">'$CUSTOM_VAR'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="va">$CUSTOM_VAR</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> CUSTOM_VAR_REF=CUSTOM_VAR</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">${</span><span class="op">!</span><span class="va">CUSTOM_VAR_REF}</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="ex">42</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span></code></pre></div>
+<p>Though if you want to expand variables in arbitrary string (like, <code class="verbatim">$HOME/config.json</code>), you’ll have to use <code class="verbatim">eval</code>.</p>
+<p>Right now we are passing two arguments to <code class="verbatim">theme_guard</code>: a guarding variable value and the name of a theme. But the code looks similar - the first one is prefixed with the <code class="verbatim">$</code> sign and is in uppercase, while the second one is in capital case. In order to deal with case, we can use <code class="verbatim">awk</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> theme_guard()</span> <span class="kw">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">key</span><span class="op">=</span><span class="va">$(</span><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'{print toupper($0)}'</span><span class="va">)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">guard_ref</span><span class="op">=</span><span class="st">&quot;guard_</span><span class="va">$key</span><span class="st">&quot;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">guard</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${</span><span class="op">!</span><span class="va">guard_ref}</span><span class="st">&quot;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$ALL</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">||</span> <span class="st">&quot;</span><span class="va">$guard</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">optional_theme</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="co"># logging</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">inactive_theme</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="co"># logging</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;Repositores&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> sync_repo <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Repofile&quot;</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;Linking&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> safe_link  <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Linkfile&quot;</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;Brew&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap&quot;</span> <span class="kw">&amp;&amp;</span> <span class="ex">brew</span> bundle</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>We got a very small improvement - we just don’t need to pass the theme name to the <code class="verbatim">theme_guard</code> twice. But I find it satisfying anyway. Also, it will come handy a little bit later.</p>
+<p>Now let’s go back to the variable declaration. It turns out that we can use <code class="verbatim">eval</code> to declare variables as well.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> eval <span class="st">'MEANING=42'</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> eval echo <span class="st">'$MEANING'</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">42</span></span></code></pre></div>
+<p>But defining variables based on the user input is dangerous. Fortunately, there is a <code class="verbatim">declare</code> program designed just for this task. Moreover, it allows declaring read-only variables.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> declare <span class="st">&quot;CUSTOM_VAR=42&quot;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$CUSTOM_VAR</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ex">42</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> CUSTOM_VAR=12</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$CUSTOM_VAR</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="ex">12</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> declare <span class="at">-r</span> <span class="st">&quot;CUSTOM_VAL=42&quot;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$CUSTOM_VAL</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="ex">42</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> CUSTOM_VAL=12</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="ex">bash:</span> CUSTOM_VAL: readonly variable</span></code></pre></div>
+<p>So let’s use this <code class="verbatim">declare</code> for our good.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="va">ALL</span><span class="op">=</span><span class="st">&quot;true&quot;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="va">POSITIONAL</span><span class="op">=</span><span class="va">()</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">[[</span> <span class="va">$#</span> <span class="ot">-gt</span> 0 <span class="kw">]]</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">!=</span> <span class="st">&quot;&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">key</span><span class="op">=</span><span class="va">$(</span><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'{print toupper($0)}'</span><span class="va">)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">declare</span> <span class="at">-r</span> <span class="st">&quot;</span><span class="va">$key</span><span class="st">=true&quot;</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">ALL</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">shift</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">--</span> <span class="st">&quot;</span><span class="va">${POSITIONAL</span><span class="op">[@]</span><span class="va">}</span><span class="st">&quot;</span> <span class="co"># restore positional parameters</span></span></code></pre></div>
+<p>While this becomes a little bit harder to understand it saves us a lot of repetition. The only thing I would improve here immediately is to add a unique prefix to variable names, so user does not interfere with other variables. The final version looks like it.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="va">ALL</span><span class="op">=</span><span class="st">&quot;true&quot;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="va">POSITIONAL</span><span class="op">=</span><span class="va">()</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">[[</span> <span class="va">$#</span> <span class="ot">-gt</span> 0 <span class="kw">]]</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">!=</span> <span class="st">&quot;&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">key</span><span class="op">=</span><span class="va">$(</span><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'{print tolower($0)}'</span><span class="va">)</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">declare</span> <span class="at">-r</span> <span class="st">&quot;guard_</span><span class="va">$key</span><span class="st">=true&quot;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">ALL</span><span class="op">=</span><span class="st">&quot;false&quot;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">shift</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">--</span> <span class="st">&quot;</span><span class="va">${POSITIONAL</span><span class="op">[@]</span><span class="va">}</span><span class="st">&quot;</span> <span class="co"># restore positional parameters</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> theme_guard()</span> <span class="kw">{</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="va">key</span><span class="op">=</span><span class="va">$(</span><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'{print tolower($0)}'</span><span class="va">)</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">guard_ref</span><span class="op">=</span><span class="st">&quot;guard_</span><span class="va">$key</span><span class="st">&quot;</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="va">guard</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${</span><span class="op">!</span><span class="va">guard_ref}</span><span class="st">&quot;</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$ALL</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">||</span> <span class="st">&quot;</span><span class="va">$guard</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;true&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="ex">optional_theme</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="co"># logging</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="ex">inactive_theme</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="co"># logging</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;Repositores&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> sync_repo <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Repofile&quot;</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;Linking&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  <span class="ex">map_lines</span> safe_link  <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap/Linkfile&quot;</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="ex">theme_guard</span> <span class="st">&quot;Brew&quot;</span> <span class="kw">&amp;&amp;</span> <span class="kw">{</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>  <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$target</span><span class="st">/bootstrap&quot;</span> <span class="kw">&amp;&amp;</span> <span class="ex">brew</span> bundle</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>Just by extracting checks into separate function, by using <code class="verbatim">declare</code> to define variables and variable indirection to read value of variables we highly improved initial code. Less redundancy, clearer intention and ability to scale in terms of themes.</p>
+<h1 id="97c5e886-e5b3-4de9-9380-b92900d0c813" id="epilogue">Epilogue</h1>
+<p>Fortunately, our actions didn’t lead to Saruman taking control over the Shire, so we are good. This post is already long enough, so I am going to finish here. If you have any questions, just <a href="mailto:boris@d12frosted.io">email</a> me.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2018-11-04-revisiting-eru.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

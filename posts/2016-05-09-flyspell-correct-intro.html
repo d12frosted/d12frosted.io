@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Announcement of flyspell-correct package for Emacs">
+    <meta property="og:title" content="Boris Buliga - flyspell-correct" />
+    <meta property="og:description" content="Announcement of flyspell-correct package for Emacs" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2016-05-09-flyspell-correct-intro.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - flyspell-correct</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>flyspell-correct</h1>
+  <section class="subtitle">
+    Posted on May  9, 2016
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'release'." href="../tags/release.html">#release</a>, <a title="All pages tagged 'flyspell-correct'." href="../tags/flyspell-correct.html">#flyspell-correct</a>
+  </section>
+  
+  <section>
+    <p><a href="https://github.com/d12frosted/flyspell-correct">flyspell-correct</a> is a package for distraction-free words correction with flyspell via selected interface. It’s available on <a href="https://github.com/d12frosted/flyspell-correct">GitHub</a> and MELPA.</p>
+<p>It’s very common to make mistakes while writing notes, comments or whatever. And a desire to have spell checking software is natural. In Emacs, we usually use <a href="https://www.emacswiki.org/emacs/FlySpell">Flyspell</a> for that purpose. It’s a great piece of software, but sometimes it lacks better interface for correcting words. Especially since there are completion packages like <a href="https://github.com/auto-complete/popup-el">popup.el</a>, <a href="https://github.com/emacs-helm/helm">helm</a>, <a href="https://github.com/abo-abo/swiper">ivy</a> etc. There are already available separate packages for correcting words via <code>popup.el</code> (<a href="https://www.emacswiki.org/emacs/FlySpell#toc11">wiki</a>, <a href="https://github.com/xuchunyang/flyspell-popup">flyspell-popup</a>) and <code>helm</code> (<a href="https://github.com/pronobis/helm-flyspell">helm-flyspell</a>). Since recently I have switched from <code>helm</code> to <code>ivy</code>, I’ve found a lack of similar package for <code>ivy</code>, so I decided to write my own.</p>
+<p>But available packages are all the same, except the part that calls completion front-end, so my goal was to provide a generic package allowing usage of any interface. Either from the predefined set (<code>ivy</code>, <code>helm</code>, <code>popup</code> or <code>dummy</code>) or any user-defined.</p>
+<p>This is an introduction post, for more up-to-date documentation, please refer to <a href="https://github.com/d12frosted/flyspell-correct">README</a> file.</p>
+<!--more-->
+
+<p>In order to use this package, just install it from MELPA, setup <code>flyspell-correct-interface</code> variable to one of predefined (<code>flyspell-correct-ivy</code>, <code>flyspell-correct-helm</code>, <code>flyspell-correct-popup</code>, <code>flyspell-correct-ido</code>, <code>flyspell-correct-dummy</code>) or your own interface function. Then all you have to do is to call <code>flyspell-correct-wrapper</code> from any point of the buffer. You can also bind <code>flyspell-correct-wrapper</code> to any key binding.</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; set ivy as correcting interface</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> flyspell-correct-interface #'flyspell-correct-ivy)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; bind flyspell-correct-wrapper</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>(define-key flyspell-mode-map (kbd <span class="st">&quot;C-;&quot;</span>) #'flyspell-correct-wrapper)</span></code></pre></div>
+<h1 id="21D95C0C-B29B-4AA5-AE2B-F21B8752D01E" id="h:EA327339-900D-4E43-8C9C-28FB906317ED">Implementing custom interfaces</h1>
+<p>As it was already said, you can implement your own interface for correcting words. It has to be a function that takes two arguments - candidates and incorrect word. It has to return either replacement word or <code>(command, word)</code> tuple, where <code>command</code> can be one of the following:</p>
+<ul>
+<li><code>skip</code> - meaning that no action is required for current incorrect <code>word</code>;</li>
+<li><code>save</code> - meaning that the <code>word</code> must be saved in a dictionary;</li>
+<li><code>session</code> - meaning that the <code>word</code> must be saved for the current session;</li>
+<li><code>buffer</code> - meaning that the <code>word</code> must be saved for the current buffer.</li>
+</ul>
+<p>Let’s check <code>flyspell-correct-ivy</code> as an example of a custom interface.</p>
+<div class="sourceCode" id="cb2" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> flyspell-correct-ivy </span>(candidates word)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Run `ivy-read' for the given CANDIDATES.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">List of CANDIDATES is given by flyspell for the WORD.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">Return a selected word to use as a replacement or a tuple</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">of (command, word) to be used by `flyspell-do-correct'.&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let*</span> (result</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>         (action-default (<span class="kw">lambda</span> (x) (<span class="kw">setq</span> result x)))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>         (action-save-word (<span class="kw">lambda</span> (_) (<span class="kw">setq</span> result (<span class="kw">cons</span> 'save word))))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>         (action-accept-session (<span class="kw">lambda</span> (_) (<span class="kw">setq</span> result (<span class="kw">cons</span> 'session word))))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>         (action-accept-buffer (<span class="kw">lambda</span> (_) (<span class="kw">setq</span> result (<span class="kw">cons</span> 'buffer word))))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>         (action-skip-word (<span class="kw">lambda</span> (_) (<span class="kw">setq</span> result (<span class="kw">cons</span> 'skip word))))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>         (action `(<span class="dv">1</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">&quot;o&quot;</span> ,action-default <span class="st">&quot;correct&quot;</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">&quot;s&quot;</span> ,action-save-word <span class="st">&quot;Save&quot;</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">&quot;S&quot;</span> ,action-accept-session <span class="st">&quot;Accept (session)&quot;</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">&quot;b&quot;</span> ,action-accept-buffer <span class="st">&quot;Accept (buffer)&quot;</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">&quot;k&quot;</span> ,action-skip-word <span class="st">&quot;Skip&quot;</span>))))</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    (ivy-read (<span class="kw">format</span> <span class="st">&quot;Suggestions for </span><span class="sc">\&quot;</span><span class="st">%s</span><span class="sc">\&quot;</span><span class="st"> in dictionary </span><span class="sc">\&quot;</span><span class="st">%s</span><span class="sc">\&quot;</span><span class="st">: &quot;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                      word (<span class="kw">or</span> ispell-local-dictionary</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                               ispell-dictionary</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;Default&quot;</span>))</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>              candidates</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>              :action action</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>              :caller 'flyspell-correct-ivy)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    result))</span></code></pre></div>
+<p>As you see, it’s pretty straightforward. Just run <code>ivy-read</code> with candidates provided by <code>flyspell</code> for the incorrect word. Default action just returns selected replacement word. While other actions return mentioned tuple of <code>(command, word)</code>.</p>
+<h1 id="E39202B8-1A59-4AFA-B562-32E55DD0D9BE" id="h:E78D60DB-88B0-4F55-B0F3-4DB97EB8D38F">Distraction-free meaning</h1>
+<p>One of the most important parts of the <code>flyspell-correct</code> package is the ability to correct words that are far from the point. By default, <code>flyspell-correct-wrapper</code> jumps to the first incorrect word before the point. So you don’t have to move the point manually to correct a mistake made several words or lines before.</p>
+<p>Also, if you happen to have multiple mistakes before the point, you can use <code>flyspell-correct-wrapper</code> in a so-called ‘rapid mode’. Just call it with a universal argument (e.g. <code>C-u C-;</code>) and you’ll get an option to correct all mistakes one by one in a current direction. If you want to leave incorrect word as is, just use <code>skip</code> command.</p>
+<p>The direction of the spelling can be changed by calling <code>flyspell-correct-wrapper</code> with <code>C-u C-u</code>.</p>
+<h1 id="A7D2BA6F-A054-4FA0-9593-9C99095F26A1" id="h:F64AC6EF-DBA1-497A-B942-84817F2CDA3A">Screenshots</h1>
+<h2 id="E4CB133B-8838-4366-BE23-966DECA59092" id="h:5E98E522-A77E-4400-9B74-359BED124F41">Ivy interface</h2>
+<p><img src="../images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-1.webp" /></p>
+<p><img src="../images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-2.webp" /></p>
+<h2 id="1812089F-4C68-4CFC-BDB9-69E6CB5E9B36" id="h:0299DF7E-1363-44CB-8C3B-BE32FB4940D8">Popup interface</h2>
+<p><img src="../images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-45-screenshot-popup.webp" /></p>
+<h2 id="7DB685F6-3DED-4C7F-BBA9-789DD007C9D6" id="h:A541869C-F481-4693-89FB-E9D17E97252B">Helm interface</h2>
+<p><img src="../images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-59-screenshot-helm.webp" /></p>
+<h2 id="FED00B5D-590E-42E9-8F62-FFAE24ED1157" id="h:04DB7CA3-ACE6-4313-8FA2-9CF1AC104079">Ido interface</h2>
+<p><img src="../images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp" /></p>
+<h1 id="6336610B-ED20-4941-ADA6-D7BB65182937" id="h:C32BE0EC-96B1-4854-AA6D-8DDF4E6DCF0C">Last few words</h1>
+<p>Contributions are warmly welcome!</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2016-05-09-flyspell-correct-intro.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

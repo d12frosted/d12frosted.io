@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Combinators for predicate composition">
+    <meta property="og:title" content="Boris Buliga - Predicate composition" />
+    <meta property="og:description" content="Combinators for predicate composition" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2020-01-20-predicate-composition.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Predicate composition</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Predicate composition</h1>
+  <section class="subtitle">
+    Posted on January 20, 2020
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'haskell'." href="../tags/haskell.html">#haskell</a>
+  </section>
+  
+  <section>
+    <p>They say functional programming has many essences and the composition is one of them. Thanks to the wonderful dot operator, we know how to compose functions like <code class="verbatim">a -&gt; b</code> and <code class="verbatim">b -&gt; c</code> to get a function <code class="verbatim">a -&gt; c</code>. But in some cases functions are not that simple and it becomes tricky to compose them nicely.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">valid ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>valid <span class="ot">=</span> \a <span class="ot">-&gt;</span> check1 a <span class="op">&amp;&amp;</span> (check2 a <span class="op">||</span> check3 a)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span> check1 <span class="ot">= undefined ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        check2 <span class="ot">= undefined ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        check3 <span class="ot">= undefined ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span></code></pre></div>
+<p>It would be lovely to express it in a more declarative way by abstracting away function application and result combination.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">valid ::</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>valid <span class="ot">=</span> check1 <span class="op">.&amp;&amp;</span> (check2 <span class="op">.||</span> check3)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span></code></pre></div>
+<p>Apart from implementing combinators for predicate composition, we want to avoid any runtime penalty from using abstractions. In this article we are going to implement the following functions and investigate how far we can go with abstractions until performance degrades. Or maybe it won’t degrade. Who knows?</p>
+<!--more-->
+
+<h1 id="3d8e0953-be5b-4dba-bae9-ea6a26888e74" id="inline-implementation">Inline implementation</h1>
+<p>Before we jump into the void, lets draw a baseline by keeping implementation simple.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">Main</span> (main) <span class="kw">where</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  input <span class="ot">&lt;-</span> <span class="fu">read</span> <span class="op">&lt;$&gt;</span> <span class="fu">getLine</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> result <span class="ot">=</span> input <span class="op">&lt;</span> <span class="dv">10</span> <span class="op">&amp;&amp;</span> (input <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">||</span> <span class="fu">even</span> input)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span> result</span></code></pre></div>
+<p>Haskell language is abstract and high-level thus in some cases in order to really understand what the program does we need to look at the intermediate language called <a href="https://www.aosabook.org/en/ghc.html">Core</a> (or System FC) produced by Glasgow Haskell Compiler (GHC) when it compiles<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> our program. This reduced code is the end result of GHC’s optmisations-by-transformation process, which iteratively rewrites the original code into more optimised versions in a smaller language.</p>
+<p>In order to dump the intermediate code in Core language we need to ask GHC to do it. We use <code class="verbatim">-O</code> (or <code class="verbatim">-O2</code>) to enable optimisations and <code class="verbatim">-ddump-simpl</code> to dump the simplified output, which can be combined with <code class="verbatim">-ddump-to-file</code> to write result into a file instead of <code class="verbatim">stdout</code>. More options are described in the <a href="https://downloads.haskell.org/ghc/latest/docs/html/users_guide/debugging.html#debugging-the-compiler">GHC manual</a>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ghc <span class="at">-O</span> <span class="at">-ddump-simpl</span> Main.hs</span></code></pre></div>
+<p>Or if you are using <a href="https://docs.haskellstack.org/en/stable/README/">stack</a>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> stack ghc <span class="at">--</span> <span class="at">-O</span> <span class="at">-ddump-simpl</span> Main.hs</span></code></pre></div>
+<p>This <a href="https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/inline.dump-simpl">prints a lot of stuff</a>, so let me focus on the most important part.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">Main.$</span><span class="ot">seven1 ::</span> <span class="dt">Integer</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="op">Main.$</span>seven1 <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="op">Main.$</span><span class="ot">seven2 ::</span> <span class="dt">Integer</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">Main.$</span>seven2 <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>Main.main3<span class="ot"> ::</span> <span class="dt">Integer</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>Main.main3 <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- check if input &lt; 10</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.ltInteger<span class="op">#</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>         x1_a6kH    <span class="co">-- input</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>         Main.main3 <span class="co">-- 10</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">of</span> {</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- false</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    __DEFAULT <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool4; <span class="co">-- false</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- true</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>      <span class="co">-- check if input &gt; 0</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.gtInteger<span class="op">#</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>             x1_a6kH      <span class="co">-- input</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>             <span class="op">Main.$</span>seven1 <span class="co">-- 0</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>      <span class="kw">of</span> {</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        __DEFAULT <span class="ot">-&gt;</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>          <span class="co">-- check if input is even (e.g. rem input 2 == 0)</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>          <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.eqInteger<span class="op">#</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>                 (integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.remInteger</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>                    x1_a6kH      <span class="co">-- input</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>                    <span class="op">Main.$</span>seven2 <span class="co">-- 2</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>                 )</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>                 <span class="op">Main.$</span>seven1    <span class="co">-- 0</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>          <span class="kw">of</span> {</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>            __DEFAULT <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool4; <span class="co">-- false</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool2         <span class="co">-- true</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>          };</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool2             <span class="co">-- true</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>  };</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span></code></pre></div>
+<p>So this how it looks in Core, verbose but really straightforward.</p>
+<h1 id="aba773db-4f30-4042-84cc-799242411010" id="reason-to-read-the-line">Reason to read the line</h1>
+<p>Strictly speaking there is no need for reading integer from <code class="verbatim">stdin</code> in our example. After all, we care only about the predicates. But GHC is pretty aggressive in terms of in-lining and simplifications when optimisations are enabled. With <code class="verbatim">-O2</code> there will be even more cross-module optimisation compared to <code class="verbatim">-O</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">Main</span> (main) <span class="kw">where</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> input  <span class="ot">=</span> <span class="dv">5</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> result <span class="ot">=</span> input <span class="op">&lt;</span> <span class="dv">10</span> <span class="op">&amp;&amp;</span> (input <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">||</span> <span class="fu">even</span> input)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span> result</span></code></pre></div>
+<p>Compiling this module with <code class="verbatim">-O</code> produces <a href="https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/no-getline.dump-simpl">the following Core</a> (83 lines).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>[<span class="dt">GblId</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a> <span class="dt">Arity</span><span class="ot">=</span><span class="dv">1</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a> <span class="dt">Unf</span><span class="ot">=</span><span class="dt">Unf</span>{<span class="dt">Src</span><span class="op">=&lt;</span>vanilla<span class="op">&gt;</span>, <span class="dt">TopLvl</span><span class="ot">=</span><span class="dt">True</span>, <span class="dt">Value</span><span class="ot">=</span><span class="dt">True</span>, <span class="dt">ConLike</span><span class="ot">=</span><span class="dt">True</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>         <span class="dt">WorkFree</span><span class="ot">=</span><span class="dt">True</span>, <span class="dt">Expandable</span><span class="ot">=</span><span class="dt">True</span>, <span class="dt">Guidance</span><span class="ot">=</span><span class="dt">IF_ARGS</span> [] <span class="dv">40</span> <span class="dv">60</span>}]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>main</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> GHC.IO.Handle.Text.hPutStr'</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      GHC.IO.Handle.FD.stdout <span class="op">GHC.Show.$</span>fShowBool2 <span class="dt">GHC.Types.True</span></span></code></pre></div>
+<p>As you can see, it figured out that there is no need to evaluate it in runtime. But in order to compare different implementations of composition operators, we don’t want compiler to inline the result.</p>
+<p>If you are curious about reductions steps, you can pass <code class="verbatim">-v</code> option to <code class="verbatim">ghc</code> to be more verbose. When you build with <code class="verbatim">-v</code>, compilation of the version with <code class="verbatim">getLine</code> is less verbose than without.</p>
+<h1 id="40e9ccf9-3b63-455c-9383-445cf10b0e96" id="trivial-implementation">Trivial implementation</h1>
+<p>Now that we have a solid source of nightmares, let’s return to cozy nook. Our first step is to create operators in the most trivial manner.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">Main</span> (main) <span class="kw">where</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  input <span class="ot">&lt;-</span> <span class="fu">read</span> <span class="op">&lt;$&gt;</span> <span class="fu">getLine</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> result <span class="ot">=</span> (<span class="op">&lt;</span> <span class="dv">10</span>) <span class="op">.&amp;&amp;</span> ((<span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">.||</span> <span class="fu">even</span>) <span class="op">$</span> input</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span> result</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> \a <span class="ot">-&gt;</span> p1 a <span class="op">&amp;&amp;</span> p2 a</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">2</span> <span class="op">.||</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.||</span> p2 <span class="ot">=</span> \a <span class="ot">-&gt;</span> p1 a <span class="op">||</span> p2 a</span></code></pre></div>
+<p>If we compile it, the relevant part in the Core language is the same.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.ltInteger<span class="op">#</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>         x1_a6m7 Main.main3</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">of</span> {</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    __DEFAULT <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool4;</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.gtInteger<span class="op">#</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>             x1_a6m7 <span class="op">Main.$</span>seven1</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>      <span class="kw">of</span> {</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        __DEFAULT <span class="ot">-&gt;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>          <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.eqInteger<span class="op">#</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                 (integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.remInteger</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                    x1_a6m7 <span class="op">Main.$</span>seven2)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                 <span class="op">Main.$</span>seven1</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>          <span class="kw">of</span> {</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>            __DEFAULT <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool4;</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool2</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>          };</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool2</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  };</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span></code></pre></div>
+<p>While our code looks better, there are no runtime penalties. In short, with <code class="verbatim">-O</code> option GHC always tries to inline small functions (based on <a href="https://downloads.haskell.org/ghc/latest/docs/html/users_guide/using-optimisation.html#ghc-flag--funfolding-creation-threshold=%E2%9F%A8n%E2%9F%A9">unfolding-creation-threshold</a> and heuristics) thus avoiding the call overhead and enabling other optimisations (like replacing whole expression with its result). And when unfolding doesn’t happen for some of the reasons and you really think that it should happen (make such decision based on CPU and memory profiling), then put <a href="https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#inline-pragma">INLINE pragma</a>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> \a <span class="ot">-&gt;</span> p1 a <span class="op">&amp;&amp;</span> p2 a</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ot">{-# INLINE (.&amp;&amp;) #-}</span></span></code></pre></div>
+<p>Please note that in-lining usually leads to bigger executable.</p>
+<h1 id="dc1cedca-dd51-40cd-9769-7e5aa4a63b1f" id="using-newtype-wrappers">Using <code class="verbatim">newtype</code> wrappers</h1>
+<p>If we look at the definition of <code class="verbatim">.&amp;&amp;</code> and <code class="verbatim">.||</code> we see that they are pretty much the same. The only difference is the use of <code class="verbatim">&amp;&amp;</code> instead of <code class="verbatim">||</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> \a <span class="ot">-&gt;</span> p1 a <span class="op">&amp;&amp;</span> p2 a</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">2</span> <span class="op">.||</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.||</span> p2 <span class="ot">=</span> \a <span class="ot">-&gt;</span> p1 a <span class="op">||</span> p2 a</span></code></pre></div>
+<p>Maybe there is some magic function that takes a function for combining two booleans, two predicates, a value and returns a boolean? So we can express our combinators with it.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ot">magic ::</span> (<span class="dt">Bool</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>magic plus p1 p2 <span class="ot">=</span> \a <span class="ot">-&gt;</span> p1 a <span class="ot">`plus`</span> p2 a</span></code></pre></div>
+<p>Or even more generic one:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ot">gmagic ::</span> (b <span class="ot">-&gt;</span> b <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> b</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>gmagic plus p1 p2 <span class="ot">=</span> \a <span class="ot">-&gt;</span> p1 a <span class="ot">`plus`</span> p2 a</span></code></pre></div>
+<p>This all reminds me of <code class="verbatim">Semigroup</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Semigroup</span> a <span class="kw">where</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ot">  (&lt;&gt;) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ot">gmagic ::</span> (<span class="dt">Semigroup</span> b) <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> b</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>gmagic f g <span class="ot">=</span> \a <span class="ot">-&gt;</span> f a <span class="op">&lt;&gt;</span> g a</span></code></pre></div>
+<p>Thanks to <code class="verbatim">Semigroup</code> the <code class="verbatim">plus</code> function is not passed explicitly and <code class="verbatim">gmagic</code> become lighter. Now, functions which return type is an instance of <code class="verbatim">Semigroup</code> also form <code class="verbatim">Semigroup</code> and it’s implementation looks familiar.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Semigroup</span> b <span class="ot">=&gt;</span> <span class="dt">Semigroup</span> (a <span class="ot">-&gt;</span> b) <span class="kw">where</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  f <span class="op">&lt;&gt;</span> g <span class="ot">=</span> \a <span class="ot">-&gt;</span> f a <span class="op">&lt;&gt;</span> g a</span></code></pre></div>
+<p>So it turns out that our <code class="verbatim">gmagic</code> function is a binary operator from <code class="verbatim">Semigroup</code>. How convenient, isn’t it? If we add more parenthesis to the signature you’ll notice that it actually takes two functions and produces new one (exactly what we are doing with predicates).</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ot">gmagic ::</span> (<span class="dt">Semigroup</span> b) <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>gmagic f g <span class="ot">=</span> \a <span class="ot">-&gt;</span> f a <span class="op">&lt;&gt;</span> g a</span></code></pre></div>
+<p>In Haskell every single data type can have not more than one instance of a given type class. But for some data types there are more than one valid (lawful) instances of a given type class. For example, we know that the set of natural numbers forms different semigroups with different operations: <span class="math inline">(ℕ,+)</span> or <span class="math inline">(ℕ,⋅)</span>. The same story with booleans - <span class="math inline">(𝔹,∧)</span> and <span class="math inline">(𝔹,∨)</span> are both valid semigroups.</p>
+<p>Restriction for amount of instances means that we need to wrap our data types when we need to create multiple instances. A wrapper per each instance. That leads to an awful runtime cost - wrapping and unwrapping are not free. That’s why we use <code class="verbatim">newtype</code> to create wrappers. In compile time the <code class="verbatim">newtype</code> wrapper is not equal to the type that is being wrapped, so we can use different instances. But since the types are isomorphic, all the wrapping and unwrapping can be removed by compiler, so we don’t have any runtime costs anymore.</p>
+<p>When it comes to booleans with conjunction (<code class="verbatim">&amp;&amp;</code>) or disjunction (<code class="verbatim">||</code>), we don’t need to define our own wrappers since <code class="verbatim">Data.Monoid</code> already provides them - <code class="verbatim">All</code> and <code class="verbatim">Any</code>.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> getAll (<span class="dt">All</span> <span class="dt">True</span> <span class="op">&lt;&gt;</span> <span class="dt">All</span> <span class="dt">False</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">False</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> getAny (<span class="dt">Any</span> <span class="dt">True</span> <span class="op">&lt;&gt;</span> <span class="dt">Any</span> <span class="dt">False</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="dt">True</span></span></code></pre></div>
+<p>We can fetch it all together and get new definition of <code class="verbatim">.&amp;&amp;</code> and <code class="verbatim">.||</code>.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> getAll <span class="op">.</span> (<span class="dt">All</span> <span class="op">.</span> p1 <span class="op">&lt;&gt;</span> <span class="dt">All</span> <span class="op">.</span> p2)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">2</span> <span class="op">.||</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.||</span> p2 <span class="ot">=</span> getAny <span class="op">.</span> (<span class="dt">Any</span> <span class="op">.</span> p1 <span class="op">&lt;&gt;</span> <span class="dt">Any</span> <span class="op">.</span> p2)</span></code></pre></div>
+<p>I’ve heard multiple times that <code class="verbatim">newtype</code> is erased during compilation and by inspecting <a href="https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/operator-newtype.dump-simpl">the dumped Core</a> we can confirm that this version is not different from the previous one.</p>
+<p>However we didn’t improve the code. I’d say that we degraded. While we abstracted away function application, we have strengthened the link between the definition shape and the binary operation, which now appears three times on two different levels. Not good, definitely not good.</p>
+<h1 id="59462ff6-1f88-4ddf-b89c-24e4e54b6301" id="coercion">Coercion</h1>
+<p>What comes to the rescue is coercion. Starting with GHC 7.8 there is a new type class allowing conversion between any two types that are representationally equal.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Data.Coerce</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Coercible</span> a b <span class="kw">where</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ot">  coerce ::</span> a <span class="ot">-&gt;</span> b</span></code></pre></div>
+<p>But what does it mean to be representationally equal? And are there any other types<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> of type equality? It turns out that there are two of them and they were <a href="https://gitlab.haskell.org/ghc/ghc/wikis/roles">introduced</a> as a solution for a long existing hole in a type system.</p>
+<p>Nominal equality means that types are <em>really</em> equal. If two types have the same name (expanding synonyms) they are nominally equal. If they don’t have the same name, well, then they are not nominally equal.</p>
+<p>But what about <code class="verbatim">newtype</code> wrappers like <code class="verbatim">All</code> and <code class="verbatim">Any</code>? We know that they are isomorphic to <code class="verbatim">Bool</code> (and mutually as well). Are they equal? Here comes the second kind of type equality – representational. They all share the same representation. While <code class="verbatim">All</code> and <code class="verbatim">Bool</code> are representationally equal, they are not equal nominally!</p>
+<p>So all that means that we can use <code class="verbatim">coerce</code> to convert from <code class="verbatim">All</code> to <code class="verbatim">Bool</code> and back. Let’s try it.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">:</span>m <span class="op">+</span><span class="dt">Data.Coerce</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">:</span>m <span class="op">+</span><span class="dt">Data.Monoid</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">:</span>t coerce</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="ot">coerce ::</span> <span class="dt">Coercible</span> a b <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> b</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">:</span>t getAll <span class="op">.</span> coerce</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>getAll <span class="op">.</span><span class="ot"> coerce ::</span> <span class="dt">Coercible</span> a <span class="dt">Bool</span> <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span></code></pre></div>
+<p>Wow, this is kind of tricky. The <code class="verbatim">getAll . coerce</code> expression literally says – ‘give me something representationally equal to <code class="verbatim">Bool</code> and I will get to back the <code class="verbatim">Bool</code>’. It will do all the conversion for us.</p>
+<p>When we look at the previous implementation of <code class="verbatim">.&amp;&amp;</code> we might notice that we actually <del>convert</del> coerce <code class="verbatim">Bool</code> to <code class="verbatim">All</code> and then get back the <code class="verbatim">Bool</code> value.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> getAll <span class="op">.</span> (<span class="dt">All</span> <span class="op">.</span> p1 <span class="op">&lt;&gt;</span> <span class="dt">All</span> <span class="op">.</span> p2)</span></code></pre></div>
+<p>Maybe we can replace <code class="verbatim">All</code> with <code class="verbatim">coerce</code>?</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> getAll <span class="op">.</span> (coerce <span class="op">.</span> p1 <span class="op">&lt;&gt;</span> coerce <span class="op">.</span> p2)</span></code></pre></div>
+<p>And it works. We can repeat the trick with <code class="verbatim">.||</code>, but at this point we can move this patter to a helper operator <code class="verbatim">&lt;~&gt;</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">&lt;~&gt;</span> g <span class="ot">=</span> coerce <span class="op">.</span> f  <span class="op">&lt;&gt;</span> coerce <span class="op">.</span> g</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- or in other words</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>f <span class="op">&lt;~&gt;</span> g <span class="ot">=</span> \a <span class="ot">-&gt;</span> coerce (f a) <span class="op">&lt;&gt;</span> coerce (g a)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> getAll <span class="op">.</span> (p1 <span class="op">&lt;~&gt;</span> p2)</span></code></pre></div>
+<p>I specially omitted the type signature of <code class="verbatim">&lt;~&gt;</code>. It’s not our job to infer the types, but let’s steal some bread from GHC’s table.</p>
+<p>We know that the type of <code class="verbatim">f</code> should be <code class="verbatim">a -&gt; b</code>. Previously we put a constraint on <code class="verbatim">b</code> to form <code class="verbatim">Semigroup</code>. But now we <code class="verbatim">coerce</code> it some type and only then use <code class="verbatim">&lt;&gt;</code>. The result of <code class="verbatim">coerce (f a)</code> must form <code class="verbatim">Semigroup</code>. Which means that if <code class="verbatim">f</code> has type <code class="verbatim">a -&gt; b</code> then we need be able to covert <code class="verbatim">b</code> to some type <code class="verbatim">c</code> which is semigroup.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ot">(&lt;~&gt;) ::</span> (<span class="dt">Coercible</span> b c, <span class="dt">Monoid</span> c) <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> c</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>f <span class="op">&lt;~&gt;</span> g <span class="ot">=</span> coerce <span class="op">.</span> f <span class="op">&lt;&gt;</span> coerce <span class="op">.</span> g</span></code></pre></div>
+<p>And you know what? It works! But if you think about the <code class="verbatim">g</code>, then you realise that <code class="verbatim">f a</code> and <code class="verbatim">g a</code> are independent, the only requirement is to be able to coerce them to the same type <code class="verbatim">c</code> that forms <code class="verbatim">Semigroup</code>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">Main</span> (main) <span class="kw">where</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span>           <span class="dt">Data.Coerce</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span>           <span class="dt">Data.Monoid</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  input <span class="ot">&lt;-</span> <span class="fu">read</span> <span class="op">&lt;$&gt;</span> <span class="fu">getLine</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> result <span class="ot">=</span> (<span class="op">&lt;</span> <span class="dv">10</span>) <span class="op">.&amp;&amp;</span> ((<span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">.||</span> <span class="fu">even</span>) <span class="op">$</span> input</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span> result</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="ot">(&lt;~&gt;) ::</span> ( <span class="dt">Coercible</span> b1 c</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>         , <span class="dt">Coercible</span> b2 c</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>         , <span class="dt">Monoid</span> c</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>      <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b1) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b2) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> c</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>f <span class="op">&lt;~&gt;</span> g <span class="ot">=</span> coerce <span class="op">.</span> f <span class="op">&lt;&gt;</span> coerce <span class="op">.</span> g</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> getAll <span class="op">.</span> (p1 <span class="op">&lt;~&gt;</span> p2)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">2</span> <span class="op">.||</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.||</span> p2 <span class="ot">=</span> getAny <span class="op">.</span> (p1 <span class="op">&lt;~&gt;</span> p2)</span></code></pre></div>
+<p>This works, this composes. You can also use it with other semigroups like <code class="verbatim">Sum</code> and <code class="verbatim">Product</code>. But it might look a little bit weird.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> getSum <span class="op">.</span> ((<span class="op">*</span><span class="dv">2</span>) <span class="op">&lt;~&gt;</span> (<span class="op">+</span><span class="dv">100</span>)) <span class="op">$</span> <span class="dv">15</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="dv">145</span></span></code></pre></div>
+<p>So instead, let’s look at <a href="https://github.com/d12frosted/d12frosted.io/blob/master/assets/snippets/predicate-composition/operator-coerce.dump-simpl">the Core dump</a>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="kw">case</span> ds2_a6m8 <span class="kw">of</span> {</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  [] <span class="ot">-&gt;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.ltInteger<span class="op">#</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>           x1_a6m7 Main.main3</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">of</span> {</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>      __DEFAULT <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool4;</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.gtInteger<span class="op">#</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>               x1_a6m7 <span class="op">Main.$</span>seven1</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">of</span> {</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>          __DEFAULT <span class="ot">-&gt;</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>            <span class="kw">case</span> integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.eqInteger<span class="op">#</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>                   (integer<span class="op">-</span>gmp<span class="op">-</span><span class="fl">1.0</span><span class="op">.</span><span class="fl">2.0</span><span class="op">:</span>GHC.Integer.Type.remInteger</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>                      x1_a6m7 <span class="op">Main.$</span>seven2)</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>                   <span class="op">Main.$</span>seven1</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>            <span class="kw">of</span> {</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>              __DEFAULT <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool4;</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>              <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool2</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>            };</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>          <span class="dv">1</span><span class="op">#</span> <span class="ot">-&gt;</span> <span class="op">GHC.Show.$</span>fShowBool2</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>    };</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span></code></pre></div>
+<p>The important bits are the same.</p>
+<h1 id="8fa9e416-895a-4c63-a3c5-e2df8a117bbe" id="criterion">Criterion</h1>
+<p>I bet that at this point it’s obvious, but they perform similarly – the naive implementation and the most abstract one with coercion and <code class="verbatim">newtype</code> wrappers. We know this because we inspected the dumped Core, but we can also refer to criterion to inspect the runtime performance.</p>
+<pre class="example"><code>benchmarking single/naive
+time                 3.027 ns   (3.011 ns .. 3.043 ns)
+                     1.000 R²   (1.000 R² .. 1.000 R²)
+mean                 3.017 ns   (3.009 ns .. 3.029 ns)
+std dev              31.73 ps   (22.17 ps .. 48.50 ps)
+variance introduced by outliers: 12% (moderately inflated)
+
+benchmarking single/coerce
+time                 3.017 ns   (3.009 ns .. 3.025 ns)
+                     1.000 R²   (1.000 R² .. 1.000 R²)
+mean                 3.026 ns   (3.015 ns .. 3.055 ns)
+std dev              56.91 ps   (26.62 ps .. 114.5 ps)
+variance introduced by outliers: 30% (moderately inflated)
+</code></pre>
+<div class="criterion" data-file="predicate-composition/single.json" type="horizontalBar" height="120" data-xAxisBeginAtZero="true">
+
+</div>
+<h1 id="2a7947c7-15c4-4ae3-8fee-9715e0f20ec2" id="final-words">Final words</h1>
+<p>I love that in Haskell one can use <em>some</em> of the abstractions without hurting the runtime. After all, as developers we want to simplify our <em>development</em> life with minimal negative influence on the application.</p>
+<p>Today we implemented two simple operators for predicate composition using semigroups and coercion. And we saw that they don’t introduce runtime penalty. Techniques that made it possible are usable in other scenarios.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="dt">Data.Monoid.Extra</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  ( (<span class="op">.&amp;&amp;</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  , (<span class="op">.||</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="kw">where</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span>           <span class="dt">Data.Coerce</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span>           <span class="dt">Data.Monoid</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> getAll <span class="op">.</span> (p1 <span class="op">&lt;~&gt;</span> p2)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">2</span> <span class="op">.||</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.||</span> p2 <span class="ot">=</span> getAny <span class="op">.</span> (p1 <span class="op">&lt;~&gt;</span> p2)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="ot">(&lt;~&gt;) ::</span> ( <span class="dt">Coercible</span> b1 c</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>         , <span class="dt">Coercible</span> b2 c</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>         , <span class="dt">Monoid</span> c</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>      <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b1) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b2) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> c</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>f <span class="op">&lt;~&gt;</span> g <span class="ot">=</span> coerce <span class="op">.</span> f <span class="op">&lt;&gt;</span> coerce <span class="op">.</span> g</span></code></pre></div>
+<h1 id="c6ba6e91-b98a-4a7b-b96f-d61331c1f601" id="evolution">Evolution</h1>
+<p>I love the <a href="https://willamette.edu/~fruehr/haskell/evolution.html">The Evolution of a Haskell Programmer</a> by Fritz Ruehr. And to keep the traction of this evolution path, we should step back and reflect on atrocious results. We all love functions, don’t we? And functions are known functors and applicatives. So instead of going this lengthy path, we could just do something dead simple.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.&amp;&amp;</span> p2 <span class="ot">=</span> (<span class="op">&amp;&amp;</span>) <span class="op">&lt;$&gt;</span> p1 <span class="op">&lt;*&gt;</span> p2</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">2</span> <span class="op">.||</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">.||</span> p2 <span class="ot">=</span> (<span class="op">||</span>) <span class="op">&lt;$&gt;</span> p1 <span class="op">&lt;*&gt;</span> p2</span></code></pre></div>
+<p>Or using <code class="verbatim">liftA2</code>:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">3</span> <span class="op">.&amp;&amp;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="ot">(.&amp;&amp;) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>(<span class="op">.&amp;&amp;</span>) p2 <span class="ot">=</span> liftA2 (<span class="op">&amp;&amp;</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="kw">infixr</span> <span class="dv">2</span> <span class="op">.||</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="ot">(.||) ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>(<span class="op">.||</span>) <span class="ot">=</span> liftA2 (<span class="op">||</span>)</span></code></pre></div>
+<p>Stay safe!</p>
+<h1 id="efdbc68e-c92b-413c-be23-7500ae2602f6" id="references">References</h1>
+<ul>
+<li><a href="https://www.aosabook.org/en/ghc.html">The Glasgow Haskell Compiler</a> by <a href="https://www.aosabook.org/en/intro2.html#marlow-simon">Simon Marlow</a> and <a href="https://www.aosabook.org/en/intro2.html#peyton-jones-simon">Simon Peyton-Jones</a>.</li>
+<li>Real World Haskell Chapter 25. Profiling and optimization by Bryan O’Sullivan, Don Stewart, and John Goerzen.</li>
+<li><a href="https://downloads.haskell.org/ghc/latest/docs/html/users_guide/debugging.html#id2">Glasgow Haskell Compiler User’s Guide</a> Debugging the compiler.</li>
+<li><a href="https://gitlab.haskell.org/ghc/ghc/wikis/roles">Roles</a> on GHC Wiki.</li>
+</ul>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Aaah, the tautology…<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Kinds?<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-01-20-predicate-composition.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

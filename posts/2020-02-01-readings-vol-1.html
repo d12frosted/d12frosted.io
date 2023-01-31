@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Recommended articles and books">
+    <meta property="og:title" content="Boris Buliga - Readings Vol. I: precondition encoding" />
+    <meta property="og:description" content="Recommended articles and books" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2020-02-01-readings-vol-1.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Readings Vol. I: precondition encoding</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Readings Vol. I: precondition encoding</h1>
+  <section class="subtitle">
+    Posted on February  1, 2020
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'haskell'." href="../tags/haskell.html">#haskell</a>, <a title="All pages tagged 'readings'." href="../tags/readings.html">#readings</a>
+  </section>
+  
+  <section>
+    <p>When we write libraries for others (including ourselves) to use we often require some preconditions to be met. Sometimes we just make them implicit (in the form of folklore, passed from developer to developer during post mortem ritual). In other cases we encode the possibility of failure due to unsatisfied preconditions.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">safeHead ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Maybe</span> a</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>safeHead [] <span class="ot">=</span> <span class="dt">None</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>safehead (a<span class="op">:</span>_) <span class="ot">=</span> <span class="dt">Just</span> a</span></code></pre></div>
+<p>Is this is the only thing we can do? Definitely no! Is it the best thing we can do? Depends on the situation.</p>
+<p>This article is part of the readings series where I take one topic and share links to related articles and papers. This time our focus is precondition encoding.</p>
+<!--more-->
+
+<p>In <a href="https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/">Parse, don’t validate</a> article<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Alexis King describes the meaning of type-driven design and explains the “parse, don’t validate” slogan using simple code examples. The most prominent one is comparison of the following two functions. Alexis then elaborates more on the differences between them.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">validateNonEmpty ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>validateNonEmpty (_<span class="op">:</span>_) <span class="ot">=</span> <span class="fu">pure</span> ()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>validateNonEmpty [] <span class="ot">=</span> throwIO <span class="op">$</span> <span class="fu">userError</span> <span class="st">&quot;list cannot be empty&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ot">parseNonEmpty ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">NonEmpty</span> a)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>parseNonEmpty (x<span class="op">:</span>xs) <span class="ot">=</span> <span class="fu">pure</span> (x<span class="op">:|</span>xs)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>parseNonEmpty [] <span class="ot">=</span> throwIO <span class="op">$</span> <span class="fu">userError</span> <span class="st">&quot;list cannot be empty&quot;</span></span></code></pre></div>
+<p>I really like that in the parse approach the learned information is not discarded and can be used later, while validate approach completely discards what it learned.</p>
+<p>Alexis also mentions one important thing. Using <code class="verbatim">Maybe</code> as resulting type of safe functions means that it’s easier to implement safe functions, but it pushes responsibility of the failure to the call site significantly increasing complexity of safe function user. This issue is talked through and Alexis provides a solution. You just need to be stricter about your input, that’s where all the static typing helps you. <a href="https://www.parsonsmatt.org/about/">Matt Parsons</a> has a wonderful <a href="https://www.parsonsmatt.org/2017/10/11/type_safety_back_and_forth.html">blog post</a> on this topic as well.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">safeHead ::</span> <span class="dt">NonEmpty</span> a <span class="ot">-&gt;</span> a</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>safeHead (x <span class="op">:|</span> xs) <span class="ot">=</span> x</span></code></pre></div>
+<p>With this approach, users of <code class="verbatim">safeHead</code> must handle failure ahead of time. But this also means that the calling code doesn’t need to use things like <code class="verbatim">fromJust</code> when it is genuinely known that the list is non empty.</p>
+<p>There is an orthogonal view on this exact problem by <a href="https://storm-country.com/">Matt Noonan</a> which he explains in the <a href="https://kataskeue.com/gdp.pdf">Ghosts of Departed Proofs (Functional Pearl)</a> paper. Matt describes an approach where preconditions (like non-empty list or key existence in the map) are encoded in the Haskell type system as phantoms. Users must prove that preconditions are met using exported set of lemmas.</p>
+<p>One of my favourite examples from this paper is the function that computes the dot product of the vector and its reverse. It can be implemented in terms of a regular dot product function, which has one important precondition - both vectors must share the same length. So we encode it on the type level.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- regular dot product</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ot">dot ::</span> ([<span class="dt">Double</span>] <span class="op">~~</span> vec1 <span class="op">:::</span> <span class="dt">Length</span> vec1 <span class="op">==</span> n)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">-&gt;</span> ([<span class="dt">Double</span>] <span class="op">~~</span> vec2 <span class="op">:::</span> <span class="dt">Length</span> vec2 <span class="op">==</span> n)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">-&gt;</span> <span class="dt">Double</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>dot v1 v2 <span class="ot">=</span> <span class="fu">sum</span> (<span class="fu">zipWith</span> (<span class="op">*</span>) v1 v2)</span></code></pre></div>
+<p>You can read it as ‘give me some list which I call <code class="verbatim">vec1</code> such that its length is equal to <code class="verbatim">n</code> and then give me some other list which I call <code class="verbatim">vec2</code> such that its length is also equal to <code class="verbatim">n</code> and I will give you some number back’. As you can see, it’s much more verbose compared to <code>dot :: [Double] -&gt; [Double] -&gt; Double</code>, but it caries an important requirement on the type level, so no value is accidentally discarded by <code class="verbatim">zipWith</code>. Now if we want to write a function that calculates the dot product of vector and it’s reverse we need to provide a proof that the length of reversed list is equal to the original lists’ length.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">dot_rev ::</span> [<span class="dt">Double</span>] <span class="ot">-&gt;</span> <span class="dt">Double</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dot_rev xs <span class="ot">=</span> name xs <span class="op">$</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  \vec <span class="ot">-&gt;</span> dot (vec <span class="op">...</span>refl) (<span class="fu">reverse</span> vec <span class="op">...</span>rev_length)</span></code></pre></div>
+<p>First thing that we notice is that this function doesn’t have any preconditions, it works with any vector. And then there are <code class="verbatim">name</code>, <code class="verbatim">...refl</code> and <code class="verbatim">...rev_length</code> gluing the <code class="verbatim">dot</code> function and it’s arguments: original vector and its reverse. I am not going to explain everything (this is what paper does after all), my goal is to interest you enough so that you read the paper.</p>
+<p>In short, <code class="verbatim">name</code> is the way to give some fixed name to it’s argument and then evaluate a function that takes a named argument. It uses Rank-2 scoping (the trick from ST<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>). Now since we have a named vector we need to prove that <code class="verbatim">vec</code> and <code class="verbatim">reverse vec</code> share the same length. So we need to provide a proof that the length of the first vector is equal to some <code class="verbatim">n</code> and then prove that the length of the second vector is equal to the same <code class="verbatim">n</code>. First proof is provided by reflection. <code class="verbatim">...</code> is just an operator which gives a way to attach a proof. The second vectors length is proven by lemma (or in this case, axiom) called <code class="verbatim">rev_length</code>, and it’s implementation is simple.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">rev_length ::</span> <span class="dt">Proof</span> (<span class="dt">Length</span> (<span class="dt">Rev</span> xs) <span class="op">==</span> <span class="dt">Length</span> xs)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>rev_length <span class="ot">=</span> axiom</span></code></pre></div>
+<p>It just says that there is an axiom that says that the length of the list is equal to the length of its reverse. And we use it to make the compiler happy. The meaning of <code class="verbatim">Length</code> and <code class="verbatim">Rev</code> are explained in the… paper. So please take a look!</p>
+<p>It’s also interesting that all this machinery is implemented using Phantom Types and coercions, so compiler discards a lot of stuff from the runtime (like naming and proof providing), which means that there is no run-time penalty on having compile-time guarantees. We already <a href="../posts/2020-01-20-predicate-composition.html">touched this topic previously</a>.</p>
+<p>Now, it’s up to you how far to go into encoding preconditions. I think that in many cases it’s enough to use proper data types. In some very specific scenarios it’s easier (or more convenient) to use ghosts of departed proofs approach. But always keep in mind, that it’s possible to move constraints into input type instead of wrapping result into <code class="verbatim">Maybe</code> (or alike). As people say, make illegal states unrepresentable.</p>
+<p>Stay safe!</p>
+<h1 id="62b7477b-7b7f-4c00-9d4a-ef64e2369759" id="references">References</h1>
+<ol type="1">
+<li>Alexis King. Parse, don’t validate. <a href="https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/">https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/</a>, 2019.</li>
+<li>Alexis King. No, dynamic type systems are not inherently more open. <a href="https://lexi-lambda.github.io/blog/2020/01/19/no-dynamic-type-systems-are-not-inherently-more-open/">https://lexi-lambda.github.io/blog/2020/01/19/no-dynamic-type-systems-are-not-inherently-more-open/</a>, 2020.</li>
+<li>Haskell Wiki. Monad/ST. <a href="https://wiki.haskell.org/Monad/ST">https://wiki.haskell.org/Monad/ST</a>, 2012. Accessed: 2020-01-28.</li>
+<li>Sandy Maguire. Thinking with Types. <a href="https://leanpub.com/thinking-with-types">https://leanpub.com/thinking-with-types</a>, 2018.</li>
+<li>Matt Parsons. Type Safety Back and Forth. <a href="https://www.parsonsmatt.org/2017/10/11/type_safety_back_and_forth.html">https://www.parsonsmatt.org/2017/10/11/type_safety_back_and_forth.html</a>, 2017.</li>
+<li>M. Noonan. Ghosts of departed proofs. , 2018. Accessed: 2020-01-28.</li>
+<li>Boris Buliga. Predicate composition. <a href="https://d12frosted.io/posts/2020-01-20-predicate-composition.html">https://d12frosted.io/posts/2020-01-20-predicate-composition.html</a>, 2020.</li>
+</ol>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>If you liked this post, please make sure to read the next part ‘<a href="https://lexi-lambda.github.io/blog/2020/01/19/no-dynamic-type-systems-are-not-inherently-more-open/">No, dynamic type systems are not inherently more open</a>’ which is an open answer to some of the original article’ comments.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>ST monad enables pure computations with local mutable variable that is not exposed (leaked) to the outside. It uses Rank-2 trick to enforce the scope of the variable on the compile time. You can read more about ST on <a href="https://wiki.haskell.org/Monad/ST">Haskell Wiki</a>, <a href="https://stackoverflow.com/questions/12468622/how-does-the-st-monad-work">Stackoverflow</a>, but the best explanation can be found in <a href="https://leanpub.com/thinking-with-types">Thinking with Types</a> book by <a href="https://reasonablypolymorphic.com/">Sandy Maguire</a>, Chapter 7.2 Scoping Information with Existentials.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-02-01-readings-vol-1.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Opinion after trying out the Fish">
+    <meta property="og:title" content="Boris Buliga - Make the Fish fly" />
+    <meta property="og:description" content="Opinion after trying out the Fish" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2015-02-07-make-the-fish-fly.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Make the Fish fly</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Make the Fish fly</h1>
+  <section class="subtitle">
+    Posted on February  7, 2015
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'fish'." href="../tags/fish.html">#fish</a>
+  </section>
+  
+  <section>
+    <p>I have always been inspired by the people who use (or at least can use) terminal for any kind of activity that is associated with programming. Sure, every task has its own set of instruments to be solved with. But there are instruments that you can count on in almost any situation. That’s why I spend so much time in the terminal.</p>
+<p>For a long time (like a year and a half) I was using <code>zsh</code> beefed with <code>oh-my-zsh</code>. While it was providing me a lot of crucial functionality, I wasn’t very happy about <code>oh-my-zsh</code>, so when someone mentioned <code>fish</code> in comments to Use Haskell for shell scripting thread on Reddit, I decided to give it a try after few minutes of reading how awesome <code>fish</code> is.</p>
+<p>In this article I am going to share my thoughts after using <code>fish</code>. But keep in mind that this is not a tutorial to <code>fish</code> (mostly because it already has a good written one, which covers most important aspects of day-to-day <code>fish</code>, but you might also want to read full documentation to get the full grasp).</p>
+<p>Exploring new stuff is fun. So even if you are totally happy with your setup, I highly advice you to take a look at <code>fish</code>.</p>
+<!--more-->
+
+<h1 id="8d512fa9-37c6-4147-9429-5e4014ff2499" id="fish-catch-it-before-you-cook">Fish: catch it before you cook</h1>
+<p>For installation guide, check official site or readme file on <a href="https://github.com/fish-shell/fish-shell">GitHub</a>.</p>
+<p>After installation you might want to make <code>fish</code> your default shell, so you need to use <code>chsh</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> chsh <span class="at">-s</span> <span class="va">$(</span><span class="fu">which</span> fish<span class="va">)</span></span></code></pre></div>
+<p>On OS X (and some other systems) you might face an error saying <code>chsh:his ex /path/to/fish: non-standard shell</code>. In this case, you need to modify <code>/etc/shells</code> file by adding the path to your fish.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo sh <span class="at">-c</span> <span class="st">'echo $(which fish) &gt;&gt; /etc/shells'</span></span></code></pre></div>
+<p>In case of any other problems - may the force be with you. Otherwise - you are ready to dive in.</p>
+<h1 id="cce02ee6-2d04-46b9-b9f7-324870acd611" id="fish-first-impression">Fish: first impression</h1>
+<p>The first thing to notice in <code>fish</code> - blazingly fast completion and suggestions based on history, man pages and custom rules. This is something that amazed me so much when I saw it in action, because I remember how tricky it is to configure such things in <code>bash</code> and <code>zsh</code>, but here you have everything and even more out of box.</p>
+<p><img src="../images/2015-02-07-make-the-fish-fly/2022-07-19-17-11-16-fish-suggestions.gif" /></p>
+<p>What I like about suggestions - they can be narrowed to commands and arguments. For example, when the prompt is empty, typing <code>↑</code> navigates you through all your history. If you type something like <code>stack</code>, all history will be narrowed to <code>stack</code> command only. And if you type <code>stack build</code> you’ll get even more narrowing. It’s like a tree, where every word you type selects a branch of completion. Sure enough, it’s a little bit smarter than this.</p>
+<p><img src="../images/2015-02-07-make-the-fish-fly/2022-07-19-17-35-48-fish-suggestions.webp" /></p>
+<p>The second thing about <code>fish</code> completions - they are based on <code>man</code> pages. In <code>bash</code> you have <code>bash-completion</code>, in <code>oh-my-zsh</code> you have plug-ins (and when you have a lot of them, your life becomes kind of laggy). But <code>fish</code> takes a lot of completions from <code>man</code> pages. And it works so fast, that it’s just amazing. Now I don’t need to remove everything I typed just to check <code>man</code> when I forget which key I need, <code>-N</code> or <code>-n</code>. All completions are paginated, and you can scroll them to find what you need. Super productive.</p>
+<figure>
+<img src="../images/2015-02-07-make-the-fish-fly/2022-07-19-17-36-39-1423317617.webp" alt="Fish generates them automatically by parsing your installed man pages" />
+<figcaption aria-hidden="true">Fish generates them automatically by parsing your installed man pages</figcaption>
+</figure>
+<p>So you better keep pressing <code>&lt;tab&gt;</code> in different situations to see what else it can complete for you.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">λ</span> git checkout <span class="op">&lt;</span>tab<span class="op">&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">features/fish</span>  <span class="er">(</span><span class="ex">Branch</span><span class="kw">)</span>  <span class="ex">master</span>  <span class="er">(</span><span class="ex">Branch</span><span class="kw">)</span>  <span class="ex">origin/master</span>  <span class="er">(</span><span class="ex">Branch</span><span class="kw">)</span></span></code></pre></div>
+<p>But yeah, sometimes command you are executing doesn’t have its own <code>man</code> page. For such cases, you also have an option to write your own completions. For more information, check out this guide.</p>
+<h1 id="755a65fb-1ba1-4eab-830d-61fdf7c85e58" id="h:31011840-69BF-4068-AF8E-E3643C920CDB">Fish: configurations</h1>
+<p><code>Fish</code> comes with really great configurations out of the box. For most users, it might be enough to configure only their prompt and <code>PATH</code> variable. You should understand that <code>Fish</code> as a product <a href="https://fishshell.com/docs/current/design.html#design-configurability">believes</a> that “configurability is the root of all evil”. So “every configuration option in a program is a place where the program is too stupid to figure out for itself what the user really wants, and should be considered a failure of both the program and the programmer who implemented it”.</p>
+<p>Some might find this argument a little bit too much. In my opinion, <code>Fish</code> developers made a great work at providing great ‘defaults’ (ah, the irony). But in any case, there are things that are by design configurable. Like visuals and environment variables.</p>
+<p>Since <code>Fish</code> is a ‘friendly fish’, they allow to configure a lot of things from the browser, just run <code>fish_config</code> function in terminal and have fun.</p>
+<p>On startup, <code>fish</code> evaluates files <code>/path/to/fish/config.fish</code>, <code>/etc/fish/config.fish</code> and <code>$HOME/.config/fish/config.fish</code> in specified order. If you want to change <code>fish</code> configurations, you should modify only <code>/etc/fish/config.fish</code> file for system wide configurations and <code>$HOME/.config/fish/config.fish</code> file for user only configurations.</p>
+<p>Actually, <code>fish</code> supports <code>$XDG_CONFIG_HOME</code> variable for specifying the path to user-only configurations directory. You need to set this variable to the path of the directory that contains <code>fish</code> directory. I do use it because I like to have all dot files in one repository. You can change its value by using the <code>set</code> function:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> set <span class="at">-U</span> XDG_CONFIG_HOME ~/.environment</span></code></pre></div>
+<p>We use <code>-U</code> flag here because we need to give <code>XDG_CONFIG_HOME</code> universal scope (it will be shared between all the current users fish instances on the current computer, and will be preserved across restarts of the shell).</p>
+<p>If you want to configure your prompt, you need to define the <code>fish_prompt</code> function in file <code>$XDG_CONFIG_HOME/fish/fish_prompt.fish</code>. A simple example from the documentation:</p>
+<pre class="fish"><code>function fish_prompt -d &quot;Write out the prompt&quot;
+  printf '%s@%s%s%s%s&gt; ' (whoami) (hostname|cut -d . -f 1) (set_color $fish_color_cwd) (prompt_pwd) (set_color normal)
+end
+</code></pre>
+<p>Before rushing into creating your own prompt, I recommend to check some prompts that are available from box. Just <code>fish_config</code> and go to <code>Prompt</code> tab. Or use <a href="https://github.com/d12frosted/environment/blob/master/fish/functions/fish_prompt.fish">mine</a>, which has a cool feature - it notifies you when some long-running command finishes. I describe it briefly in a <a href="../posts/2017-06-13-Fish-notify-me-when-you-finish.html">separate article</a>.</p>
+<h1 id="79302016-4483-42df-af62-4f7c64da685b" id="h:A79AA3FB-2B29-45CB-A960-652227FD13CE">Fish: one language to script them all</h1>
+<p><strong>Update</strong> Lately <code>Fish</code> started to move towards more POSIX-compatible syntax, so this argument is not as valid as was before.</p>
+<p>As you might already know, <code>fish</code> has its own scripting language that does not care about POSIX compatibility. And in my opinion, this is the most controversial point in discussions like ‘zsh vs fish’. While it’s less verbose and more obvious, I see <code>fish</code> language as unnecessary drag. Seriously, when I need to write any script that can’t be described in one or two lines - I prefer to use <code>Haskell</code>. And also there are tons of great <code>sh</code> one-liners that I can’t call from the <code>fish</code> shell. And <code>git cat-file -p branch^{tree}</code> becomes <code>git cat-file -p branch^\{tree\}</code>.</p>
+<h1 id="9af4cfb3-88b5-4595-8ba6-965022a148e3" id="h:319F356D-1B5D-42AD-B605-511174570909">Conclusion</h1>
+<p><code>Fish</code> does not try to be everything but it does try to have a great out of the box experience. You definitely should give it a shot to make your own conclusion. Because everyone is a unique case.</p>
+<h2 id="d8fcd8c0-f604-4f06-9c26-a4622db9e37b" id="advantages">Advantages</h2>
+<ul>
+<li>Syntax highlighting.</li>
+<li>Good performance. I haven’t measured it, but unlike <code>zsh</code> with huge amount of configurations, it doesn’t lag.</li>
+<li>Suggestions and completion based on history, custom rules and man pages.</li>
+<li>Paginated completion, which is useful if you have dozens or hundreds items to complete from.</li>
+<li>Inline auto-suggestions.</li>
+<li>History de-duplication. So if you called something more than one time, it will appear in suggestions only once.</li>
+</ul>
+<h2 id="8af690f0-b2dd-4c05-b76c-d4a06ab61b6f" id="disadvantages">Disadvantages</h2>
+<ul>
+<li>Not POSIX compatible. While I do like some differences from <code>sh</code>, I prefer to use <code>sh</code> language for little scripts. When I need to write something non-trivial I better use <code>Haskell</code>. Seriously, in my opinion - <code>fish</code> language is an overhead. But actually, this is a really minor drawback, which strikes only when you want to use great <code>sh</code> one-liners.</li>
+</ul>
+<p>I don’t name <code>fish</code> dependency as a drawback, because I don’t work in an environment that I can’t change for my needs. And anyway <code>Haskell</code> with all packages I need is far more heavy dependency then <code>fish</code>. So don’t be angry.</p>
+<h1 id="d3364713-bafb-425e-87d7-9d257d2b7778" id="h:B8241F23-4BBF-4375-A314-F5DF4816341A">Epilogue</h1>
+<p>I am really tired of <code>oh-my-zsh</code>. It’s a great project, but it’s too big for me as it has so many stuff I don’t need. As a project it suffers from being popular. The last time I checked it’s repository I found 417 unresolved pull requests. Some of them are few years old. Most of them are not paid any attention. I understand the reasons for this situation. But understanding doesn’t make me happy.</p>
+<p>I know that one can use <code>zsh</code> without <code>oh-my-zsh</code> (or any other similar project). You can keep your configurations <a href="https://github.com/jleclanche/dotfiles/blob/master/.zshrc">minimal</a> or copy-paste huge amount of code just to keep all the fancy stuff at your bay.</p>
+<p>While I like to play with configurations, in this particular case I really enjoy using <code>fish</code>. Most of the stuff just works, and I can focus on some specific functionality that I need.</p>
+<p>So go ahead and try out what <code>fish</code> can give you. Don’t be afraid of making the switch. If you have any questions, you can email me and I will be happy to help you.</p>
+<p><strong>Have a nice shell-time!</strong></p>
+<p>P.S. As most of the stuff, my settings can be found on <a href="https://github.com/d12frosted/environment/tree/master/fish">GitHub</a>.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2015-02-07-make-the-fish-fly.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

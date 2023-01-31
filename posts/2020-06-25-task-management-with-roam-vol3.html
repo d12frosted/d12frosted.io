@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Automatic FILETAGS application in org-roam">
+    <meta property="og:title" content="Boris Buliga - Task management with org-roam Vol. 3: FILETAGS" />
+    <meta property="og:description" content="Automatic FILETAGS application in org-roam" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2020-06-25-task-management-with-roam-vol3.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Task management with org-roam Vol. 3: FILETAGS</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Task management with org-roam Vol. 3: FILETAGS</h1>
+  <section class="subtitle">
+    Posted on June 25, 2020
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'org-roam'." href="../tags/org-roam.html">#org-roam</a>
+  </section>
+  
+  <section>
+    <p>In the previous articles (<a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Vol. 1</a> and <a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Vol. 2</a>) we walked the path to <a href="https://github.com/org-roam/org-roam">org-roam</a> and solved the issue with garbage in the category column of agenda. Today we are going to explore meta projects dedicated to specific person, tag inheritance and moving such projects to separate <code class="verbatim">org-roam</code> files. As result, we will have code for automatic tagging based on the title.</p>
+<p>Aside from regular meta projects (like personal blog) I also create meta projects for people and locations. This is helpful, because some of the tasks are really related to someone specifically. For example, when I need to return a borrowed book, I just create a task for this.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode org"><code class="sourceCode orgmode"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">* Frodo Baggins                                               :@FrodoBaggins:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">** </span><span class="al">TODO</span><span class="fu"> Return 'The Lord of the Rings' book</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">** </span><span class="al">TODO</span><span class="fu"> Farewell party                                             :PROJECT:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>It feels like Mr. Frodo is about to live Shire. So we are going to setup a</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>farewell party for him.</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Talk to Samwise Gamgee                            :@SamwiseGamgee:</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Talk to Meriadoc Brandybuck                  :@MeriadocBrandybuck:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Talk to Peregrin Took                              :@PeregrinTook:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Tie a pair of wool socks</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>I am not sure where he is going, so a pair of warm wool socks should be good.</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>At least they can be used to protect bottles of wine during journey. That is in</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>case Frodo doesn't wear socks. But how could it be? Everyone does!</span></code></pre></div>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-01-24 Sun]</code>: Since some of the functionality mentioned in the original article was merged to <code class="verbatim">org-roam</code>, all code is updated to reflect the current state of affairs.</li>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+<li><code>[2021-05-10 Mon]</code>: Update post to reflect changes in <a href="https://github.com/org-roam/org-roam/pull/1401">org-roam v2</a>. Previous version of this article is available on <a href="https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-25-task-management-with-roam-vol3.org">GitHub</a>.</li>
+</ul>
+<!--more-->
+
+<p>Now, apart from some misconception about hobbits, there are few important points to note.</p>
+<ol type="1">
+<li>Due to <a href="https://orgmode.org/manual/Tag-Inheritance.html">tags inheritance</a>, all of the subheadings of <code class="verbatim">Frodo Baggins</code> have <code class="verbatim">@FrodoBaggins</code> tag.</li>
+<li>Tasks tagged with other people also have the <code class="verbatim">@FrodoBaggins</code> tag.</li>
+</ol>
+<p>Thanks to inheritance, it’s easy to find all tasks related to Frodo Baggins via <code class="verbatim">org-agenda</code>. It even enables the search of overlapping tasks. For example, tasks related to Frodo and Samwise. For more information, take a look at the <a href="https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties">matching tags and properties</a> section of the manual.</p>
+<p><img src="../images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-2.webp" class="img-half img-float-left" /></p>
+<p><img src="../images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-1.webp" class="img-half img-float-right" /></p>
+<p>With <code class="verbatim">org-roam</code>, each person has its own file.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode org"><code class="sourceCode orgmode"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>#+title: Frodo Baggins</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>#+filetags: @FrodoBaggins people</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">* Tasks</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">** </span><span class="al">TODO</span><span class="fu"> Return 'The Lord of the Rings' book</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">** </span><span class="al">TODO</span><span class="fu"> Farewell party                                             :PROJECT:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>It feels like Mr. Frodo is about to live Shire. So we are going to setup a</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>farewell party for him.</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Talk to Samwise Gamgee                            :@SamwiseGamgee:</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Talk to Meriadoc Brandybuck                  :@MeriadocBrandybuck:</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Talk to Peregrin Took                              :@PeregrinTook:</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">*** </span><span class="al">TODO</span><span class="fu"> Tie a pair of wool socks</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>I am not sure where he is going, so a pair of warm wool socks should be good.</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>At least they can be used to protect bottles of wine during journey. That is in</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>case Frodo doesn't wear socks. But how could it be? Everyone does!</span></code></pre></div>
+<p>In order to maintain the feature where <code class="verbatim">@FrodoBaggins</code> tag is applied to all TODO items we have to use <code class="verbatim">filetags</code> property. I am also using id to mark Frodo Baggins as a person (even though he is a hobbit!). This helps me in two ways. First of all, it gives me clear understanding that this entity is a person (some people do have strange names). Secondly, it serves me in automation and filtering (as example, checkout <a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Select a person and view related tasks</a> post).</p>
+<p>Now, when I see a headline with title and tag being literally the same (with few programmable exceptions) or the file with <code class="verbatim">title</code> and <code class="verbatim">filetags</code> being the same (with few programmable exceptions), I am feeling nervous. Especially since I am prone to mistakes.</p>
+<p>So what I do - I automate <code class="verbatim">filetags</code>. I have a function <code class="verbatim">vulpea-ensure-filetag</code> which automatically sets the <code class="verbatim">filetags</code> buffer property for <code class="verbatim">org-roam</code> entries tagged as <code class="verbatim">people</code>. It uses <a href="https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L183">vulpea-buffer-tags-get</a> and <a href="https://github.com/d12frosted/vulpea/blob/feature/org-roam-v2/vulpea.el#L193">vulpea-buffer-tags-add</a> from <a href="https://github.com/d12frosted/vulpea">vulpea</a> library.</p>
+<div class="sourceCode" id="cb3" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-ensure-filetag </span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Add respective file tag if it's missing in the current note.&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  (interactive)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> ((tags (vulpea-buffer-tags-get))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        (tag (vulpea--title-as-tag)))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (<span class="kw">and</span> (seq-contains-p tags <span class="st">&quot;people&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>               (<span class="kw">not</span> (seq-contains-p tags tag)))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      (vulpea-buffer-tags-add tag))))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea--title-as-tag </span>()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Return title of the current note as tag.&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  (vulpea--title-to-tag (vulpea-buffer-title-get)))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea--title-to-tag </span>(title)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Convert TITLE to tag.&quot;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  (concat <span class="st">&quot;@&quot;</span> (s-replace <span class="st">&quot; &quot;</span> <span class="st">&quot;&quot;</span> title)))</span></code></pre></div>
+<p>This function can be called interactively, but since I usually place the tag using <code class="verbatim">vulpea-tags-add</code>, I just add the <code class="verbatim">vulpea-ensure-filetag</code> to the end of that function.</p>
+<div class="sourceCode" id="cb4" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-tags-add </span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Add a tag to current note.&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  (interactive)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; since https://github.com/org-roam/org-roam/pull/1515</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; `org-roam-tag-add' returns added tag, we could avoid reading tags</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; in `vulpea-ensure-filetag', but this way it can be used in</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; different contexts while having simple implementation.</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">when</span> (call-interactively #'org-roam-tag-add)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    (vulpea-ensure-filetag)))</span></code></pre></div>
+<p>Though for other purposes one can put this function to the file visit hook. But hooks are sensitive, so I am going to stop here.</p>
+<p>In the <a href="../posts/2020-07-07-task-management-with-roam-vol4.html">next article</a> we are going to talk about automatic insertion of person tag (e.g. <code class="verbatim">@FrodoBaggins</code>) when mentioning this person in other task.</p>
+<h1 id="acfa02d9-4213-4050-8093-10dcc1e6aea1" id="task-management-with-org-roam-series">Task Management with org-roam Series</h1>
+<ol type="1">
+<li><a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Path to Roam</a></li>
+<li><a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Categories</a></li>
+<li><a href="../posts/2020-06-25-task-management-with-roam-vol3.html">FILETAGS</a></li>
+<li><a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Automatic tagging</a></li>
+<li><a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Dynamic and fast agenda</a></li>
+<li><a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Select a person and view related tasks</a></li>
+<li><a href="../posts/2021-05-21-task-management-with-roam-vol7.html">Capture</a></li>
+</ol>
+<h1 id="1bb4536b-4b35-490c-b8c4-d0aeeef34784" id="references">References</h1>
+<ul>
+<li><code class="verbatim">org-roam</code> documentation on <a href="https://github.com/org-roam/org-roam">GitHub</a>.</li>
+<li><code class="verbatim">org-mode</code> documentation on the <a href="https://orgmode.org">official site</a>.</li>
+<li>Org-roam tags <a href="../posts/2020-06-10-org-roam-tags.html">post</a>.</li>
+<li>personal configurations on <a href="https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el">GitHub</a>.</li>
+</ul>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-06-25-task-management-with-roam-vol3.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

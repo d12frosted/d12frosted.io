@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A little black magic to ease the burden of asking user for some input">
+    <meta property="og:title" content="Boris Buliga - Asking for input in Bash" />
+    <meta property="og:description" content="A little black magic to ease the burden of asking user for some input" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2019-04-12-asking-for-input-in-bash.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Asking for input in Bash</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Asking for input in Bash</h1>
+  <section class="subtitle">
+    Posted on April 12, 2019
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'shell'." href="../tags/shell.html">#shell</a>
+  </section>
+  
+  <section>
+    <p>Yet another tale about bash script refactoring. This time the configuration script of <a href="https://github.com/d12frosted/mirror-elpa">mirror-elpa</a> had undergone some changes and I like the result so much that I decided to share it.</p>
+<p>Imagine that you want your users to give you some input, for example, repository owner and name. And you want the value so desperately, that if the user doesn’t provide one, you ask the user again. On the other hand, you also want to support default values. So for example, if the user doesn’t provide any value, but there is a default value, you could use that.</p>
+<p>And you can’t use anything except for bash.</p>
+<!--more-->
+
+<p>Text descriptions are nice, but let’s see in action, what we want to achieve.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">λ</span> ./config</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Repository</span> owner: ↵</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Repository</span> owner: d12frosted↵</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Repository</span> name: <span class="er">(</span><span class="ex">mirror-elpa</span><span class="kw">)</span> <span class="ex">↵</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">owner</span> = d12frosted</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">repo</span> = mirror-elpa</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">λ</span> ./config</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Repository</span> owner: d12frosted↵</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Repository</span> name: <span class="er">(</span><span class="ex">mirror-elpa</span><span class="kw">)</span> <span class="ex">some-other-repo↵</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ex">owner</span> = d12frosted</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ex">repo</span> = some-other-repo</span></code></pre></div>
+<p>As you can see, there is no default value of the repository owner, so if the user doesn’t provide a value, we ask again. While the repository name has a default value so when the user doesn’t provide any other value, the default one is used. And the user has an option to override the default value.</p>
+<p>It’s really easy to implement this in bash.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># defaults</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">owner</span><span class="op">=</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">repo</span><span class="op">=</span>mirror-elpa</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># get the owner</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="bu">:</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">&quot;Repository owner: &quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$owner</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">printf</span> <span class="st">&quot;(%s) &quot;</span> <span class="st">&quot;</span><span class="va">$owner</span><span class="st">&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">read</span> <span class="at">-r</span> <span class="va">i_owner</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-z</span> <span class="st">&quot;</span><span class="va">$i_owner</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="va">i_owner</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$owner</span><span class="st">&quot;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$i_owner</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="va">owner</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$i_owner</span><span class="st">&quot;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># get the repo</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="bu">:</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">&quot;Repository name: &quot;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$repo</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">printf</span> <span class="st">&quot;(%s) &quot;</span> <span class="st">&quot;</span><span class="va">$repo</span><span class="st">&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="bu">read</span> <span class="at">-r</span> <span class="va">i_repo</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-z</span> <span class="st">&quot;</span><span class="va">$i_repo</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="va">i_repo</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$repo</span><span class="st">&quot;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$i_repo</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="va">repo</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$i_repo</span><span class="st">&quot;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># print result</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;owner = </span><span class="va">$owner</span><span class="st">&quot;</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;repo = </span><span class="va">$repo</span><span class="st">&quot;</span></span></code></pre></div>
+<p>But common, we’ve heard about the DRY thing, right? We can use variable indirection and <code class="verbatim">declare</code> to do all the dirty job for us.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># defaults</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">owner</span><span class="op">=</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">repo</span><span class="op">=</span>mirror-elpa</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ask()</span> <span class="kw">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">def</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">res</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="va">def</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${</span><span class="op">!</span><span class="va">1}</span><span class="st">&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="va">res</span><span class="op">=</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> <span class="bu">:</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">printf</span> <span class="st">&quot;%s: &quot;</span> <span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$def</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">printf</span> <span class="st">&quot;(%s) &quot;</span> <span class="st">&quot;</span><span class="va">$def</span><span class="st">&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">read</span> <span class="at">-r</span> <span class="va">res</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">[</span> <span class="ot">-z</span> <span class="st">&quot;</span><span class="va">$res</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="va">res</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$def</span><span class="st">&quot;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$res</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="bu">declare</span> <span class="at">-rg</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">=</span><span class="va">$res</span><span class="st">&quot;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">ask</span> <span class="st">&quot;owner&quot;</span> <span class="st">&quot;Repository owner&quot;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="ex">ask</span> <span class="st">&quot;repo&quot;</span> <span class="st">&quot;Repository name&quot;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;owner = </span><span class="va">$owner</span><span class="st">&quot;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;repo = </span><span class="va">$repo</span><span class="st">&quot;</span></span></code></pre></div>
+<p>Indirection allows us to get the value of the variable by name. From the bash man:</p>
+<blockquote>
+<p>If the first character of parameter is an exclamation point (<code class="verbatim">!</code>), a level of variable indirection is introduced. Bash uses the value of the variable formed from the rest of parameter as the name of the variable; this variable is then expanded and that value is used in the rest of the substitution, rather than the value of parameter itself. This is known as indirect expansion.</p>
+</blockquote>
+<p>We could avoid using indirection here, by using <code class="verbatim">eval</code>, but <code class="verbatim">eval</code> can lead to problems as it allows execution of arbitrary code. So why risking, when we can use something suited for this job?</p>
+<p>The same goes for <code class="verbatim">declare</code>. While we could use <code class="verbatim">eval</code>, there is a built-in just for this particular problem. We use <code class="verbatim">-r</code> since we are not planning to modify this value in the future and <code class="verbatim">-g</code> flag to make the variable accessible outside the function body via regular variable expansion. Please note that <code class="verbatim">-g</code> option is not available prior to 4.2 version of <code class="verbatim">bash</code>. If for some reason you plan to support older versions (for example, on macOS the preinstalled <code class="verbatim">bash</code> has version 3.2), then you can use <code class="verbatim">readonly</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">=</span><span class="va">$res</span><span class="st">&quot;</span></span></code></pre></div>
+<p>If you are interested in using <code class="verbatim">eval</code> instead of indirection and <code class="verbatim">decalre</code>, it would look like this.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># defaults</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="va">owner</span><span class="op">=</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="va">repo</span><span class="op">=</span>mirror-elpa</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ask()</span> <span class="kw">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">def</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">res</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="va">def</span><span class="op">=</span><span class="va">$(</span><span class="bu">eval</span> echo <span class="st">&quot;</span><span class="dt">\$</span><span class="va">$1</span><span class="st">&quot;</span><span class="va">)</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="va">res</span><span class="op">=</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> <span class="bu">:</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">printf</span> <span class="st">&quot;%s: &quot;</span> <span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$def</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">printf</span> <span class="st">&quot;(%s) &quot;</span> <span class="st">&quot;</span><span class="va">$def</span><span class="st">&quot;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">read</span> <span class="at">-r</span> <span class="va">res</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">[</span> <span class="ot">-z</span> <span class="st">&quot;</span><span class="va">$res</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="va">res</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$def</span><span class="st">&quot;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$res</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="bu">eval</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">=</span><span class="va">$res</span><span class="st">&quot;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ex">ask</span> <span class="st">&quot;owner&quot;</span> <span class="st">&quot;Repository owner&quot;</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="ex">ask</span> <span class="st">&quot;repo&quot;</span> <span class="st">&quot;Repository name&quot;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;owner = </span><span class="va">$owner</span><span class="st">&quot;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;repo = </span><span class="va">$repo</span><span class="st">&quot;</span></span></code></pre></div>
+<p>But personally, I would not use <code class="verbatim">eval</code> until I really have to.</p>
+<p>You can find another example of this technique in <a href="../posts/2018-11-04-revisiting-eru.html">Revisiting Eru</a> post.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2019-04-12-asking-for-input-in-bash.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

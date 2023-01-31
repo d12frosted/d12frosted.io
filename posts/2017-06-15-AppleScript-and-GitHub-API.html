@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Using GitHub API from AppleScript">
+    <meta property="og:title" content="Boris Buliga - AppleScript and the GitHub API" />
+    <meta property="og:description" content="Using GitHub API from AppleScript" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2017-06-15-AppleScript-and-GitHub-API.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - AppleScript and the GitHub API</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>AppleScript and the GitHub API</h1>
+  <section class="subtitle">
+    Posted on June 15, 2017
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on January  6, 2023
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'applescript'." href="../tags/applescript.html">#applescript</a>
+  </section>
+  
+  <section>
+    <p>AppleScript is a powerful scripting language that allows to directly control scriptable applications and some parts of macOS. The language itself can be a little bit frustrating for those who are not familiar with natural language programming paradigm. For example, with AppleScript, you can <code class="verbatim">tell application "Preview" to quit</code> or ask someone to <code class="verbatim">print pages 1 thru 5 of document 2</code>.</p>
+<p>But my goal is not to promote or demote AppleScript. Instead, I wish to share a little script that I’ve fetched while <a href="../being-an-org-mode-addict">experimenting</a> with <a href="https://www.omnigroup.com/omnifocus">OmniFocus 2</a>. I hate to manually capture issues that I care about, so I started to work on a script that takes URL from an active tab in Safari and sends it to OmniFocus into the right project with useful title and body.</p>
+<p>For example, I want <a href="https://github.com/d12frosted/flyspell-correct/issues/30">d12frosted/flyspell-correct#30</a> to go into the <code class="verbatim">flyspell-correct</code> project with title and description taken from that issue.</p>
+<!--more-->
+
+<p>Without going into too many details about irrelevant parts of that script, I just wish to share the part that communicates with GitHub. Note that this script is not part of any repository and I doubt that it ever will. Mostly because it’s unfinished and I don’t want to maintain full API support. And any feedback is welcome (I am so very new to AppleScript!).</p>
+<p>Here is an example of getting the title of <code class="verbatim">d12frosted/private-repository#42</code>. First we setup <code class="verbatim">GitHubClient</code> by setting the path to <a href="https://stedolan.github.io/jq/">jq</a> and by setting credentials. Then we ask it to get a specific issue and select from it the title. Select verb accepts any(?) <code class="verbatim">jq</code> command. The latest verb <code class="verbatim">commit</code> does all the dirty job - sends a request to GitHub and then pipes the result to <code class="verbatim">jq</code>.</p>
+<pre><code>property jqPath : &quot;/usr/local/bin/jq&quot;
+property githubUser : &quot;d12frosted&quot;
+property githubAccessToken : &quot;ACCESS_TOKEN&quot;
+
+tell GitHubClient
+  setupJQ(jqPath)
+  authorise(githubUser, githubAccessToken)
+  getIssue(&quot;d12frosted&quot;, &quot;private-repository&quot;, 42)
+  select(&quot;.title&quot;)
+  commit()
+end tell
+</code></pre>
+<p>Here is the implementation of <code class="verbatim">GitHubClient</code>.</p>
+<pre><code>property _username : missing value
+property _access_token : missing value
+property _api_url : missing value
+property _method : missing value
+property _selector : missing value
+property _jq_path : &quot;jq&quot;
+
+on authorise(username, access_token)
+  set _username to username
+  set _access_token to access_token
+end authorise
+
+on setupJQ(path)
+  set _jq_path to path
+end setupJQ
+
+on select (selector)
+  set _selector to selector
+end select
+
+on commit()
+  local prefix, cmd
+  set prefix to &quot;export LANG='&quot; &amp; user locale of (system info) &amp; &quot;.UTF-8'; shopt -s compat31; &quot;
+  set cmd to &quot;curl &quot;
+  if _username is not missing value and _access_token is not missing value then
+    set cmd to cmd &amp; &quot;-u &quot; &amp; quoted form of (_username &amp; &quot;:&quot; &amp; _access_token) &amp; &quot; &quot;
+  end if
+  set cmd to cmd &amp; quoted form of _api_url
+  if _selector is not missing value then
+    set cmd to cmd &amp; &quot; | &quot; &amp; _jq_path &amp; &quot; &quot; &amp; quoted form of _selector
+  end if
+  tell me to do shell script prefix &amp; cmd
+  return result
+end commit
+
+on apiGET(endpoint)
+  set _method to &quot;GET&quot;
+  set _api_url to &quot;https://api.github.com/&quot; &amp; endpoint
+end apiGET
+</code></pre>
+<p>This is enough to implement different methods like <code class="verbatim">getIssue</code> or <code class="verbatim">getRepoContributors</code>.</p>
+<pre><code># API - Repos
+# https://developer.github.com/v3/repos
+
+on getMyRepos()
+  apiGET(&quot;user/repos&quot;)
+end getMyRepos
+
+on getRepos(owner)
+  apiGET(&quot;users/&quot; &amp; owner &amp; &quot;/repos&quot;)
+end getRepos
+
+on getOrgRepos(org)
+  apiGET(&quot;orgs/&quot; &amp; org &amp; &quot;/repos&quot;)
+end getOrgRepos
+
+on getRepo(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo)
+end getRepo
+
+on getRepoContributors(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/contributors&quot;)
+end getRepoContributors
+
+on getRepoLanguages(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/languages&quot;)
+end getRepoLanguages
+
+on getRepoTags(owner, repo)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/tags&quot;)
+end getRepoTags
+
+# apiGET - Issues
+# https://developer.github.com/v3/issues
+
+on getIssue(owner, repo, issueNumber)
+  apiGET(&quot;repos/&quot; &amp; owner &amp; &quot;/&quot; &amp; repo &amp; &quot;/issues/&quot; &amp; issueNumber)
+end getIssue
+</code></pre>
+<p>And so on.</p>
+<p>While this implementation works for me, it has several drawbacks.</p>
+<ul>
+<li>If you wish to get several values from API call, you have to call <code class="verbatim">commit</code> for every <code class="verbatim">select</code> verb. It means that the same request will be sent multiple times.</li>
+<li><code class="verbatim">GitHubClient</code> doesn’t support any other authentication method except for login-pass(token) pair.</li>
+</ul>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2017-06-15-AppleScript-and-GitHub-API.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

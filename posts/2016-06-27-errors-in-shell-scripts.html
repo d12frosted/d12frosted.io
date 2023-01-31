@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Handing errors in shell scripts">
+    <meta property="og:title" content="Boris Buliga - Errors in shell scripts" />
+    <meta property="og:description" content="Handing errors in shell scripts" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2016-06-27-errors-in-shell-scripts.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Errors in shell scripts</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Errors in shell scripts</h1>
+  <section class="subtitle">
+    Posted on June 27, 2016
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'shell'." href="../tags/shell.html">#shell</a>
+  </section>
+  
+  <section>
+    <p>Writing shell scripts might be pretty tedious because of all those failing commands leading to a corrupted state. And it gets even worse when you overpopulate your script with <code class="verbatim">if</code> statements which distract you from solving your initial problem. And fortunately, there are several neat tricks for handling errors in shell scripts that everyone should be familiar with.</p>
+<!--more-->
+
+<p>Before we start investigating these tricks, let’s define two helper functions - <code class="verbatim">success</code> and <code class="verbatim">failure</code>. We will use them in our examples to represent abstract commands that always succeeds and always fails respectively.</p>
+<div class="sourceCode" id="cb1" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># just like true, but also echoes</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> success</span> <span class="kw">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;success&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># just like false, but also echoes</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> failure</span> <span class="kw">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;failure&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>Now let’s implement our first script.</p>
+<div class="sourceCode" id="cb2" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">success</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">failure</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">success</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># produces following output:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># success</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># failure</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># success</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># result is 0 (success)</span></span></code></pre></div>
+<p>All commands will be executed, even the last <code class="verbatim">success</code> despite the fact that <code class="verbatim">failure</code>, well, failed. In most cases, this is not what we want. The usual solution is to use <code class="verbatim">&amp;&amp;</code> operator that conditionally executes the second command.</p>
+<div class="sourceCode" id="cb3" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">success</span> <span class="kw">&amp;&amp;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">failure</span> <span class="kw">&amp;&amp;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">success</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># produces following output:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># success</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># failure</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># result is 1 (failure)</span></span></code></pre></div>
+<p>This was quite easy, wasn’t it? Such behaviour looks just like imperative code in pretty much any language. Whenever one piece of execution chain fails - the whole chain fails unless we handle it somehow. And here is a fundamental problem about the previous script - you must be explicit about behaviour that should be on by default.</p>
+<p>And you’ll be pleased to know that it’s possible to enable such behaviour. <code class="verbatim">Sh</code> has a special exit-on-error mode, which when enabled forces the shell to exit when the simple command returns non-zero status code. In order to enable this mode run <code class="verbatim">sh</code> with <code class="verbatim">-e</code> option or just call <code class="verbatim">set -e</code>.</p>
+<div class="sourceCode" id="cb4" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-e</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">success</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">failure</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">success</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># produces following output:</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># success</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># failure</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># result is 1 (failure)</span></span></code></pre></div>
+<p>This looks much better. Just for reference, I would like to quote <a href="https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html">manual</a> for the <code class="verbatim">set -e</code>.</p>
+<blockquote>
+<p>Exit immediately if a pipeline (see <a href="https://www.gnu.org/software/bash/manual/html_node/Pipelines.html#Pipelines">Pipelines</a>), which may consist of a single simple command (see <a href="https://www.gnu.org/software/bash/manual/html_node/Simple-Commands.html#Simple-Commands">Simple Commands</a>), a list (see <a href="https://www.gnu.org/software/bash/manual/html_node/Lists.html#Lists">Lists</a>), or a compound command (see <a href="https://www.gnu.org/software/bash/manual/html_node/Compound-Commands.html#Compound-Commands">Compound Commands</a>) returns a non-zero status. The shell does not exit if the command that fails is part of the command list immediately following a while or until keyword, part of the test in an if statement, part of any command executed in a &amp;&amp; or || list except the command following the final &amp;&amp; or ||, any command in a pipeline but the last, or if the command’s return status is being inverted with !. If a compound command other than a subshell returns a non-zero status because a command failed while -e was being ignored, the shell does not exit. A trap on ERR, if set, is executed before the shell exits.</p>
+<p>This option applies to the shell environment and each subshell environment separately (see <a href="https://www.gnu.org/software/bash/manual/html_node/Command-Execution-Environment.html#Command-Execution-Environment">Command Execution Environment</a>), and may cause subshells to exit before executing all the commands in the subshell.</p>
+<p>If a compound command or shell function executes in a context where -e is being ignored, none of the commands executed within the compound command or function body will be affected by the -e setting, even if -e is set and a command returns a failure status. If a compound command or shell function sets -e while executing in a context where -e is ignored, that setting will not have any effect until the compound command or the command containing the function call completes.</p>
+</blockquote>
+<p>Just as a side note, there are several other useful options, like <code class="verbatim">-u</code> (to fail when any undefined variable is referenced) and <code class="verbatim">-x</code> (to print each command before it’s executed).</p>
+<p>Using exit-on-error mode helps to mitigate lots of problems caused by executing commands in a corrupted state. If you ever need to disable it after enabling it - just call <code class="verbatim">set +e</code> (note <code class="verbatim">+</code> instead of <code class="verbatim">-</code>).</p>
+<p>There is also another problem that must be solved. Sometimes we need to handle specific signal (like pressing <code class="verbatim">C-c</code> to stop script execution). Let’s investigate pretty classical example.</p>
+<div class="sourceCode" id="cb5" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-e</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="va">TMPFILE</span><span class="op">=</span><span class="st">&quot;path/to/tmp_file&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> cleanup ()</span> <span class="kw">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;removing </span><span class="va">$TMPFILE</span><span class="st">&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rm</span> <span class="at">-f</span> <span class="va">$TMPFILE</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;hello world&quot;</span> <span class="op">&gt;</span> <span class="va">$TMPFILE</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="va">$TMPFILE</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gives user a chance to press CTRL-C</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 3</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># here we are doing something that might fail</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="ex">failure</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># oh, this always fails</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="ex">cleanup</span></span></code></pre></div>
+<p>As a result of running this script - there will be a temporary file that wasn’t removed due to the failure during execution. The good thing is that it’s possible to handle even such problem using <code class="verbatim">trap</code> command which allows performing an action when a specific signal is received. You can check the list of supported signals by calling <code class="verbatim">trap -l</code>.</p>
+<div class="sourceCode" id="cb6" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-e</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="va">TMPFILE</span><span class="op">=</span><span class="st">&quot;tmp_file&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> cleanup ()</span> <span class="kw">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;removing </span><span class="va">$TMPFILE</span><span class="st">&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rm</span> <span class="at">-f</span> <span class="va">$TMPFILE</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># execute cleanup function whenever INT, TERM or EXIT singal is received</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">trap</span> cleanup INT TERM EXIT</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Hello World!&quot;</span> <span class="op">&gt;</span> <span class="va">$TMPFILE</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="va">$TMPFILE</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># gives user a chance to press CTRL-C</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 3</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># here we are doing something that might fail</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="ex">failure</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># oh, this always fails</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="ex">cleanup</span></span></code></pre></div>
+<p>If you press <code class="verbatim">C-c</code>, the program immediately stops the execution, but the <code class="verbatim">cleanup</code> function is still called. It is also called when <code class="verbatim">failure</code> is executed. And this is really nice.</p>
+<p>Note that you can only set one trap per signal. If you set a new trap you’re implicitly disabling the old one. You can also disable a trap by specifying - as the argument, like this:</p>
+<div class="sourceCode" id="cb7" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">trap</span> <span class="at">-</span> INT TERM EXIT</span></code></pre></div>
+<h1 id="f542d860-a1b4-45c8-b999-55e197e60167" id="conclusion">Conclusion</h1>
+<p>As you can see, the shell provides several good tricks for dealing with errors and corrupted state. In simple situations, it’s good enough to just use <code class="verbatim">&amp;&amp;</code> and <code class="verbatim">||</code> operators, but with more complicated problems exit-on-error mode combined with <code class="verbatim">trap</code> command is a very powerful tool.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2016-06-27-errors-in-shell-scripts.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

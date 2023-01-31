@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Automatic setup of spaces with yabai">
+    <meta property="og:title" content="Boris Buliga - Automatic setup of spaces with yabai" />
+    <meta property="og:description" content="Automatic setup of spaces with yabai" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2022-04-23-yabai-spaces.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Automatic setup of spaces with yabai</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Automatic setup of spaces with yabai</h1>
+  <section class="subtitle">
+    Posted on April 23, 2022
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'yabai'." href="../tags/yabai.html">#yabai</a>
+  </section>
+  
+  <section>
+    <p><img src="../images/2022-04-23-yabai-spaces/2022-07-19-22-18-40-yabai-banner.svg" /></p>
+<p>The idea behind tiling window managers is brilliant - frames on the screen are organised in a non-overlapping fashion. In practice that means productivity boost because (1) all non-hidden frames are always visible and (2) all resizing and movement is done automatically by window manager whenever a frame becomes visible or hidden. It might take some time to get used to this approach, but in the end it’s love or hate relationship without position in-between.</p>
+<p>My story with tiling window managers started in macOS, where window manager can’t be changed, but… you have applications that imitate them either in a non-intrusive manual manner (à la <a href="https://www.spectacleapp.com">Spectacle</a>) or in an automatic manner (à la <a href="https://github.com/ianyh/Amethyst">Amethyst</a> and <a href="https://github.com/koekeishiya/yabai">yabai</a>). So around 4 years ago I started using chunkwm (former yabai) and I’ve been happy user since then.</p>
+<p>Since I am too lazy to setup macOS spaces manually, I want yabai to enforce specific configuration on startup - constant amount of spaces (with labels), meaning that missing are created and extra are removed. In addition, I want some applications to start on specific spaces (e.g. I love my browser to always be in the 3rd space) and to start some application silently (without stealing focus).</p>
+<p>In this article we are going to learn how to achieve these goals.</p>
+<!--more-->
+
+<h1 id="a95f07f6-72ea-4aa6-a106-48bdf1aa85ef" id="prerequisites">Prerequisites</h1>
+<p>In order to achieve defined goals, you need to complete the following steps.</p>
+<ol type="1">
+<li><a href="https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection">Disable System Integrity Protection</a>.</li>
+<li><a href="https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)">Install yabai</a> (unfortunately, preferably from <a href="https://brew.sh">brew</a>) and enable scripting additions.</li>
+<li>Create <a href="https://github.com/koekeishiya/yabai/wiki/Configuration#configuration-file">configuration file</a>.</li>
+<li>Make sure that yabai is running and operational.</li>
+<li>Install <a href="https://stedolan.github.io/jq/">jq</a> (JSON processor).</li>
+</ol>
+<h1 id="e42c4064-21ed-4430-b709-4c608c83d88d" id="setting-up-preferred-spaces">Setting up preferred spaces</h1>
+<p>In my setup I have 6 spaces, one is for Emacs, one for terminal emulators, one for web, one for social stuff, one for media stuff and one for various trash. Yabai <a href="https://github.com/koekeishiya/yabai/wiki/Configuration#configuration-file">configuration file</a> must be an executable and in order to make things easy, let it be shell executable.</p>
+<div class="sourceCode" id="cb1" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env sh</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># load scripting additions (optional)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> yabai <span class="at">--load-sa</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> signal <span class="at">--add</span> event=dock_did_restart action=<span class="st">&quot;sudo yabai --load-sa&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># config (tweak it to your liking)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config layout bsp</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config top_padding    8</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config bottom_padding 8</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config left_padding   8</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config right_padding  8</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config window_gap     8</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config auto_balance off</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config split_ratio 0.5</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config window_shadow off</span></code></pre></div>
+<p>So let’s define a function called <code class="verbatim">setup_space</code> that takes two arguments - space index and it’s label (unless you are using widgets software like <a href="https://github.com/felixhageloh/uebersicht">Übersicht</a>, labels have little meaning). We are going to use it like this:</p>
+<div class="sourceCode" id="cb2" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 1 emacs</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 2 code</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 3 web</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 4 social</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 5 media</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 6 other</span></code></pre></div>
+<p>So what should it do in order to make sure that these 6 spaces exist and properly set?</p>
+<p>Yabai comes with <a href="https://github.com/koekeishiya/yabai/wiki/Commands#querying-information">query command</a> that allows to query information about all spaces
+or specific spaces. For example, <code class="verbatim">yabai -m query --spaces</code> returns information
+about all spaces, and <code class="verbatim">yabai -m query --spaces --space 1</code> returns information
+about space with index <code class="verbatim">1</code> if it exists.</p>
+<p>There are <a href="https://github.com/koekeishiya/yabai/wiki/Commands#space-commands">space</a> commands allowing to create spaces and label them.</p>
+<p>This should be enough for us to define <code class="verbatim">setup_space</code>.</p>
+<div class="sourceCode" id="cb3" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> setup_space</span> <span class="kw">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">idx</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">name</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">space</span><span class="op">=</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;setup space </span><span class="va">$idx</span><span class="st"> : </span><span class="va">$name</span><span class="st">&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="va">space</span><span class="op">=</span><span class="va">$(</span><span class="ex">yabai</span> <span class="at">-m</span> query <span class="at">--spaces</span> <span class="at">--space</span> <span class="st">&quot;</span><span class="va">$idx</span><span class="st">&quot;</span><span class="va">)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="bu">[</span> <span class="ot">-z</span> <span class="st">&quot;</span><span class="va">$space</span><span class="st">&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">yabai</span> <span class="at">-m</span> space <span class="at">--create</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">yabai</span> <span class="at">-m</span> space <span class="st">&quot;</span><span class="va">$idx</span><span class="st">&quot;</span> <span class="at">--label</span> <span class="st">&quot;</span><span class="va">$name</span><span class="st">&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 1 emacs</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 2 code</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 3 web</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 4 social</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 5 media</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 6 other</span></code></pre></div>
+<p>You can remove all spaces except for 1 via Mission Control and run <code class="verbatim">yabairc</code>:</p>
+<div class="sourceCode" id="cb4" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ~/.config/yabai/yabairc</span></code></pre></div>
+<p>All extra spaces should be created.</p>
+<p>In the internet you may find solution that uses space focus command - <code class="verbatim">yabai -m space --focus "$idx" || yabai -m space --create</code>, but keep in mind that this doesn’t work as intended and leads to creation of extra spaces on each run of <code class="verbatim">yabairc</code>. Aside for producing undesired result, this approach also has two extra drawbacks. Firstly, it’s slower because focus switching is not free. Secondly, focus switching leads to screen flickering. That’s why you should avoid this command in setup script as much as possible.</p>
+<h1 id="13de5bb6-3350-4ae4-91a0-93690a11c1cc" id="cleaning-up-extra-spaces">Cleaning up extra spaces</h1>
+<p>This is completely optional, but I like to remove extra spaces on startup. First of all, I don’t have key bindings to quickly switch to spaces with index bigger than 6. Secondly, if for some reason I am using macOS full screen application, it places the application too far away.</p>
+<p>In order to achieve this goal, we have two approaches.</p>
+<ol type="1">
+<li>Check if space with index <code class="verbatim">MAX_SPACES + 1</code> (for me it’s <code class="verbatim">7</code>) exists, and if it does - remove it. Repeat the procedure until you run out of spaces with index <code class="verbatim">MAX_SPACES + 1</code>. This works because removing a space in the middle, changes index of all that comes after.</li>
+<li>Just query all spaces with index <code class="verbatim">&gt; MAX_SPACES</code> and remove them.</li>
+</ol>
+<p>Since I want to reduce invocations of <code class="verbatim">yabai</code> client, I am going with the second approach. In order to query spaces with index bigger than <code class="verbatim">MAX_SPACES</code>, we are going to use <code class="verbatim">jq</code> select capabilities. If you want to learn more about that, just take a break and use <code class="verbatim">jq</code> manual.</p>
+<div class="sourceCode" id="cb5" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx <span class="kw">in</span> <span class="va">$(</span><span class="ex">yabai</span> <span class="at">-m</span> query <span class="at">--spaces</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="st">'.[].index | select(. &gt; 6)'</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-nr</span><span class="va">)</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">yabai</span> <span class="at">-m</span> space <span class="at">--destroy</span> <span class="st">&quot;</span><span class="va">$idx</span><span class="st">&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p>Keep an eye for <code class="verbatim">sort -nr</code>. We want to remove spaces in reversed order, otherwise indices are reassigned. Another approach would be to ignore <code class="verbatim">idx</code> and always remove space with index <code class="verbatim">7</code>:</p>
+<div class="sourceCode" id="cb6" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="va">$(</span><span class="ex">yabai</span> <span class="at">-m</span> query <span class="at">--spaces</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="st">'.[].index | select(. &gt; 6)'</span><span class="va">)</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">yabai</span> <span class="at">-m</span> space <span class="at">--destroy</span> 7</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p>In that case you don’t need to rely on <code class="verbatim">sort</code> and <code class="verbatim">jq</code> selector just acts as a way to repeat action <code class="verbatim">SPACES_COUNT - MAX_SPACES</code> times.</p>
+<h1 id="c1943fde-9fda-425a-b8d4-950a716338c7" id="moving-applications-on-start">Moving applications on start</h1>
+<p>As I said, I love my browser to start on specific space. What makes yabai so wonderful is system of events and rules. You can read more about rules and signals by running <code class="verbatim">man yabai</code> or by checking official wiki on <a href="https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#66-rule">rules</a> and <a href="https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#67-signal">signals</a>.</p>
+<div class="sourceCode" id="cb7" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Safari$&quot;</span> space=^3</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^FireFox$&quot;</span> space=^3</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Telegram$&quot;</span> space=4</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Music$&quot;</span> space=5</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Spotify$&quot;</span> space=5</span></code></pre></div>
+<p>If you put “^” before space number, the space will be focused after application is started. Personally, I don’t use that as because (a) I often start applications without intention to use them right now and (b) I am forced to reload configuration on Emacs initialisation, so it’s being picked up by yabai.</p>
+<p>In general, rules and signal are quite powerful, so I urge you to play around with them. I am yet to discover more possibilities. Would love to hear from you if you have ideas to share.</p>
+<h1 id="e8ba4a8e-6cc9-466b-afb9-56809171de7c" id="full-configuration">Full configuration</h1>
+<div class="sourceCode" id="cb8" data-org-language="sh"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># load scripting additions</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> yabai <span class="at">--load-sa</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> signal <span class="at">--add</span> event=dock_did_restart action=<span class="st">&quot;sudo yabai --load-sa&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># config</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config layout bsp</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config top_padding    8</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config bottom_padding 8</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config left_padding   8</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config right_padding  8</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config window_gap     8</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config auto_balance off</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config split_ratio 0.5</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> config window_shadow off</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># setup spaces</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="va">$(</span><span class="ex">yabai</span> <span class="at">-m</span> query <span class="at">--spaces</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="st">'.[].index | select(. &gt; 6)'</span><span class="va">)</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="ex">yabai</span> <span class="at">-m</span> space <span class="at">--destroy</span> 7</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> setup_space</span> <span class="kw">{</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">idx</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">name</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  <span class="bu">local</span> <span class="va">space</span><span class="op">=</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;setup space </span><span class="va">$idx</span><span class="st"> : </span><span class="va">$name</span><span class="st">&quot;</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  <span class="va">space</span><span class="op">=</span><span class="va">$(</span><span class="ex">yabai</span> <span class="at">-m</span> query <span class="at">--spaces</span> <span class="at">--space</span> <span class="st">&quot;</span><span class="va">$idx</span><span class="st">&quot;</span><span class="va">)</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="bu">[</span> <span class="ot">-z</span> <span class="st">&quot;</span><span class="va">$space</span><span class="st">&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="ex">yabai</span> <span class="at">-m</span> space <span class="at">--create</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  <span class="ex">yabai</span> <span class="at">-m</span> space <span class="st">&quot;</span><span class="va">$idx</span><span class="st">&quot;</span> <span class="at">--label</span> <span class="st">&quot;</span><span class="va">$name</span><span class="st">&quot;</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 1 emacs</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 2 code</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 3 web</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 4 social</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 5 media</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="ex">setup_space</span> 6 other</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="co"># move some apps automatically to specific spaces</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Safari$&quot;</span> space=^3</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Firefox$&quot;</span> space=^3</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Telegram$&quot;</span> space=4</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Music$&quot;</span> space=5</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="ex">yabai</span> <span class="at">-m</span> rule <span class="at">--add</span> app=<span class="st">&quot;^Spotify$&quot;</span> space=5</span></code></pre></div>
+<p>Thank you for bearing with me till the end! Safe travels!</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2022-04-23-yabai-spaces.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Getting notifications when the command finishes in Fish">
+    <meta property="og:title" content="Boris Buliga - Fish: notify me when you finish" />
+    <meta property="og:description" content="Getting notifications when the command finishes in Fish" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2017-06-13-Fish-notify-me-when-you-finish.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Fish: notify me when you finish</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Fish: notify me when you finish</h1>
+  <section class="subtitle">
+    Posted on June 13, 2017
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'fish'." href="../tags/fish.html">#fish</a>, <a title="All pages tagged 'environment'." href="../tags/environment.html">#environment</a>
+  </section>
+  
+  <section>
+    <p><img src="../images/2017-06-13-Fish-notify-me-when-you-finish/2022-07-19-17-44-48-b98438ae-65f5-11e7-975f-0bbc94238d24.webp" /></p>
+<p>Have you ever been in a situation when you called <code class="verbatim">git fetch</code>, stared at the screen for several seconds and then switched to the browser to read something ‘useful’ while <code class="verbatim">git</code> fetches updates? And in five minutes you’re like ‘Oh wait, I was doing something important, no?’. Rings the bell, doesn’t it?</p>
+<!--more-->
+
+<p>At some point in my life<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, I decided to fix it. The idea is to send a notification whenever fish completes executing a long-running command. It is part of <a href="https://github.com/d12frosted/environment/tree/master/fish">my configurations</a> for a long time and I decided to share it more openly only now. Shame!</p>
+<p>Fish already exposes variable <code class="verbatim">CMD_DURATION</code> which returns the duration of previous command execution in milliseconds. So it’s easy to hack a solution that we can put into <code class="verbatim">fish_prompt</code> function.</p>
+<pre class="fish"><code>function __d12_prompt__check_duration
+  if test $CMD_DURATION
+    if test $CMD_DURATION -ge $cmd_notification_threshold
+      __d12_prompt__on_duration_exceeded $CMD_DURATION
+      __d12_prompt__notify_completion $CMD_DURATION
+    end
+  end
+  set CMD_DURATION 0
+end
+
+function __d12_prompt__on_duration_exceeded -a duration
+  set_color $fish_color_command
+  echo -esn '  ~&gt; duration: '
+  set_color $fish_color_param
+  echo -es $duration ' ms'
+  set_color normal
+end
+
+function __d12_prompt__notify_completion -a duration
+  if command -v terminal-notifier &gt; /dev/null
+    echo -es 'Finished in ' $duration ' ms' | terminal-notifier
+  end
+end
+</code></pre>
+<p>Just call <code class="verbatim">__d12_prompt__check_duration</code> at the very beginning<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> of <code class="verbatim">fish_promt</code>. Then set the value of <code class="verbatim">cmd_notification_threshold</code> to the minimal amount of milliseconds before notification is sent. Good place for setting that value is <code class="verbatim">config.fish</code>.</p>
+<p>Good luck, and don’t procrastinate too much.</p>
+<ol type="A">
+<li>S. Current implementation of <code class="verbatim">__d12_prompt__notify_completion</code> targets macOS users. Make sure you modify it so it works well on your system as well.</li>
+</ol>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Just right after I realised that I have failed to master meditation techniques that would help me to stare into the terminal window until command execution completes without being distracted by other things.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>but after you cache the <code class="verbatim">$status</code> value.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2017-06-13-Fish-notify-me-when-you-finish.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

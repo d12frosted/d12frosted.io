@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="About booleans in Emacs">
+    <meta property="og:title" content="Boris Buliga - Equality of booleans in Emacs" />
+    <meta property="og:description" content="About booleans in Emacs" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2018-10-14-equality-of-booleans-in-emacs.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Equality of booleans in Emacs</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Equality of booleans in Emacs</h1>
+  <section class="subtitle">
+    Posted on October 14, 2018
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>
+  </section>
+  
+  <section>
+    <p><img src="../images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp" /></p>
+<p>There is a fun story about booleans in Emacs Lisp - there are no booleans in Emacs Lisp. Sort of. Because we have a symbol <code class="verbatim">nil</code>, which means an empty list. You can write it as <code class="verbatim">nil</code> or <code class="verbatim">()</code> - they both stand for the same object, the symbol <code class="verbatim">nil</code>.</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">eq</span> <span class="kw">nil</span> ())                             <span class="co">; =&gt; t</span></span></code></pre></div>
+<p>Since LISP is all about list processing, empty list is something very <code class="verbatim">false</code>. So <code class="verbatim">false</code> that we don’t have special symbol for <code class="verbatim">false</code> values, as empty list serves this purpose well.</p>
+<p>Everything that is not an empty list has a meaning of <code class="verbatim">true</code>. However, there is a symbol <code class="verbatim">t</code> which is the preferred way to represent the truth value <code class="verbatim">true</code>.</p>
+<p>So <code class="verbatim">nil</code> and <code class="verbatim">t</code> are considered canonical boolean values. There is a function <code class="verbatim">booleanp</code> that returns <code class="verbatim">t</code> if the argument is a canonical boolean value and <code class="verbatim">nil</code> otherwise.</p>
+<p>The fun begins when you need to check if two boolean values are equal. Since non-nil (or not an empty list) can mean many different things (like <code class="verbatim">"Emacs is the only true editor"</code>) you can’t just do regular equality check.</p>
+<div class="sourceCode" id="cb2" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">equal</span> <span class="kw">t</span> <span class="st">&quot;Emacs is the only true editor&quot;</span>) <span class="co">; =&gt; nil</span></span></code></pre></div>
+<p>There are, however, several tricks to get it working. The most obvious solution is to convert value to a canonical boolean value.</p>
+<!--more-->
+
+<h1 id="bc520927-e740-4277-b68b-95b8f4864358" id="ifwhen">if/when</h1>
+<p>We can directly use <code class="verbatim">if</code> function.</p>
+<div class="sourceCode" id="cb3" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">if</span> <span class="st">&quot;Some truth&quot;</span> <span class="kw">t</span> <span class="kw">nil</span>)                 <span class="co">; =&gt; t</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">if</span> <span class="dv">42</span> <span class="kw">t</span> <span class="kw">nil</span>)                           <span class="co">; =&gt; t</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(<span class="kw">if</span> <span class="kw">t</span> <span class="kw">t</span> <span class="kw">nil</span>)                            <span class="co">; =&gt; t</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>(<span class="kw">if</span> <span class="kw">nil</span> <span class="kw">t</span> <span class="kw">nil</span>)                          <span class="co">; =&gt; nil</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">t</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">equal</span> (<span class="kw">if</span> a <span class="kw">t</span> <span class="kw">nil</span>) (<span class="kw">if</span> b <span class="kw">t</span> <span class="kw">nil</span>)))    <span class="co">; =&gt; t</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> boolean-eq </span>(a b)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">equal</span> (<span class="kw">if</span> a <span class="kw">t</span> <span class="kw">nil</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">if</span> b <span class="kw">t</span> <span class="kw">nil</span>)))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">t</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  (boolean-eq a b))                     <span class="co">; =&gt; t</span></span></code></pre></div>
+<p>Directly using <code class="verbatim">if</code> is a little bit cumbersome, but when we hide it inside of a helper function it’s not that bad, actually.</p>
+<p>The same result can be achieved by using <code class="verbatim">when</code>.</p>
+<div class="sourceCode" id="cb4" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">when</span> <span class="st">&quot;Some truth&quot;</span> <span class="kw">t</span>)                   <span class="co">; =&gt; t</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">when</span> <span class="dv">42</span> <span class="kw">t</span>)                             <span class="co">; =&gt; t</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>(<span class="kw">when</span> <span class="kw">t</span> <span class="kw">t</span>)                              <span class="co">; =&gt; t</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>(<span class="kw">when</span> <span class="kw">nil</span> <span class="kw">t</span>)                            <span class="co">; =&gt; nil</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">t</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">equal</span> (<span class="kw">when</span> a <span class="kw">t</span>) (<span class="kw">when</span> b <span class="kw">t</span>)))        <span class="co">; =&gt; t</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> boolean-eq </span>(a b)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">equal</span> (<span class="kw">when</span> a <span class="kw">t</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">when</span> b <span class="kw">t</span>)))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">t</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  (boolean-eq a b))                     <span class="co">; =&gt; t</span></span></code></pre></div>
+<h1 id="5df95342-80ac-426a-83bb-ee3f24ec1c69" id="not">not</h1>
+<p>There is another function we can use - <code class="verbatim">not</code>, which returns <code class="verbatim">t</code> if the argument is <code class="verbatim">nil</code>, and returns <code class="verbatim">nil</code> otherwise. Yes, it negates the value, but the result is one of the canonical booleans, so we are good.</p>
+<p>Since <span class="math inline"><em>a</em> ≡ <em>b</em></span> is equivalent to <span class="math inline">¬<em>a</em> ≡ ¬<em>b</em></span>, we can just compare negated values.</p>
+<div class="table-container">
+<table>
+<thead>
+<tr class="header">
+<th><span class="math inline"><em>a</em></span></th>
+<th><span class="math inline"><em>b</em></span></th>
+<th><span class="math inline">¬<em>a</em></span></th>
+<th><span class="math inline">¬<em>b</em></span></th>
+<th><span class="math inline"><em>a</em> ≡ <em>b</em></span></th>
+<th><span class="math inline">¬<em>a</em> ≡ ¬<em>b</em></span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb5" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">not</span> <span class="st">&quot;Some truth&quot;</span>)                      <span class="co">; =&gt; nil</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">not</span> <span class="dv">42</span>)                                <span class="co">; =&gt; nil</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(<span class="kw">not</span> <span class="kw">t</span>)                                 <span class="co">; =&gt; nil</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>(<span class="kw">not</span> <span class="kw">nil</span>)                               <span class="co">; =&gt; t</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">t</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">equal</span> (<span class="kw">not</span> a) (<span class="kw">not</span> b)))              <span class="co">; =&gt; t</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> boolean-eq </span>(a b)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">equal</span> (<span class="kw">not</span> a) (<span class="kw">not</span> b)))</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">t</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  (boolean-eq a b))                     <span class="co">; =&gt; t</span></span></code></pre></div>
+<p>This one looks a little bit better when used without a helper function, at least in my opinion.</p>
+<h1 id="e5f058d5-b129-44bf-976f-b87605d47866" id="xororand">xor/or/and</h1>
+<p>Sometimes you want to do something when two ‘boolean’ values are not equal.</p>
+<div class="sourceCode" id="cb6" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">nil</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">unless</span> (<span class="kw">equal</span> (<span class="kw">not</span> a) (<span class="kw">not</span> b))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;Some real work begins&quot;</span>))) <span class="co">; =&gt; Some real work begins</span></span></code></pre></div>
+<p>For such situations, there is a <code class="verbatim">xor</code> function, which returns <code class="verbatim">nil</code> when both arguments are equal in the canonical boolean form and <code class="verbatim">t</code> otherwise.</p>
+<div class="sourceCode" id="cb7" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(xor <span class="kw">nil</span> <span class="kw">nil</span>)                           <span class="co">; =&gt; nil</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(xor <span class="kw">nil</span> <span class="kw">t</span>)                             <span class="co">; =&gt; t</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>(xor <span class="kw">t</span> <span class="kw">nil</span>)                             <span class="co">; =&gt; t</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>(xor <span class="kw">t</span> <span class="kw">t</span>)                               <span class="co">; =&gt; nil</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>(xor <span class="st">&quot;Some truth&quot;</span> <span class="kw">nil</span>)                  <span class="co">; =&gt; t</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>(xor <span class="st">&quot;Some truth&quot;</span> <span class="kw">t</span>)                    <span class="co">; =&gt; nil</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>(xor <span class="dv">42</span> <span class="kw">nil</span>)                            <span class="co">; =&gt; t</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>(xor <span class="dv">42</span> <span class="kw">t</span>)                              <span class="co">; =&gt; nil</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">nil</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      (b <span class="st">&quot;Emacs is the only true editor&quot;</span>))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">when</span> (xor a b)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;Some real work begins&quot;</span>))) <span class="co">; =&gt; Some real work begins</span></span></code></pre></div>
+<p>Other functions (like <code class="verbatim">or</code>, <code class="verbatim">and</code>) also convert values to canonical boolean values. So you can keep it in mind.</p>
+<h1 id="b674b1f5-ae33-4811-9865-3d993c1fc31c" id="epilogue">Epilogue</h1>
+<p>The sole purpose of this post is fun. If you didn’t get your portion of fun, then it’s not funny at all. Please fix it somehow.</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2018-10-14-equality-of-booleans-in-emacs.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

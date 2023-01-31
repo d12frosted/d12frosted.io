@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Announcement of the third major version of CanonicalPath">
+    <meta property="og:title" content="Boris Buliga - CanonicalPath v0.3.0.0" />
+    <meta property="og:description" content="Announcement of the third major version of CanonicalPath" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2015-02-04-canonical-path-v0.3.0.0.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - CanonicalPath v0.3.0.0</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>CanonicalPath v0.3.0.0</h1>
+  <section class="subtitle">
+    Posted on February  4, 2015
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'haskell'." href="../tags/haskell.html">#haskell</a>, <a title="All pages tagged 'release'." href="../tags/release.html">#release</a>
+  </section>
+  
+  <section>
+    <p>Recently there was the third major release of <code>CanonicalPath</code> library introducing some good stuff, but unfortunately breaking API (just a tiny little bit).</p>
+<p>The new version is available on <a href="https://github.com/d12frosted/CanonicalPath">Github</a>, <a href="https://hackage.haskell.org/package/system-canonicalpath">Hackage</a> and <a href="https://www.stackage.org/package/system-canonicalpath">Stackage</a>.</p>
+<!--more-->
+
+<ul>
+<li>Remove <code>UnsafePath</code> data type. It was a synonym to <code>FilePath</code> and was confusing me sometimes, so I decided to cut it off.</li>
+<li>Rename <code>cpathToText</code> to <code>toText'</code>.</li>
+<li>Remove <code>pathToText</code> and <code>textToPath</code>.</li>
+<li>Export <code>toText</code> and <code>fromText</code> from <code>Filesystem.Path.CurrentOS</code>.</li>
+<li>Export <code>fromPrelude</code> and <code>toPrelude</code> functions.</li>
+<li>Improve performance (path canonicalization now is performed 1.6x faster than before). Now that I have tests and criterion, I can measure performance.</li>
+<li>Improve <code>canonicalPath</code> error messages. Most important - now it respects errors from <code>System.Directory.canonicalizePath</code>.</li>
+<li>Add tests.</li>
+<li>Add Travis support.</li>
+<li>Update documentation.</li>
+</ul>
+<p>As always - suggestions and pull requests are welcome!</p>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2015-02-04-canonical-path-v0.3.0.0.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

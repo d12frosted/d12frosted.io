@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Automatic tagging upon link insertion">
+    <meta property="og:title" content="Boris Buliga - Task management with org-roam Vol. 4: Automatic tagging" />
+    <meta property="og:description" content="Automatic tagging upon link insertion" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2020-07-07-task-management-with-roam-vol4.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Task management with org-roam Vol. 4: Automatic tagging</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Task management with org-roam Vol. 4: Automatic tagging</h1>
+  <section class="subtitle">
+    Posted on July  7, 2020
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'org-roam'." href="../tags/org-roam.html">#org-roam</a>
+  </section>
+  
+  <section>
+    <p>In the <a href="../posts/2020-06-25-task-management-with-roam-vol3.html">previous article</a> we covered automatic tagging of notes related to a specific person, and today we are going to cover automatic tagging of an org-mode heading upon insertion of link related to a person. To put it simple, when I mention someone in the task, I would love this task to be automatically tagged with that persons name. As they say, it’s better to see once, than imagine multiple times, so here is a screencast.</p>
+<p><img src="../images/2020-07-07-task-management-with-roam-vol4/2022-07-19-21-13-09-org-notes-insert.gif" /></p>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-01-24 Sun]</code>: Since some of the functionality mentioned in the original article was merged to <code class="verbatim">org-roam</code>, all code is updated to reflect the current state of affairs.</li>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+<li><code>[2021-05-10 Mon]</code>: Update post to reflect changes in <a href="https://github.com/org-roam/org-roam/pull/1401">org-roam v2</a>. Previous version of this article is available on <a href="https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-07-07-task-management-with-roam-vol4.org">GitHub</a>.</li>
+<li><code>[2021-11-19 Fri]</code>: Update post to reflect <a href="https://github.com/d12frosted/vulpea/commit/8ff428f2e9561fdc448627fe780be03a661cc52e">inclusion</a> of <code class="verbatim">vulpea-insert</code> function to <code class="verbatim">vulpea</code> library. You can find previous version of this article in <a href="https://github.com/d12frosted/d12frosted.io/blob/2d3dad81988e838b8159761cd420bb95ed5bdd83/posts/2020-07-07-task-management-with-roam-vol4.org">git history</a>.</li>
+</ul>
+<!--more-->
+
+<p>Once could just write an advice for <code class="verbatim">org-roam-node-insert</code> by using a relatively recent <a href="https://github.com/org-roam/org-roam/pull/839">change</a> that makes this function to return what was inserted. This also uses name manipulation from the <a href="../posts/2020-06-25-task-management-with-roam-vol3.html">previous article</a> and tags lookup from <a href="../posts/2020-06-10-org-roam-tags.html">Org-roam tags</a> article.</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> org-roam-node-insert-wrapper </span>(fn)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Insert a link to the note using FN.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">If inserted node has PEOPLE tag on it, tag the current outline</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">accordingly.&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  (interactive)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  (when-let*</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      ((node (<span class="kw">funcall</span> fn))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>       (title (org-roam-node-title node))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>       (tags (org-roam-node-tags node)))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (seq-contains-p tags <span class="st">&quot;people&quot;</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      (save-excursion</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">ignore-errors</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>          (org-back-to-heading)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>          (org-set-tags</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>           (seq-uniq</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">cons</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>             (vulpea--title-to-tag title)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>             (org-get-tags <span class="kw">nil</span> <span class="kw">t</span>)))))))))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>(advice-add</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a> #'org-roam-node-insert</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a> :around</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a> #'org-roam-node-insert-wrapper)</span></code></pre></div>
+<p>The implementation is straight-forward. We start with calling <code class="verbatim">fn</code> (e.g. <code class="verbatim">org-roam-node-insert</code>) that asks for the note to insert. Then we parse result and query the roam tags to understand if the inserted note is related to a person. And if the answer is yes, we use <code class="verbatim">org-set-tags</code> to automatically tag the heading.</p>
+<p>And while advicing is powerful tool and allows us to solve the problem, there is slightly different, less intrusive and composable solution provided by <code class="verbatim">vulpea</code> library - <code class="verbatim">vulpea-insert</code> function that acts like <code class="verbatim">org-roam-node-insert</code>, but provides ability setup hooks on insertion. First, we define a handler (pretty much the same as <code class="verbatim">org-roam-node-insert-wrapper</code> but without any calls to insertion function).</p>
+<div class="sourceCode" id="cb2" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> my-vulpea-insert-handle </span>(note)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Hook to be called on NOTE after `vulpea-insert'.&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  (when-let* ((title (vulpea-note-title note))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              (tags (vulpea-note-tags note)))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (seq-contains-p tags <span class="st">&quot;people&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      (save-excursion</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">ignore-errors</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>          (org-back-to-heading)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">when</span> (<span class="kw">eq</span> 'todo (org-element-property</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                           :todo-type</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                           (org-element-at-point)))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            (org-set-tags</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>             (seq-uniq</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">cons</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>               (vulpea--title-to-tag title)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>               (org-get-tags <span class="kw">nil</span> <span class="kw">t</span>))))))))))</span></code></pre></div>
+<p>And then you just need to add it as a hook:</p>
+<div class="sourceCode" id="cb3" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(add-hook 'vulpea-insert-handle-functions</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>          #'my-vulpea-insert-handle)</span></code></pre></div>
+<p>With this approach you can add as many handlers as you wish without the need to grow your advice/wrapper too much.</p>
+<h1 id="614f7140-bcc1-46db-b454-97e381b88257" id="complete-solution">Complete solution</h1>
+<div class="sourceCode" id="cb4" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> my-vulpea-insert-handle </span>(note)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Hook to be called on NOTE after `vulpea-insert'.&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  (when-let* ((title (vulpea-note-title note))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>              (tags (vulpea-note-tags note)))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (seq-contains-p tags <span class="st">&quot;people&quot;</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      (save-excursion</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">ignore-errors</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>          (org-back-to-heading)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">when</span> (<span class="kw">eq</span> 'todo (org-element-property</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                           :todo-type</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                           (org-element-at-point)))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            (org-set-tags</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>             (seq-uniq</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">cons</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>               (vulpea--title-to-tag title)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>               (org-get-tags <span class="kw">nil</span> <span class="kw">t</span>))))))))))</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea--title-to-tag </span>(title)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Convert TITLE to tag.&quot;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  (concat <span class="st">&quot;@&quot;</span> (s-replace <span class="st">&quot; &quot;</span> <span class="st">&quot;&quot;</span> title)))</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>(add-hook 'vulpea-insert-handle-functions</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>          #'my-vulpea-insert-handle)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span></code></pre></div>
+<h1 id="88d27bea-d629-4b1d-a0b1-0658ac23d1fd" id="task-management-with-org-roam-series">Task Management with org-roam Series</h1>
+<ol type="1">
+<li><a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Path to Roam</a></li>
+<li><a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Categories</a></li>
+<li><a href="../posts/2020-06-25-task-management-with-roam-vol3.html">FILETAGS</a></li>
+<li><a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Automatic tagging</a></li>
+<li><a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Dynamic and fast agenda</a></li>
+<li><a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Select a person and view related tasks</a></li>
+<li><a href="../posts/2021-05-21-task-management-with-roam-vol7.html">Capture</a></li>
+</ol>
+<h1 id="e1c65c7f-db37-473b-ae57-2ea12e2b2aa5" id="references">References</h1>
+<ul>
+<li><code class="verbatim">org-roam</code> documentation on <a href="https://github.com/org-roam/org-roam">GitHub</a>.</li>
+<li><code class="verbatim">org-mode</code> documentation on the <a href="https://orgmode.org">official site</a>.</li>
+<li><a href="../posts/2020-06-10-org-roam-tags.html">Org-roam tags</a> post.</li>
+<li>personal configurations on <a href="https://github.com/d12frosted/environment/blob/master/emacs/lisp/%2Borg-notes.el">GitHub</a>.</li>
+</ul>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2020-07-07-task-management-with-roam-vol4.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

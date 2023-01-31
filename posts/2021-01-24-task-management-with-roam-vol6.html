@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="How to select a person and list all related tasksrelevant files">
+    <meta property="og:title" content="Boris Buliga - Task management with org-roam Vol. 6: Select a person and view related tasks" />
+    <meta property="og:description" content="How to select a person and list all related tasksrelevant files" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Task management with org-roam Vol. 6: Select a person and view related tasks</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Task management with org-roam Vol. 6: Select a person and view related tasks</h1>
+  <section class="subtitle">
+    Posted on January 24, 2021
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'org-roam'." href="../tags/org-roam.html">#org-roam</a>
+  </section>
+  
+  <section>
+    <p>In one of the previous articles (<a href="../posts/2020-06-25-task-management-with-roam-vol3.html">Vol. 3</a> to be precise) we talked about automatic setup of <code class="verbatim">filetags</code>, so each of the task in note related to a person is automatically tagged thanks to <a href="https://orgmode.org/manual/Tag-Inheritance.html">tag inheritance</a>. Then, in <a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Vol. 4</a> we talked about automatic tagging of tasks whenever a person is mentioned either in the title or the body of some task. This all makes <code class="verbatim">org-agenda</code> <a href="https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties">matching capabilities</a> really useful for when we want to see the list of all tasks related to specific person.</p>
+<p>In this article, we are going to write a small utility function that asks user to select a person and then presents and <code class="verbatim">org-agenda</code> buffer with tasks related to selected person.</p>
+<p>Believe me, intro is longer than the content!</p>
+<video autoplay loop><source src="../images/2021-01-24-task-management-with-roam-vol6/2022-07-19-21-16-52-org-notes-person-agenda.mp4" type="video/mp4"></video>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-03-02 Tue]</code>: Update naming convention to match <a href="https://github.com/d12frosted/environment/tree/master/emacs">personal configurations</a>.</li>
+<li><code>[2021-05-10 Mon]</code>: Update post to reflect changes in <a href="https://github.com/org-roam/org-roam/pull/1401">org-roam v2</a>. Previous version of this article is available on <a href="https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-24-task-management-with-roam-vol6.org">GitHub</a>.</li>
+<li><code>[2022-07-11 Mon]</code>: Adapt code to changes in Org mode and new functions in <code class="verbatim">vulpea</code>. Combination of <code class="verbatim">vulpea-select-from</code> and <code class="verbatim">vulpea-db-query-by-tags-some</code> works faster than generic <code class="verbatim">vulpea-select</code>.</li>
+</ul>
+<!--more-->
+
+<p>Long story short, here is the function you can bind or call by name using <code class="verbatim">M-x</code>:</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-agenda-person </span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Show main `org-agenda' view.&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  (interactive)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let*</span> ((person (vulpea-select-from</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;Person&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                  (vulpea-db-query-by-tags-some '(<span class="st">&quot;people&quot;</span>))))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>         (node (org-roam-node-from-id (vulpea-note-id person)))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>         (names (<span class="kw">cons</span> (org-roam-node-title node)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                      (org-roam-node-aliases node)))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>         (tags (seq-map #'vulpea--title-to-tag names))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>         (query (string-join tags <span class="st">&quot;|&quot;</span>)))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">let</span> ((org-agenda-overriding-arguments (<span class="kw">list</span> <span class="kw">t</span> query)))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      (org-agenda <span class="kw">nil</span> <span class="st">&quot;M&quot;</span>))))</span></code></pre></div>
+<p>Now some explanations.</p>
+<ol type="1">
+<li>This code uses <a href="https://github.com/d12frosted/vulpea">vulpea</a> library<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> to select a person. You can achieve the same result without <code class="verbatim">vulpea</code>, of course, but it saves some effort. <code class="verbatim">vulpea-select-from</code> asks the use to select a note from a list of notes, returned by <code class="verbatim">vulpea-db-query-by-tags-some</code>. In this case, we simply present only people notes. The same result can be achieved by using <code class="verbatim">vulpea-select</code> that takes a predicate, but <code class="verbatim">vulpea-db-query-by-tags-some</code> works faster. See <a href="https://github.com/d12frosted/vulpea#orgb0b2734">Performance</a> section of <code class="verbatim">vulpea</code> documentation.</li>
+<li>Once we have a selected <code class="verbatim">vulpea-note</code>, we can get all titles on that file (e.g. main title and aliases). This is important for alias users. For example, in some notes I want use Mr. Frodo instead of Frodo Baggins, but I want to see tasks tagged as <code class="verbatim">@Mr.Forod</code> and <code class="verbatim">@FrodoBaggins</code> at the same time. It’s the same person after all (don’t ask me about Gollum, better use <code class="verbatim">M-x doctor</code>)!</li>
+<li>Now we simply convert those names into tags using <code class="verbatim">vulpea--title-to-tag</code> from <a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Vol. 4</a>.</li>
+<li>Then we join the tags using <code class="verbatim">|</code> separator into single query string.</li>
+<li>The last step is to execute <code class="verbatim">org-agenda</code> with <code class="verbatim">M</code> argument (match for tags, but list only <code class="verbatim">TODO</code> items). In order to pass a query to relevant agenda function, we use <code class="verbatim">org-agenda-overriding-arguments</code>. Not sure if it’s documented anywhere, but you can read the sources of <code class="verbatim">org-agenda</code> to figure out how to use it. <code class="verbatim">dlet</code> here is used for dynamic binding. If you are not using lexical scope, you can use regular <code class="verbatim">let</code> here.</li>
+</ol>
+<p>That’s it! Now see it in action, again.</p>
+<video autoplay loop><source src="../images/2021-01-24-task-management-with-roam-vol6/2022-07-19-21-16-52-org-notes-person-agenda.mp4" type="video/mp4"></video>
+<h1 id="1cb9db63-7bdd-4cf4-808a-419fda15422a" id="task-management-with-org-roam-series">Task Management with org-roam Series</h1>
+<ol type="1">
+<li><a href="../posts/2020-06-23-task-management-with-roam-vol1.html">Path to Roam</a></li>
+<li><a href="../posts/2020-06-24-task-management-with-roam-vol2.html">Categories</a></li>
+<li><a href="../posts/2020-06-25-task-management-with-roam-vol3.html">FILETAGS</a></li>
+<li><a href="../posts/2020-07-07-task-management-with-roam-vol4.html">Automatic tagging</a></li>
+<li><a href="../posts/2021-01-16-task-management-with-roam-vol5.html">Dynamic and fast agenda</a></li>
+<li><a href="../posts/2021-01-24-task-management-with-roam-vol6.html">Select a person and view related tasks</a></li>
+<li><a href="../posts/2021-05-21-task-management-with-roam-vol7.html">Capture</a></li>
+</ol>
+<h1 id="b39705d3-52e9-4b45-85fd-b0b65e8cde40" id="references">References</h1>
+<ul>
+<li><a href="https://orgmode.org/worg/dev/org-element-api.html">Org Element API</a></li>
+<li><a href="https://github.com/skeeto/emacsql">skeeto/emacsql</a></li>
+</ul>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Yikes, I advertise my own libraries on this blog!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2021-01-24-task-management-with-roam-vol6.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Migration process to org-roam v2">
+    <meta property="og:title" content="Boris Buliga - Path to org-roam v2" />
+    <meta property="og:description" content="Migration process to org-roam v2" />
+    <meta property="og:image" content="https://d12frosted.io/images/d12frosted.png" />
+    <meta property="og:url" content="https://d12frosted.io/posts/2021-06-11-path-to-org-roam-v2.html" />
+    <meta property="og:type" content="article" />
+    <title>Boris Buliga - Path to org-roam v2</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/solid.js"></script> -->
+    <!-- <script defer src="/library/@fortawesome/fontawesome-free/js/brands.js"></script> -->
+
+    <link href="../library/@fortawesome/fontawesome-free/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/brands.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/solid.min.css" rel="stylesheet">
+    <link href="../library/@fortawesome/fontawesome-free/css/regular.min.css" rel="stylesheet">
+
+    <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="../">Boris Buliga</a>
+      </div>
+      <nav>
+        <a href="../posts.html" title="Posts">
+          <span class="fa-regular fa-file-lines fa-xs"></span>
+          Posts
+        </a>
+        <a href="../projects.html" title="Projects">
+          <span class="fa-solid fa-suitcase fa-xs"></span>
+          Projects
+        </a>
+        <!-- <a href="/atom.xml" title="RSS"><span class="fa-solid fa-rss fa-xs"></span>RSS</a> -->
+        <a href="https://github.com/d12frosted" title="GitHub">
+          <span class="fa-brands fa-github fa-xs"></span>
+          GitHub
+        </a>
+        <a href="https://barberry.io" title="Barberry Garden">
+          <span class="fa-solid fa-wine-glass fa-xs"></span>
+          Wine
+        </a>
+      </nav>
+    </header>
+    
+    <main role="main">
+      <article>
+  <h1>Path to org-roam v2</h1>
+  <section class="subtitle">
+    Posted on June 11, 2021
+    
+  </section>
+  
+  <section class="subtitle">
+    Updated on July 20, 2022
+  </section>
+  
+  
+  <section class="subtitle">
+    Tagged as <a title="All pages tagged 'emacs'." href="../tags/emacs.html">#emacs</a>, <a title="All pages tagged 'org-roam'." href="../tags/org-roam.html">#org-roam</a>
+  </section>
+  
+  <section>
+    <p><img src="../images/2021-06-11-path-to-org-roam-v2/2022-07-19-22-10-52-org-roam-logo.webp" class="img-half img-float-left" /></p>
+<p><img src="../images/2021-06-11-path-to-org-roam-v2/2022-07-19-22-11-08-vulpea-logo.webp" class="img-half img-float-right" /></p>
+<p>In my opinion, <a href="https://github.com/org-roam/org-roam/">org-roam</a> is among the best things that happened to Emacs during the last 5 years. Forget Zettelkasten method, <code class="verbatim">org-roam</code> is a solution for non-hierarchical note-taking regardless of methodology you are worshiping. The most important and appealing feature of <code class="verbatim">org-roam</code> is its database! Just imagine, in less than a second I can filter a collection of 10000+ notes by tags, title, aliases, links and other things. This is what made my <a href="https://github.com/d12frosted/vino">wine tracking</a> solution usable with ever growing collection of tasting notes, and this is what I used to build various tools for presenting non-trivial views around my notes (<a href="https://github.com/d12frosted/environment/blob/master/emacs/README.org#managing-litnotes">example of a public one</a>).</p>
+<p>And now <code class="verbatim">org-roam</code> has <a href="https://github.com/org-roam/org-roam/releases/tag/v2.0.0">released</a> <code class="verbatim">V2</code>, the first major redesign affecting both users and authors of libraries extending <code class="verbatim">org-roam</code>. And while there are breaking changes requiring some effort from users, <code class="verbatim">V2</code> is so amazing and is so much more stable than <code class="verbatim">V1</code>, that my advice is to drop the chains of old <code class="verbatim">org-roam</code> and embrace all the goodness <code class="verbatim">V2</code> brings.</p>
+<p>Unfortunately, major redesign means lots of breaking changes and in this post I am going to describe my migration experience, code I used to migrate my notes and share some thoughts after migrating a code base comparable to <code class="verbatim">org-roam</code> itself. Of course, it touches my precious <a href="https://github.com/d12frosted/vulpea">vulpea</a> library (the fox image is its icon), so expect some advertisement™.</p>
+<p>NB. Migration process means adapting to and overcoming breaking changes. Since <code class="verbatim">V2</code> is full of them, this article might look pessimistic or depressing. But don’t get fooled, I think that <code class="verbatim">V2</code> is amazing. I am very happy to use it on a daily basis for several months and I never looked back. <a href="https://github.com/jethrokuan">Jethro</a> is doing amazing work! As well as all <a href="https://github.com/org-roam/org-roam/graphs/contributors">contributors</a> (with extra kudos to <a href="https://github.com/nobiot">Noboru Ota</a>, because Noboru rocks).</p>
+<p><strong>Change Log:</strong></p>
+<ul>
+<li><code>[2021-07-24 Sat]</code> Update post to reflect <a href="https://github.com/org-roam/org-roam/releases/tag/v2.0.0">release of org-roam v2</a>.</li>
+</ul>
+<!--more-->
+
+<h1 id="bba593d3-1857-4bf9-b441-d1c54617716b" id="key-changes">Key changes</h1>
+<p><code class="verbatim">org-roam</code> <code class="verbatim">V2</code> has <a href="https://github.com/org-roam/org-roam/pull/1401">many changes</a>, and some of them are UX-related (e.g. new completing read, revamped roam buffer), while others are fundamental in a way that they affect interactive and programmatic usage. So I am going to focus on these changes. I might miss some very important things that I have never used, and if so, just let me know and I will update the list.</p>
+<h2 id="5f16e998-9293-419d-9e70-3dfd0f59351f" id="structured-note">Structured note</h2>
+<p>One of the first thing that I’ve been playing around in <code class="verbatim">vulpea</code> is definition of a note. Initially it was a <a href="https://github.com/d12frosted/vulpea/commit/8820c9af2c71c1e995856432c5106aac2774d162">property list</a>, but I quickly started to hate this approach (even thought it was well defined) and switched to <a href="https://github.com/d12frosted/vulpea/commit/e38a1353c068bf28203ca3ebe93e5a3d6cfd7262">struct</a>. Why? Because a formal definition of data types makes it easier to build on top of that. You have completion for fields, you have byte compiler to warn you on missing field, etc. So even if as an author of library you are totally fine with not having a formal definition of your data types, they are a game-changer for people using it.</p>
+<p>This is why I am so happy that <code class="verbatim">org-roam</code> finally formalised <code class="verbatim">org-roam-node</code>. And one of the best parts about this change - there is no distinction between file-level notes and headings anymore. This is what I’ve done in <code class="verbatim">vulpea</code> and now with <code class="verbatim">V2</code> I can remove all those <code>(if (= level 0) (treat-as-file) (treat-as-heading))</code> indirections.</p>
+<p>The only thing that you should keep in mind, having <code class="verbatim">org-roam-node</code> doesn’t mean that all fields are populated, you might need to call <code class="verbatim">org-roam-populate</code>. As far as I can tell, the reason is that all data is scattered across multiple tables and gathering everything is an expensive operation. This is the main difference between <code class="verbatim">org-roam-node</code> and <code class="verbatim">vulpea-note</code>, which is always populated when returned from <code class="verbatim">vulpea</code> functions (achieved by horrific <a href="https://github.com/d12frosted/vulpea/blob/c606b33e25c0240ca68350163a0327a0bf08d20d/vulpea-db.el#L85">SQL expression</a>). On the other hand, <code class="verbatim">vulpea-note</code> contains less information than <code class="verbatim">org-roam-node</code>.</p>
+<h2 id="cd223986-b0f4-4ddd-9f15-27e562a25bfd" id="mandatory-id">Mandatory ID</h2>
+<p>Following note type formalisation, <code class="verbatim">ID</code> property became mandatory for a node to be part of <code class="verbatim">org-roam</code> database. Meaning that if your heading doesn’t have an <code class="verbatim">ID</code>, it will not be picked up by <code class="verbatim">org-roam</code>.</p>
+<p>And I am happy about this requirement, because ids are the only way to identify a note (I know, tautology). And <code class="verbatim">vulpea</code> <a href="https://github.com/d12frosted/vulpea/commit/8820c9af2c71c1e995856432c5106aac2774d162#diff-ecbc1aa90e9ff97a00b0b2aab1551bceee0c4d21993146bdcb1af4de31c9cac6R26">required</a> them from the day 1. In my sense, missing <code class="verbatim">ID</code> means that the note doesn’t exists yet (or at least, the system doesn’t know about it yet).</p>
+<p>This is important, because again, it reduces any indirection in libraries code related to note/node identification. Just <code class="verbatim">ID</code> and that’s it.</p>
+<p>Another reason to have mandatory ids is linking.</p>
+<h2 id="d753793a-dc4b-444f-94ba-f3af996b61a9" id="id-links">ID Links</h2>
+<p>Initially <code class="verbatim">org-roam</code> used file links. This means that whenever you linked a note, it used absolute (or relative???<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>) file path to said note. But these paths are very sensitive to file system changes, which should be irrelevant in non-hierarchical note-taking tool. Right? You change file name, now all links must change. Have fun if for some reason it was not changed automatically. You moved directory, now all links must be updated. You synchronise <code class="verbatim">org-roam-directory</code> across multiple computers, with different path to said directory (e.g. <code class="verbatim">/home/boris/org</code> vs <code class="verbatim">/Users/boris/notes/org</code>), now there are no links between your notes! Task failed successfully, as they say! It’s easy to become paranoid with such approach, because you can not trust a system that misses links.</p>
+<p>Now, ids don’t change (quite a philosophical question about identity, but let’s skip this one for another day). And Org mode supports <code class="verbatim">ID</code> links. Perfect! With <code class="verbatim">V2</code> all links are id based and less maintenance is required when you move something around. Great, users of <code class="verbatim">org-roam</code> and its maintainers are both winners.</p>
+<p>Not sure if this brings much to authors of libraries, but in general it’s a very good change that allows to remove most of safeguards related to links. If you still believe that path links are somehow superior, please let me know why! I might be missing something here.</p>
+<h2 id="45efc17a-ba6d-4b14-9b32-4e86b91745cc" id="tags">Tags</h2>
+<p>IMHO, one of the biggest breaking change is how things are being tagged now. In <code class="verbatim">V2</code> there is no separate tagging system. In <code class="verbatim">V1</code> there are several <a href="https://github.com/org-roam/org-roam/blob/8ad141403065bebd5a72f0ef53cf5ef8f2034419/org-roam.el#L195">sources</a> of <code class="verbatim">org-roam</code> tags - path elements (e.g. sub-directories relative to <code class="verbatim">org-roam-directory</code>), properties and Org mode tags. With <code class="verbatim">V2</code> there are only Org mode tags.</p>
+<p>This is quite a complex topic, because with this kind of freedom, it’s easy to exploit and over-complicate usage of tags in <code class="verbatim">org-roam</code>. The key thing to remember - while Org mode tags are great when doing agenda searches, agenda does not work with files, but with headings only. And if you were using roam tags for categorisation (so you could filter out stuff from db based on these tags), now you have to deal with <a href="https://orgmode.org/manual/Tag-Inheritance.html#Tag-Inheritance">Tag Inheritance</a>, which is not a big deal in some cases, but still.</p>
+<p>Another thing to keep in mind, valid tag for <code class="verbatim">#+roam_tags</code> is not necessary a valid tag for <code class="verbatim">#+file_tags</code>. For example, spaces, colons are not allowed - tags are normal words containing letters, numbers, ‘_’, and ‘@’ (see <code class="verbatim">org-tag-re</code>). So you need to keep that in mind during migration (covered in attached script).</p>
+<p>Since I was abusing tagging system, I had to go over every such case and find another way to achieve my goal. Just as example, I was tagging all my <code class="verbatim">litnotes</code> with two types of tags: content type (e.g. <code class="verbatim">content:book</code>, <code class="verbatim">content:article</code>, etc.) and status (e.g. <code class="verbatim">status:new</code>, <code class="verbatim">status:ongoing</code>, <code class="verbatim">status:done</code>, <code class="verbatim">status:dropped</code>). I didn’t want to use <code class="verbatim">fieltags</code> for this purpose, because I would need to disable inheritance for all possible values. So my <a href="https://github.com/d12frosted/environment/blob/master/emacs/README.org#managing-litnotes">solution</a> is to move this kind of metadata to … <a href="https://github.com/d12frosted/vulpea/tree/c606b33e25c0240ca68350163a0327a0bf08d20d#vulpea-meta">metadata list</a>.</p>
+<h2 id="b1502ddb-44a6-4301-bf56-1b07f26d7955" id="capture">Capture</h2>
+<p>When you only migrate to <code class="verbatim">org-roam</code> or when you automate stuff, having an ability to programmatically create new note synchronously and get it as result is priceless. While it was possible with <code class="verbatim">V1</code>, it required <a href="https://github.com/d12frosted/vulpea/blob/0f73528e603b1901cbe36eccd536a9113ef0439d/vulpea.el#L167">a certain hack</a>. With <code class="verbatim">V2</code> it is no longer needed, because you can <a href="https://github.com/org-roam/org-roam/pull/1523">provide</a> <code class="verbatim">id</code> of a note during capture process and then simply query it (just don’t forget to <a href="https://github.com/d12frosted/vulpea/blob/c606b33e25c0240ca68350163a0327a0bf08d20d/vulpea.el#L350">pass</a> <code class="verbatim">immediate-fnish</code> property).</p>
+<p>And the most cool thing about new capture process is that <code class="verbatim">org-roam-capture-templates</code> became even closer to Org mode capture template, meaning that you can configure capture stuff in so many fancy ways… I am yet to discover this new wonderful world.</p>
+<h1 id="fd9daff2-fd49-4429-8489-829e8102fd3c" id="notes-migration">Notes migration</h1>
+<p>Migration to <code class="verbatim">V2</code> requires changes to your notes:</p>
+<ol type="1">
+<li>make sure that each file contains an id;</li>
+<li>move <code class="verbatim">roam_key</code> to <code class="verbatim">roam_ref</code> property;</li>
+<li>move <code class="verbatim">roam_alias</code> to <code class="verbatim">roam_aliases</code> property;</li>
+<li>move <code class="verbatim">roam_tags</code> to <code class="verbatim">filetags</code> and
+<ol type="1">
+<li>make sure they do not contain ‘:’ or spaces;</li>
+<li>extract path tags;</li>
+</ol></li>
+</ol>
+<p>It can be achieved by using helpers from <a href="https://github.com/d12frosted/vulpea/">vulpea</a> and the following script (you must be on <code class="verbatim">org-roam-v2</code>):</p>
+<div class="sourceCode" id="cb1" data-org-language="emacs-lisp"><pre class="sourceCode commonlisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-migrate-buffer </span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Migrate current buffer note to `org-roam' v2.&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Create file level ID if it doesn't exist yet</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  (org-with-point-at <span class="dv">1</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    (org-id-get-create))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; update title (just to make sure it's lowercase)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  (vulpea-buffer-title-set (vulpea-buffer-prop-get <span class="st">&quot;title&quot;</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; move roam_key into properties drawer roam_ref</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  (when-let* ((ref (vulpea-buffer-prop-get <span class="st">&quot;roam_key&quot;</span>)))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    (org-set-property <span class="st">&quot;ROAM_REFS&quot;</span> ref)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">let</span> ((case-fold-search <span class="kw">t</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      (org-with-point-at <span class="dv">1</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        (while (re-search-forward <span class="st">&quot;^</span><span class="ch">#\\</span><span class="st">+roam_key:&quot;</span> (point-max) <span class="kw">t</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>          (beginning-of-line)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>          (kill-line <span class="dv">1</span>)))))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; move roam_alias into properties drawer roam_aliases</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  (when-let* ((aliases (vulpea-buffer-prop-get-list <span class="st">&quot;roam_alias&quot;</span>)))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    (org-set-property <span class="st">&quot;ROAM_ALIASES&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                      (combine-and-quote-strings aliases))</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">let</span> ((case-fold-search <span class="kw">t</span>))</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      (org-with-point-at <span class="dv">1</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        (while (re-search-forward <span class="st">&quot;^</span><span class="ch">#\\</span><span class="st">+roam_alias:&quot;</span> (point-max) <span class="kw">t</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>          (beginning-of-line)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>          (kill-line <span class="dv">1</span>)))))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; move roam_tags into filetags</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let*</span> ((roam-tags (vulpea-buffer-prop-get-list <span class="st">&quot;roam_tags&quot;</span>))</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>         (file-tags (vulpea-buffer-prop-get-list <span class="st">&quot;filetags&quot;</span>))</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>         (path-tags (seq-filter</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>                     (<span class="kw">lambda</span> (x) (<span class="kw">not</span> (string-empty-p x)))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>                     (split-string</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>                      (string-remove-prefix</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>                       org-roam-directory</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>                       (file-name-directory (buffer-file-name)))</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;/&quot;</span>)))</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>         (tags (seq-map</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>                (<span class="kw">lambda</span> (tag)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>                  (<span class="kw">setq</span> tag (replace-regexp-in-string</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>                             <span class="co">;; see `org-tag-re'</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>                             <span class="st">&quot;[^[:alnum:]_@#%]&quot;</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>                             <span class="st">&quot;_&quot;</span>        <span class="co">; use any valid char - _@#%</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>                             tag))</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>                  (<span class="kw">if</span> (<span class="kw">or</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>                       (string-prefix-p <span class="st">&quot;status&quot;</span> tag 'ignore-case)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>                       (string-prefix-p <span class="st">&quot;content&quot;</span> tag 'ignore-case)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>                       (<span class="kw">string-equal</span> <span class="st">&quot;Project&quot;</span> tag))</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>                      (<span class="kw">setq</span> tag (downcase tag)))</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>                  tag)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>                (seq-uniq (<span class="kw">append</span> roam-tags file-tags path-tags)))))</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> tags</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">apply</span> #'vulpea-buffer-tags-set tags)</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">let</span> ((case-fold-search <span class="kw">t</span>))</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>        (org-with-point-at <span class="dv">1</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>          (while (re-search-forward <span class="st">&quot;^</span><span class="ch">#\\</span><span class="st">+roam_tags:&quot;</span> (point-max) <span class="kw">t</span>)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>            (beginning-of-line)</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>            (kill-line <span class="dv">1</span>))))))</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  (save-buffer))</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> vulpea-migrate-db </span>()</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Migrate all notes.&quot;</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>  (interactive)</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">dolist</span> (f (org-roam--list-all-files))</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>    (with-current-buffer (find-file f)</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;migrating %s&quot;</span> f)</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>      (vulpea-migrate-buffer)))</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Step 2: Build cache</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>  (org-roam-db-sync 'force))</span></code></pre></div>
+<p>Simply run <code class="verbatim">M-x vulpea-migrate-db</code> and wait until the dirty work is done. Let me know if it doesn’t work for you. More discussion around migration can be found on <a href="https://www.orgroam.com/manual.html#Migrating-from-Org_002droam-v1">official guide</a>, <a href="https://org-roam.discourse.group/t/the-org-roam-v2-great-migration/1505">discourse</a>, <a href="https://gist.github.com/jethrokuan/02f41028fb4a6f81787dc420fb99b6e4">GitHub Gist</a> and <a href="https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V2">GitHub Wiki</a>.</p>
+<h1 id="4e951d4a-56f7-405e-b8aa-497cec48aceb" id="code-migration">Code migration</h1>
+<p>And this is the trickiest part, because <code class="verbatim">V2</code> is taking revolutionary approach instead of evolutionary approach, you just have to deal with huge amount of breaking changes. Migrating my notes took around an hour and a half (including patching migration script, iteratively fixing things, pouring more wine, and fighting with issues caused by misusing <code class="verbatim">git-gutter</code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>). Migration of <a href="https://github.com/d12frosted/vulpea">vulpea</a>, <a href="https://github.com/d12frosted/vino">vino</a> and <a href="https://github.com/d12frosted/environment">personal configs</a> took more than a week of work. And it was not that bad thanks to (1) having <code class="verbatim">vulpea</code> and <code class="verbatim">vino</code> covered with tests (so I simply was fixing them), (2) using byte compiler which caught many changes and (3) having most of my code based on <code class="verbatim">vulpea</code>, so lots of stuff got fixed transitively<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p>Now, the real question is what are the major changes code-wise? Different database scheme, formalized <code class="verbatim">org-roam-node</code> data type, new capture flow, new utilities (some are gone, but there are many good new ones).</p>
+<p>Since <code class="verbatim">V1</code> lacked good abstraction over database, it was very common to… well you know, use <code class="verbatim">org-roam-db-query</code> directly to execute arbitrary SQL queries<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, which of course relies on <em>knowing</em> the scheme. But this coupling bites really hard with <code class="verbatim">V2</code>, because the scheme changed dramatically. So you just have to sit down and work with <strong>every</strong> query you perform. Some changes are trivial, some are not. Unfortunately, there is no pill here. My advice is to minimise amount of direct queries by using functions provided by <code class="verbatim">org-roam</code> or extracting them into your own helpers.</p>
+<p>With <code class="verbatim">org-roam-node</code> and some other data types everything becomes really nice. There is no need for indirection for file-level or heading-level nodes anymore. You know exactly, what fields you have. The only thing you need to keep in mind - not all fields are populated, so there is <code class="verbatim">org-roam-populate</code> that works with various types.</p>
+<p>You can check my PRs related to migration to <code class="verbatim">V2</code> for inspiration (unfortunately most of them already have new unrelated features):</p>
+<ul>
+<li><a href="https://github.com/d12frosted/vulpea/pull/92">vulpea#92</a></li>
+<li><a href="https://github.com/d12frosted/vino/pull/100">vino#100</a></li>
+<li><a href="https://github.com/d12frosted/environment/commit/87d23cd71800b8976d1c40927b6a345b8eac40ac">environment#87d23cd</a>, with follow-ups:
+<ul>
+<li><a href="https://github.com/d12frosted/environment/commit/57e6fe4417ff367754d3df31eb144efa76ea1073">environment#57e6fe4</a></li>
+<li><a href="https://github.com/d12frosted/environment/commit/1febc7a5b015d98602cd48cb0143b4424a5e8c03">environment#1febc7a</a></li>
+<li>… and many more</li>
+</ul></li>
+</ul>
+<p>And before you jump into changing your code base, I suggest to go over <a href="https://github.com/org-roam/org-roam/blob/ed16ca75d7556b4d831326804543591836b466d5/doc/org-roam.org#developers-guide-to-org-roam">Developer’s Guide to Org-roam</a>.</p>
+<h1 id="c1890fd4-ee42-4bc8-9c34-99a62ec04cdd" id="what-about-vulpea">What about vulpea?</h1>
+<p>Some of the core ideas of <code class="verbatim">vulpea</code> got implemented in <code class="verbatim">org-roam</code> now (definitely not claiming that I have played any role in this, I am sure Jethro had this in mind for a long time). And I asked myself - is there still a need for <code class="verbatim">vulpea</code>? Like, there is <code class="verbatim">org-roam-node</code>, why do I need <code class="verbatim">vulpea-note</code>? There is new and wonderful capture process, why do I need <code class="verbatim">vulpea-create</code>? Many questions like this. But fundamentally I think there are only two questions. Is <code class="verbatim">vulpea</code> still useful for <strong>me</strong>? And is <code class="verbatim">vulpea</code> still useful for <strong>others</strong>?</p>
+<p>For me - definitely yes. Because it gives me abstractions and utilities to build other stuff on top. Migration process illustrated that I can do all the heavy lifting in <code class="verbatim">vulpea</code> and get most of the stuff fixed in many other places. Tests<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> made this migration really smooth (of course I have not covered every single shit).</p>
+<p>For others - it’s for you to decide, and I believe that yes :) Forget abstractions, <code class="verbatim">vulpea</code> provides various utilities for working with Org Mode and Org Roam files that you might want to use (for dealing with buffer properties, e.g. <code class="verbatim">#+key: value</code>, and for dealing with description lists). It also provides a custom configurable interface for selecting notes - <code class="verbatim">vulpea-select</code> with interactive functions using it (<code class="verbatim">vulpea-find</code>, <code class="verbatim">vulpea-find-backlink</code> and <code class="verbatim">vulpea-insert</code>). I will cover them in a separate article. And of course, my favourite functions - <code class="verbatim">vulpea-db-query</code> and <code class="verbatim">vulpea-create</code>.</p>
+<p>So I am going to continue support and development of <code class="verbatim">vulpea</code> library. And if you encounter any issues (with code, documentation etc.) or have a feature request - just don’t hesitate to <a href="https://github.com/d12frosted/vulpea/issues">open an issue</a>, <a href="https://github.com/d12frosted/vulpea/discussions">start a discussion</a>, comment on this post, or write me an email.</p>
+<h1 id="4f49a371-12b4-4974-ae05-0ad4729d19e3" id="any-lessons-learned">Any lessons learned?</h1>
+<p>The most important lesson for me is that <code class="verbatim">vulpea</code> has huge ROI. Primary goal of <code class="verbatim">vulpea</code><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> is to be a <em>tested</em> library for building solutions for note taking. And this migration process simply proved that the goal worth the effort.</p>
+<p>Another lesson I am taking from this situation is that revolutionary approach is stressful and time consuming for users (not sure about Jethro, I hope he is all right). Even though in this case it totally worth all the nerves and doubts. It is stable, polished and better. It also implies another lesson - sequel might be even better than original :)</p>
+<p>I am also annoyed by the fact that I keep abusing tagging system whenever I encounter it. Whenever it becomes multidimensional, it is a sign to stop and take a step back. Tags should not turn into total mess<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
+<p>And of course, <code class="verbatim">org-roam</code> community is fantastic. I don’t read all the messages on <a href="https://org-roam.discourse.group/">org-roam.discourse.group</a>, but when I do, I am simply amazed by all the use cases you folks have, and how helpful you are! Seriously, this is amazing. And it also a credit to <a href="https://github.com/jethrokuan/">Jethro</a>. Without doubt, <code class="verbatim">org-roam</code> is the best thing happened in my note-taking life.</p>
+<h1 id="ec04d254-cebc-49b7-aa01-75ddf86d1748" id="resources">Resources</h1>
+<ul>
+<li><a href="https://github.com/org-roam/org-roam/pull/1401">org-roam#1401</a></li>
+<li><a href="https://org-roam.discourse.group/t/org-roam-major-redesign/1198">Org-roam major redesign</a></li>
+<li><a href="https://github.com/org-roam/org-roam/blob/ed16ca75d7556b4d831326804543591836b466d5/doc/org-roam.org#developers-guide-to-org-roam">Developer’s Guide to Org-roam</a></li>
+<li><a href="https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V2">Hitchhiker’s Rough Guide to Org roam V2</a></li>
+<li><a href="https://org-roam.discourse.group/t/the-org-roam-v2-great-migration/1505">The Org-roam v2 Great Migration</a></li>
+</ul>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I don’t even remember, because I quickly switched to ID links once they landed to <code class="verbatim">org-roam</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Silly, but I’ve ‘adopted’ an approach by Doom Emacs where gutter is updated asynchronously. And during migration I was opening and modifying too many org files (hey, more than 10000) which exhausted Emacs. I’ve spend too much time trying to figure out why it was happening.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>And whatever was using <code class="verbatim">org-roam</code> internals was migrated to <code class="verbatim">vulpea</code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Again, tautology! I love them.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Just for the reference, I am not a TDD advocate. I usually write tests <em>after</em> features and mostly <em>before</em> bug fixes.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>To be precise, <code class="verbatim">vulpea</code> (and sometimes <code class="verbatim">KitsuneBook</code>) is just a name I am using for note taking utilities. At some point of time it was a Haskell command line application… Now it’s an Emacs Lisp library leveraging Org Mode and Org Roam! It definitely has more active life than me.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Maybe a partial mess, but definitely not total.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+  </section>
+
+  <hr />
+
+  <section class="text-right">
+    <a target="_blank" class="post-footer-sources" href="https://github.com/d12frosted/d12frosted.io/blob/master/posts/2021-06-11-path-to-org-roam-v2.org">
+      <i class="fa fa-code fa-2xs"></i> Sources
+    </a>
+  </section>
+
+  <script src="https://utteranc.es/client.js" repo="d12frosted/d12frosted.io" issue-term="pathname" label="comments" theme="github-light" crossorigin="anonymous" async>
+  </script>
+</article>
+
+    </main>
+
+    <footer>
+      Site proudly generated by
+      <a href="https://github.com/d12frosted/vulpea">Vulpea</a>,
+      and
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+    </footer>
+
+  </body>
+</html>
