@@ -58,6 +58,6 @@ jobs:
           path: './_site'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
         with:
           timeout: 1200000 # 20 minutes
