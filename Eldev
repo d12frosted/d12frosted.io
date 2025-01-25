@@ -5,3 +5,4 @@
 (add-to-list 'load-path (expand-file-name "emacs/" (getenv "XDG_CONFIG_HOME")))
 
 (eldev-use-local-dependency (expand-file-name "publicatorg" (getenv "PROJECTS_HOME")))
+(eldev-use-local-dependency (expand-file-name "vino" (getenv "PROJECTS_HOME")))
