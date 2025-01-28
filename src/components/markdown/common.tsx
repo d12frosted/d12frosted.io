@@ -1,8 +1,4 @@
-import { Convive } from '@/lib/convives'
 import { BlogPost } from '@/lib/posts'
-import { Producer } from '@/lib/producers'
-import { Rating } from '@/lib/ratings'
-import { Wine } from '@/lib/wines'
 import { Components } from 'react-markdown'
 
 export type HasAllPosts = {
@@ -13,11 +9,7 @@ export type BlogPostContext = {
   post: BlogPost
 } & HasAllPosts
 
-export type ProducerContext = {
-  producer: Producer
-} & HasAllPosts
-
-export type Context = BlogPostContext | Wine | Rating | Convive | ProducerContext | HasAllPosts | null | undefined
+export type Context = BlogPostContext | HasAllPosts | null | undefined
 
 export function hasAllPosts(context: Context): context is HasAllPosts {
   return context !== null && context !== undefined && 'allPosts' in context
