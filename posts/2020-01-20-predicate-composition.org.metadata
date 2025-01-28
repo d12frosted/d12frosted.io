@@ -1,6 +1,0 @@
-publish: "true"
-title: "Predicate composition"
-update: "2022-07-20"
-date: "2020-01-20"
-description: "Combinators for predicate composition"
-tags: "haskell"

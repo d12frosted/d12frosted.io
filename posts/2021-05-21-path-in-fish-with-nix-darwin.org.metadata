@@ -1,6 +1,0 @@
-publish: "true"
-title: "Fixing PATH in fish with nix-darwin"
-update: "2022-07-20"
-date: "2021-05-21"
-description: "Fixing PATH entries order when using fish and nix-darwin"
-tags: "fish"

@@ -1,6 +1,0 @@
-publish: "true"
-title: "emacs-plus: PATH injection"
-update: "2022-07-20"
-date: "2022-05-12"
-description: "A new feature provided by Emacs+ that injects PATH value during build"
-tags: "emacs-plus"

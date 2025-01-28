@@ -1,7 +1,0 @@
----
-languages: Haskell
-category: Haskell
-priority: 2
----
-
-Path helpers for my personal projects.

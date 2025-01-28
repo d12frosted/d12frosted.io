@@ -1,6 +1,0 @@
-publish: "true"
-title: "Cabal and executables"
-update: "2022-07-20"
-date: "2015-04-05"
-description: "Simple script for installing exectuables from Hackage without running into cabal hellnotifications when the command finishes in Fish"
-tags: "haskell"

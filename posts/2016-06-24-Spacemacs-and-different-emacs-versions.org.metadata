@@ -1,6 +1,0 @@
-publish: "true"
-title: "Using Spacemacs with several Emacs versions"
-update: "2022-07-20"
-date: "2016-06-24"
-description: "Instructions on how to use Spacemacs with several Emacs versions at the same time"
-tags: "emacs"

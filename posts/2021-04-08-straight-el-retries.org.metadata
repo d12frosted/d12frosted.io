@@ -1,6 +1,0 @@
-publish: "true"
-title: "Retries with straight.el"
-update: "2022-07-20"
-date: "2021-04-08"
-description: "Snippet adding retries to network operations of straight.el - Emacs package manager"
-tags: "emacs"

@@ -1,6 +1,0 @@
-publish: "true"
-title: "Org-roam tags"
-update: "2022-07-20"
-date: "2020-06-10"
-description: "Utility functions to manage org-roam tags"
-tags: "emacs, org-roam"

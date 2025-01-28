@@ -1,8 +1,0 @@
----
-tag: CanonicalPath
-category: Haskell
-languages: Haskell
-priority: 3
----
-
-Safe helpers for accessing and modifying environment variables.

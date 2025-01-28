@@ -41,15 +41,18 @@
 
 
 
-(defconst d12-supported-images '("jpeg" "png" "jpg" "heic" "webp"))
+(defconst d12-supported-media '("jpeg" "png" "jpg" "heic" "webp" "gif" "svg"))
+(defconst d12-convertible-images '("jpeg" "png" "jpg" "heic" "webp"))
 
-(defun d12-supported-image-p (file)
+(defun d12-supported-media-p (file)
   "Return non-nil if FILE is a supported image."
-  (file-name-has-ext-p file d12-supported-images))
+  (seq-contains-p d12-supported-media
+                  (s-downcase (file-name-extension file))))
 
-(defun d12-supported-attachment-p (file)
-  "Return non-nil if FILE is a supported attachment."
-  (file-name-has-ext-p file (-concat d12-supported-images '("gif" "svg" "mp4"))))
+(defun d12-convertible-image-p (file)
+  "Return non-nil if FILE is a supported image."
+  (seq-contains-p d12-convertible-images
+                  (s-downcase (file-name-extension file))))
 
 
 
@@ -79,6 +82,91 @@
 
 
 
+(defun file-name-fix-attachment (file-name ext-new)
+  "Fix attachment FILE-NAME with EXT-NEW."
+  (let ((ext-old (file-name-extension file-name)))
+    (concat (s-replace-regexp "[^a-zA-Z0-9/\\.]" "-" (s-chop-suffix ext-old file-name)) ext-new)))
+
+(defun file-name-fix-media-attachment (file-name)
+  "Fix attachment FILE-NAME with EXT-NEW."
+  (if (d12-convertible-image-p file-name)
+      (file-name-fix-attachment file-name "webp")
+    file-name))
+
+(defun file-name-replace-ext (file-name ext-new)
+  "Replace FILE-NAME extension with EXT-NEW."
+  (let ((ext-old (file-name-extension file-name)))
+    (concat (s-chop-suffix ext-old file-name) ext-new)))
+
+(defun directory-from-uuid (uuid)
+  "Adapt UUID to directory name."
+  (if (string-match string-uuid-regexp uuid)
+      (concat (s-left 2 uuid) "/" (s-chop-prefix (s-left 2 uuid) uuid))
+    uuid))
+
+(defun file-name-has-ext-p (file ext)
+  "Return non-nil if FILE has EXT."
+  (let ((e (s-downcase (file-name-extension file))))
+    (if (listp ext)
+        (seq-contains-p ext e)
+      (string-equal ext e))))
+
+(defun string-to-bool (str)
+  "Convert STR to bool."
+  (pcase str
+    ("true" t)
+    ("t" t)
+    (_ nil)))
+
+
+
+(cl-defun d12-sanitize-id-link (link items)
+  "Sanitize ID LINK according to ITEMS."
+  (if-let* ((id (org-ml-get-property :path link))
+            (note (vulpea-db-get-by-id id))
+            (item (gethash id items))
+            (file (porg-item-target-rel item))
+            (path (->> file
+                       (s-chop-suffix ".org")
+                       (s-chop-suffix ".md")
+                       (s-chop-prefix "src/public/content"))))
+      (->> link
+           (org-ml-set-property :type "file")
+           (org-ml-set-property :path path))
+    (org-ml-from-string
+     'plain-text
+     (concat (nth 2 link) (s-repeat (or (org-ml-get-property :post-blank link) 0) " ")))))
+
+
+
+(defun d12-sha1sum-attachment (obj)
+  "Calculate sha1sum of attachment OBJ.
+
+The attachments table is defined by custom configurations in the
+init file."
+  (cond
+   ((porg-rule-output-p obj)
+    (let ((id (s-split ":" (porg-rule-output-id obj)))
+          (file (file-name-nondirectory (porg-rule-output-item obj))))
+      (org-roam-db-query
+       [:select hash
+                :from attachments
+                :where (and (= node-id $s1)
+                            (= file $s2))]
+       id file)))
+   (t (user-error "Unknown type of attachments %s" obj))))
+
+
+
+(cl-defun d12-delete (file)
+  "Delete FILE."
+  (message "delete %s" file)
+  (delete-file file)
+  (let ((meta (concat file ".metadata")))
+    (delete-file meta)))
+
+
+
 (cl-defun d12-make-outputs (&key file
                                  attach-dir
                                  attach-filter
@@ -99,7 +187,7 @@ too lazy to explain default implementation.
 
 ATTACH-FILTER is a predicate on attachment file. Controls which
 attachments should be part of the output. Defaults to
-`d12-supported-attachment-p'.
+`d12-supported-media-p'.
 
 OUTPUTS-EXTRA is a function that takes a `porg-rule-output' of
 note and returns list of additional outputs.
@@ -108,101 +196,138 @@ See `porg-note-output' for documentation for SOFT-DEPS and
 HARD-DEPS. But in this case these are functions on
 `vulpea-note'."
   (lambda (note)
-    (let ((note-output
-           (porg-note-output note
-                             :file (funcall file note)
-                             :soft-deps (when soft-deps (funcall soft-deps note))
-                             :hard-deps (when hard-deps (funcall hard-deps note)))))
-      (-concat (list note-output)
-               (porg-attachments-output
-                note
-                :dir (if attach-dir
-                         (funcall attach-dir note-output)
-                       (let ((name (directory-from-uuid
-                                    (file-name-base (porg-rule-output-file note-output)))))
-                         (concat "images/" name)))
-                :file-mod #'file-name-fix-attachment
-                :filter (or attach-filter #'d12-supported-attachment-p))
-               (when outputs-extra
-                 (funcall outputs-extra note-output))))))
+    (let* ((note-output (porg-note-output note :file (funcall file note)))
+           (attachments-output
+            (porg-attachments-output
+             note
+             :dir (if attach-dir
+                      (funcall attach-dir note-output)
+                    (let ((name (directory-from-uuid
+                                 (file-name-base (porg-rule-output-file note-output)))))
+                      (concat "src/public/content/images/" name)))
+             :file-mod (list #'file-name-fix-media-attachment)
+             :filter (or attach-filter #'d12-supported-media-p)))
+           (outputs-extra (when outputs-extra (funcall outputs-extra note-output))))
+      (-concat attachments-output
+               outputs-extra
+               (list
+                (porg-note-output
+                 note
+                 :file (funcall file note)
+                 :soft-deps (when soft-deps (funcall soft-deps note))
+                 :hard-deps (-concat
+                             (when hard-deps (funcall hard-deps note))
+                             (-map #'porg-rule-output-id attachments-output)
+                             (-map #'porg-rule-output-id
+                                   (--filter (string-equal (porg-rule-output-type it) "attachment")
+                                             outputs-extra)))))))))
 
-(cl-defun d12-make-publish (&key copy-fn metadata)
-  "Create public function with COPY-FN and METADATA."
+
+
+(cl-defun d12-make-publish (&key copy-fn)
+  "Create public function with COPY-FN."
   (lambda (item items _cache)
-    (let* ((target (porg-item-target-abs item))
-           (hash-a (when (file-exists-p target)
-                     (porg-sha1sum (porg-item-target-abs item)))))
+    (let* ((temp-file (make-temp-file "d12frosted-io" nil ".org")))
+      (porg-debug "writing to temp file")
+      (porg-debug "%s" temp-file)
+
       ;; 1. copy file
-      (mkdir (file-name-directory target) 'parents)
-      (funcall copy-fn item items)
+      (mkdir (file-name-directory (porg-item-target-abs item)) 'parents)
+      (funcall copy-fn temp-file item items)
 
       ;; 2. remove private parts
-      (porg-clean-noexport-headings target)
+      (porg-clean-noexport-headings temp-file)
 
       ;; 3. cleanup and transform links
-      (with-current-buffer (find-file-noselect target)
+      (with-current-buffer (find-file-noselect temp-file)
         (porg-clean-links-in-buffer
          :sanitize-id-fn (-rpartial #'d12-sanitize-id-link items)
          :sanitize-attachment-fn
          (lambda (link)
            (let* ((path (org-ml-get-property :path link))
-                  (path (file-name-fix-attachment path))
-                  (dir (directory-from-uuid (file-name-base target))))
+                  (path (file-name-fix-media-attachment path))
+                  (dir (directory-from-uuid (file-name-base (porg-item-target-abs item)))))
              (->> link
                   (org-ml-set-property :path (format "/images/%s/%s" dir path))
                   (org-ml-set-property :type "file")
                   (org-ml-set-children nil)))))
         (save-buffer))
 
-      ;; 4. generate metadata
-      (let* ((meta-file (concat (porg-item-target-abs item) ".metadata"))
-             (note (porg-item-item item))
+      ;; 4. cleanup unsupported things
+      (with-current-buffer (find-file-noselect temp-file)
+        ;; table captions are not supported
+        (save-excursion
+          (goto-char (point-min))
+          (while (search-forward-regexp "^#\\+caption:" nil t)
+            (when (save-excursion
+                    (forward-line)
+                    (looking-at "^#\\+results:"))
+              (beginning-of-line)
+              (kill-line 1))))
 
-             (hash-b (porg-sha1sum (porg-item-target-abs item)))
+        ;; pandoc fails to properly handle caption when attr_html is missing
+        (save-excursion
+          (goto-char (point-min))
+          (while (search-forward-regexp "^#\\+caption:" nil t)
+            (forward-line)
+            (when (looking-at "\\[\\[file.*\\]\\]")
+              (insert "#+attr_html: :class image\n"))))
 
-             (update (when (file-exists-p meta-file)
-                       (with-current-buffer (find-file-noselect meta-file)
-                         (goto-char (point-min))
-                         (when (re-search-forward "update: \"\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)\"" nil t)
-                           (match-string 1)))))
-             (update (or (and (string-equal hash-a hash-b) update)
-                         (format-time-string "%F")))
+        ;; verses are not supported by pandoc
+        (save-excursion
+          (goto-char (point-min))
+          (while (search-forward-regexp "^#\\+begin_verse" nil t)
+            (replace-match "#+begin_export html")
+            (forward-line)
+            (insert "<blockquote>\n")
+            (while (not (looking-at "^#\\+end_verse"))
+              ;; replace ---
+              (when (looking-at "---")
+                (replace-match "–")
+                (beginning-of-line))
 
-             (publish (vulpea-utils-with-note note
-                        (or (vulpea-buffer-prop-get "publish") "true")))
+              ;; add line break
+              (end-of-line)
+              (insert "<br/>")
+              (forward-line))
+            (kill-line)
 
-             (meta (if (functionp metadata) (funcall metadata item) metadata))
-             (meta (-concat (list "publish" publish
-                                  "title" (vulpea-note-title note))
-                            (when update (list "update" update))
-                            meta)))
-        (with-current-buffer (find-file-noselect meta-file)
-          (delete-region (point-min) (point-max))
-          (cl-loop for (key value) on meta by 'cddr
-                   do (insert key ": " "\"" (string-from value) "\"" "\n"))
+            ;; done
+            (insert "</blockquote>\n")
+            (insert "#+end_export")))
+
+        ;; save
+        (save-buffer))
+
+      ;; 5. convert to md
+      (shell-command-to-string
+       (format "pandoc --from=org --to=gfm+hard_line_breaks+tex_math_dollars --wrap=none '%s' > '%s'"
+               temp-file
+               (porg-item-target-abs item)))
+      (let ((auto-mode-alist '("\\.md\\'" . text-mode)))
+        (with-current-buffer (find-file-noselect (porg-item-target-abs item))
+          (while (search-forward "file://" nil t)
+            (replace-match ""))
           (save-buffer))))))
 
 
 
-(cl-defun d12-sanitize-id-link (link items)
-  "Sanitize ID LINK according to ITEMS."
-  (if-let* ((id (org-ml-get-property :path link))
-            (note (vulpea-db-get-by-id id))
-            (item (gethash id items))
-            (file (porg-item-target-rel item))
-            (path (concat "/" (s-chop-suffix ".org" file))))
-      (->> link
-           (org-ml-set-property :type "d12frosted")
-           (org-ml-set-property :path path))
-    (org-ml-from-string
-     'plain-text
-     (concat (nth 2 link) (s-repeat (or (org-ml-get-property :post-blank link) 0) " ")))))
-
-
-
-(cl-defun d12-build-post (item _items)
-  "Build post ITEM."
-  (with-current-buffer (find-file-noselect (porg-item-target-abs item))
+(cl-defun d12-build-post (temp-target item _items)
+  "Build post ITEM to TEMP-TARGET."
+  ;; (vulpea-utils-with-note (porg-item-item item)
+  ;;   (--each (seq-reverse
+  ;;            (org-element-map
+  ;;                (org-element-parse-buffer 'element)
+  ;;                'src-block
+  ;;              (lambda (h)
+  ;;                (org-element-property :begin h))))
+  ;;     (goto-char it)
+  ;;     (let ((org-confirm-babel-evaluate nil))
+  ;;       (save-excursion
+  ;;         (silenzio
+  ;;          (funcall-interactively #'org-babel-execute-src-block)))))
+  ;;   (save-buffer))
+  (with-current-buffer (find-file-noselect temp-target)
     (delete-region (point-min) (point-max))
     (insert (vulpea-utils-with-note (porg-item-item item)
               (let* ((meta (vulpea-buffer-meta))
@@ -216,53 +341,83 @@ HARD-DEPS. But in this case these are functions on
                        (forward-line 1))
                      (while (looking-at "^#\\+.+$")
                        (forward-line 1))
-                     (while (looking-at "^ *$")
+                     (while (and (looking-at "^ *$")
+                                 (not (equal (point) (point-max))))
                        (forward-line 1))
                      (point)))
                  (point-max)))))
     (save-buffer)))
 
-(cl-defun d12-delete (cached-item root)
-  "Delete CACHED-ITEM from ROOT."
-  (let* ((path (porg-cache-item-output cached-item))
-         (file (expand-file-name path root))
-         (meta (expand-file-name (concat path ".metadata") root)))
-    (delete-file file)
-    (delete-file meta)))
+
+
+(defun -uniq-porg-items (items)
+  "Return uniq ITEMS."
+  (let ((-compare-fn #'(lambda (a b)
+                         (string-equal
+                          (porg-item-target-rel a)
+                          (porg-item-target-rel b)))))
+    (-uniq items)))
+
+(cl-defun d12-publish-nextjs/images (target items _items-all _cache)
+  "Generate nextjs/images file from ITEMS in TARGET file.
+
+_ITEMS-ALL is input table as returned by `porg-build-input'."
+  (let ((auto-mode-alist '("\\.tsx\\'" . text-mode))
+        (tbl (make-hash-table :test 'equal :size (hash-table-size items))))
+    (with-current-buffer (find-file-noselect target)
+      (delete-region (point-min) (point-max))
+      (insert
+       "// THIS FILE IS AUTOMATICALLY GENERATED BY RUNNING\n"
+       "//\n"
+       "//   $ yarn notes\n"
+       "//\n"
+       "// DO NOT MODIFY IT MANUALLY\n"
+       "\n"
+       "import { StaticImageData } from \"next/image\";\n"
+       "\n")
+      (--each (-uniq-porg-items (hash-table-values items))
+        (let ((var (concat "pic_"
+                           (->> (porg-item-id it)
+                                (s-chop-suffix ".webp")
+                                (s-replace-regexp "[^a-zA-Z0-9]" "_")))))
+          (puthash (s-chop-prefix "src/public/content/" (porg-item-target-rel it)) var tbl)
+          (insert "import " var " from \"../../" (s-chop-prefix "src/" (porg-item-target-rel it)) "\";\n")))
+      (insert "\n")
+      (insert "const lookupMap = new Map<string, StaticImageData>([\n")
+      (--each (hash-table-keys tbl)
+        (insert "  [\"/" it "\", " (gethash it tbl) "],\n"))
+      (insert "]);\n\n")
+      (insert
+       "export function getImage(path: string): StaticImageData {\n"
+       "  const res = lookupMap.get(path);\n"
+       "  if (res) return res;\n"
+       "  throw new Error(`Image ${path} not found`);\n"
+       "}\n")
+      (save-buffer))))
 
 
 
-(defun file-name-has-ext-p (file ext)
-  "Return non-nil if FILE has EXT."
-  (let ((e (s-downcase (file-name-extension file))))
-    (if (listp ext)
-        (seq-contains-p ext e)
-      (string-equal ext e))))
-
-(defun file-name-fix-attachment (file-name)
-  "Fix attachment FILE-NAME."
-  (let* ((ext-old (file-name-extension file-name))
-         (ext-new (if (file-name-has-ext-p file-name d12-supported-images)
-                      "webp"
-                    ext-old)))
-    (concat (s-replace "_" "-" (s-chop-suffix ext-old file-name)) ext-new)))
-
-(defun directory-from-uuid (uuid)
-  "Adapt UUID to directory name."
-  (if (string-match string-uuid-regexp uuid)
-      (concat (s-left 2 uuid) "/" (s-chop-prefix (s-left 2 uuid) uuid))
-    uuid))
+(cl-defun d12-rule-void (&key name tags)
+  "Create a rule with a NAME that voids notes with TAGS."
+  (porg-rule
+   :name name
+   :match (lambda (note) (apply (-partial #'vulpea-note-tagged-all-p note) tags))
+   :outputs (lambda (note) (list (porg-void-output note)))))
 
 
 
 (org-link-set-parameters "d12frosted" :follow #'org-roam-link-follow-link)
-
 (setf porg-log-level 'info)
+(setf porg-cache-method 'prin1)
+
+
 
 (porg-define
  :name "d12frosted.io"
- :root (when load-file-name (file-name-directory load-file-name))
- :cache-file "build-cache"
+ :root (if load-file-name
+           (file-name-directory load-file-name)
+         (expand-file-name "d12frosted.io/" path-projects-dir))
+ :cache-file "notes-cache"
 
  :input
  (lambda ()
@@ -273,21 +428,48 @@ HARD-DEPS. But in this case these are functions on
 
  :rules
  (list
+  ;; void rules, just to ignore some of the notes, which are used as soft deps only
+  (d12-rule-void :name "grapes" :tags '("wine" "grape"))
+  (d12-rule-void :name "country" :tags '("wine" "country"))
+  (d12-rule-void :name "regions" :tags '("wine" "region"))
+  (d12-rule-void :name "appellations" :tags '("wine" "appellation"))
+  (d12-rule-void :name "places" :tags '("places"))
+
+  ;; real rules
   (porg-rule
    :name "posts"
    :match (-rpartial #'vulpea-note-tagged-all-p "post")
    :outputs
    (d12-make-outputs
-    :file (lambda (note)
-            (concat
-             "posts/"
-             (vulpea-utils-with-note note
-               (let ((date (vulpea-buffer-prop-get "date"))
-                     (slug (or (vulpea-buffer-prop-get "slug")
-                               (porg-slug (vulpea-note-title note)))))
-                 (unless date (user-error "Post '%s' is missing date" (vulpea-note-title note)))
-                 (concat (org-read-date nil nil date) "-" slug)))
-             ".org")))))
+    :file
+    (lambda (note)
+      (concat
+       "src/public/content/posts/"
+       (vulpea-utils-with-note note
+         (let ((date (vulpea-buffer-prop-get "date"))
+               (slug (or (vulpea-buffer-prop-get "slug")
+                         (porg-slug (vulpea-note-title note)))))
+           (unless date (user-error "Post '%s' is missing date" (vulpea-note-title note)))
+           (concat (org-read-date nil nil date) "-" slug)))
+       ".md"))
+    :outputs-extra
+    (lambda (output)
+      (s-chop-prefix "" "")
+      (let* ((note (porg-rule-output-item output)))
+        (-concat
+         (list
+          (porg-rule-output
+           :id (concat (vulpea-note-id note) ".json")
+           :type "json"
+           :item note
+           :file (file-name-replace-ext (porg-rule-output-file output) "json")
+           :hard-deps (list (porg-rule-output-id output)))))))))
+
+  (porg-batch-rule
+   :name "nextjs/images"
+   :filter (-rpartial #'porg-item-that :type "attachment" :predicate #'d12-supported-media-p)
+   :target "src/components/content/images.tsx"
+   :publish #'d12-publish-nextjs/images))
 
  :compilers
  (list
@@ -296,78 +478,139 @@ HARD-DEPS. But in this case these are functions on
    :match (-rpartial #'porg-rule-output-that :type "note"
                      :predicate (-rpartial #'vulpea-note-tagged-all-p "post"))
    :hash #'porg-sha1sum
-   :build
-   (d12-make-publish
-    :copy-fn #'d12-build-post
-    :metadata
-    (lambda (item)
-      (let ((note (porg-item-item item)))
-        (vulpea-utils-with-note note
-          (let ((date (vulpea-buffer-prop-get "date"))
-                (image (vulpea-buffer-prop-get "image"))
-                (description (vulpea-buffer-prop-get "description"))
-                (tags (vulpea-buffer-prop-get-list "tags")))
-            (unless date (user-error "Post '%s' is missing date" (vulpea-note-title note)))
-            (-concat
-             (list "date" (org-read-date nil nil date))
-             (when image
-               (list "image"
-                     (concat
-                      (file-name-as-directory
-                       (concat "images/" (file-name-base (porg-item-target-rel item))))
-                      (file-name-fix-attachment image))))
-             (when description
-               (list "description" description))
-             (when tags
-               (list "tags" (string-join tags ", ")))))))))
+   :build (d12-make-publish :copy-fn #'d12-build-post)
+   :clean #'d12-delete)
+
+  (porg-compiler
+   :name "post/metadata"
+   :match (-rpartial #'porg-rule-output-that :type "json"
+                     :predicate (-rpartial #'vulpea-note-tagged-all-p "post"))
+   :hash #'porg-sha1sum
+   :build (lambda (item items _cache)
+            (let* ((note (porg-item-item item))
+                   (metadata (vulpea-utils-with-note note
+                               (let ((date (vulpea-buffer-prop-get "date"))
+                                     (author (let ((x (vulpea-buffer-prop-get "author")))
+                                               (if (and x (string-equal x "Boris")) "Boris Buliga" x)))
+                                     (image (vulpea-buffer-prop-get "image"))
+                                     (description (vulpea-buffer-prop-get "description"))
+                                     (tags (vulpea-buffer-prop-get-list "tags")))
+                                 (unless date (user-error "Post '%s' is missing date" (vulpea-note-title note)))
+                                 (unless author (user-error "Post '%s' is missing author" (vulpea-note-title note)))
+                                 (-concat
+                                  `(("date" . ,(org-read-date nil nil date))
+                                    ("authors" . ,(list author)))
+                                  (when image
+                                    (let ((image-item (gethash (concat (vulpea-note-id note)
+                                                                       ":"
+                                                                       (file-name-fix-attachment
+                                                                        (s-chop-prefix "attachment:" image)
+                                                                        "webp"))
+                                                               items)))
+                                      (unless image-item
+                                        (user-error "%s is using %s as an image, but it does not exist"
+                                                    (funcall #'porg-describe item) image))
+                                      (unless (file-exists-p (porg-item-target-abs image-item))
+                                        (user-error "Image %s does not exist" (funcall #'porg-describe image-item)))
+                                      `(("image" . ,(porg-item-target-rel image-item))
+                                        ("image-width" . ,(shell-command-to-string
+                                                           (format "identify -format '%%w' '%s'"
+                                                            (porg-item-target-abs image-item))))
+                                        ("image-height" . ,(shell-command-to-string
+                                                            (format "identify -format '%%h' '%s'"
+                                                             (porg-item-target-abs image-item)))))))
+                                  (when description
+                                    `(("description" . ,description)))
+                                  (when tags
+                                    `(("tags" . ,tags)))))))
+                   (hash-a (when (file-exists-p (porg-item-target-abs item))
+                             (porg-sha1sum (porg-item-target-abs item))))
+                   (meta-file (file-name-replace-ext (porg-item-target-abs item) "json"))
+
+                   (hash-b (porg-sha1sum (porg-item-target-abs item)))
+
+                   (meta (if (functionp metadata) (funcall metadata item items) metadata))
+
+                   (update (when (file-exists-p meta-file)
+                             (with-current-buffer (find-file-noselect meta-file)
+                               (goto-char (point-min))
+                               (when (re-search-forward "update: \"\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)\"" nil t)
+                                 (match-string 1)))))
+                   (update (or (and (string-equal hash-a hash-b) update)
+                               (format-time-string "%F")))
+
+                   (date (plist-get meta "date"))
+                   (update (or (and date (org-time< update date) date)
+                               update))
+
+                   (pinned (string-to-bool (or (vulpea-note-meta-get note "pinned") "false")))
+                   (publish (string-to-bool (or (vulpea-note-meta-get note "publish") "false")))
+                   (hide (string-to-bool (or (vulpea-note-meta-get note "hide") "false")))
+
+                   (related (vulpea-note-meta-get-list note "related" 'link))
+
+                   (event (when (vulpea-note-tagged-all-p note "event")
+                            (let ((summary (d12-event-summary note)))
+                              (setf (alist-get 'wines summary)
+                                    (-map (lambda (data)
+                                            ;; replace convives inside the scores with id, name and public name
+                                            (-map (lambda (score)
+                                                    (setf
+                                                     (alist-get 'participant score)
+                                                     (let ((c (alist-get 'participant score)))
+                                                       (if (vulpea-note-p c)
+                                                           `((id . ,(vulpea-note-id c))
+                                                             (name . ,(vulpea-note-title c))
+                                                             (publicName . ,(vulpea-note-meta-get c "public name")))
+                                                         c)))
+                                                    score)
+                                                  (alist-get 'scores data))
+                                            ;; replace note with id
+                                            (setf (alist-get 'wine data)
+                                                  (vulpea-note-id (or (alist-get 'wine data)
+                                                                      (user-error "Seems like scores table has more wines than your events"))))
+                                            data)
+                                          (alist-get 'wines summary)))
+                              summary)))
+
+                   (meta (-concat `(("publish" . ,publish)
+                                    ("hide" . ,hide)
+                                    ("pinned" . ,pinned)
+                                    ("title" . ,(vulpea-note-title note))
+                                    ("id" . ,(vulpea-note-id note))
+                                    ("related" . ,related))
+                                  (when update `(("update" . ,update)))
+                                  meta
+                                  (when event `(("event" . ,event))))))
+              (with-current-buffer (find-file-noselect meta-file)
+                (delete-region (point-min) (point-max))
+                (let ((json-encoding-pretty-print t))
+                  (insert (json-encode meta)))
+                (save-buffer))))
    :clean #'d12-delete)
 
   (porg-compiler
    :name "images"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'d12-supported-image-p)
+   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'d12-supported-media-p)
+   :hash #'d12-sha1sum-attachment
    :build
    (lambda (item _items _cache)
      (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (let ((max-width 960)
-           (width (string-to-number
-                   (shell-command-to-string
-                    (format "identify -format %%W '%s'" (porg-item-item item))))))
-       (porg-debug "input:  %s" (porg-item-item item))
-       (porg-debug "output: %s" (porg-item-target-abs item))
-       (if (> width max-width)
-           (shell-command-to-string
-            (format "convert '%s' -strip -auto-orient -resize %sx100^ '%s'"
-                    (porg-item-item item) max-width (porg-item-target-abs item)))
-         (shell-command-to-string
-          (format "convert '%s' -strip -auto-orient '%s'"
-                  (porg-item-item item) (porg-item-target-abs item))))))
-   :clean #'d12-delete)
-
-  (porg-compiler
-   :name "gifs"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate (-rpartial #'file-name-has-ext-p "gif"))
-   :build
-   (lambda (item _items _cache)
-     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (copy-file (porg-item-item item) (porg-item-target-abs item) t))
-   :clean #'d12-delete)
-
-  (porg-compiler
-   :name "svg"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate (-rpartial #'file-name-has-ext-p "svg"))
-   :build
-   (lambda (item _items _cache)
-     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (copy-file (porg-item-item item) (porg-item-target-abs item) t))
-   :clean #'d12-delete)
-
-  (porg-compiler
-   :name "videos"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate (-rpartial #'file-name-has-ext-p "mp4"))
-   :build
-   (lambda (item _items _cache)
-     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (copy-file (porg-item-item item) (porg-item-target-abs item) t))
+     (if (d12-convertible-image-p (porg-item-item item))
+         (let ((max-width (or (plist-get (porg-item-extra-args item) :variant) 1600))
+               (width (string-to-number
+                       (shell-command-to-string
+                        (format "identify -format %%W '%s'" (porg-item-item item))))))
+           (porg-debug "input:  %s" (porg-item-item item))
+           (porg-debug "output: %s" (porg-item-target-abs item))
+           (if (> width max-width)
+               (shell-command-to-string
+                (format "convert '%s' -strip -auto-orient -resize %sx100^ '%s'"
+                        (porg-item-item item) max-width (porg-item-target-abs item)))
+             (shell-command-to-string
+              (format "convert '%s' -strip -auto-orient '%s'"
+                      (porg-item-item item) (porg-item-target-abs item)))))
+       (copy-file (porg-item-item item) (porg-item-target-abs item) t)))
    :clean #'d12-delete)))
 
 

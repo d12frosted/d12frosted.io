@@ -1,9 +1,0 @@
----
-languages: Emacs Lisp
-category: Emacs
-priority: 9
----
-
-Set of mirrors for different Emacs packages repositories like ELPA, MELPA,
-Stable MELPA and Org. Useful if you want to have a local copy of them or in
-times when upstream is dead for some of the reasons.

@@ -1,7 +1,0 @@
----
-languages: Emacs Lisp
-category: Emacs
-priority: 1
----
-
-A collection of functions for note taking based on =org= and =org-roam=.

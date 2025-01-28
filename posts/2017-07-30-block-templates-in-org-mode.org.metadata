@@ -1,6 +1,0 @@
-publish: "true"
-title: "Structure templates in Org mode"
-update: "2022-07-20"
-date: "2017-07-30"
-description: "Fast blocks creation in org-mode"
-tags: "emacs,, org-mode"
