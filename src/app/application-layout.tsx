@@ -35,7 +35,7 @@ export function ApplicationLayout({
                 alt="d12frosted icon"
                 className="mr-2 inline-grid size-10 shrink-0 align-middle outline outline-1 -outline-offset-1 *:col-start-1 *:row-start-1 sm:size-8"
               />
-              <NavbarLabel className="max-sm:hidden">d12frosted</NavbarLabel>
+              <NavbarLabel className="max-sm:hidden">{siteConfig.name}</NavbarLabel>
             </div>
             <NavbarDivider className="" />
             <NavbarSection className="">
@@ -89,7 +89,7 @@ export function ApplicationLayoutWide({
               alt="d12frosted icon"
               className="mr-2 inline-grid size-10 shrink-0 align-middle outline outline-1 -outline-offset-1 *:col-start-1 *:row-start-1 sm:size-8"
             />
-            <NavbarLabel>d12frosted</NavbarLabel>
+            <NavbarLabel>{siteConfig.name}</NavbarLabel>
           </div>
           <NavbarDivider className="max-lg:hidden" />
           <NavbarSection className="max-lg:hidden">
@@ -121,7 +121,7 @@ export function ApplicationLayoutWide({
                 alt="d12frosted icon"
                 className="mr-2 inline-grid size-10 shrink-0 align-middle outline outline-1 -outline-offset-1 *:col-start-1 *:row-start-1 sm:size-8"
               />
-              <NavbarLabel>d12frosted</NavbarLabel>
+              <NavbarLabel>{siteConfig.name}</NavbarLabel>
             </div>
           </SidebarHeader>
           <SidebarBody>

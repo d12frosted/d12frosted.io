@@ -3,13 +3,14 @@ import '@/styles/tailwind.css'
 import type { Metadata } from 'next'
 import type React from 'react'
 import { ApplicationLayout } from './application-layout'
+import {siteConfig} from "@/config/config";
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Catalyst',
-    default: 'Catalyst',
+    template: `%s - ${siteConfig.name}`,
+    default: siteConfig.name,
   },
-  description: '',
+  description: siteConfig.description,
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
