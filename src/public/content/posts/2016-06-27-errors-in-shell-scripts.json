@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Errors in shell scripts",
+  "id": "e410736b-4d6a-4a1d-b5c0-26cb0451cf45",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2016-06-27",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Handing errors in shell scripts",
+  "tags": [
+    "shell"
+  ]
+}

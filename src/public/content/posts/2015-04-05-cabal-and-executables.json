@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Cabal and executables",
+  "id": "2a373342-4ceb-45ef-b593-f27c08019b55",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2015-04-05",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Simple script for installing exectuables from Hackage without running into cabal hellnotifications when the command finishes in Fish",
+  "tags": [
+    "haskell"
+  ]
+}

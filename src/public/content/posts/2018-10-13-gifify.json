@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "High quality GIF from video",
+  "id": "bd4e041f-29c2-4f17-90e9-05f9d5c6a69a",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2018-10-13",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Tool for converting GIFs from video files",
+  "tags": [
+    "shell"
+  ]
+}

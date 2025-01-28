@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Emacs: reusing window for helpful buffers",
+  "id": "893c413b-f24b-425f-ac1b-523e4dc76533",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2019-06-26",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Tweaking helpful to avoid all windows taken by helpfuluser for some input",
+  "tags": [
+    "emacs"
+  ]
+}

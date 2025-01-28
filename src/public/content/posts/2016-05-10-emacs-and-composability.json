@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Emacs and Composability",
+  "id": "8a045f28-5287-418b-94e2-64df2b147eb2",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2016-05-10",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "The most important thing in Emacs",
+  "tags": [
+    "emacs"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Predicate composition",
+  "id": "99c93f02-3853-403d-a93a-052e8e104ffa",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2020-01-20",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Combinators for predicate composition",
+  "tags": [
+    "haskell"
+  ]
+}

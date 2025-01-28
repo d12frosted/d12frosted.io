@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "emacs-plus: current state",
+  "id": "51bdcf24-54f7-4780-b3c3-2169096499bf",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2020-01-08",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Overview of current state of emacs-plus project",
+  "tags": [
+    "emacs-plus"
+  ]
+}

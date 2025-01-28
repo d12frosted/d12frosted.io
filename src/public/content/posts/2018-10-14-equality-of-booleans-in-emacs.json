@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Equality of booleans in Emacs",
+  "id": "a55e8242-5628-4042-baa7-f8e4abd153af",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2018-10-14",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "About booleans in Emacs",
+  "tags": [
+    "emacs"
+  ]
+}

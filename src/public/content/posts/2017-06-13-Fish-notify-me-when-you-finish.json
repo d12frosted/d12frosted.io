@@ -1,0 +1,18 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Fish: notify me when you finish",
+  "id": "6c10dab7-9080-4c0d-a786-272f93d3aa99",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2017-06-13",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Getting notifications when the command finishes in Fish",
+  "tags": [
+    "fish",
+    "environment"
+  ]
+}

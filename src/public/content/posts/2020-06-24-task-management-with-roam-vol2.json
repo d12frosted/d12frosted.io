@@ -1,0 +1,18 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Task management with org-roam Vol. 2: Categories",
+  "id": "1255a684-ccfe-4b15-93a9-2d36858b3a11",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2020-06-24",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Automatic category extraction from org-roam",
+  "tags": [
+    "emacs",
+    "org-roam"
+  ]
+}

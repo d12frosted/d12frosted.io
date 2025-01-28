@@ -1,0 +1,18 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Readings Vol. I: precondition encoding",
+  "id": "bdbb1ca2-8ecb-4d5f-b1ca-6e192ff566ab",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2020-02-01",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Recommended articles and books",
+  "tags": [
+    "haskell",
+    "readings"
+  ]
+}

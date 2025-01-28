@@ -1,0 +1,18 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Task management with org-roam Vol. 3: FILETAGS",
+  "id": "4ecfd28d-bda9-4645-8885-c7e6ffb61fbc",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2020-06-25",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Automatic FILETAGS application in org-roam",
+  "tags": [
+    "emacs",
+    "org-roam"
+  ]
+}

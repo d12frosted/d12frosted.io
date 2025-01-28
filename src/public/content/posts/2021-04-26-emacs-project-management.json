@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Project management tool for Emacs packages",
+  "id": "90510e72-bb9a-43c9-9953-31ba3df61aaa",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2021-04-26",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Comparison of project management tools for Emacs",
+  "tags": [
+    "emacs"
+  ]
+}

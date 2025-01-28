@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "AppleScript and the GitHub API",
+  "id": "76cb7bdd-d1a9-494f-a23c-7943cb1c0f61",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2017-06-15",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Using GitHub API from AppleScript",
+  "tags": [
+    "applescript"
+  ]
+}

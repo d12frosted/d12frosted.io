@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Retries with straight.el",
+  "id": "aeb9b029-0224-4b99-8b72-90ea0cba64ce",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2021-04-08",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Snippet adding retries to network operations of straight.el - Emacs package manager",
+  "tags": [
+    "emacs"
+  ]
+}

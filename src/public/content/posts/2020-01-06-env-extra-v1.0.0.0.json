@@ -1,0 +1,19 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "env-extra v1.0.0.0",
+  "id": "3e4fe776-d71c-49d8-bab1-7dec446c0e68",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2020-01-06",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Announcement of new version of env-extra",
+  "tags": [
+    "haskell",
+    "release",
+    "env-exta"
+  ]
+}

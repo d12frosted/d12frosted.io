@@ -1,0 +1,18 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Org-roam tags",
+  "id": "ad1d1a0e-f6eb-4856-8bd8-f735ed5dd844",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2020-06-10",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Utility functions to manage org-roam tags",
+  "tags": [
+    "emacs",
+    "org-roam"
+  ]
+}

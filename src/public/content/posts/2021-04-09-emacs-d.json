@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Towards future-safe emacs.d",
+  "id": "39d31d0c-15bb-4c03-a8fe-a44cf0a50df2",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2021-04-09",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Boosting emacs.d development flow",
+  "tags": [
+    "emacs"
+  ]
+}

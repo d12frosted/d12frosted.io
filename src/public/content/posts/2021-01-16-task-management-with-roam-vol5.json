@@ -1,0 +1,18 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "Task management with org-roam Vol. 5: Dynamic and fast agenda",
+  "id": "6108e748-2696-4343-8c04-5c03245261e6",
+  "related": null,
+  "update": "2025-01-28",
+  "date": "2021-01-16",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Dynamically building org-agenda-files with only relevant files",
+  "tags": [
+    "emacs",
+    "org-roam"
+  ]
+}
