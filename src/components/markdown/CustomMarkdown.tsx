@@ -1,0 +1,263 @@
+import { getImage } from '@/components/content/images'
+import { SyntaxHighlighter } from '@/components/markdown/SyntaxHighlighter'
+import { BlogPost } from '@/lib/posts'
+import '@/styles/blog.css'
+import clsx from 'clsx'
+import { readFileSync } from 'fs'
+import 'katex/dist/katex.min.css'; // `rehype-katex` does not import the CSS for you
+import Image from 'next/image'
+import { Children, ReactNode } from 'react'
+import Markdown from 'react-markdown'
+import rehypeKatex from 'rehype-katex'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import YAML from 'yaml'
+import {
+  CustomMarkdownProps,
+  isBlogPostContext
+} from './common'
+import { Donut, DonutProps } from './d3/v0/Donut'
+import { GeoHeatMap, GeoHeatMapData, GeoHeatMapProps } from './d3/v0/GeoHeatMap'
+import { PlotFigure, PlotFigureProps } from './d3/v0/Plot'
+
+const worldGeoJson: GeoJSON.FeatureCollection = JSON.parse(
+  readFileSync('src/data/land.json', 'utf8'),
+)
+
+const isElement = (child: React.ReactNode): child is React.ReactElement =>
+  (child as React.ReactElement)?.props !== undefined
+
+function findChildThat(
+  { children }: { children?: ReactNode },
+  predicate: (child: React.ReactElement) => boolean,
+): React.ReactElement | undefined {
+  if (!children) {
+    return undefined
+  }
+  return Children.toArray(children).find((child) => {
+    if (isElement(child)) {
+      return predicate(child)
+    }
+    return false
+  }) as React.ReactElement | undefined
+}
+
+export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
+  const { context } = props
+  return (
+    <Markdown
+      remarkPlugins={[remarkMath, remarkGfm]}
+      rehypePlugins={[rehypeKatex, rehypeRaw]}
+      components={{
+        ...props.components,
+        pre(props) {
+          const { children, node, ...rest } = props
+          const nonPreElement = findChildThat(
+            props,
+            (child) =>
+              child.props.node.tagName === 'code' &&
+              [
+                'language-d3_v0_donut',
+                'language-d3_v0_plot',
+                'language-d3_v0_geo_heat_map',
+                'language-related_posts',
+              ].includes(child.props.className ?? ''),
+          )
+          if (nonPreElement) {
+            return nonPreElement
+          }
+          return <pre {...rest}>{children}</pre>
+        },
+
+        code(props) {
+          const { children, className, node, ...rest } = props
+
+          const match = /language-(\w+)/.exec(className || '')
+          if (match) {
+            const lang = match[1]
+            if (lang === 'd3_v0_donut') {
+              const cfg: DonutProps = YAML.parse(String(children))
+              return <Donut {...cfg} />
+            }
+            if (lang === 'd3_v0_plot') {
+              const cfg: PlotFigureProps = YAML.parse(String(children))
+              return <PlotFigure {...cfg} />
+            }
+            if (lang === 'd3_v0_geo_heat_map') {
+              const {
+                data,
+                type,
+              }: { data: GeoHeatMapData; type: 'normal' | 'europe' } =
+                YAML.parse(String(children))
+              const props: GeoHeatMapProps = { data, type, worldGeoJson }
+              return <GeoHeatMap {...props} />
+            }
+            if (lang === 'related_posts' && isBlogPostContext(context)) {
+              function describePost(post: BlogPost): string {
+                if (post.description === undefined) {
+                  return `- [${post.title}](${post.slug})`
+                }
+                return `- [${post.title}](${post.slug}) – ${post.description}`
+              }
+              const ids = context.post.related ?? []
+              const posts = context.allPosts.filter((post) =>
+                ids.includes(post.id),
+              )
+              const md = posts.map(describePost).join('\n')
+              if (ids.length === 0) {
+                return <></>
+              }
+              return (
+                <div className="prose prose-slate max-w-none rounded-md bg-sky-50 p-4">
+                  <h2 className="text-medium font-medium">Related posts</h2>
+                  <div className="mt-2 text-sm text-sky-950 [&>ul]:list-['\2013\20'] [&>ul]:pl-5">
+                    <CustomMarkdown>{md}</CustomMarkdown>
+                  </div>
+                </div>
+              )
+            }
+            return (
+              <SyntaxHighlighter {...rest} language={lang}>
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            )
+          }
+          return (
+            <code {...rest} className={className}>
+              {children}
+            </code>
+          )
+        },
+
+        img(props) {
+          const { src, alt, width, height, ref, node, ...rest } =
+            props
+          if (src && src.startsWith('/images')) {
+            const classNames = (props.className ?? '').split(' ')
+            return (
+              <Image
+                src={getImage(src)}
+                alt={alt ?? 'some random image you can find on barberry garden'}
+                {...rest}
+                className={clsx(
+                  props.className,
+                  classNames.includes('bottle-right')
+                    ? 'mx-auto max-w-full sm:max-w-[50%]'
+                    : '',
+                  classNames.includes('image-75')
+                    ? 'mx-auto max-w-full sm:max-w-[75%]'
+                    : '',
+                  classNames.includes('image-50')
+                    ? 'mx-auto max-w-full sm:max-w-[50%]'
+                    : '',
+                  classNames.includes('image-rounded')
+                    ? 'rounded-lg bg-gray-100'
+                    : '',
+                )}
+              />
+            )
+          }
+          throw new Error(`Image src must start with /images: ${src}`)
+        },
+
+        div(props) {
+          const { className, ...rest } = props
+          const classNames = (className ?? '').split(' ')
+          if (classNames.indexOf('compare-images-block') >= 0) {
+            const images = Children.toArray(props.children).filter((child) =>
+              isElement(child),
+            ) as React.ReactElement[]
+            return (
+              <div
+                className={clsx(
+                  'grid gap-x-2 gap-y-2 md:gap-y-0 lg:gap-x-4',
+                  classNames.indexOf('grid-cols-1') >= 0
+                    ? 'grid-cols-1'
+                    : 'grid-cols-1 md:grid-cols-2',
+                )}
+              >
+                {images.map((image) => (
+                  <div key={image.key} className="group relative">
+                    <h3 className="mt-2 text-sm text-gray-700">
+                      <span className="absolute inset-0" />
+                      {image.props.alt}
+                    </h3>
+                    <div
+                      className={clsx(
+                        'w-full rounded-md border-slate-300 group-hover:opacity-75',
+                        classNames.indexOf('border-0') >= 0
+                          ? 'border-0'
+                          : 'border-4',
+                      )}
+                    >
+                      <Image
+                        className={clsx(
+                          classNames.indexOf('border-0') >= 0 ? '' : 'p-2',
+                        )}
+                        src={getImage(image.props.src)}
+                        alt={image.props.alt}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          }
+          return <div {...props} />
+        },
+
+        section(props) {
+          const { children, className, node, ...rest } = props
+          const classNames = (className ?? '').split(' ')
+          if (classNames.indexOf('footnotes') >= 0) {
+            return (
+              <section {...rest} className={className}>
+                <hr className="my-8 border-gray-200" />
+                {children}
+              </section>
+            )
+          }
+          return (
+            <section className={className} {...rest}>
+              {children}
+            </section>
+          )
+        },
+
+        table(props) {
+          return (
+            <div className="overflow-auto">
+              <table {...props} />
+            </div>
+          )
+        },
+        td(props) {
+          const strong = findChildThat(
+            props,
+            (child) => child.type === 'strong',
+          )
+          if (strong) {
+            return (
+              <td className="bg-successful" {...props}>
+                {strong.props.children}
+              </td>
+            )
+          }
+
+          const del = findChildThat(props, (child) => child.type === 'del')
+          if (del) {
+            return (
+              <td className="bg-critical" {...props}>
+                {del.props.children}
+              </td>
+            )
+          }
+          return <td {...props} />
+        },
+      }}
+    >
+      {props.children}
+    </Markdown>
+  )
+}
