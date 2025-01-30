@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "flyspell-correct v0.6",
   "id": "bbb826a7-a379-4019-bb84-4f3f025b0de7",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2019-12-29",
   "authors": [
     "Boris Buliga"

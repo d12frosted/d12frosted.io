@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Revisiting Eru",
   "id": "2cfb35ce-82ee-48de-8404-e7103eaa59d8",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2018-11-04",
   "authors": [
     "Boris Buliga"

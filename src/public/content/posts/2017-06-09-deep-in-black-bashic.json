@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Deep in the black bashic",
   "id": "c6563444-0975-458f-ad7d-abf19bbed6f4",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2017-06-09",
   "authors": [
     "Boris Buliga"

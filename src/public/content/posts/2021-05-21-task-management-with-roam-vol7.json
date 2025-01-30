@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Task management with org-roam Vol. 7: Capture",
   "id": "cd0fefec-39c8-4f72-aa4f-0b45c9b305f6",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2021-05-21",
   "authors": [
     "Boris Buliga"

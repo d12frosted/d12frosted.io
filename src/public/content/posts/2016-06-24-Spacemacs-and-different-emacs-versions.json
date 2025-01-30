@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Using Spacemacs with several Emacs versions",
   "id": "211a5815-461e-4711-9cdd-1a39b975d57a",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2016-06-24",
   "authors": [
     "Boris Buliga"

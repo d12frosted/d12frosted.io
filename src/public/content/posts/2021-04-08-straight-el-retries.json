@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Retries with straight.el",
   "id": "aeb9b029-0224-4b99-8b72-90ea0cba64ce",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2021-04-08",
   "authors": [
     "Boris Buliga"

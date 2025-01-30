@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Task management with org-roam Vol. 6: Select a person and view related tasks",
   "id": "79157e35-c1a9-44ab-a523-acce40cffb89",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2021-01-24",
   "authors": [
     "Boris Buliga"

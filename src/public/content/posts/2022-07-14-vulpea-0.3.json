@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Vulpea v0.3",
   "id": "733d8b25-15b9-4a03-9173-dfc1d5d8c644",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2022-07-14",
   "authors": [
     "Boris Buliga"

@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Asking for input in Bash",
   "id": "d95da6e3-c37f-4104-9231-144132224cd6",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2019-04-12",
   "authors": [
     "Boris Buliga"

@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Cabal and executables",
   "id": "2a373342-4ceb-45ef-b593-f27c08019b55",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2015-04-05",
   "authors": [
     "Boris Buliga"

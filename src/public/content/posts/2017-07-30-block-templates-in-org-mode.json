@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Structure templates in Org mode",
   "id": "bb450676-2d69-44d8-b6e9-1258824a84e4",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2017-07-30",
   "authors": [
     "Boris Buliga"

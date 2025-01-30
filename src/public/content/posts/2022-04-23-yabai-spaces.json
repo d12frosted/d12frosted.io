@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Automatic setup of spaces with yabai",
   "id": "8afcf505-349b-42cf-b3d0-8be0baef05e6",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2022-04-23",
   "authors": [
     "Boris Buliga"

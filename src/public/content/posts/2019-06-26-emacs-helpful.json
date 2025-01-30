@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Emacs: reusing window for helpful buffers",
   "id": "893c413b-f24b-425f-ac1b-523e4dc76533",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2019-06-26",
   "authors": [
     "Boris Buliga"

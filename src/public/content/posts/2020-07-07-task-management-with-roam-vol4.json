@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Task management with org-roam Vol. 4: Automatic tagging",
   "id": "675cf553-8fcd-4bc4-be22-5eb3e88aab88",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2020-07-07",
   "authors": [
     "Boris Buliga"

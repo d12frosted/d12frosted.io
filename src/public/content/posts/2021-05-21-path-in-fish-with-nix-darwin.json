@@ -1,11 +1,11 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Fixing PATH in fish with nix-darwin",
   "id": "40e8c120-5288-4ff7-9eb6-f5d2a4ada41e",
   "related": null,
-  "update": "2025-01-28",
+  "update": "2025-01-30",
   "date": "2021-05-21",
   "authors": [
     "Boris Buliga"
