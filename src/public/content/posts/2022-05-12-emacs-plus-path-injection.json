@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A new feature provided by Emacs+ that injects PATH value during build",
+  "description": "Sharing how I improved PATH handling in Emacs+ to solve a common pain point. By injecting the user's PATH into Emacs.app during build, users now get the expected environment variables when launching Emacs from anywhere on macOS. This change also simplifies native-comp configuration and helps avoid common compilation issues. While it's not as dynamic as exec-path-from-shell, it provides a solid out-of-box experience for Emacs+ users.provided by Emacs+ that injects PATH value during build",
   "tags": [
     "emacs-plus"
   ]
