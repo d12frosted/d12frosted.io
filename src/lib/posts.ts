@@ -45,7 +45,7 @@ export async function getPostBySlug(
     published: new Date(realSlug.slice(0, 10)),
     updated: new Date(data.updated),
     tags: data.tags,
-    language: data.language,
+    language: data.language ?? "EN",
     hide: !data.publish || data.hide,
     pinned: data.pinned ?? false,
     description: data.description,
