@@ -12,7 +12,7 @@ type PageParams = {
 }
 
 type Props = {
-  params: PageParams
+  params: Promise<PageParams>
 }
 
 const getPost = cache(async (slug: string) => {
@@ -35,8 +35,9 @@ export async function generateStaticParams(): Promise<PageParams[]> {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  let post = await getPost(props.params.slug)
-  let image = post.image ? getImage(post.image.replace('src/public/content', '')) : undefined
+  const params = await props.params
+  const post = await getPost(params.slug)
+  const image = post.image ? getImage(post.image.replace('src/public/content', '')) : undefined
 
   return {
     title: post.title,
@@ -57,7 +58,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function Post({ params }: Props) {
-  let post = await getPost(params.slug)
+  const { slug } = await params
+  let post = await getPost(slug)
   let date = new Date(post.published)
   let allPosts = await getAllPostsCached()
   let context = { post, allPosts }
