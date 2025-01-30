@@ -3,7 +3,6 @@ import { SyntaxHighlighter } from '@/components/markdown/syntax-highlighter'
 import { BlogPost } from '@/lib/posts'
 import '@/styles/blog.css'
 import clsx from 'clsx'
-import { readFileSync } from 'fs'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import Image from 'next/image'
 import { Children, ReactNode } from 'react'
@@ -49,11 +48,9 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
             props,
             (child) =>
               child.props.node.tagName === 'code' &&
-              [
-                'language-d3_v0_donut',
-                'language-d3_v0_plot',
-                'language-related_posts',
-              ].includes(child.props.className ?? '')
+              ['language-d3_v0_donut', 'language-d3_v0_plot', 'language-related_posts'].includes(
+                child.props.className ?? ''
+              )
           )
           if (nonPreElement) {
             return nonPreElement
@@ -90,7 +87,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
                 return <></>
               }
               return (
-                <div className="prose prose-slate max-w-none rounded-md bg-sky-50 p-4">
+                <div className="prose max-w-none rounded-md bg-sky-50 p-4 prose-slate">
                   <h2 className="text-medium font-medium">Related posts</h2>
                   <div className="mt-2 text-sm text-sky-950 [&>ul]:list-['\2013\20'] [&>ul]:pl-5">
                     <CustomMarkdown>{md}</CustomMarkdown>
@@ -125,6 +122,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
                   classNames.includes('bottle-right') ? 'mx-auto max-w-full sm:max-w-[50%]' : '',
                   classNames.includes('image-75') ? 'mx-auto max-w-full sm:max-w-[75%]' : '',
                   classNames.includes('image-50') ? 'mx-auto max-w-full sm:max-w-[50%]' : '',
+                  classNames.includes('img-half') ? 'mx-auto max-w-full sm:max-w-[50%]' : '',
                   classNames.includes('image-rounded') ? 'rounded-lg bg-gray-100' : ''
                 )}
               />
