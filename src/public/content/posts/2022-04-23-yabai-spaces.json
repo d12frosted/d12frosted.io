@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Automatic setup of spaces with yabai",
+  "description": "Sharing my yabai configuration for automatically setting up workspaces in macOS. I walk through how to create a consistent set of labeled spaces, clean up extras, and automatically move applications to specific workspaces on startup. While tiling window managers aren't for everyone, this setup helps maintain an organized workflow by ensuring applications always land in their designated spaces.",
   "tags": [
     "yabai"
   ]
