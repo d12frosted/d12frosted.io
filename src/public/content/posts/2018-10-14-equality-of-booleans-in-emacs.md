@@ -1,4 +1,4 @@
-![](/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp)
+<img src="/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp" class="d12-image-3/4" />
 
 There is a fun story about booleans in Emacs Lisp - there are no booleans in Emacs Lisp. Sort of. Because we have a symbol `nil`, which means an empty list. You can write it as `nil` or `()` - they both stand for the same object, the symbol `nil`.
 

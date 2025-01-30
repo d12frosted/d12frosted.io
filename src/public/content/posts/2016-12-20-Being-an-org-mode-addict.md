@@ -1,4 +1,4 @@
-![](/images/2016-12-20-Being-an-org-mode-addict/2022-07-19-18-39-02-59ca88ab-671f-4c5e-9bf8-25547bbadbc2.webp)
+<img src="/images/2016-12-20-Being-an-org-mode-addict/2022-07-19-18-39-02-59ca88ab-671f-4c5e-9bf8-25547bbadbc2.webp" class="d12-image-1/2" />
 
 It is funny how I vainly try to escape devilish `org-mode`. I have several major concerns regarding it as a GTD system and a note taking system, but after all, whatever I try to replace it with, I always return to `org-mode`. Mostly because it's simple (at least at the top level) and makes me feel more confident about my thoughts, tasks and the future. But on the other hand, it makes me really angry because it forces me to make some uncomfortable decisions.
 

@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Tweaking helpful to avoid all windows taken by helpfuluser for some input",
+  "description": "Sharing a quick tip for improving how the helpful package manages windows in Emacs. By customizing helpful-switch-buffer-function, we can make help navigation more intuitive - keeping the original code visible while browsing documentation. The solution is just a few lines of Elisp that makes help buffers behave more predictably.",
   "tags": [
     "emacs"
   ]

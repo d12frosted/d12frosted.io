@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A little black magic to ease the burden of asking user for some input",
+  "description": "Sharing how I improved a configuration script by creating a reusable 'ask' function that handles both required and optional inputs. Instead of using eval for variable manipulation, I opted for bash's safer indirection and declare features. The result is cleaner, more maintainable code that's still compatible across different bash versions.",
   "tags": [
     "shell"
   ]

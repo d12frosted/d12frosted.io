@@ -10,7 +10,10 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "About booleans in Emacs",
+  "image": "src/public/content/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp",
+  "image-width": "1600",
+  "image-height": "789",
+  "description": "Sharing some fun quirks about booleans in Emacs Lisp - or rather, the lack of them! Since everything is either nil (the empty list) or some form of \"true\", comparing boolean values gets interesting. I've explored a few different approaches using if/when, not, and xor functions to handle boolean comparisons properly.",
   "tags": [
     "emacs"
   ]

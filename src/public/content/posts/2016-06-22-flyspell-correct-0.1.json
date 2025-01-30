@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Announcement of new version of flyspell-correct",
+  "description": "Announcing the first release of flyspell-correct, now restructured into separate core and interface packages, with a new function for correcting misspelled words before the cursor position.",
   "tags": [
     "emacs",
     "release",

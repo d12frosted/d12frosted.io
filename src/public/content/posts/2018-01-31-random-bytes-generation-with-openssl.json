@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Quick random bytes generation from terminal using OpenSSL",
+  "description": "Sharing a quick OpenSSL tip for generating random bytes - using the rand command with hex or base64 encoding lets you create high-entropy random strings for passwords and other uses. Just remember to account for the encoding's effect on output length.",
   "tags": [
     "shell"
   ]

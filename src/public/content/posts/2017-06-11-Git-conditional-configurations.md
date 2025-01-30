@@ -4,7 +4,7 @@ More than five years ago [Jeff King](https://github.com/peff) has [added](https:
 
 Consider a simple example of `~/.gitconfig` file.
 
-``` example
+``` conf-unix
 # content of ~/.gitconfig
 
 [core]

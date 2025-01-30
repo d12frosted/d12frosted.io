@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Overview of current state of emacs-plus project",
+  "description": "Sharing a status update on emacs-plus, my Homebrew formula that started as an April Fool's joke with just a Spacemacs icon. I've made some recent improvements like moving to GitHub Workflows for faster builds, better patch management, and improved visibility into build failures. While I'm considering simplifying the available options, I'm grateful for the community support that's kept this project going!",
   "tags": [
     "emacs-plus"
   ]

@@ -30,15 +30,15 @@ In case of any other problems - may the force be with you. Otherwise - you are r
 
 The first thing to notice in `fish` - blazingly fast completion and suggestions based on history, man pages and custom rules. This is something that amazed me so much when I saw it in action, because I remember how tricky it is to configure such things in `bash` and `zsh`, but here you have everything and even more out of box.
 
-![](/images/2015-02-07-make-the-fish-fly/2022-07-19_17-11-16_fish-suggestions.gif)
+<img src="/images/2015-02-07-make-the-fish-fly/2022-07-19_17-11-16_fish-suggestions.gif" class="d12-image-3/4" />
 
 What I like about suggestions - they can be narrowed to commands and arguments. For example, when the prompt is empty, typing `↑` navigates you through all your history. If you type something like `stack`, all history will be narrowed to `stack` command only. And if you type `stack build` you'll get even more narrowing. It's like a tree, where every word you type selects a branch of completion. Sure enough, it's a little bit smarter than this.
 
-![](/images/2015-02-07-make-the-fish-fly/2022-07-19-17-35-48-fish-suggestions.webp)
+<img src="/images/2015-02-07-make-the-fish-fly/2022-07-19-17-35-48-fish-suggestions.webp" class="d12-image-1/2" />
 
 The second thing about `fish` completions - they are based on `man` pages. In `bash` you have `bash-completion`, in `oh-my-zsh` you have plug-ins (and when you have a lot of them, your life becomes kind of laggy). But `fish` takes a lot of completions from `man` pages. And it works so fast, that it's just amazing. Now I don't need to remove everything I typed just to check `man` when I forget which key I need, `-N` or `-n`. All completions are paginated, and you can scroll them to find what you need. Super productive.
 
-<figure class="image">
+<figure class="d12-image-3/4">
 <img src="/images/2015-02-07-make-the-fish-fly/2022-07-19-17-36-39-1423317617.webp" />
 <figcaption>Fish generates them automatically by parsing your installed man pages</figcaption>
 </figure>

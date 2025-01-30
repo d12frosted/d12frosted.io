@@ -18,7 +18,7 @@ But hey, we are software engineers after all. So I decided to write a little hel
 >
 > [Haskell Wiki](https://wiki.haskell.org/Cabal/Survival)
 
-![](/images/2015-04-05-cabal-and-executables/2022-07-19-17-49-57-1428233775.webp)
+<img src="/images/2015-04-05-cabal-and-executables/2022-07-19-17-49-57-1428233775.webp" class="d12-image-1/2" />
 
 I need to confess. Sometimes I solve ****Cabal Hell**** by using this method with `rm -rf`. ****Cabal Hell**** is like cancer - it's very hard to cure this disease without ruining your environment (in our case - packages database). But with **Cabal Hell** comes one good thing - you can use some tools in order to prevent this bizarre to happen with you. For such purposes, you can use cabal sandboxes, Stackage or nixos. Probably there are some other handy solutions or tools, but this is all I know.
 

@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Combinators for predicate composition",
+  "description": "A deep dive into predicate composition in Haskell, exploring different implementation approaches - from simple function composition to using Semigroup and coercion. I've shown how we can create elegant abstractions without runtime penalties by leveraging GHC's optimization capabilities and newtype wrappers. Complete with Core dumps and performance benchmarks to prove there's no performance cost.",
   "tags": [
     "haskell"
   ]

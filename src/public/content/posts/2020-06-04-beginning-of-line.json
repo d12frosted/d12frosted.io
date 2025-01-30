@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Convenient functions to move cursor",
+  "description": "Sharing my custom Emacs functions for smarter line navigation. I've created enhanced alternatives to move-to-beginning-of-line that first jump to meaningful content before the actual line start. The org-mode version is particularly useful, handling headlines, TODO items, and list bullets intelligently. These functions make code navigation more intuitive without adding external package dependencies.",
   "tags": [
     "emacs"
   ]

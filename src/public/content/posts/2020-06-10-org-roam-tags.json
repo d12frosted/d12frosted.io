@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Utility functions to manage org-roam tags",
+  "description": "Sharing some functions I wrote to better manage tags in org-roam notes. While this functionality is now part of org-roam v2 (use org-roam-tag-add and org-roam-tag-remove instead), the code demonstrates how to extend org-roam's capabilities and work with its database. The implementation focused on making tag management more intuitive with completion support.",
   "tags": [
     "emacs",
     "org-roam"

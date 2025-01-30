@@ -10,99 +10,105 @@ Without going into too many details about irrelevant parts of that script, I jus
 
 Here is an example of getting the title of `d12frosted/private-repository#42`. First we setup `GitHubClient` by setting the path to [jq](https://stedolan.github.io/jq/) and by setting credentials. Then we ask it to get a specific issue and select from it the title. Select verb accepts any(?) `jq` command. The latest verb `commit` does all the dirty job - sends a request to GitHub and then pipes the result to `jq`.
 
-    property jqPath : "/usr/local/bin/jq"
-    property githubUser : "d12frosted"
-    property githubAccessToken : "ACCESS_TOKEN"
+``` applescript
+property jqPath : "/usr/local/bin/jq"
+property githubUser : "d12frosted"
+property githubAccessToken : "ACCESS_TOKEN"
 
-    tell GitHubClient
-      setupJQ(jqPath)
-      authorise(githubUser, githubAccessToken)
-      getIssue("d12frosted", "private-repository", 42)
-      select(".title")
-      commit()
-    end tell
+tell GitHubClient
+  setupJQ(jqPath)
+  authorise(githubUser, githubAccessToken)
+  getIssue("d12frosted", "private-repository", 42)
+  select(".title")
+  commit()
+end tell
+```
 
 Here is the implementation of `GitHubClient`.
 
-    property _username : missing value
-    property _access_token : missing value
-    property _api_url : missing value
-    property _method : missing value
-    property _selector : missing value
-    property _jq_path : "jq"
+``` applescript
+property _username : missing value
+property _access_token : missing value
+property _api_url : missing value
+property _method : missing value
+property _selector : missing value
+property _jq_path : "jq"
 
-    on authorise(username, access_token)
-      set _username to username
-      set _access_token to access_token
-    end authorise
+on authorise(username, access_token)
+  set _username to username
+  set _access_token to access_token
+end authorise
 
-    on setupJQ(path)
-      set _jq_path to path
-    end setupJQ
+on setupJQ(path)
+  set _jq_path to path
+end setupJQ
 
-    on select (selector)
-      set _selector to selector
-    end select
+on select (selector)
+  set _selector to selector
+end select
 
-    on commit()
-      local prefix, cmd
-      set prefix to "export LANG='" & user locale of (system info) & ".UTF-8'; shopt -s compat31; "
-      set cmd to "curl "
-      if _username is not missing value and _access_token is not missing value then
-        set cmd to cmd & "-u " & quoted form of (_username & ":" & _access_token) & " "
-      end if
-      set cmd to cmd & quoted form of _api_url
-      if _selector is not missing value then
-        set cmd to cmd & " | " & _jq_path & " " & quoted form of _selector
-      end if
-      tell me to do shell script prefix & cmd
-      return result
-    end commit
+on commit()
+  local prefix, cmd
+  set prefix to "export LANG='" & user locale of (system info) & ".UTF-8'; shopt -s compat31; "
+  set cmd to "curl "
+  if _username is not missing value and _access_token is not missing value then
+    set cmd to cmd & "-u " & quoted form of (_username & ":" & _access_token) & " "
+  end if
+  set cmd to cmd & quoted form of _api_url
+  if _selector is not missing value then
+    set cmd to cmd & " | " & _jq_path & " " & quoted form of _selector
+  end if
+  tell me to do shell script prefix & cmd
+  return result
+end commit
 
-    on apiGET(endpoint)
-      set _method to "GET"
-      set _api_url to "https://api.github.com/" & endpoint
-    end apiGET
+on apiGET(endpoint)
+  set _method to "GET"
+  set _api_url to "https://api.github.com/" & endpoint
+end apiGET
+```
 
 This is enough to implement different methods like `getIssue` or `getRepoContributors`.
 
-    # API - Repos
-    # https://developer.github.com/v3/repos
+``` applescript
+# API - Repos
+# https://developer.github.com/v3/repos
 
-    on getMyRepos()
-      apiGET("user/repos")
-    end getMyRepos
+on getMyRepos()
+  apiGET("user/repos")
+end getMyRepos
 
-    on getRepos(owner)
-      apiGET("users/" & owner & "/repos")
-    end getRepos
+on getRepos(owner)
+  apiGET("users/" & owner & "/repos")
+end getRepos
 
-    on getOrgRepos(org)
-      apiGET("orgs/" & org & "/repos")
-    end getOrgRepos
+on getOrgRepos(org)
+  apiGET("orgs/" & org & "/repos")
+end getOrgRepos
 
-    on getRepo(owner, repo)
-      apiGET("repos/" & owner & "/" & repo)
-    end getRepo
+on getRepo(owner, repo)
+  apiGET("repos/" & owner & "/" & repo)
+end getRepo
 
-    on getRepoContributors(owner, repo)
-      apiGET("repos/" & owner & "/" & repo & "/contributors")
-    end getRepoContributors
+on getRepoContributors(owner, repo)
+  apiGET("repos/" & owner & "/" & repo & "/contributors")
+end getRepoContributors
 
-    on getRepoLanguages(owner, repo)
-      apiGET("repos/" & owner & "/" & repo & "/languages")
-    end getRepoLanguages
+on getRepoLanguages(owner, repo)
+  apiGET("repos/" & owner & "/" & repo & "/languages")
+end getRepoLanguages
 
-    on getRepoTags(owner, repo)
-      apiGET("repos/" & owner & "/" & repo & "/tags")
-    end getRepoTags
+on getRepoTags(owner, repo)
+  apiGET("repos/" & owner & "/" & repo & "/tags")
+end getRepoTags
 
-    # apiGET - Issues
-    # https://developer.github.com/v3/issues
+# apiGET - Issues
+# https://developer.github.com/v3/issues
 
-    on getIssue(owner, repo, issueNumber)
-      apiGET("repos/" & owner & "/" & repo & "/issues/" & issueNumber)
-    end getIssue
+on getIssue(owner, repo, issueNumber)
+  apiGET("repos/" & owner & "/" & repo & "/issues/" & issueNumber)
+end getIssue
+```
 
 And so on.
 

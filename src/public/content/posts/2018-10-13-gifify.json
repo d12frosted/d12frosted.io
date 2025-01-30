@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Tool for converting GIFs from video files",
+  "description": "Sharing my script 'gifify' that simplifies creating high-quality GIFs with FFmpeg using custom palettes. It wraps FFmpeg's powerful features in a user-friendly interface, letting you control quality settings like FPS and scaling while automating the palette generation process. I've included visual examples comparing default vs custom palettes, plus complete installation instructions and source code.",
   "tags": [
     "shell"
   ]

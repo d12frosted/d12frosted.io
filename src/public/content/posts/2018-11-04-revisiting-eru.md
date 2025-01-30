@@ -8,7 +8,7 @@ $ curl https://raw.githubusercontent.com/d12frosted/environment/master/bootstrap
 
 I just have to wait patiently, while everything is being downloaded and installed, while all configuration cogs are being placed on the right spot.
 
-![](/images/2018-11-04-revisiting-eru/2022-07-19-20-39-33-eru-example-1.webp)
+<img src="/images/2018-11-04-revisiting-eru/2022-07-19-20-39-33-eru-example-1.webp" class="d12-image-1/2" />
 
 <!--more-->
 
@@ -35,7 +35,7 @@ $ ./bootstrap/eru.sh repositories brew # to help with repositories and brew
 
 Every theme that begins with `=>` is a mandatory theme - the one you can't skip. Every theme prefixed with `->` is an optional one. If you don't specify any themes, all optional themes are sung. If you do specify at leas t one theme - only specified are sang.
 
-![](/images/2018-11-04-revisiting-eru/2022-07-19-20-39-54-eru-example-2.webp)
+<img src="/images/2018-11-04-revisiting-eru/2022-07-19-20-39-54-eru-example-2.webp" class="d12-image-1/2" />
 
 You can find the latest version of `Eru.sh` on [GitHub](https://github.com/d12frosted/environment/blob/master/bootstrap/eru.sh).
 

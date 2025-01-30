@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Procrastination leads to no updates in this blog",
+  "description": "How a simple desire to write a new blog post led me down a rabbit hole of infrastructure improvements - from EC2 to S3, Hakyll to Docker, and everything in between. Sometimes the technical detours are as interesting as the destination.",
   "tags": [
     "blog"
   ]

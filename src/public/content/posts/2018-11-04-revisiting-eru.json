@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Overview of my computer configuration maintenance system",
+  "description": "Introducing Eru.sh, my system bootstrapping script. This bash script helps me set up my development environment across different machines by installing applications, configuring tools like Emacs and Fish shell, and syncing repositories. I've also shared some interesting bash programming patterns I used to make the code more maintainable, like mapping over files and handling optional themes. While it's not the most elegant solution, it gets the job done efficiently!",
   "tags": [
     "shell"
   ]

@@ -1,4 +1,4 @@
-![](/images/2017-06-13-Fish-notify-me-when-you-finish/2022-07-19-17-44-48-b98438ae-65f5-11e7-975f-0bbc94238d24.webp)
+<img src="/images/2017-06-13-Fish-notify-me-when-you-finish/2022-07-19-17-44-48-b98438ae-65f5-11e7-975f-0bbc94238d24.webp" class="d12-image-3/4" />
 
 Have you ever been in a situation when you called `git fetch`, stared at the screen for several seconds and then switched to the browser to read something 'useful' while `git` fetches updates? And in five minutes you're like 'Oh wait, I was doing something important, no?'. Rings the bell, doesn't it?
 

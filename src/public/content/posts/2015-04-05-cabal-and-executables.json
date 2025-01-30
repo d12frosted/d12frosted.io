@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Simple script for installing exectuables from Hackage without running into cabal hellnotifications when the command finishes in Fish",
+  "description": "A detailed exploration of managing Cabal dependency issues in Haskell, offering practical solutions through sandbox usage and custom Fish shell functions.",
   "tags": [
     "haskell"
   ]

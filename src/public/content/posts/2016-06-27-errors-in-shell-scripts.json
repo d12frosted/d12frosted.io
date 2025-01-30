@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Handing errors in shell scripts",
+  "description": "A practical guide on error handling in shell scripts, focusing on the use of set -e (exit-on-error mode) and trap commands to manage failures and cleanup operations, with clear examples demonstrating how to write more robust shell scripts.",
   "tags": [
     "shell"
   ]

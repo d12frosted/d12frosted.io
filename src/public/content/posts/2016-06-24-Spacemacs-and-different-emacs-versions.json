@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Instructions on how to use Spacemacs with several Emacs versions at the same time",
+  "description": "A helpful tip for Spacemacs users about using version-specific package directories to avoid reinstalling packages when switching between different Emacs versions, featuring a simple configuration solution.",
   "tags": [
     "emacs"
   ]

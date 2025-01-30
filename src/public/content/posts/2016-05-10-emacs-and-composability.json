@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "The most important thing in Emacs",
+  "description": "An opinion piece defending Emacs' extensibility approach versus Vim's composability, highlighting how Emacs' flexible architecture allows for implementing Vim-like features while offering multiple paths to customization through community-driven configurations.",
   "tags": [
     "emacs"
   ]

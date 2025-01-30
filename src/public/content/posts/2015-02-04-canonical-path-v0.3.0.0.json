@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Announcement of the third major version of CanonicalPath",
+  "description": "A summary of the third major release of CanonicalPath library, highlighting API changes, performance improvements, and enhanced testing infrastructure while maintaining compatibility with major Haskell package repositories.",
   "tags": [
     "haskell",
     "release"

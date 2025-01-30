@@ -73,21 +73,25 @@ The direction of the spelling can be changed by calling `flyspell-correct-wrappe
 
 ## Ivy interface
 
+<div class="d12-images-block-[100%]">
+
 ![](/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-1.webp)
 
 ![](/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-2.webp)
 
+</div>
+
 ## Popup interface
 
-![](/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-45-screenshot-popup.webp)
+<img src="/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-45-screenshot-popup.webp" class="d12-image-1/2" />
 
 ## Helm interface
 
-![](/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-59-screenshot-helm.webp)
+<img src="/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-59-screenshot-helm.webp" class="d12-image-1/2" />
 
 ## Ido interface
 
-![](/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp)
+<img src="/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp" class="d12-image-1/2" />
 
 # Last few words
 

@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Announcement of new version of flyspell-correct",
+  "description": "Announcing flyspell-correct 0.6, featuring a new avy-menu interface and several improvements including fixed point movements and lexical binding. Special thanks to @clemera and @Ergus for their contributions. Check out the full changelog and let me know if you run into any issues!",
   "tags": [
     "emacs",
     "release",

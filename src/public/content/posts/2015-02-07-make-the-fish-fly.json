@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Opinion after trying out the Fish",
+  "description": "A comprehensive review of the Fish shell, exploring its unique features, configurations, and advantages over traditional shells like Zsh, while highlighting its excellent out-of-the-box experience and performance benefits despite some POSIX compatibility trade-offs.",
   "tags": [
     "fish"
   ]

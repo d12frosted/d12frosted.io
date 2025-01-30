@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Announcement of flyspell-correct package for Emacs",
+  "description": "An introduction to flyspell-correct, an Emacs package offering flexible spell-checking interfaces through popular completion frameworks like Ivy, Helm, and Popup, while providing distraction-free word correction capabilities and customizable interface options.",
   "tags": [
     "emacs",
     "release",
