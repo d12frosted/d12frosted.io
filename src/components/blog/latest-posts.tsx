@@ -1,5 +1,6 @@
 import { FormattedDate } from '@/components/blog/date'
 import { BlogPost } from '@/lib/posts'
+import clsx from "clsx";
 
 const DISPLAY_AUTHOR: boolean = false
 
@@ -21,7 +22,7 @@ export function LatestPosts({ allPosts }: { allPosts: BlogPost[] }) {
   return (
     <div className="bg-white py-8">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:grid-cols-2">
-        <article className="mx-auto w-full max-w-2xl lg:mx-0 lg:max-w-lg">
+        <article className="mx-0 w-full max-w-2xl lg:mx-0 lg:max-w-lg">
           <FormattedDate date={featuredPost.published} className="block text-sm/6 text-gray-600" />
           <h2
             id="featured-post"
@@ -30,7 +31,12 @@ export function LatestPosts({ allPosts }: { allPosts: BlogPost[] }) {
             {featuredPost.title}
           </h2>
           <p className="mt-4 text-lg/8 text-gray-600">{featuredPost.description}</p>
-          <div className="mt-4 flex flex-col justify-between gap-6 sm:mt-8 sm:flex-row-reverse sm:gap-8 lg:mt-4 lg:flex-col">
+          <div className={
+            clsx(
+              "mt-4 flex flex-col justify-between gap-6 sm:mt-8 sm:gap-8 lg:mt-4 lg:flex-col",
+              DISPLAY_AUTHOR ? "sm:flex-row-reverse" : ""
+            )
+          }>
             <div className="flex">
               <a
                 href={featuredPost.href}
@@ -50,7 +56,7 @@ export function LatestPosts({ allPosts }: { allPosts: BlogPost[] }) {
             )}
           </div>
         </article>
-        <div className="mx-auto w-full max-w-2xl border-t border-gray-900/10 pt-12 sm:pt-16 lg:mx-0 lg:max-w-none lg:border-t-0 lg:pt-0">
+        <div className="mx-0 w-full max-w-2xl border-t border-gray-900/10 pt-12 sm:pt-16 lg:mx-0 lg:max-w-none lg:border-t-0 lg:pt-0">
           <div className="-my-12 divide-y divide-gray-900/10">
             {posts.map((post) => (
               <article key={post.id} className="py-12">
