@@ -4,6 +4,7 @@ import { join } from 'path'
 const postsDir = join('src/public/content/posts')
 
 export interface BlogPost {
+  href: string
   slug: string
   id: string
   title: string
@@ -36,6 +37,7 @@ export async function getPostBySlug(
   const data = JSON.parse(await fs.promises.readFile(jsonPath, 'utf8'))
 
   return {
+    href: `/posts/${realSlug}`,
     slug: realSlug,
     id: data.id,
     title: data.title,

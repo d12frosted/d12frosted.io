@@ -1,4 +1,4 @@
-import { Heading } from '@/components/heading'
+import { LatestPosts } from '@/components/blog/latest-posts'
 import { CustomMarkdown } from '@/components/markdown/custom-markdown'
 import { getAllPosts } from '@/lib/posts'
 import { promises as fs } from 'fs'
@@ -10,10 +10,11 @@ export default async function Home() {
   return (
     <>
       <div className="prose prose-stone">
-        <h1>Welcome</h1>
+        <h1>d12frosted</h1>
         <CustomMarkdown>{aboutText}</CustomMarkdown>
-        <h2>Latest Blog Posts</h2>
+        <h2>From the blog</h2>
       </div>
+      <LatestPosts allPosts={allPosts} />
     </>
   )
 }
