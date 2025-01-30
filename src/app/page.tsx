@@ -1,5 +1,5 @@
 import { Heading } from '@/components/heading'
-import { CustomMarkdown } from '@/components/markdown/CustomMarkdown'
+import { CustomMarkdown } from '@/components/markdown/custom-markdown'
 import { getAllPosts } from '@/lib/posts'
 import { promises as fs } from 'fs'
 

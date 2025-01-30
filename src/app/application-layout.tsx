@@ -1,4 +1,4 @@
-import { WineIcon } from '@/components/icons/WineIcon'
+import { WineIcon } from '@/components/icons/wine'
 import { Navbar, NavbarDivider, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/navbar'
 import { Sidebar, SidebarBody, SidebarHeader, SidebarItem, SidebarSection } from '@/components/sidebar'
 import { StackedLayout } from '@/components/stacked-layout'

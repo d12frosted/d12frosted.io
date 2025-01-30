@@ -1,5 +1,5 @@
 import { getImage } from '@/components/content/images'
-import { SyntaxHighlighter } from '@/components/markdown/SyntaxHighlighter'
+import { SyntaxHighlighter } from '@/components/markdown/syntax-highlighter'
 import { BlogPost } from '@/lib/posts'
 import '@/styles/blog.css'
 import clsx from 'clsx'
@@ -14,8 +14,8 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import YAML from 'yaml'
 import { CustomMarkdownProps, isBlogPostContext } from './common'
-import { Donut, DonutProps } from './d3/v0/Donut'
-import { PlotFigure, PlotFigureProps } from './d3/v0/Plot'
+import { Donut, DonutProps } from './d3/v0/donut'
+import { PlotFigure, PlotFigureProps } from './d3/v0/plot'
 
 const isElement = (child: React.ReactNode): child is React.ReactElement =>
   (child as React.ReactElement)?.props !== undefined
