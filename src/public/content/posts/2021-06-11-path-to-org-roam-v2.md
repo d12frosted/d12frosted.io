@@ -1,6 +1,10 @@
-<img src="/images/2021-06-11-path-to-org-roam-v2/2022-07-19-22-10-52-org-roam-logo.webp" class="img-half img-float-left" />
+<div class="grid grid-cols-2 mx-auto max-w-full sm:max-w-[75%]">
 
-<img src="/images/2021-06-11-path-to-org-roam-v2/2022-07-19-22-11-08-vulpea-logo.webp" class="img-half img-float-right" />
+![](/images/2021-06-11-path-to-org-roam-v2/2022-07-19-22-10-52-org-roam-logo.webp)
+
+![](/images/2021-06-11-path-to-org-roam-v2/2022-07-19-22-11-08-vulpea-logo.webp)
+
+</div>
 
 In my opinion, [org-roam](https://github.com/org-roam/org-roam/) is among the best things that happened to Emacs during the last 5 years. Forget Zettelkasten method, `org-roam` is a solution for non-hierarchical note-taking regardless of methodology you are worshiping. The most important and appealing feature of `org-roam` is its database! Just imagine, in less than a second I can filter a collection of 10000+ notes by tags, title, aliases, links and other things. This is what made my [wine tracking](https://github.com/d12frosted/vino) solution usable with ever growing collection of tasting notes, and this is what I used to build various tools for presenting non-trivial views around my notes ([example of a public one](https://github.com/d12frosted/environment/blob/master/emacs/README.org#managing-litnotes)).
 
