@@ -22,7 +22,7 @@ export function ApplicationLayout({
   // let pathname = usePathname()
 
   return (
-    <div className="relative isolate flex min-h-svh w-full flex-col bg-white lg:bg-zinc-100 dark:bg-zinc-900 dark:lg:bg-zinc-950">
+    <div className="relative isolate mx-auto flex min-h-svh max-w-6xl flex-col bg-white max-sm:mx-0 max-sm:w-full lg:bg-zinc-100 dark:bg-zinc-900 dark:lg:bg-zinc-950">
       {/* Navbar */}
       <header className="flex items-center px-4">
         <div className="min-w-0 flex-1">

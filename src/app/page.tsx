@@ -9,7 +9,7 @@ export default async function Home() {
 
   return (
     <>
-      <div className="prose prose-stone">
+      <div className="prose max-w-none prose-stone">
         <h1>d12frosted</h1>
         <CustomMarkdown>{aboutText}</CustomMarkdown>
         <h2>From the blog</h2>
