@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Prism as Highlighter, SyntaxHighlighterProps } from 'react-syntax-highlighter'
-import { base16AteliersulphurpoolLight as style } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { coy as style } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 import { fontMono } from '@/config/fonts'
 
@@ -13,7 +13,7 @@ export const SyntaxHighlighter: React.FC<Omit<SyntaxHighlighterProps, 'style' | 
 }) => {
   return (
     // @ts-ignore
-    <Highlighter {...props} style={style} language={language} PreTag="div" codeTagProps={{ style: fontMono.style }}>
+    <Highlighter className="mt-8" {...props} style={style} language={language} PreTag="div" codeTagProps={{ style: fontMono.style }}>
       {children}
     </Highlighter>
   )

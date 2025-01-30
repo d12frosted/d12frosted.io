@@ -55,7 +55,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
           if (nonPreElement) {
             return nonPreElement
           }
-          return <pre {...rest}>{children}</pre>
+          return <pre className="bg-white p-0" {...rest}>{children}</pre>
         },
 
         code(props) {
@@ -95,8 +95,14 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
                 </div>
               )
             }
+            function t(l: string): string {
+              // prism doesn't know about emacs-lisp and commonlisp
+              if (l === "emacs-lisp") return "lisp"
+              if (l === "commonlisp") return "lisp"
+              return l
+            }
             return (
-              <SyntaxHighlighter {...rest} language={lang}>
+              <SyntaxHighlighter {...rest} language={t(lang)}>
                 {String(children).replace(/\n$/, '')}
               </SyntaxHighlighter>
             )
