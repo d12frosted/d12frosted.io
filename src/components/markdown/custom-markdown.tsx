@@ -99,6 +99,8 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
               // prism doesn't know about emacs-lisp and commonlisp
               if (l === "emacs-lisp") return "lisp"
               if (l === "commonlisp") return "lisp"
+              // close enough, right?
+              if (l === "fish") return "bash"
               return l
             }
             return (

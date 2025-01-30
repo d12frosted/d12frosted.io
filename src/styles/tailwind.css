@@ -18,11 +18,11 @@
 }
 
 @utility d12-image-1/2 {
-  @apply mx-auto max-w-full w-1/2;
+  @apply mx-auto max-w-full w-full sm:w-1/2;
 }
 
 @utility d12-image-3/4 {
-  @apply mx-auto max-w-full w-3/4;
+  @apply mx-auto max-w-full  w-full sm:w-3/4;
 }
 
 @utility d12-images-block-* {
