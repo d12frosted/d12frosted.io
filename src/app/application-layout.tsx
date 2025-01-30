@@ -4,6 +4,7 @@ import { Sidebar, SidebarBody, SidebarHeader, SidebarItem, SidebarSection } from
 import { StackedLayout } from '@/components/stacked-layout'
 import { siteConfig } from '@/config/config'
 import { SiGithub } from '@icons-pack/react-simple-icons'
+import { Analytics } from '@vercel/analytics/react'
 import Image from 'next/image'
 import React from 'react'
 
@@ -66,6 +67,7 @@ export function ApplicationLayout({
       </main>
 
       {/* Analytics */}
+      <Analytics />
       <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     </div>
   )
