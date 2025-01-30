@@ -1,4 +1,4 @@
-<div class="grid grid-cols-2 mx-auto max-w-full sm:max-w-[75%]">
+<div class="d12-images-block-[75%]">
 
 ![](/images/2021-06-11-path-to-org-roam-v2/2022-07-19-22-10-52-org-roam-logo.webp)
 
