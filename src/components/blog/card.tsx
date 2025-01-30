@@ -10,7 +10,7 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
       <FormattedDate date={post.published} className="block text-sm/6 text-gray-600" />
       <h2
         id="featured-post"
-        className="mt-4 text-3xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-4xl"
+        className="mt-4 text-xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-2xl"
       >
         {post.title}
       </h2>

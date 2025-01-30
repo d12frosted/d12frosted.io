@@ -11,8 +11,8 @@ export function AllPosts({ allPosts, ...props }: React.ComponentProps<'div'> & {
   }
 
   return (
-    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16 lg:grid-cols-2">
-      <div className="mx-0 w-full max-w-2xl border-t border-gray-900/10 pt-12 sm:pt-16 lg:mx-0 lg:max-w-none lg:border-t-0 lg:pt-0">
+    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-16">
+      <div className="mx-0 w-full border-t border-gray-900/10 pt-12 sm:pt-16 lg:mx-0 lg:border-t-0 lg:pt-0">
         <div className="divide-y divide-gray-900/10">
           {allPosts.map((post) => (
             <RegularPostCard key={post.id} post={post} className="py-8" />
