@@ -42,7 +42,7 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
 export function RegularPostCard({ post, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
   return (
     <article {...props}>
-      <div className="group relative max-w-xl">
+      <div className="group relative">
         <FormattedDate date={post.published} className="block text-sm/6 text-gray-600" />
         <h2 className="mt-2 text-lg font-semibold text-gray-900 group-hover:text-gray-600">
           <a href={post.href}>
