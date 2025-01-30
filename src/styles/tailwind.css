@@ -4,10 +4,27 @@
 @theme {
   --font-sans: Inter, sans-serif;
   --font-sans--font-feature-settings: 'cv11';
+  --font-mono: Source Code Pro;
 }
 
 @utility prose {
   a {
     @apply text-sky-500;
   }
+}
+
+@utility d12-image {
+  @apply mx-auto max-w-full w-full;
+}
+
+@utility d12-image-1/2 {
+  @apply mx-auto max-w-full w-1/2;
+}
+
+@utility d12-image-3/4 {
+  @apply mx-auto max-w-full w-3/4;
+}
+
+@utility d12-images-block-* {
+  @apply grid grid-cols-1 place-items-center sm:grid-cols-2 sm:gap-8 mx-auto max-w-full sm:max-w-[--value([percentage])];
 }

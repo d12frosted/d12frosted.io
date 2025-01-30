@@ -123,14 +123,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
                 src={getImage(src)}
                 alt={alt ?? 'some random image you can find on barberry garden'}
                 {...rest}
-                className={clsx(
-                  props.className,
-                  classNames.includes('bottle-right') ? 'mx-auto max-w-full sm:max-w-[50%]' : '',
-                  classNames.includes('image-75') ? 'mx-auto max-w-full sm:max-w-[75%]' : '',
-                  classNames.includes('image-50') ? 'mx-auto max-w-full sm:max-w-[50%]' : '',
-                  classNames.includes('img-half') ? 'mx-auto max-w-full sm:max-w-[50%]' : '',
-                  classNames.includes('image-rounded') ? 'rounded-lg bg-gray-100' : ''
-                )}
+                className={props.className}
               />
             )
           }
