@@ -64,6 +64,9 @@ export function ApplicationLayout({
           <div className="mx-auto max-w-6xl">{children}</div>
         </div>
       </main>
+
+      {/* Analytics */}
+      <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     </div>
   )
 }
