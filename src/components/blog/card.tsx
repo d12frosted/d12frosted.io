@@ -22,7 +22,7 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
         )}
       >
         <div className="flex">
-          <a href={post.href} aria-describedby="featured-post" className="text-sm/6 font-semibold text-indigo-600">
+          <a href={post.href} aria-describedby="featured-post" className="text-sm/6 font-semibold text-sky-500">
             Continue reading <span aria-hidden="true">&rarr;</span>
           </a>
         </div>

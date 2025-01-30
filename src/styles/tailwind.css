@@ -5,3 +5,9 @@
   --font-sans: Inter, sans-serif;
   --font-sans--font-feature-settings: 'cv11';
 }
+
+@utility prose {
+  a {
+    @apply text-sky-500;
+  }
+}
