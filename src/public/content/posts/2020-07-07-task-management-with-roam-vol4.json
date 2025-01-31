@@ -4,13 +4,20 @@
   "pinned": null,
   "title": "Task management with org-roam Vol. 4: Automatic tagging",
   "id": "675cf553-8fcd-4bc4-be22-5eb3e88aab88",
-  "related": null,
-  "update": "2025-01-30",
+  "related": [
+    "79963e74-7689-420b-9cd2-7a89171178f6",
+    "1255a684-ccfe-4b15-93a9-2d36858b3a11",
+    "4ecfd28d-bda9-4645-8885-c7e6ffb61fbc",
+    "6108e748-2696-4343-8c04-5c03245261e6",
+    "79157e35-c1a9-44ab-a523-acce40cffb89",
+    "cd0fefec-39c8-4f72-aa4f-0b45c9b305f6"
+  ],
+  "update": "2025-01-31",
   "date": "2020-07-07",
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Automatic tagging upon link insertion",
+  "description": "Sharing how I automated task tagging in org-roam with vulpea. When you mention someone in a task by linking to their note, the task automatically gets tagged with that person's name. I'm using vulpea-insert hooks to handle this cleanly, avoiding the need for advice on org-roam functions. The code includes checks to ensure we only add person tags to actual TODO items.",
   "tags": [
     "emacs",
     "org-roam"

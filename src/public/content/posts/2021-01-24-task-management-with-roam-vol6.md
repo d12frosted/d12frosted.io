@@ -4,13 +4,16 @@ In this article, we are going to write a small utility function that asks user t
 
 Believe me, intro is longer than the content!
 
-[file:/images/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4](/images/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4)
+![](/content/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4)
 
 **Change Log:**
 
 - `[2021-03-02 Tue]`: Update naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
 - `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-24-task-management-with-roam-vol6.org).
 - `[2022-07-11 Mon]`: Adapt code to changes in Org mode and new functions in `vulpea`. Combination of `vulpea-select-from` and `vulpea-db-query-by-tags-some` works faster than generic `vulpea-select`.
+
+``` related_posts
+```
 
 <!--more-->
 
@@ -42,17 +45,7 @@ Now some explanations.
 
 That's it! Now see it in action, again.
 
-[file:/images/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4](/images/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4)
-
-# Task Management with org-roam Series
-
-1.  [Path to Roam](/posts/2020-06-23-task-management-with-roam-vol1)
-2.  [Categories](/posts/2020-06-24-task-management-with-roam-vol2)
-3.  [FILETAGS](/posts/2020-06-25-task-management-with-roam-vol3)
-4.  [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)
-5.  [Dynamic and fast agenda](/posts/2021-01-16-task-management-with-roam-vol5)
-6.  [Select a person and view related tasks](/posts/2021-01-24-task-management-with-roam-vol6)
-7.  [Capture](/posts/2021-05-21-task-management-with-roam-vol7)
+![](/content/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4)
 
 # References
 

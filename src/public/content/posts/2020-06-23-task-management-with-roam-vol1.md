@@ -1,10 +1,13 @@
 [org-mode](https://orgmode.org) is a simple outliner for note taking and list management. It [doesn't impose](/posts/2016-12-20-Being-an-org-mode-addict) any complex features on users. This is something users excel at by themselves. My suggestion is to continue this tradition and discover task management capabilities in [org-roam](https://github.com/org-roam/org-roam), an [org-mode](https://orgmode.org) extension for non-hierarchical notes management.
 
-![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-03-45-org-roam-task-management-vol1-3.webp)
+<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-03-45-org-roam-task-management-vol1-3.webp" class="d12-image-3/4" />
 
 **Change Log:**
 
 - `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-23-task-management-with-roam-vol1.org).
+
+``` related_posts
+```
 
 <!--more-->
 
@@ -61,19 +64,23 @@ This should transform link to images into proper HTML.
 *** TODO Replace all image exports by regular org links
 ```
 
-<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-2.webp" class="img-half img-float-left" />
+<div class="d12-images-block-[100%]">
 
-<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-1.webp" class="img-half img-float-right" />
+![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-2.webp)
+
+![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-1.webp)
+
+</div>
 
 As you can see, it has 2 meta projects: `emacs-plus` and personal blog, each containing a task and a project. Meta projects have their own category property (set by hand or using `org-set-property` which is bound to `C-c C-x p` by default), so in agenda view one can quickly distinguish (and filter) tasks from different meta projects (for example, using `org-agenda-filter-by-category` which is bound to `<` by default).
 
-![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19_21-05-00_org-agenda-filter-by-category.gif)
+<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19_21-05-00_org-agenda-filter-by-category.gif" class="d12-image-3/4" />
 
 Formally (and technically) projects might be defined as a task having sub-tasks, but in this rare case I vote for simplicity - project is a task tagged as `PROJECT`.
 
 When a task relates to a person or some location, I tag it respectively, just use `@` symbol as a prefix to distinguish from utilitarian tags. Agenda helps to quickly find all tasks with specific tag. Use `M-x org-agenda m` or `M-x org-agenda M` (to list only TODO items).
 
-![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19_21-05-13_org-agenda-filter-by-tags.gif)
+<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19_21-05-13_org-agenda-filter-by-tags.gif" class="d12-image-3/4" />
 
 With `org-roam` it makes sense to create a separate file for each meta project. In the endless debate 'many small' vs 'few big' org files, `org-roam` favours the former approach (though even this is debatable).
 
@@ -115,25 +122,19 @@ This should transform link to images into proper HTML.
 *** TODO Replace all image exports by regular org links
 ```
 
-<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-4.webp" class="img-half img-float-left" />
+<div class="d12-images-block-[100%]">
 
-<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-3.webp" class="img-half img-float-right" />
+![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-4.webp)
 
-![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-55-org-roam-task-management-vol1-5.webp)
+![](/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-3.webp)
+
+</div>
+
+<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-55-org-roam-task-management-vol1-5.webp" class="d12-image-1/2" />
 
 So far the transition was simple. However as you can see, in agenda buffer the inferred category contains garbage - note id.
 
 In the [next article](/posts/2020-06-24-task-management-with-roam-vol2) we are going to explore the means to fix the agenda buffer from the unwanted visual garbage. Stay tuned!
-
-# Task Management with org-roam Series
-
-1.  [Path to Roam](/posts/2020-06-23-task-management-with-roam-vol1)
-2.  [Categories](/posts/2020-06-24-task-management-with-roam-vol2)
-3.  [FILETAGS](/posts/2020-06-25-task-management-with-roam-vol3)
-4.  [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)
-5.  [Dynamic and fast agenda](/posts/2021-01-16-task-management-with-roam-vol5)
-6.  [Select a person and view related tasks](/posts/2021-01-24-task-management-with-roam-vol6)
-7.  [Capture](/posts/2021-05-21-task-management-with-roam-vol7)
 
 # References
 

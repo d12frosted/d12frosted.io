@@ -52,7 +52,7 @@ Every inbox file has a title to distinguish between multiple inbox files and `fi
 
 # Capturing into inbox
 
-[file:/images/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-03_org-roam-task-management-vol7-1.mp4](/images/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-03_org-roam-task-management-vol7-1.mp4)
+![](/content/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-03_org-roam-task-management-vol7-1.mp4)
 
 In order for items to end up in the inbox file, I am using a simple capture template for TODO entries. And since I want to avoid picking template when I have more than one, I have a wrapper `vulpea-capture-task` function that picks up specific template. There are other ways to achieve that, if you are interested let me know.
 
@@ -94,7 +94,7 @@ It's hard to come up with generic example, and I hate examples from the void of 
 
 Meeting notes. Whenever I am on a meeting, I love to keep meeting notes (thanks to Org Mode my memory is ephemeral). I divide all meetings in two categories - one-on-ones (e.g. $p = 2$) and meetings with multiple participants (e.g. $p > 2$). And in the end, all meetings from one-on-ones are moved under `Meetings` outline in the file related to person I have a meeting with. And since it is so common I decided to save myself from unnecessary refile action by adapting my capture flow.
 
-[file:/images/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-33_org-roam-task-management-vol7-3.mp4](/images/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-33_org-roam-task-management-vol7-3.mp4)
+![](/content/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-33_org-roam-task-management-vol7-3.mp4)
 
 So when a have a meeting, I simply hit `M-m c m` (short for 'capture meeting' which calls `vulpea-capture-meeting`), select a person or type any other phrase (e.g. project name) and let the capture process to place my notes in the right location. If I select a person, meeting notes are going to be located under `Meetings` heading in the file dedicated to the selected person. If I type something else, my notes go straight the inbox.
 

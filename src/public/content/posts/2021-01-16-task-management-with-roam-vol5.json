@@ -4,13 +4,20 @@
   "pinned": null,
   "title": "Task management with org-roam Vol. 5: Dynamic and fast agenda",
   "id": "6108e748-2696-4343-8c04-5c03245261e6",
-  "related": null,
-  "update": "2025-01-30",
+  "related": [
+    "79963e74-7689-420b-9cd2-7a89171178f6",
+    "1255a684-ccfe-4b15-93a9-2d36858b3a11",
+    "4ecfd28d-bda9-4645-8885-c7e6ffb61fbc",
+    "675cf553-8fcd-4bc4-be22-5eb3e88aab88",
+    "79157e35-c1a9-44ab-a523-acce40cffb89",
+    "cd0fefec-39c8-4f72-aa4f-0b45c9b305f6"
+  ],
+  "update": "2025-01-31",
   "date": "2021-01-16",
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Dynamically building org-agenda-files with only relevant files",
+  "description": "Sharing a significant performance optimization I created for org-roam agenda generation. By dynamically tracking notes containing TODOs with a 'project' tag, I reduced agenda loading from over 50 seconds to under 1 second. The solution automatically updates tags when files are visited or saved, querying only relevant files when building the agenda view. I've included all the code and explained the implementation details, from checking for TODO entries to SQL queries.",
   "tags": [
     "emacs",
     "org-roam"

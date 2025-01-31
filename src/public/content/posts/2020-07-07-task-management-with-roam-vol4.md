@@ -1,6 +1,6 @@
 In the [previous article](/posts/2020-06-25-task-management-with-roam-vol3) we covered automatic tagging of notes related to a specific person, and today we are going to cover automatic tagging of an org-mode heading upon insertion of link related to a person. To put it simple, when I mention someone in the task, I would love this task to be automatically tagged with that persons name. As they say, it's better to see once, than imagine multiple times, so here is a screencast.
 
-![](/images/2020-07-07-task-management-with-roam-vol4/2022-07-19_21-13-09_org-notes-insert.gif)
+<img src="/images/2020-07-07-task-management-with-roam-vol4/2022-07-19_21-13-09_org-notes-insert.gif" class="d12-image-3/4" />
 
 **Change Log:**
 
@@ -8,6 +8,9 @@ In the [previous article](/posts/2020-06-25-task-management-with-roam-vol3) we c
 - `[2021-03-02 Tue]`: Update naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
 - `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-07-07-task-management-with-roam-vol4.org).
 - `[2021-11-19 Fri]`: Update post to reflect [inclusion](https://github.com/d12frosted/vulpea/commit/8ff428f2e9561fdc448627fe780be03a661cc52e) of `vulpea-insert` function to `vulpea` library. You can find previous version of this article in [git history](https://github.com/d12frosted/d12frosted.io/blob/2d3dad81988e838b8159761cd420bb95ed5bdd83/posts/2020-07-07-task-management-with-roam-vol4.org).
+
+``` related_posts
+```
 
 <!--more-->
 
@@ -100,16 +103,6 @@ With this approach you can add as many handlers as you wish without the need to 
           #'my-vulpea-insert-handle)
 
 ```
-
-# Task Management with org-roam Series
-
-1.  [Path to Roam](/posts/2020-06-23-task-management-with-roam-vol1)
-2.  [Categories](/posts/2020-06-24-task-management-with-roam-vol2)
-3.  [FILETAGS](/posts/2020-06-25-task-management-with-roam-vol3)
-4.  [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)
-5.  [Dynamic and fast agenda](/posts/2021-01-16-task-management-with-roam-vol5)
-6.  [Select a person and view related tasks](/posts/2021-01-24-task-management-with-roam-vol6)
-7.  [Capture](/posts/2021-05-21-task-management-with-roam-vol7)
 
 # References
 

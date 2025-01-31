@@ -4,13 +4,20 @@
   "pinned": null,
   "title": "Task management with org-roam Vol. 1: Path to Roam",
   "id": "79963e74-7689-420b-9cd2-7a89171178f6",
-  "related": null,
-  "update": "2025-01-30",
+  "related": [
+    "1255a684-ccfe-4b15-93a9-2d36858b3a11",
+    "4ecfd28d-bda9-4645-8885-c7e6ffb61fbc",
+    "675cf553-8fcd-4bc4-be22-5eb3e88aab88",
+    "6108e748-2696-4343-8c04-5c03245261e6",
+    "79157e35-c1a9-44ab-a523-acce40cffb89",
+    "cd0fefec-39c8-4f72-aa4f-0b45c9b305f6"
+  ],
+  "update": "2025-01-31",
   "date": "2020-06-23",
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Moving tasks to org-roam",
+  "description": "Sharing my approach to task management in org-roam, showing how to organize tasks and projects across notes while maintaining compatibility with org-mode's agenda features. While org-roam favors smaller files over larger ones, we can still implement a familiar structure of tasks, projects, and meta-projects. The article explains the basic setup, though there are some visual quirks in the agenda buffer that we'll address in a follow-up post.",
   "tags": [
     "emacs",
     "org-roam"

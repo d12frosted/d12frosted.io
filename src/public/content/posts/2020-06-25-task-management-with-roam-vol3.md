@@ -31,6 +31,9 @@ case Frodo doesn't wear socks. But how could it be? Everyone does!
 - `[2021-03-02 Tue]`: Update naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
 - `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-25-task-management-with-roam-vol3.org).
 
+``` related_posts
+```
+
 <!--more-->
 
 Now, apart from some misconception about hobbits, there are few important points to note.
@@ -40,9 +43,13 @@ Now, apart from some misconception about hobbits, there are few important points
 
 Thanks to inheritance, it's easy to find all tasks related to Frodo Baggins via `org-agenda`. It even enables the search of overlapping tasks. For example, tasks related to Frodo and Samwise. For more information, take a look at the [matching tags and properties](https://orgmode.org/manual/Matching-tags-and-properties.html#Matching-tags-and-properties) section of the manual.
 
-<img src="/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-2.webp" class="img-half img-float-left" />
+<div class="d12-images-block-[100%]">
 
-<img src="/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-1.webp" class="img-half img-float-right" />
+![](/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-2.webp)
+
+![](/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-1.webp)
+
+</div>
 
 With `org-roam`, each person has its own file.
 
@@ -113,16 +120,6 @@ This function can be called interactively, but since I usually place the tag usi
 Though for other purposes one can put this function to the file visit hook. But hooks are sensitive, so I am going to stop here.
 
 In the [next article](/posts/2020-07-07-task-management-with-roam-vol4) we are going to talk about automatic insertion of person tag (e.g. `@FrodoBaggins`) when mentioning this person in other task.
-
-# Task Management with org-roam Series
-
-1.  [Path to Roam](/posts/2020-06-23-task-management-with-roam-vol1)
-2.  [Categories](/posts/2020-06-24-task-management-with-roam-vol2)
-3.  [FILETAGS](/posts/2020-06-25-task-management-with-roam-vol3)
-4.  [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)
-5.  [Dynamic and fast agenda](/posts/2021-01-16-task-management-with-roam-vol5)
-6.  [Select a person and view related tasks](/posts/2021-01-24-task-management-with-roam-vol6)
-7.  [Capture](/posts/2021-05-21-task-management-with-roam-vol7)
 
 # References
 

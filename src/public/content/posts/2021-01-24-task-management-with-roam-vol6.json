@@ -4,13 +4,20 @@
   "pinned": null,
   "title": "Task management with org-roam Vol. 6: Select a person and view related tasks",
   "id": "79157e35-c1a9-44ab-a523-acce40cffb89",
-  "related": null,
-  "update": "2025-01-30",
+  "related": [
+    "79963e74-7689-420b-9cd2-7a89171178f6",
+    "1255a684-ccfe-4b15-93a9-2d36858b3a11",
+    "4ecfd28d-bda9-4645-8885-c7e6ffb61fbc",
+    "675cf553-8fcd-4bc4-be22-5eb3e88aab88",
+    "6108e748-2696-4343-8c04-5c03245261e6",
+    "cd0fefec-39c8-4f72-aa4f-0b45c9b305f6"
+  ],
+  "update": "2025-01-31",
   "date": "2021-01-24",
   "authors": [
     "Boris Buliga"
   ],
-  "description": "How to select a person and list all related tasksrelevant files",
+  "description": "Sharing a quick utility I wrote to view all tasks related to a specific person in org-roam. By combining vulpea's selection functions with org-agenda's tag matching, we can easily see everything tagged with a person's name (including their aliases). Just a few lines of code, but it makes a big difference in managing person-related tasks!",
   "tags": [
     "emacs",
     "org-roam"

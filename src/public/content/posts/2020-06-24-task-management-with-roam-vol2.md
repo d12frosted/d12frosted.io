@@ -1,14 +1,21 @@
 In the [previous article](/posts/2020-06-23-task-management-with-roam-vol1) we set a ground for moving tasks to [org-roam](https://github.com/org-roam/org-roam), and encountered an issue with visual garbage in the agenda buffer. Namely, `org-roam` file id as part of the category. In this article, we are going to explore the means to overcome this issue.
 
-<img src="/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-1.webp" class="img-half img-float-left" />
+<div class="d12-images-block-[100%]">
 
-<img src="/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-2.webp" class="img-half img-float-right" />
+![](/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-1.webp)
+
+![](/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-2.webp)
+
+</div>
 
 **Change Log:**
 
 - `[2021-03-02 Tue]`: Update category extraction function to use `TITLE` of the note and enforce length limit. Kudos to [Tim Ruffing](https://github.com/real-or-random/) for the idea.
 - `[2021-03-02 Tue]`: Update naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
 - `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-24-task-management-with-roam-vol2.org).
+
+``` related_posts
+```
 
 <!--more-->
 
@@ -32,7 +39,7 @@ On of the simplest solutions is to mimic solution for headlines by setting `CATE
 ...
 ```
 
-![](/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-37-org-roam-task-management-vol2-2.webp)
+<img src="/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-37-org-roam-task-management-vol2-2.webp" class="d12-image-3/4" />
 
 While this works, it is a manual labor. And in most cases we want to use `TITLE` as `CATEGORY`, at least for agenda buffer. Fortunately, we can help agenda to properly parse the category by modifying the value of `org-agenda-prefix-format`, which allows to specify how to render each line in the different agenda buffers (e.g. regular agenda, in the list of todo tasks etc). We are looking for the capability to evaluate arbitrary lisp expressions. The default value of this variable is
 
@@ -100,7 +107,7 @@ In order to extract title, I am using `vulpea-buffer-prop-get` from [vulpea](htt
        (match-end 1)))))
 ```
 
-![](/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-55-org-roam-task-management-vol2-3.webp)
+<img src="/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-55-org-roam-task-management-vol2-3.webp" class="d12-image-3/4" />
 
 Now if we remove the manually set `CATEGORY` property from both files we will get the same result with nicely parsed categories. Please note that these two approaches can be mixed. For example, if you wish to override the category, just set this property explicitly and call it a day.
 
@@ -150,21 +157,11 @@ Refer to `org-agenda-prefix-format' for more information."
       result)))
 ```
 
-![](/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-09-09-org-roam-task-management-vol2-4.webp)
+<img src="/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-09-09-org-roam-task-management-vol2-4.webp" class="d12-image-3/4" />
 
 Now the agenda is clean.
 
 In the [next article](/posts/2020-06-25-task-management-with-roam-vol3) we are going to talk about tagging tasks related to a person. Stay tuned and keep roaming!
-
-# Task Management with org-roam Series
-
-1.  [Path to Roam](/posts/2020-06-23-task-management-with-roam-vol1)
-2.  [Categories](/posts/2020-06-24-task-management-with-roam-vol2)
-3.  [FILETAGS](/posts/2020-06-25-task-management-with-roam-vol3)
-4.  [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)
-5.  [Dynamic and fast agenda](/posts/2021-01-16-task-management-with-roam-vol5)
-6.  [Select a person and view related tasks](/posts/2021-01-24-task-management-with-roam-vol6)
-7.  [Capture](/posts/2021-05-21-task-management-with-roam-vol7)
 
 # References
 

@@ -12,6 +12,9 @@ In this article we are going to optimise `org-agenda` back to less than 1 second
 - `[2021-08-19 Thu]`: [Gustav](https://github.com/Whil-) proposed to modify buffer only when tags have changed. Code was updated accordingly (both in the post and on [GitHub Gist](https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e)).
 - `[2021-09-07 Tue]`: [rngesus-wept](https://github.com/rngesus-wept) proposed an interesting [solution](https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-910213001) on how to make sure that any extra stuff in `org-agenda-files` are not wiped out.
 
+``` related_posts
+```
+
 <!--more-->
 
 The core idea is very simple - optimising reads during writes. So every time a file is modified, we check if it contains any `TODO` entries, and depending on that we either add or remove a `project` tag from `filetags` property. And then, before calling `org-agenda`, we simply `org-roam-db-query` for files that have a `project` tag.
@@ -22,7 +25,7 @@ Since `filetags` are [inherited](https://orgmode.org/manual/Tag-Inheritance.html
 (add-to-list 'org-tags-exclude-from-inheritance "project")
 ```
 
-![](/images/2021-01-16-task-management-with-roam-vol5/2022-07-19_21-14-37_org-notes-project-tag-update.gif)
+<img src="/images/2021-01-16-task-management-with-roam-vol5/2022-07-19_21-14-37_org-notes-project-tag-update.gif" class="d12-image-3/4" />
 
 # Marking a Project
 
@@ -86,7 +89,7 @@ Now we need to use this function to add or to remove `project` tag from a note. 
 
 That's it. Now whenever we modify or visit a notes buffer, this code will update the presence of `project` tag. See it in action:
 
-![](/images/2021-01-16-task-management-with-roam-vol5/2022-07-19_21-14-37_org-notes-project-tag-update.gif)
+<img src="/images/2021-01-16-task-management-with-roam-vol5/2022-07-19_21-14-37_org-notes-project-tag-update.gif" class="d12-image-3/4" />
 
 # Building agenda
 
@@ -236,16 +239,6 @@ tasks."
 ```
 
 Thank you for your patience.
-
-# Task Management with org-roam Series
-
-1.  [Path to Roam](/posts/2020-06-23-task-management-with-roam-vol1)
-2.  [Categories](/posts/2020-06-24-task-management-with-roam-vol2)
-3.  [FILETAGS](/posts/2020-06-25-task-management-with-roam-vol3)
-4.  [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)
-5.  [Dynamic and fast agenda](/posts/2021-01-16-task-management-with-roam-vol5)
-6.  [Select a person and view related tasks](/posts/2021-01-24-task-management-with-roam-vol6)
-7.  [Capture](/posts/2021-05-21-task-management-with-roam-vol7)
 
 # References
 
