@@ -118,6 +118,15 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
 
         img(props) {
           const { src, alt, width, height, ref, node, ...rest } = props
+          if (src && src.endsWith('.mp4')) {
+            return (
+              // @ts-ignore
+              <video autoPlay muted playsInline preload="auto" loop {...props} >
+                <source src={src} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )
+          }
           if (src && src.startsWith('/images')) {
             const classNames = (props.className ?? '').split(' ')
             return (

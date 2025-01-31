@@ -41,16 +41,27 @@
 
 
 
-(defconst d12-supported-media '("jpeg" "png" "jpg" "heic" "webp" "gif" "svg"))
+(defconst d12-supported-video-media '("mp4"))
+(defconst d12-supported-image-media '("jpeg" "png" "jpg" "heic" "webp" "gif" "svg"))
 (defconst d12-convertible-images '("jpeg" "png" "jpg" "heic" "webp"))
 
 (defun d12-supported-media-p (file)
+  "Return non-nil if FILE is a supported media."
+  (seq-contains-p (-concat d12-supported-image-media d12-supported-video-media)
+                  (s-downcase (file-name-extension file))))
+
+(defun d12-supported-video-media-p (file)
+  "Return non-nil if FILE is a supported video."
+  (seq-contains-p d12-supported-video-media
+                  (s-downcase (file-name-extension file))))
+
+(defun d12-supported-image-media-p (file)
   "Return non-nil if FILE is a supported image."
-  (seq-contains-p d12-supported-media
+  (seq-contains-p d12-supported-image-media
                   (s-downcase (file-name-extension file))))
 
 (defun d12-convertible-image-p (file)
-  "Return non-nil if FILE is a supported image."
+  "Return non-nil if FILE is a convertible image."
   (seq-contains-p d12-convertible-images
                   (s-downcase (file-name-extension file))))
 
@@ -60,7 +71,14 @@
   "Describe ITEM."
   (pcase (porg-item-type item)
     ("note" (porg-describe (porg-item-item item)))
-    ("attachment" (concat "(image) " (file-name-nondirectory (porg-item-target-abs item))))
+    ("attachment"
+     (concat "("
+             (cond
+              ((d12-supported-image-media-p (porg-item-target-abs item)) "image")
+              ((d12-supported-video-media-p (porg-item-target-abs item)) "video")
+              (t "???"))
+             ") "
+             (file-name-nondirectory (porg-item-target-abs item))))
     (_ (concat "(" (porg-item-type item) ") " (porg-item-id item)))))
 
 (cl-defmethod porg-describe ((item porg-rule-output))
@@ -200,11 +218,14 @@ HARD-DEPS. But in this case these are functions on
            (attachments-output
             (porg-attachments-output
              note
-             :dir (if attach-dir
-                      (funcall attach-dir note-output)
-                    (let ((name (directory-from-uuid
-                                 (file-name-base (porg-rule-output-file note-output)))))
-                      (concat "src/public/content/images/" name)))
+             :dir (lambda (attachment)
+                    (if attach-dir
+                        (funcall attach-dir note-output)
+                      (let ((name (directory-from-uuid
+                                   (file-name-base (porg-rule-output-file note-output)))))
+                        (if (d12-supported-video-media-p attachment)
+                            (concat "public/content/" name)
+                          (concat "src/public/content/images/" name)))))
              :file-mod (list #'file-name-fix-media-attachment)
              :filter (or attach-filter #'d12-supported-media-p)))
            (outputs-extra (when outputs-extra (funcall outputs-extra note-output))))
@@ -248,7 +269,9 @@ HARD-DEPS. But in this case these are functions on
                   (path (file-name-fix-media-attachment path))
                   (dir (directory-from-uuid (file-name-base (porg-item-target-abs item)))))
              (->> link
-                  (org-ml-set-property :path (format "/images/%s/%s" dir path))
+                  (org-ml-set-property :path (if (d12-supported-video-media-p path)
+                                                 (format "/content/%s/%s" dir path)
+                                               (format "/images/%s/%s" dir path)))
                   (org-ml-set-property :type "file")
                   (org-ml-set-children nil)))))
         (save-buffer))
@@ -306,8 +329,17 @@ HARD-DEPS. But in this case these are functions on
                (porg-item-target-abs item)))
       (let ((auto-mode-alist '("\\.md\\'" . text-mode)))
         (with-current-buffer (find-file-noselect (porg-item-target-abs item))
+          ;; fix attachment links
+          (goto-char (point-min))
           (while (search-forward "file://" nil t)
             (replace-match ""))
+
+          ;; fix video links
+          (goto-char (point-min))
+          (while (search-forward-regexp "\\[file:/content/.+\\](\\(/content/.+\\))" nil t)
+            (let ((p (match-string 1)))
+              (when (d12-supported-video-media-p p)
+                (replace-match (format "![](%s)" p)))))
           (save-buffer))))))
 
 
@@ -467,7 +499,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
 
   (porg-batch-rule
    :name "nextjs/images"
-   :filter (-rpartial #'porg-item-that :type "attachment" :predicate #'d12-supported-media-p)
+   :filter (-rpartial #'porg-item-that :type "attachment" :predicate #'d12-supported-image-media-p)
    :target "src/components/content/images.tsx"
    :publish #'d12-publish-nextjs/images))
 
@@ -591,7 +623,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
 
   (porg-compiler
    :name "images"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'d12-supported-media-p)
+   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'d12-supported-image-media-p)
    :hash #'d12-sha1sum-attachment
    :build
    (lambda (item _items _cache)
@@ -611,6 +643,16 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
               (format "convert '%s' -strip -auto-orient '%s'"
                       (porg-item-item item) (porg-item-target-abs item)))))
        (copy-file (porg-item-item item) (porg-item-target-abs item) t)))
+   :clean #'d12-delete)
+
+  (porg-compiler
+   :name "videos"
+   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'d12-supported-video-media-p)
+   :hash #'d12-sha1sum-attachment
+   :build
+   (lambda (item _items _cache)
+     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
+     (copy-file (porg-item-item item) (porg-item-target-abs item) t))
    :clean #'d12-delete)))
 
 
