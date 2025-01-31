@@ -57,6 +57,16 @@ import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_palette_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19_20-30-51_gifify-monty-palette.gif";
 import pic_cd0fefec_39c8_4f72_aa4f_0b45c9b305f6_2022_07_19_22_04_15_org_roam_task_management_vol7_2 from "../../public/content/images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp";
 
+import static_d12frosted from "../../public/content/images/d12frosted.png";
+import static_emacs from "../../public/content/images/emacs.png";
+import static_flyspell_correct from "../../public/content/images/flyspell-correct.png";
+import static_haskell from "../../public/content/images/haskell.png";
+import static_org_mode from "../../public/content/images/org-mode.png";
+import static_vino from "../../public/content/images/vino.png";
+import static_vulpea from "../../public/content/images/vulpea.png";
+import static_yabai from "../../public/content/images/yabai.png";
+import static_fish from "../../public/content/images/fish.png";
+
 const lookupMap = new Map<string, StaticImageData>([
   ["/images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp", pic_cd0fefec_39c8_4f72_aa4f_0b45c9b305f6_2022_07_19_22_04_15_org_roam_task_management_vol7_2],
   ["/images/2018-10-13-gifify/2022-07-19_20-30-51_gifify-monty-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_palette_gif],
@@ -108,6 +118,15 @@ const lookupMap = new Map<string, StaticImageData>([
   ["/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-37-org-roam-task-management-vol2-2.webp", pic_1255a684_ccfe_4b15_93a9_2d36858b3a11_2022_07_19_21_08_37_org_roam_task_management_vol2_2],
   ["/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-2.webp", pic_1255a684_ccfe_4b15_93a9_2d36858b3a11_2022_07_19_21_08_14_org_roam_task_management_vol2_2],
   ["/images/2020-06-24-task-management-with-roam-vol2/2022-07-19-21-08-14-org-roam-task-management-vol2-1.webp", pic_1255a684_ccfe_4b15_93a9_2d36858b3a11_2022_07_19_21_08_14_org_roam_task_management_vol2_1],
+  ["/images/d12frosted.png", static_d12frosted],
+  ["/images/emacs.png", static_emacs],
+  ["/images/flyspell-correct.png", static_flyspell_correct],
+  ["/images/haskell.png", static_haskell],
+  ["/images/org-mode.png", static_org_mode],
+  ["/images/vino.png", static_vino],
+  ["/images/vulpea.png", static_vulpea],
+  ["/images/yabai.png", static_yabai],
+  ["/images/fish.png", static_fish],
 ]);
 
 export function getImage(path: string): StaticImageData {

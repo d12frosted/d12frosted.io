@@ -12,7 +12,7 @@
   ],
   "description": "A tip about Org mode's built-in structure templates that make inserting source blocks and other structural elements much easier - no need for custom solutions when you can use C-c C-, or the legacy Easy Template system with <s<TAB>.",
   "tags": [
-    "emacs,",
+    "emacs",
     "org-mode"
   ]
 }

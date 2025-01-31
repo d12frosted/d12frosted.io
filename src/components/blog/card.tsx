@@ -1,65 +1,96 @@
 import { FormattedDate } from '@/components/blog/date'
+import { RandomImage } from '@/components/blog/random-image'
+import { getImage } from '@/components/content/images'
 import { BlogPost } from '@/lib/posts'
 import clsx from 'clsx'
+import Image from 'next/image'
 
-const DISPLAY_AUTHOR: boolean = false
+function PostImage({
+  post,
+  className,
+  ...props
+}: Omit<React.ComponentProps<typeof Image>, 'src' | 'alt'> & {
+  post: BlogPost
+}) {
+  function getSource() {
+    if (post.image) return getImage(post.image.replace('src/public/content', ''))
+    if (post.tags.includes('vulpea')) return getImage('/images/vulpea.png')
+    if (post.tags.includes('vino')) return getImage('/images/vino.png')
+    if (post.tags.includes('org-mode')) return getImage('/images/org-mode.png')
+    if (post.tags.includes('org-roam')) return getImage('/images/org-mode.png')
+    if (post.tags.includes('flyspell-correct')) return getImage('/images/flyspell-correct.png')
+    if (post.tags.includes('emacs-plus')) return getImage('/images/emacs.png')
+    if (post.tags.includes('emacs')) return getImage('/images/emacs.png')
+    if (post.tags.includes('yabai')) return getImage('/images/yabai.png')
+    if (post.tags.includes('haskell')) return getImage('/images/haskell.png')
+    if (post.tags.includes('fish')) return getImage('/images/fish.png')
+    return undefined
+  }
 
-export function FeaturedPostCard({ post, className, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
+  const source = getSource()
+  if (source) return <Image src={source} alt="Post illustration" className={className} {...props} />
+
+  return <RandomImage className={className} />
+}
+
+export function FeaturedPostCard({ post, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
   return (
-    <article className={clsx('mx-0 w-full max-w-2xl lg:mx-0 lg:max-w-lg', className)} {...props}>
-      <FormattedDate date={post.published} className="block text-sm/6 text-gray-600" />
-      <h2
-        id="featured-post"
-        className="mt-4 text-xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-2xl"
-      >
-        {post.title}
-      </h2>
-      <p className="mt-4 text-lg/8 text-gray-600">{post.description}</p>
-      <div
-        className={clsx(
-          'mt-4 flex flex-col justify-between gap-6 sm:mt-8 sm:gap-8 lg:mt-4 lg:flex-col',
-          DISPLAY_AUTHOR ? 'sm:flex-row-reverse' : ''
-        )}
-      >
-        <div className="flex">
-          <a href={post.href} aria-describedby="featured-post" className="text-sm/6 font-semibold text-sky-500">
-            Continue reading <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-        {DISPLAY_AUTHOR && (
-          <div className="flex lg:border-t lg:border-gray-900/10 lg:pt-8">
-            <a href="" className="flex gap-x-2.5 text-sm/6 font-semibold text-gray-900">
-              <img alt="" src="/d12frosted.png" className="size-6 flex-none rounded-full bg-gray-50" />
-              {post.authors[0]}
-            </a>
+    <article key={post.id} className="flex flex-col items-start justify-between" {...props}>
+      <div className="group relative w-full">
+        <PostImage
+          post={post}
+          className="aspect-video w-full rounded-2xl object-contain group-hover:opacity-75 sm:aspect-[2/1] lg:aspect-[3/2]"
+        />
+        <div className="absolute inset-0 rounded-2xl ring-1 ring-gray-900/10 ring-inset" />
+      </div>
+      <div className="max-w-xl">
+        <div className="mt-8 flex items-center gap-x-4 text-xs">
+          <FormattedDate date={post.published} className="text-gray-500" />
+          <div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
+            {post.tags.join(' · ')}
           </div>
-        )}
+        </div>
+        <div className="group relative">
+          <h3 className="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
+            <a href={post.href}>
+              <span className="absolute inset-0" />
+              {post.title}
+            </a>
+          </h3>
+          <p className="mt-5 line-clamp-24 text-sm/6 text-gray-600">{post.description}</p>
+        </div>
       </div>
     </article>
   )
 }
 
-export function RegularPostCard({ post, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
+export function RegularPostCard({ post, className, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
   return (
-    <article {...props}>
-      <div className="group relative">
-        <FormattedDate date={post.published} className="block text-sm/6 text-gray-600" />
-        <h2 className="mt-2 text-lg font-semibold text-gray-900 group-hover:text-gray-600">
-          <a href={post.href}>
-            <span className="absolute inset-0" />
-            {post.title}
-          </a>
-        </h2>
-        <p className="mt-4 text-sm/6 text-gray-600">{post.description}</p>
+    <article className={clsx('group relative isolate flex flex-col gap-8 lg:flex-row', className)} {...props}>
+      <div className="relative aspect-video sm:aspect-[3/1] lg:aspect-square lg:w-64 lg:shrink-0">
+        <PostImage
+          post={post}
+          className="absolute inset-0 size-full rounded-2xl object-contain group-hover:opacity-75"
+        />
+        <div className="absolute inset-0 rounded-2xl ring-1 ring-gray-900/10 ring-inset" />
       </div>
-      {DISPLAY_AUTHOR && (
-        <div className="mt-4 flex">
-          <a href="" className="relative flex gap-x-2.5 text-sm/6 font-semibold text-gray-900">
-            <img alt="" src="/d12frosted.png" className="size-6 flex-none rounded-full bg-gray-50" />
-            {post.authors[0]}
-          </a>
+      <div>
+        <div className="flex items-center gap-x-4 text-xs">
+          <FormattedDate date={post.published} className="text-gray-500" />
+          <div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
+            {post.tags.join(' · ')}
+          </div>
         </div>
-      )}
+        <div className="group relative">
+          <h3 className="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
+            <a href={post.href}>
+              <span className="absolute inset-0" />
+              {post.title}
+            </a>
+          </h3>
+          <p className="mt-5 text-sm/6 text-gray-600">{post.description}</p>
+        </div>
+      </div>
     </article>
   )
 }
