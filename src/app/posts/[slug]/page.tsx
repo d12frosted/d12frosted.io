@@ -84,7 +84,7 @@ export default async function Post({ params }: Props) {
       <hr className="my-8 border-gray-200" />
       <div
         id="post-content"
-        className="prose mt-14 max-w-none prose-stone prose-h1:mt-6 prose-h1:mb-2 prose-h2:mt-4 prose-h2:mb-2 prose-p:mt-2 [&>ul]:mt-6 [&>ul]:list-['\\2013\\20'] [&>ul]:pl-5"
+        className="prose mt-14 max-w-none prose-stone prose-h1:mt-6 prose-h1:mb-2 prose-h2:mt-4 prose-h2:mb-2 prose-p:mt-2 [&>ul]:mt-6 [&>ul]:list-['\2013\20'] [&>ul]:pl-5"
       >
         <CustomMarkdown context={context}>{post.content}</CustomMarkdown>
       </div>
