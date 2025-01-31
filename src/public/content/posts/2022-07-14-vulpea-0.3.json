@@ -10,6 +10,9 @@
   "authors": [
     "Boris Buliga"
   ],
+  "image": "src/public/content/images/2022-07-14-vulpea-0.3/2022-07-20-09-51-46-vulpea-logo.webp",
+  "image-width": "1024",
+  "image-height": "1024",
   "description": "Announcing Vulpea v0.3, with major performance improvements for note querying operations. The release introduces a materialized view table that provides a 4.5x speed boost for general queries, plus specialized query functions that can be up to 150x faster in certain scenarios. While write operations take a small hit, the trade-off is worth it for large note collections. I've also added several quality-of-life improvements like better metadata handling and new tag utility functions.",
   "tags": [
     "emacs",
