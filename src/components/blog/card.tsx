@@ -35,7 +35,7 @@ function PostImage({
 
 export function FeaturedPostCard({ post, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
   return (
-    <article key={post.id} className="flex flex-col items-start justify-between" {...props}>
+    <article key={post.id} className="flex flex-col items-start" {...props}>
       <div className="group relative w-full">
         <PostImage
           post={post}
