@@ -2,6 +2,9 @@ Capturing is one of the most important activities in the task management process
 
 Please note that the goal is not to discuss GTD or any other methodology, but rather to discover how org-roam combined with everything we talked previously may help you to improve your capturing process regardless of methodology you are using.
 
+``` related_posts
+```
+
 <!--more-->
 
 Org Mode [Capture](https://orgmode.org/manual/Capture.html#Capture) lets you quickly store notes with zero interruption of your work flow. And capture is ridiculously powerful in Org Mode, as you can build so many things on top of it. For example, you can setup a full-blown journal with simple template, automatically put TODO entries when capturing a link to GitHub or Jira issue, etc.
@@ -188,16 +191,6 @@ Now it become a little bit more verbose, but this code is actually dead simple. 
 First we get a person note that we selected in `vulpea-capture-meeting-template` via `org-capture-get` and if it has an id, that means that we need to place the note under Meetings headline, otherwise it just goes straight to `vulpea-capture-inbox-file`.
 
 That's it!
-
-# Task Management with org-roam Series
-
-1.  [Path to Roam](/posts/2020-06-23-task-management-with-roam-vol1)
-2.  [Categories](/posts/2020-06-24-task-management-with-roam-vol2)
-3.  [FILETAGS](/posts/2020-06-25-task-management-with-roam-vol3)
-4.  [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)
-5.  [Dynamic and fast agenda](/posts/2021-01-16-task-management-with-roam-vol5)
-6.  [Select a person and view related tasks](/posts/2021-01-24-task-management-with-roam-vol6)
-7.  [Capture](/posts/2021-05-21-task-management-with-roam-vol7)
 
 # References
 

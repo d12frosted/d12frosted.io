@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Snippet adding retries to network operations of straight.el - Emacs package manager",
+  "description": "Sharing a quick fix for handling network issues when updating Emacs packages with straight.el. I created a simple retry wrapper that automatically retries failed network operations. Just wrap the problematic functions with an advice, and you won't have to restart the whole update process when your connection hiccups!",
   "tags": [
     "emacs"
   ]

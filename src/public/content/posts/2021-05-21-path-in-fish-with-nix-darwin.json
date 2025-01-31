@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Fixing PATH entries order when using fish and nix-darwin",
+  "description": "Sharing how I fixed a PATH order issue when using Fish shell with nix-darwin. Since Fish reimplements macOS's path_helper behavior, it was reordering PATH and putting .nix-profile/bin at the end. By remembering the original PATH before Fish's initialization and restoring the order afterward, I got nix packages to properly override system binaries. I've included detailed debugging steps using Fish's event handlers in case others run into similar issues.",
   "tags": [
     "emacs"
   ]

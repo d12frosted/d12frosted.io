@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Comparison of project management tools for Emacs",
+  "description": "I'm sharing my experience and observations about build tools for Emacs packages. While makem.sh is wonderfully simple and cask is a robust classic, I've found eldev's extensibility and native Emacs Lisp implementation particularly useful. The choice really depends on your needs - makem.sh is great for simpler projects, but when you need more customization, tools like eldev or cask become more attractive.",
   "tags": [
     "emacs"
   ]
