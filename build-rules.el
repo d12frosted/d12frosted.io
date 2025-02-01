@@ -41,28 +41,28 @@
 
 
 
-(defconst d12-supported-video-media '("mp4"))
-(defconst d12-supported-image-media '("jpeg" "png" "jpg" "heic" "webp" "gif" "svg"))
-(defconst d12-convertible-images '("jpeg" "png" "jpg" "heic" "webp"))
+(defconst blog-supported-video-media '("mp4"))
+(defconst blog-supported-image-media '("jpeg" "png" "jpg" "heic" "webp" "gif" "svg"))
+(defconst blog-convertible-images '("jpeg" "png" "jpg" "heic" "webp"))
 
-(defun d12-supported-media-p (file)
+(defun blog-supported-media-p (file)
   "Return non-nil if FILE is a supported media."
-  (seq-contains-p (-concat d12-supported-image-media d12-supported-video-media)
+  (seq-contains-p (-concat blog-supported-image-media blog-supported-video-media)
                   (s-downcase (file-name-extension file))))
 
-(defun d12-supported-video-media-p (file)
+(defun blog-supported-video-media-p (file)
   "Return non-nil if FILE is a supported video."
-  (seq-contains-p d12-supported-video-media
+  (seq-contains-p blog-supported-video-media
                   (s-downcase (file-name-extension file))))
 
-(defun d12-supported-image-media-p (file)
+(defun blog-supported-image-media-p (file)
   "Return non-nil if FILE is a supported image."
-  (seq-contains-p d12-supported-image-media
+  (seq-contains-p blog-supported-image-media
                   (s-downcase (file-name-extension file))))
 
-(defun d12-convertible-image-p (file)
+(defun blog-convertible-image-p (file)
   "Return non-nil if FILE is a convertible image."
-  (seq-contains-p d12-convertible-images
+  (seq-contains-p blog-convertible-images
                   (s-downcase (file-name-extension file))))
 
 
@@ -74,8 +74,8 @@
     ("attachment"
      (concat "("
              (cond
-              ((d12-supported-image-media-p (porg-item-target-abs item)) "image")
-              ((d12-supported-video-media-p (porg-item-target-abs item)) "video")
+              ((blog-supported-image-media-p (porg-item-target-abs item)) "image")
+              ((blog-supported-video-media-p (porg-item-target-abs item)) "video")
               (t "???"))
              ") "
              (file-name-nondirectory (porg-item-target-abs item))))
@@ -107,7 +107,7 @@
 
 (defun file-name-fix-media-attachment (file-name)
   "Fix attachment FILE-NAME with EXT-NEW."
-  (if (d12-convertible-image-p file-name)
+  (if (blog-convertible-image-p file-name)
       (file-name-fix-attachment file-name "webp")
     file-name))
 
@@ -138,7 +138,7 @@
 
 
 
-(cl-defun d12-sanitize-id-link (link items)
+(cl-defun blog-sanitize-id-link (link items)
   "Sanitize ID LINK according to ITEMS."
   (if-let* ((id (org-ml-get-property :path link))
             (note (vulpea-db-get-by-id id))
@@ -157,7 +157,7 @@
 
 
 
-(defun d12-sha1sum-attachment (obj)
+(defun blog-sha1sum-attachment (obj)
   "Calculate sha1sum of attachment OBJ.
 
 The attachments table is defined by custom configurations in the
@@ -176,7 +176,7 @@ init file."
 
 
 
-(cl-defun d12-delete (file)
+(cl-defun blog-delete-file (file)
   "Delete FILE."
   (message "delete %s" file)
   (delete-file file)
@@ -185,7 +185,7 @@ init file."
 
 
 
-(cl-defun d12-make-outputs (&key file
+(cl-defun blog-make-outputs (&key file
                                  attach-dir
                                  attach-filter
                                  soft-deps
@@ -205,7 +205,7 @@ too lazy to explain default implementation.
 
 ATTACH-FILTER is a predicate on attachment file. Controls which
 attachments should be part of the output. Defaults to
-`d12-supported-media-p'.
+`blog-supported-media-p'.
 
 OUTPUTS-EXTRA is a function that takes a `porg-rule-output' of
 note and returns list of additional outputs.
@@ -223,11 +223,11 @@ HARD-DEPS. But in this case these are functions on
                         (funcall attach-dir note-output)
                       (let ((name (directory-from-uuid
                                    (file-name-base (porg-rule-output-file note-output)))))
-                        (if (d12-supported-video-media-p attachment)
+                        (if (blog-supported-video-media-p attachment)
                             (concat "public/content/" name)
                           (concat "src/public/content/images/" name)))))
              :file-mod (list #'file-name-fix-media-attachment)
-             :filter (or attach-filter #'d12-supported-media-p)))
+             :filter (or attach-filter #'blog-supported-media-p)))
            (outputs-extra (when outputs-extra (funcall outputs-extra note-output))))
       (-concat attachments-output
                outputs-extra
@@ -245,7 +245,7 @@ HARD-DEPS. But in this case these are functions on
 
 
 
-(cl-defun d12-make-publish (&key copy-fn)
+(cl-defun blog-make-publish (&key copy-fn)
   "Create public function with COPY-FN."
   (lambda (item items _cache)
     (let* ((temp-file (make-temp-file "d12frosted-io" nil ".org")))
@@ -262,14 +262,14 @@ HARD-DEPS. But in this case these are functions on
       ;; 3. cleanup and transform links
       (with-current-buffer (find-file-noselect temp-file)
         (porg-clean-links-in-buffer
-         :sanitize-id-fn (-rpartial #'d12-sanitize-id-link items)
+         :sanitize-id-fn (-rpartial #'blog-sanitize-id-link items)
          :sanitize-attachment-fn
          (lambda (link)
            (let* ((path (org-ml-get-property :path link))
                   (path (file-name-fix-media-attachment path))
                   (dir (directory-from-uuid (file-name-base (porg-item-target-abs item)))))
              (->> link
-                  (org-ml-set-property :path (if (d12-supported-video-media-p path)
+                  (org-ml-set-property :path (if (blog-supported-video-media-p path)
                                                  (format "/content/%s/%s" dir path)
                                                (format "/images/%s/%s" dir path)))
                   (org-ml-set-property :type "file")
@@ -338,13 +338,13 @@ HARD-DEPS. But in this case these are functions on
           (goto-char (point-min))
           (while (search-forward-regexp "\\[file:/content/.+\\](\\(/content/.+\\))" nil t)
             (let ((p (match-string 1)))
-              (when (d12-supported-video-media-p p)
+              (when (blog-supported-video-media-p p)
                 (replace-match (format "![](%s)" p)))))
           (save-buffer))))))
 
 
 
-(cl-defun d12-build-post (temp-target item _items)
+(cl-defun blog-build-post (temp-target item _items)
   "Build post ITEM to TEMP-TARGET."
   ;; (vulpea-utils-with-note (porg-item-item item)
   ;;   (--each (seq-reverse
@@ -382,7 +382,7 @@ HARD-DEPS. But in this case these are functions on
 
 
 
-(defun -uniq-porg-items (items)
+(defun blog-uniq-porg-items (items)
   "Return uniq ITEMS."
   (let ((-compare-fn #'(lambda (a b)
                          (string-equal
@@ -390,7 +390,7 @@ HARD-DEPS. But in this case these are functions on
                           (porg-item-target-rel b)))))
     (-uniq items)))
 
-(cl-defun d12-publish-nextjs/images (target items _items-all _cache)
+(cl-defun blog-publish-nextjs/images (target items _items-all _cache)
   "Generate nextjs/images file from ITEMS in TARGET file.
 
 _ITEMS-ALL is input table as returned by `porg-build-input'."
@@ -407,7 +407,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
        "\n"
        "import { StaticImageData } from \"next/image\";\n"
        "\n")
-      (--each (-uniq-porg-items (hash-table-values items))
+      (--each (blog-uniq-porg-items (hash-table-values items))
         (let ((var (concat "pic_"
                            (->> (porg-item-id it)
                                 (s-chop-suffix ".webp")
@@ -448,7 +448,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
 
 
 
-(cl-defun d12-rule-void (&key name tags)
+(cl-defun blog-rule-void (&key name tags)
   "Create a rule with a NAME that voids notes with TAGS."
   (porg-rule
    :name name
@@ -480,18 +480,18 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
  :rules
  (list
   ;; void rules, just to ignore some of the notes, which are used as soft deps only
-  (d12-rule-void :name "grapes" :tags '("wine" "grape"))
-  (d12-rule-void :name "country" :tags '("wine" "country"))
-  (d12-rule-void :name "regions" :tags '("wine" "region"))
-  (d12-rule-void :name "appellations" :tags '("wine" "appellation"))
-  (d12-rule-void :name "places" :tags '("places"))
+  (blog-rule-void :name "grapes" :tags '("wine" "grape"))
+  (blog-rule-void :name "country" :tags '("wine" "country"))
+  (blog-rule-void :name "regions" :tags '("wine" "region"))
+  (blog-rule-void :name "appellations" :tags '("wine" "appellation"))
+  (blog-rule-void :name "places" :tags '("places"))
 
   ;; real rules
   (porg-rule
    :name "posts"
    :match (-rpartial #'vulpea-note-tagged-all-p "post")
    :outputs
-   (d12-make-outputs
+   (blog-make-outputs
     :file
     (lambda (note)
       (concat
@@ -518,9 +518,9 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
 
   (porg-batch-rule
    :name "nextjs/images"
-   :filter (-rpartial #'porg-item-that :type "attachment" :predicate #'d12-supported-image-media-p)
+   :filter (-rpartial #'porg-item-that :type "attachment" :predicate #'blog-supported-image-media-p)
    :target "src/components/content/images.tsx"
-   :publish #'d12-publish-nextjs/images))
+   :publish #'blog-publish-nextjs/images))
 
  :compilers
  (list
@@ -529,8 +529,8 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
    :match (-rpartial #'porg-rule-output-that :type "note"
                      :predicate (-rpartial #'vulpea-note-tagged-all-p "post"))
    :hash #'porg-sha1sum
-   :build (d12-make-publish :copy-fn #'d12-build-post)
-   :clean #'d12-delete)
+   :build (blog-make-publish :copy-fn #'blog-build-post)
+   :clean #'blog-delete-file)
 
   (porg-compiler
    :name "post/metadata"
@@ -602,7 +602,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                    (related (vulpea-note-meta-get-list note "related" 'link))
 
                    (event (when (vulpea-note-tagged-all-p note "event")
-                            (let ((summary (d12-event-summary note)))
+                            (let ((summary (blog-event-summary note)))
                               (setf (alist-get 'wines summary)
                                     (-map (lambda (data)
                                             ;; replace convives inside the scores with id, name and public name
@@ -639,16 +639,16 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                 (let ((json-encoding-pretty-print t))
                   (insert (json-encode meta)))
                 (save-buffer))))
-   :clean #'d12-delete)
+   :clean #'blog-delete-file)
 
   (porg-compiler
    :name "images"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'d12-supported-image-media-p)
-   :hash #'d12-sha1sum-attachment
+   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'blog-supported-image-media-p)
+   :hash #'blog-sha1sum-attachment
    :build
    (lambda (item _items _cache)
      (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (if (d12-convertible-image-p (porg-item-item item))
+     (if (blog-convertible-image-p (porg-item-item item))
          (let ((max-width (or (plist-get (porg-item-extra-args item) :variant) 1600))
                (width (string-to-number
                        (shell-command-to-string
@@ -663,17 +663,17 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
               (format "convert '%s' -strip -auto-orient '%s'"
                       (porg-item-item item) (porg-item-target-abs item)))))
        (copy-file (porg-item-item item) (porg-item-target-abs item) t)))
-   :clean #'d12-delete)
+   :clean #'blog-delete-file)
 
   (porg-compiler
    :name "videos"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'d12-supported-video-media-p)
-   :hash #'d12-sha1sum-attachment
+   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'blog-supported-video-media-p)
+   :hash #'blog-sha1sum-attachment
    :build
    (lambda (item _items _cache)
      (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
      (copy-file (porg-item-item item) (porg-item-target-abs item) t))
-   :clean #'d12-delete)))
+   :clean #'blog-delete-file)))
 
 
 
