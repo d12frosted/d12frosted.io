@@ -585,14 +585,15 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                    (update (when (file-exists-p meta-file)
                              (with-current-buffer (find-file-noselect meta-file)
                                (goto-char (point-min))
-                               (when (re-search-forward "update: \"\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)\"" nil t)
+                               (when (re-search-forward
+                                      "\"update\": \"\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)\""
+                                      nil t)
                                  (match-string 1)))))
-                   (update (or (and (string-equal hash-a hash-b) update)
-                               (format-time-string "%F")))
+                   (update (when (string-equal hash-a hash-b) update))
+                   (update (or update (format-time-string "%F")))
 
                    (date (plist-get meta "date"))
-                   (update (or (and date (org-time< update date) date)
-                               update))
+                   (update (if (and date (org-time< update date)) date update))
 
                    (pinned (string-to-bool (or (vulpea-note-meta-get note "pinned") "false")))
                    (publish (string-to-bool (or (vulpea-note-meta-get note "publish") "false")))
