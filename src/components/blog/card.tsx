@@ -33,17 +33,17 @@ function PostImage({
   return <RandomImage className={className} />
 }
 
-export function FeaturedPostCard({ post, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
+export function FeaturedPostCard({ post, className, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
   return (
-    <article key={post.id} className="flex flex-col items-start" {...props}>
-      <div className="group relative w-full">
+    <article key={post.id} className={clsx("flex flex-col items-start group", className)} {...props}>
+      <div className="relative w-full">
         <PostImage
           post={post}
-          className="aspect-video w-full rounded-2xl object-contain group-hover:opacity-75 sm:aspect-[2/1] lg:aspect-[3/2]"
+          className="aspect-video w-full rounded-2xl object-contain group-hover:opacity-75 sm:aspect-[3/1] lg:aspect-[3/2]"
         />
         <div className="absolute inset-0 rounded-2xl ring-1 ring-gray-900/10 ring-inset" />
       </div>
-      <div className="max-w-xl">
+      <div className="">
         <div className="mt-8 flex items-center gap-x-4 text-xs">
           <FormattedDate date={post.published} className="text-gray-500" />
           <div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
