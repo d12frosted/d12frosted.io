@@ -8,7 +8,7 @@ import { TouchTarget } from './button'
 import { Link } from './link'
 
 export function Navbar({ className, ...props }: React.ComponentPropsWithoutRef<'nav'>) {
-  return <nav {...props} className={clsx(className, 'flex flex-1 items-center gap-4 py-2.5')} />
+  return <nav {...props} className={clsx(className, 'flex flex-1 items-center gap-2 py-2.5 sm:gap-4')} />
 }
 
 export function NavbarDivider({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
@@ -20,7 +20,7 @@ export function NavbarSection({ className, ...props }: React.ComponentPropsWitho
 
   return (
     <LayoutGroup id={id}>
-      <div {...props} className={clsx(className, 'flex items-center gap-3')} />
+      <div {...props} className={clsx(className, 'flex items-center gap-1 sm:gap-3')} />
     </LayoutGroup>
   )
 }
@@ -43,7 +43,7 @@ export const NavbarItem = forwardRef(function NavbarItem(
 ) {
   let classes = clsx(
     // Base - bold brutalist look
-    'relative flex min-w-0 items-center gap-3 px-3 py-2 text-left text-base/6 font-bold text-ink sm:text-sm/5',
+    'relative flex min-w-0 items-center gap-2 px-2 py-2 text-left text-sm/5 font-bold text-ink sm:gap-3 sm:px-3 sm:text-base/6',
     // Leading icon/icon-only
     '*:data-[slot=icon]:size-6 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:fill-ink sm:*:data-[slot=icon]:size-5',
     // Trailing icon (down chevron or similar)

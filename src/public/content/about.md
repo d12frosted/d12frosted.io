@@ -1,9 +1,9 @@
-Hi, my name is Boris, and I'm an engineering manager from Chișinău, Moldova; based in Kyiv, Ukraine. My time is often consumed by work, tinkering with Emacs, delving into the world of wine, and embarking on quests in [Final Fantasy XIV](https://www.finalfantasyxiv.com/) (or other video games).
+Hi, I'm Boris—an engineering manager from Chișinău, Moldova, currently based in Kyiv, Ukraine. My time is split between work, tinkering with Emacs, exploring the world of wine, and embarking on quests in [Final Fantasy XIV](https://www.finalfantasyxiv.com/) (and other video games).
 
-I share much of my Emacs journey on GitHub, alongside musings on this site.
+I share my Emacs journey through open source projects on GitHub, alongside technical writing and musings on this site.
 
-I also detail my experiences with wine and the various tasting events I partake in or organise on [🍇 Barberry Garden 🦄](https://barberry.io).
+I also document my wine experiences and tasting events on [🍇 Barberry Garden 🦄](https://barberry.io)—a personal wine database built with Emacs and org-mode.
 
-If you appreciate my content, consider supporting me through [Payoneer](https://www.patreon.com/d12frosted).
+If you appreciate my work, consider [supporting me on Patreon](https://www.patreon.com/d12frosted).
 
-P.S. d12frosted means dice with 12 sides from the Chessex™ frosted series. I used to play. Just a little bit.
+**P.S.** d12frosted means dice with 12 sides from the Chessex™ frosted series. I used to play tabletop RPGs. Just a little bit.

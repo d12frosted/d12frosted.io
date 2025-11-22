@@ -11,6 +11,7 @@ import React from 'react'
 const navItems = [
   { label: 'Home', url: '/' },
   { label: 'Posts', url: '/posts' },
+  { label: 'Projects', url: '/projects' },
 ]
 
 export function ApplicationLayout({
@@ -23,22 +24,22 @@ export function ApplicationLayout({
   // let pathname = usePathname()
 
   return (
-    <div className="relative isolate mx-auto flex min-h-svh max-w-7xl flex-col bg-canvas max-sm:mx-0 max-sm:w-full lg:bg-paper dark:bg-zinc-900 dark:lg:bg-zinc-950">
+    <div className="relative isolate mx-auto flex min-h-svh w-full max-w-7xl flex-col bg-canvas overflow-x-hidden lg:bg-paper dark:bg-zinc-900 dark:lg:bg-zinc-950">
       {/* Bold navbar with stark contrast */}
-      <header className="border-b-4 border-ink bg-canvas px-6 py-4 lg:px-8 dark:border-white dark:bg-zinc-900">
+      <header className="border-b-4 border-ink bg-canvas px-4 py-4 lg:px-8 dark:border-white dark:bg-zinc-900">
         <div className="min-w-0 flex-1">
           <Navbar>
-            <div className="">
+            <div className="flex items-center">
               <Image
                 src="/d12frosted.png"
-                width={128}
-                height={128}
+                width={40}
+                height={40}
                 alt="d12frosted icon"
-                className="mr-3 inline-grid size-12 shrink-0 align-middle *:col-start-1 *:row-start-1 sm:size-10"
+                className="mr-2 size-10 shrink-0 sm:mr-3"
               />
               <NavbarLabel className="max-sm:hidden">{siteConfig.name}</NavbarLabel>
             </div>
-            <NavbarDivider className="" />
+            <NavbarDivider className="max-sm:hidden" />
             <NavbarSection className="">
               {navItems.map(({ label, url }) => (
                 <NavbarItem key={label} href={url}>
@@ -61,7 +62,7 @@ export function ApplicationLayout({
 
       {/* Spacious content area */}
       <main className="flex flex-1 flex-col">
-        <div className="grow px-6 py-12 lg:px-16 lg:py-20">
+        <div className="grow px-4 py-8 lg:px-16 lg:py-20">
           <div className="mx-auto max-w-6xl">{children}</div>
         </div>
       </main>

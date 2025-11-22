@@ -2,7 +2,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "Boris Buliga",
-  description: "Personal technical blog",
+  description: "Engineering manager, Emacs enthusiast, and open source maintainer. Writing about software, tooling, and personal productivity.",
   authors: ["Boris Buliga"],
   navItems: [
     {
