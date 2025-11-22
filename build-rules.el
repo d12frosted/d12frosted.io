@@ -98,7 +98,15 @@
   "Describe ITEM."
   (pcase (porg-rule-output-type item)
     ("note" (porg-describe (porg-rule-output-item item)))
-    ("attachment" (concat "(image) " (file-name-nondirectory (porg-rule-output-file item))))
+    ("attachment"
+     (concat "("
+             (cond
+              ((blog-supported-image-media-p (porg-rule-output-file item)) "image")
+              ((blog-supported-video-media-p (porg-rule-output-file item)) "video")
+              (t "???"))
+             ") "
+             (file-name-nondirectory (porg-rule-output-file item))))
+    ("json" (concat "(json)" (porg-describe (porg-rule-output-item item))))
     (_ (concat "(" (porg-rule-output-type item) ") " (porg-rule-output-id item)))))
 
 (cl-defmethod porg-describe ((note vulpea-note))
