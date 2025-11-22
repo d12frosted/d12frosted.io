@@ -23,11 +23,6 @@ export default async function Home() {
 
   return (
     <>
-      {/* Bold hero */}
-      <h1 className="mb-12 text-5xl font-bold tracking-tight text-ink lg:mb-16 lg:text-6xl dark:text-white">
-        d12frosted
-      </h1>
-
       {/* Two-column layout */}
       <div className="grid gap-12 lg:grid-cols-[400px_1fr] lg:gap-20">
         {/* Left column: About */}
