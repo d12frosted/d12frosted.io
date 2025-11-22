@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing some analytics insights from Emacs Plus and how they'll influence future maintenance. Looking at installation data, Emacs 28 is currently the most popular version, and features like native-comp and xwidgets are heavily used. I'm considering deprecating some rarely-used options while making it easier to enable simple build flags. For icons, modern-doom3, nobu417-big-sur, and spacemacs lead in popularity. Any major changes will be well-communicated to avoid disrupting users' workflows.",
+  "description": "Sharing some analytics insights from Emacs Plus and how they'll influence future maintenance. Looking at installation data, Emacs 28 is currently the most popular version, and features like native-comp and xwidgets are heavily used. I'm considering deprecating some rarely-used options whilst making it easier to enable simple build flags. For icons, modern-doom3, nobu417-big-sur, and spacemacs lead in popularity. Any major changes will be well-communicated to avoid disrupting users' workflows.",
   "tags": [
     "emacs-plus"
   ]

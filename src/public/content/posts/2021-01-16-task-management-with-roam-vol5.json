@@ -17,7 +17,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing a significant performance optimization I created for org-roam agenda generation. By dynamically tracking notes containing TODOs with a 'project' tag, I reduced agenda loading from over 50 seconds to under 1 second. The solution automatically updates tags when files are visited or saved, querying only relevant files when building the agenda view. I've included all the code and explained the implementation details, from checking for TODO entries to SQL queries.",
+  "description": "Optimizing org-roam agenda performance by dynamically tracking notes containing TODOs with a 'project' tag, reducing agenda loading from over 50 seconds to under 1 second.",
   "tags": [
     "emacs",
     "org-roam"

@@ -1,6 +1,6 @@
-In the previous articles ([Vol. 1](/posts/2020-06-23-task-management-with-roam-vol1) and [Vol. 2](/posts/2020-06-24-task-management-with-roam-vol2)) we walked the path to [org-roam](https://github.com/org-roam/org-roam) and solved the issue with garbage in the category column of agenda. Today we are going to explore meta projects dedicated to specific person, tag inheritance and moving such projects to separate `org-roam` files. As result, we will have code for automatic tagging based on the title.
+In the previous articles ([Vol. 1](/posts/2020-06-23-task-management-with-roam-vol1) and [Vol. 2](/posts/2020-06-24-task-management-with-roam-vol2)), we walked the path to [org-roam](https://github.com/org-roam/org-roam) and solved the issue with clutter in the category column of the agenda. Today we're going to explore meta projects dedicated to a specific person, tag inheritance, and moving such projects to separate `org-roam` files. As a result, we'll have code for automatic tagging based on the title.
 
-Aside from regular meta projects (like personal blog) I also create meta projects for people and locations. This is helpful, because some of the tasks are really related to someone specifically. For example, when I need to return a borrowed book, I just create a task for this.
+Aside from regular meta projects (like a personal blog), I also create meta projects for people and locations. This is helpful because some tasks are really related to someone specifically. For example, when I need to return a borrowed book, I just create a task for it.
 
 ``` org
 * Frodo Baggins                                               :@FrodoBaggins:

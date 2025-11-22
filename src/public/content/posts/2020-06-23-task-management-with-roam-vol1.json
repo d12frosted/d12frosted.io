@@ -17,7 +17,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing my approach to task management in org-roam, showing how to organize tasks and projects across notes while maintaining compatibility with org-mode's agenda features. While org-roam favors smaller files over larger ones, we can still implement a familiar structure of tasks, projects, and meta-projects. The article explains the basic setup, though there are some visual quirks in the agenda buffer that we'll address in a follow-up post.",
+  "description": "How to organize tasks and projects in org-roam whilst maintaining compatibility with org-mode's agenda features. Implementing a familiar structure of tasks, projects, and meta-projects across multiple files.",
   "tags": [
     "emacs",
     "org-roam"

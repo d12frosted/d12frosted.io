@@ -1,20 +1,20 @@
-In the [previous article](/posts/2020-06-25-task-management-with-roam-vol3) we covered automatic tagging of notes related to a specific person, and today we are going to cover automatic tagging of an org-mode heading upon insertion of link related to a person. To put it simple, when I mention someone in the task, I would love this task to be automatically tagged with that persons name. As they say, it's better to see once, than imagine multiple times, so here is a screencast.
+In the [previous article](/posts/2020-06-25-task-management-with-roam-vol3), we covered automatic tagging of notes related to a specific person. Today we're going to cover automatic tagging of an org-mode heading upon insertion of a link related to a person. To put it simply, when I mention someone in a task, I'd like this task to be automatically tagged with that person's name. As they say, it's better to see once than imagine multiple times, so here's a screencast:
 
 <img src="/images/2020-07-07-task-management-with-roam-vol4/2022-07-19_21-13-09_org-notes-insert.gif" class="d12-image-3/4" />
 
-**Change Log:**
+## Change Log
 
-- `[2021-01-24 Sun]`: Since some of the functionality mentioned in the original article was merged to `org-roam`, all code is updated to reflect the current state of affairs.
-- `[2021-03-02 Tue]`: Update naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
-- `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-07-07-task-management-with-roam-vol4.org).
-- `[2021-11-19 Fri]`: Update post to reflect [inclusion](https://github.com/d12frosted/vulpea/commit/8ff428f2e9561fdc448627fe780be03a661cc52e) of `vulpea-insert` function to `vulpea` library. You can find previous version of this article in [git history](https://github.com/d12frosted/d12frosted.io/blob/2d3dad81988e838b8159761cd420bb95ed5bdd83/posts/2020-07-07-task-management-with-roam-vol4.org).
+- **\[2021-01-24\]:** Updated all code to reflect the current state of affairs, as some functionality mentioned in the original article was merged into `org-roam`.
+- **\[2021-03-02\]:** Updated naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
+- **\[2021-05-10\]:** Updated post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-07-07-task-management-with-roam-vol4.org).
+- **\[2021-11-19\]:** Updated post to reflect [inclusion](https://github.com/d12frosted/vulpea/commit/8ff428f2e9561fdc448627fe780be03a661cc52e) of `vulpea-insert` function in the `vulpea` library. Previous version of this article is available in [git history](https://github.com/d12frosted/d12frosted.io/blob/2d3dad81988e838b8159761cd420bb95ed5bdd83/posts/2020-07-07-task-management-with-roam-vol4.org).
 
 ``` related_posts
 ```
 
 <!--more-->
 
-Once could just write an advice for `org-roam-node-insert` by using a relatively recent [change](https://github.com/org-roam/org-roam/pull/839) that makes this function to return what was inserted. This also uses name manipulation from the [previous article](/posts/2020-06-25-task-management-with-roam-vol3) and tags lookup from [Org-roam tags](/posts/2020-06-10-org-roam-tags) article.
+One could just write advice for `org-roam-node-insert` by using a relatively recent [change](https://github.com/org-roam/org-roam/pull/839) that makes this function return what was inserted. This also uses name manipulation from the [previous article](/posts/2020-06-25-task-management-with-roam-vol3) and tag lookup from the [Org-roam tags](/posts/2020-06-10-org-roam-tags) article.
 
 ``` commonlisp
 (defun org-roam-node-insert-wrapper (fn)
@@ -43,9 +43,9 @@ accordingly."
  #'org-roam-node-insert-wrapper)
 ```
 
-The implementation is straight-forward. We start with calling `fn` (e.g. `org-roam-node-insert`) that asks for the note to insert. Then we parse result and query the roam tags to understand if the inserted note is related to a person. And if the answer is yes, we use `org-set-tags` to automatically tag the heading.
+The implementation is straightforward. We start by calling `fn` (e.g. `org-roam-node-insert`), which asks for the note to insert. Then we parse the result and query the roam tags to understand if the inserted note is related to a person. If the answer is yes, we use `org-set-tags` to automatically tag the heading.
 
-And while advicing is powerful tool and allows us to solve the problem, there is slightly different, less intrusive and composable solution provided by `vulpea` library - `vulpea-insert` function that acts like `org-roam-node-insert`, but provides ability setup hooks on insertion. First, we define a handler (pretty much the same as `org-roam-node-insert-wrapper` but without any calls to insertion function).
+Whilst advising is a powerful tool and allows us to solve the problem, there's a slightly different, less intrusive, and composable solution provided by the `vulpea` library - the `vulpea-insert` function that acts like `org-roam-node-insert` but provides the ability to set up hooks on insertion. First, we define a handler (pretty much the same as `org-roam-node-insert-wrapper` but without any calls to the insertion function):
 
 ``` commonlisp
 (defun my-vulpea-insert-handle (note)
@@ -73,7 +73,7 @@ And then you just need to add it as a hook:
           #'my-vulpea-insert-handle)
 ```
 
-With this approach you can add as many handlers as you wish without the need to grow your advice/wrapper too much.
+With this approach, you can add as many handlers as you wish without needing to grow your advice/wrapper too much.
 
 # Complete solution
 

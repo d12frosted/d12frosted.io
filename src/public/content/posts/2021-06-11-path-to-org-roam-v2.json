@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing my migration experience from org-roam v1 to v2. The update brings major improvements like mandatory IDs, better note structure, and improved database queries - though it requires effort to migrate. I've included my migration script and explained the key changes, especially around note tagging and database access. V2 is a big step forward, making org-roam more stable and powerful for non-hierarchical note-taking.",
+  "description": "Migrating from org-roam v1 to v2—covering mandatory IDs, improved note structure, enhanced database queries, and the transition from file-based to ID-based linking, with migration scripts and lessons learned.",
   "tags": [
     "emacs",
     "org-roam"

@@ -1,17 +1,17 @@
-We all know, network is unreliable. I love those moments when I decide to upgrade all my Emacs packages while connected via 3G. And since I am using [raxod502/straight.el](https://github.com/raxod502/straight.el/), the process requires to process each repository one by one. Now imagine my frustration, when due to unstable connection it fails on one of the repositories and I need to start the process again… from the beginning.
+We all know that networks are unreliable. I particularly enjoy those moments when I decide to upgrade all my Emacs packages whilst connected via 3G. Since I'm using [raxod502/straight.el](https://github.com/raxod502/straight.el/), the process needs to check each repository one by one. Now imagine my frustration when, due to an unstable connection, it fails on one of the repositories and I need to start the process again… from the beginning.
 
-So I say, no more, [raxod502/straight.el](https://github.com/raxod502/straight.el/) should retry read operations over network! Unfortunately, there is no such option out of box (or at least I could not find it). Luckily, it's Emacs!
+So I decided: no more! [raxod502/straight.el](https://github.com/raxod502/straight.el/) should retry read operations over the network. Unfortunately, there's no such option out of the box (or at least I couldn't find it). Luckily, it's Emacs!
 
 <!--more-->
 
-First, we want to configure how many times we want to retry before actually failing.
+First, we configure how many times we want to retry before actually failing.
 
 ``` commonlisp
 (defvar elpa-straight-retry-count 3
   "Amount of retries for `straight' operations.")
 ```
 
-Secondly, we write a 'generic' function that simply retries some `orig-fn`. It simply evaluates a function, and if it fails, tries again in a `while` loop. It doesn't report intermediate failures, if you wish to, it's easy to do. But once it gets to the final error, it signals it back to the user.
+Secondly, we write a generic function that retries some `orig-fn`. It simply evaluates a function, and if it fails, tries again in a `while` loop. It doesn't report intermediate failures (though if you wish to do so, it's easy to add). Once it reaches the final error, it signals it back to the user.
 
 ``` commonlisp
 (defun elpa-straight-with-retry (orig-fn &rest args)
@@ -33,7 +33,7 @@ ORIG-FN is called with ARGS and retried
            (signal (car err) (cdr err))))))))
 ```
 
-Lastly, we need to wrap functions that do some networking. You see, thanks to `advice-add`, it's so easy to do!
+Lastly, we need to wrap functions that do some networking. Thanks to `advice-add`, this is straightforward!
 
 ``` commonlisp
 (advice-add #'straight-fetch-package
@@ -44,6 +44,6 @@ Lastly, we need to wrap functions that do some networking. You see, thanks to `a
             #'elpa-straight-with-retry)
 ```
 
-Now you might wonder, is it possible to apply `elpa-straight-with-retry` to other functions? Of course! Just give it a better name and enjoy your Emacs life full of retries.
+You might wonder whether it's possible to apply `elpa-straight-with-retry` to other functions. Of course! Just give it a better name and enjoy your Emacs life full of retries.
 
 Safe travels!

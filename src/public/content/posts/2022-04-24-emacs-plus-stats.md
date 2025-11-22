@@ -1,6 +1,6 @@
-Over time [Emacs Plus](https://github.com/d12frosted/homebrew-emacs-plus) has grown into quite heavy [homebrew](https://brew.sh) formula supporting 4 Emacs versions (starting with Emacs 26), 13 compilation options and 53 icons. For a long time I was accepting new options, patches and icons. Now in the process of rethinking maintenance approach I decided to take a look at how people are using this formula. Luckily, `brew` provides public [analytics](https://formulae.brew.sh/docs/api/#analytics) even for taps, which is being sent by users unless they decide to disable it.
+Over time, [Emacs Plus](https://github.com/d12frosted/homebrew-emacs-plus) has grown into quite a heavy [homebrew](https://brew.sh) formula supporting 4 Emacs versions (starting with Emacs 26), 13 compilation options, and 53 icons. For a long time, I was accepting new options, patches, and icons. Now, in the process of rethinking my maintenance approach, I decided to take a look at how people are using this formula. Luckily, `brew` provides public [analytics](https://formulae.brew.sh/docs/api/#analytics) even for taps, which is being sent by users unless they decide to disable it.
 
-Of course, it's not covering 100% of `emacs-plus` user base, but I still found it interesting and since I might change few things in `emacs-plus` based on this, I thought that other might be interested in it as well. Enjoy.
+Of course, it's not covering 100% of the `emacs-plus` user base, but I still found it interesting, and since I might change a few things in `emacs-plus` based on this, I thought that others might be interested in it as well. Enjoy.
 
 <!--more-->
 
@@ -13,7 +13,7 @@ Of course, it's not covering 100% of `emacs-plus` user base, but I still found i
 | emacs-plus@27 | 523      | 602      | 3737     |
 | emacs-plus@26 | 29       | 77       | 496      |
 
-Since Emacs 28 was released recently™, there is little wonder that it's being the most popular version among `emacs-plus` users. What interests me is that people are still using Emacs 26. Since it has zero footprint on maintenance, I am not going to remove older version, though I urge you to switch to latest version.
+Since Emacs 28 was released recently, there's little wonder that it's the most popular version amongst `emacs-plus` users. What interests me is that people are still using Emacs 26. Since it has zero footprint on maintenance, I'm not going to remove older versions, though I urge you to switch to the latest version.
 
 # Options
 
@@ -34,13 +34,13 @@ Since Emacs 28 was released recently™, there is little wonder that it's being 
 
 Interestingly, all available options are used, even if some are used rarely. And all of them require some analysis.
 
-For example, `--with-x11` and `--without-cocoa` are not straightforward from the formula point of view and they add some complexity. Since they are being rarely used, I might deprecate them in `emacs-plus@29`.
+For example, `--with-x11` and `--without-cocoa` are not straightforward from the formula point of view, and they add some complexity. Since they're rarely used, I might deprecate them in `emacs-plus@29`.
 
-Other options, like `--with-mailutils`, `--with-ctags` and `--with-dbus` are straightforward and add no complexity, though they are rarely used. So I might provide a different way of enabling such options.
+Other options, like `--with-mailutils`, `--with-ctags`, and `--with-dbus` are straightforward and add no complexity, though they are rarely used. So I might provide a different way of enabling such options.
 
-Obviously `--with-native-comp` and `--with-xwidgets` will stay with us, even though the last one is known source of troubles. This is the case where added value is bigger than maintenance burden.
+Obviously, `--with-native-comp` and `--with-xwidgets` will stay with us, even though the last one is a known source of troubles. This is the case where added value is bigger than the maintenance burden.
 
-You may notice that Emacs 26 is not mentioned in this table, but this is simply because of issue [\#195](https://github.com/d12frosted/homebrew-emacs-plus/issues/195).
+You may notice that Emacs 26 isn't mentioned in this table, but this is simply because of issue [\#195](https://github.com/d12frosted/homebrew-emacs-plus/issues/195).
 
 # Icons
 
@@ -70,14 +70,14 @@ You may notice that Emacs 26 is not mentioned in this table, but this is simply 
 | modern-alecive-flatwoken        | 36       |
 | modern-orange                   | 34       |
 
-Only 23 icons out of 53 are present here, and I am 100% sure some are missing from analytics, but it's nice to know the top 3 icons used by our community.
+Only 23 icons out of 53 are present here, and I'm 100% sure some are missing from analytics, but it's nice to know the top 3 icons used by our community.
 
-In any case, I have [simplified](https://github.com/d12frosted/homebrew-emacs-plus/blob/328a0beee56a4f099f9a6eb31290223238dd24bc/iconset) the process of maintaining available icons and I might also provide a way to (easily?) install `emacs-plus` with any icon, even those that are not part of `emacs-plus` repository. If that works, I will cleanup icons a little bit based on usage stats and my personal preferences.
+In any case, I've [simplified](https://github.com/d12frosted/homebrew-emacs-plus/blob/328a0beee56a4f099f9a6eb31290223238dd24bc/iconset) the process of maintaining available icons, and I might also provide a way to (easily?) install `emacs-plus` with any icon, even those that aren't part of the `emacs-plus` repository. If that works, I'll clean up icons a little based on usage stats and my personal preferences.
 
 # So what are the plans?
 
-First of all, I am not going to remove any option without informing you in all possible ways (message in the build log and issue/PR in `emacs-plus` repository, as I did with `--with-no-titlebar` option [here](https://github.com/d12frosted/homebrew-emacs-plus/pull/434) and [here](https://github.com/d12frosted/homebrew-emacs-plus/pull/435)). If you find out that I am going to remove an option that you are using - just let me know, either via email or GitHub issues! `emacs-plus` still exists only because of its user base. And I want to support your needs to possible extent.
+First of all, I'm not going to remove any option without informing you in all possible ways (message in the build log and issue/PR in the `emacs-plus` repository, as I did with the `--with-no-titlebar` option [here](https://github.com/d12frosted/homebrew-emacs-plus/pull/434) and [here](https://github.com/d12frosted/homebrew-emacs-plus/pull/435)). If you find out that I'm going to remove an option that you're using - just let me know, either via email or GitHub issues! `emacs-plus` still exists only because of its user base. And I want to support your needs to the fullest extent possible.
 
-Secondly, I am thinking about providing a wrapper to install `emacs-plus` with stuff not support by this formula. Nothing fancy, just simple options like `--with-dbus` and local icons. Unfortunately, `brew` seems not powerful enough for this task, so I will have to investigate that a bit.
+Secondly, I'm thinking about providing a wrapper to install `emacs-plus` with stuff not supported by this formula. Nothing fancy, just simple options like `--with-dbus` and local icons. Unfortunately, `brew` seems not powerful enough for this task, so I'll have to investigate that a bit.
 
 No ETA, as always, but stay tuned. Safe travels!

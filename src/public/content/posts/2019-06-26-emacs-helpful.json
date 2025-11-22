@@ -1,5 +1,5 @@
 {
-  "publish": null,
+  "publish": true,
   "hide": null,
   "pinned": null,
   "title": "Emacs: reusing window for helpful buffers",

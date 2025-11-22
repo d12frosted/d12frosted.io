@@ -1,4 +1,4 @@
-In the [previous article](/posts/2020-06-23-task-management-with-roam-vol1) we set a ground for moving tasks to [org-roam](https://github.com/org-roam/org-roam), and encountered an issue with visual garbage in the agenda buffer. Namely, `org-roam` file id as part of the category. In this article, we are going to explore the means to overcome this issue.
+In the [previous article](/posts/2020-06-23-task-management-with-roam-vol1), we set the groundwork for moving tasks to [org-roam](https://github.com/org-roam/org-roam) and encountered an issue with visual clutter in the agenda buffer - namely, the `org-roam` file ID appearing as part of the category. In this article, we're going to explore ways to overcome this issue.
 
 <div class="d12-images-block-[100%]">
 
@@ -8,18 +8,18 @@ In the [previous article](/posts/2020-06-23-task-management-with-roam-vol1) we s
 
 </div>
 
-**Change Log:**
+**Change Log**
 
-- `[2021-03-02 Tue]`: Update category extraction function to use `TITLE` of the note and enforce length limit. Kudos to [Tim Ruffing](https://github.com/real-or-random/) for the idea.
-- `[2021-03-02 Tue]`: Update naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
-- `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-24-task-management-with-roam-vol2.org).
+- **\[2021-03-02\]:** Updated category extraction function to use `TITLE` of the note and enforce length limit. Kudos to [Tim Ruffing](https://github.com/real-or-random/) for the idea.
+- **\[2021-03-02\]:** Updated naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
+- **\[2021-05-10\]:** Updated post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2020-06-24-task-management-with-roam-vol2.org).
 
 ``` related_posts
 ```
 
 <!--more-->
 
-On of the simplest solutions is to mimic solution for headlines by setting `CATEGORY` property on the file level (manually or by using `org-set-property`).
+One of the simplest solutions is to mimic the approach used for headlines by setting the `CATEGORY` property at the file level (manually or using `org-set-property`).
 
 ``` org
 :PROPERTIES:

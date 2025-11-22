@@ -17,7 +17,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing my org-roam capture workflow, focusing on quick task entry and efficient processing. I've set up a dedicated inbox file per machine to avoid sync issues, and use org-agenda with the REFILE tag to process captured items. For meetings, I've created a smarter capture template that automatically places one-on-one notes in the right person's file - a nice example of using org-roam's query capabilities to streamline capture.",
+  "description": "Streamlining task capture in org-roam with dedicated inbox files per machine, processing via org-agenda, and dynamic capture templates that automatically place one-on-one meeting notes in the correct person's file.",
   "tags": [
     "emacs",
     "org-roam"

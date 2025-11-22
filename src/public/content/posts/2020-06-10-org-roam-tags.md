@@ -1,6 +1,6 @@
-[Org-roam](https://github.com/org-roam/org-roam) is a note-taking tool built on top of Emacs and Org. Essentially, it's a replica of [Roam Research](https://roamresearch.com). These tools provide an easy way to create and manage non-hierarchical notes. If you wish to learn more, just take a look at the [Org-roam manual](https://org-roam.github.io/org-roam/manual/) or watch [Making Connections in your Notes](https://www.youtube.com/watch?v=Lg61ocfxk3c) video by Matt Williams. Believe me, Org-roam and Roam Research are game-changers. Or even better, don't believe me and validate my claim by yourself.
+[Org-roam](https://github.com/org-roam/org-roam) is a note-taking tool built on top of Emacs and Org. Essentially, it's a replica of [Roam Research](https://roamresearch.com). These tools provide an easy way to create and manage non-hierarchical notes. If you want to learn more, take a look at the [Org-roam manual](https://org-roam.github.io/org-roam/manual/) or watch [Making Connections in your Notes](https://www.youtube.com/watch?v=Lg61ocfxk3c) by Matt Williams. Believe me, Org-roam and Roam Research are game-changers. Or better yet, don't believe me and validate my claim yourself.
 
-Since I am already [addicted](/posts/2016-12-20-Being-an-org-mode-addict), it was only natural to prefer `org-roam` over some web application. Apart from being developed on top of mature Org ecosystem, Emacs brings many merits and extensibility is one of them. Once `org-roam` introduced tags system in [v1.1.1](https://github.com/org-roam/org-roam/blob/master/CHANGELOG.md#111-18-05-2020) I felt the lack of functions to manage them. Adding and removing them by hand is not nice. So in this article I am sharing a snippet that I've forged to ease the unbearable lightness of being.
+Since I'm already [addicted](/posts/2016-12-20-Being-an-org-mode-addict), it was natural to prefer `org-roam` over some web application. Beyond being built on top of the mature Org ecosystem, Emacs brings many benefits - extensibility being one of them. Once `org-roam` introduced a tags system in [v1.1.1](https://github.com/org-roam/org-roam/blob/master/CHANGELOG.md#111-18-05-2020), I felt the lack of functions to manage them. Adding and removing tags by hand isn't pleasant, so in this article I'm sharing a snippet I created to make tag management easier.
 
 **Change Log:**
 
@@ -19,11 +19,11 @@ Since I am already [addicted](/posts/2016-12-20-Being-an-org-mode-addict), it wa
 
 <img src="/images/2020-06-10-org-roam-tags/2022-07-19_21-01-06_org-roam-tags-demo.gif" class="d12-image-3/4" />
 
-When it comes to tags removal, I just want to have a list of tags set in the current buffer and chose one of them to remove. Important thing here is that it should not allow me to remove tag set by directories (see `org-roam-tag-sources`).
+When it comes to tag removal, I just want to have a list of tags set in the current buffer and choose one of them to remove. The important thing here is that it shouldn't allow me to remove tags set by directories (see `org-roam-tag-sources`).
 
-On the other hand, when I add a tag, I want to see the list of all tags set either by buffer property or by directory. I can chose one of them (otherwise I tend to mistype) or add a completely new one.
+On the other hand, when I add a tag, I want to see the list of all tags set either by buffer property or by directory. I can choose one of them (otherwise I tend to mistype) or add a completely new one.
 
-So let's implement these two functions. But before that, we need to have a function to get the list of buffer wide tags. For this we can write some simple helper (that uses regexps) or reuse internal API from `org-roam` (that does all the dirty work for us).
+So let's implement these two functions. First, we need a function to get the list of buffer-wide tags. For this, we can write a simple helper (that uses regexps) or reuse the internal API from `org-roam` (which does all the dirty work for us).
 
 ``` commonlisp
 (defun +org-notes-tags-read ()
@@ -47,9 +47,9 @@ Now it's easy to implement the function to delete one of the buffer tags.
     (org-roam-db--update-tags)))
 ```
 
-Since it works only in the context of `org-roam` it's good to have a meaningful error when this function used in the invalid context. Next we read the buffer tags and select one of them using `completing-read`. The `'require-match` is just a dummy non-nil value used instead of `t` as it improves readability.
+Since it only works in the context of `org-roam`, it's good to have a meaningful error when this function is used in an invalid context. Next, we read the buffer tags and select one of them using `completing-read`. The `'require-match` is just a dummy non-nil value (used instead of `t`) that improves readability.
 
-Next we remove the selected tag from tags and set the result to the buffer property `ROAM_TAGS`, each tag quoted. Simple as that. I will provide implementation of `+org-notes-buffer-p` and `+org-buffer-prop-set` later on.
+Next, we remove the selected tag from the tags list and set the result to the buffer property `ROAM_TAGS`, with each tag quoted. Simple as that. I'll provide the implementation of `+org-notes-buffer-p` and `+org-buffer-prop-set` later on.
 
 And the most important function is for adding tags.
 
@@ -72,9 +72,9 @@ And the most important function is for adding tags.
     (org-roam-db--update-tags)))
 ```
 
-It also errors out when called outside of `org-roam` buffer. Then we query all tags from the `org-roam-db`. Since this is the list of lists of lists, we have two double flatten the result and then leave only unique entries. After that everything is straightforward.
+It also errors out when called outside an `org-roam` buffer. Then we query all tags from `org-roam-db`. Since this is a list of lists of lists, we have to double-flatten the result and then keep only unique entries. After that, everything is straightforward.
 
-Now the missing functions.
+Now for the missing functions:
 
 ``` commonlisp
 (defun +org-notes-buffer-p ()
@@ -105,4 +105,4 @@ Now the missing functions.
         (insert "#+" name ": " value "\n")))))
 ```
 
-That's it. You can find all solution as a gist on [GitHub](https://gist.github.com/d12frosted/4a55f3d072a813159c1d7b31c21bac9a). Have fun!
+That's it! You can find the complete solution as a gist on [GitHub](https://gist.github.com/d12frosted/4a55f3d072a813159c1d7b31c21bac9a). Have fun!

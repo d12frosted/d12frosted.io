@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "I've helped make my Emacs configurations more maintainable by creating a structured approach to testing, linting and compilation. By using eldev for project management, straight.el for packages, and organizing code into init/lib/config files with proper autoloads, I've achieved both quick startup and robust development. The solution includes proper byte compilation, linting with elisp-lint, and testing with buttercup - all while maintaining performance. I've shared the complete setup including Makefiles and helper scripts to automate the process.",
+  "description": "Making Emacs configurations maintainable with eldev, straight.el, and structured init/lib/config files—achieving fast startup whilst enabling proper byte compilation, linting with elisp-lint, and testing with buttercup.",
   "tags": [
     "emacs"
   ]

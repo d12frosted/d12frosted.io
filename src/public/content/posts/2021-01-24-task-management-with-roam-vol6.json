@@ -17,7 +17,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing a quick utility I wrote to view all tasks related to a specific person in org-roam. By combining vulpea's selection functions with org-agenda's tag matching, we can easily see everything tagged with a person's name (including their aliases). Just a few lines of code, but it makes a big difference in managing person-related tasks!",
+  "description": "Building a utility function to select a person and view all related tasks in org-agenda, supporting aliases whilst leveraging vulpea's selection capabilities and org-mode's tag matching.",
   "tags": [
     "emacs",
     "org-roam"

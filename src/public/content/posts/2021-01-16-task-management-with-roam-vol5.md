@@ -1,16 +1,16 @@
-In previous articles ([Vol. 1](/posts/2020-06-23-task-management-with-roam-vol1) and [Vol. 2](/posts/2020-06-24-task-management-with-roam-vol2)) we talked about moving tasks from regular `org-mode` files to `org-roam` notes. This relied upon adding all `org-roam` files to `org-agenda-files`, which doesn't scale well, as when you build an agenda buffer, it needs to traverse each file. Once you have more than 1k notes, things become sluggish.
+In previous articles ([Vol. 1](/posts/2020-06-23-task-management-with-roam-vol1) and [Vol. 2](/posts/2020-06-24-task-management-with-roam-vol2)), we talked about moving tasks from regular `org-mode` files to `org-roam` notes. This relied on adding all `org-roam` files to `org-agenda-files`, which doesn't scale well - when you build an agenda buffer, it needs to traverse each file. Once you have more than 1k notes, things become sluggish.
 
-In my experience, once I reached 1200 note files, `org-agenda` constantly took more than 50 seconds to build, rendering this tool completely useless. But then I realised that only 3% of those files actually contain any `TODO` entries, so there is no need to traverse whole `org-roam-directory`!
+In my experience, once I reached 1,200 note files, `org-agenda` constantly took more than 50 seconds to build, rendering this tool completely useless. But then I realised that only 3% of those files actually contain any `TODO` entries, so there's no need to traverse the whole `org-roam-directory`!
 
-In this article we are going to optimise `org-agenda` back to less than 1 second by dynamically building `org-agenda-files` list to include only files with `TODO` entries. All thanks to the power of `org-roam` and some hooks I am going to describe.
+In this article, we're going to optimise `org-agenda` back to less than 1 second by dynamically building the `org-agenda-files` list to include only files with `TODO` entries. All thanks to the power of `org-roam` and some hooks I'm going to describe.
 
-**Change Log:**
+## Change Log
 
-- `[2021-03-02 Tue]`: Update naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
-- `[2021-03-08 Mon]`: [Gustav](https://github.com/Whil-) shared that `org-element-map` has an optional parameter `first-match` that works like `seq-find`, meaning that `vulpea-project-p` can be optimised.
-- `[2021-05-10 Mon]`: Update post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-16-task-management-with-roam-vol5.org).
-- `[2021-08-19 Thu]`: [Gustav](https://github.com/Whil-) proposed to modify buffer only when tags have changed. Code was updated accordingly (both in the post and on [GitHub Gist](https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e)).
-- `[2021-09-07 Tue]`: [rngesus-wept](https://github.com/rngesus-wept) proposed an interesting [solution](https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-910213001) on how to make sure that any extra stuff in `org-agenda-files` are not wiped out.
+- **\[2021-03-02\]:** Updated naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
+- **\[2021-03-08\]:** [Gustav](https://github.com/Whil-) shared that `org-element-map` has an optional parameter `first-match` that works like `seq-find`, meaning that `vulpea-project-p` can be optimised.
+- **\[2021-05-10\]:** Updated post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-16-task-management-with-roam-vol5.org).
+- **\[2021-08-19\]:** [Gustav](https://github.com/Whil-) proposed modifying the buffer only when tags have changed. Code was updated accordingly (both in the post and on [GitHub Gist](https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e)).
+- **\[2021-09-07\]:** [rngesus-wept](https://github.com/rngesus-wept) proposed an interesting [solution](https://github.com/d12frosted/d12frosted.io/issues/15#issuecomment-910213001) on how to make sure that any extra content in `org-agenda-files` isn't wiped out.
 
 ``` related_posts
 ```

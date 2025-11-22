@@ -17,7 +17,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing how I automated task tagging in org-roam with vulpea. When you mention someone in a task by linking to their note, the task automatically gets tagged with that person's name. I'm using vulpea-insert hooks to handle this cleanly, avoiding the need for advice on org-roam functions. The code includes checks to ensure we only add person tags to actual TODO items.",
+  "description": "Automating task tagging in org-roam with vulpea—when you mention someone in a task by linking to their note, the task automatically gets tagged with that person's name.",
   "tags": [
     "emacs",
     "org-roam"

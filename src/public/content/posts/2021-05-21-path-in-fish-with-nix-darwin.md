@@ -1,8 +1,8 @@
-During migration to `nix` for package and system management in [environment#11](https://github.com/d12frosted/environment/pull/11), I've encountered an issue with `PATH` variable containing seemingly correct entries, but in incorrect order when using `fish`. Basically, `$HOME/.nix-profile/bin` is put in the end. Since I am very new to `nix` ecosystem (using it for few days), it was not clear what is causing this issue (my configuration, `nix-home-manager`, `nix-darwin` or `fish` itself), so I decided to investigate. While it turned out to be a [known issue](https://github.com/LnL7/nix-darwin/issues/122), I learned a little bit in the process and found a local fix, which I am sharing in the end of the post.
+Whilst migrating to `nix` for package and system management in [environment#11](https://github.com/d12frosted/environment/pull/11), I encountered an issue with the `PATH` variable containing seemingly correct entries but in the incorrect order when using Fish. Basically, `$HOME/.nix-profile/bin` was placed at the end. Since I'm very new to the `nix` ecosystem (having used it for only a few days), it wasn't clear what was causing this issue (my configuration, `nix-home-manager`, `nix-darwin`, or Fish itself), so I decided to investigate. Whilst it turned out to be a [known issue](https://github.com/LnL7/nix-darwin/issues/122), I learned something in the process and found a local fix, which I'm sharing at the end of the post.
 
 <!--more-->
 
-When `bash` is set as user shell, the value of `PATH` is good expect for repeating values.
+When Bash is set as the user shell, the value of `PATH` is good except for repeating values.
 
 ``` bash
 $ echo $PATH
@@ -22,9 +22,9 @@ $ echo $PATH
   /nix/var/nix/profiles/default/bin
 ```
 
-The important part here is `$HOME/.nix-profile/bin` being the first item in this list, which is expected and desired, because we want binaries installed via package manager (in this case `nix`) to shadow any built-in binaries (common with `coreutils` package).
+The important part here is `$HOME/.nix-profile/bin` being the first item in this list, which is expected and desired because we want binaries installed via a package manager (in this case `nix`) to override any built-in binaries (common with the `coreutils` package).
 
-But when `fish` is used as user shell, the list doesn't contain any duplicates, but `$HOME/.nix-profile/bin` and `/nix/var/nix/profiles/default/bin` are placed in the end.
+But when Fish is used as the user shell, the list doesn't contain any duplicates, but `$HOME/.nix-profile/bin` and `/nix/var/nix/profiles/default/bin` are placed at the end.
 
 ``` fish
 $ echo $PATH
@@ -42,7 +42,7 @@ $ echo $PATH
   /nix/var/nix/profiles/default/bin
 ```
 
-And I become curious about reasons behind difference of these values and possible solution. Since I am very new to `nix` ecosystem, I decided to start with something more familiar - `fish`. It turns out, that it's possible to debug variable modifications with `fish` by using [event handlers](https://fishshell.com/docs/current/index.html#event), which we can put somewhere in the very beginning of [initialization](https://fishshell.com/docs/current/index.html#initialization) process, which is `$__fish_data_dir/config.fish` - configuration file shipped with `fish` itself that is loaded first. In general no one should ever modify this file, but we are debugging, so it's fine. I also use [status](https://fishshell.com/docs/current/cmds/status.html#cmd-status) function to display extra information (mostly interested in stack trace).
+I became curious about the reasons behind the difference of these values and a possible solution. Since I'm very new to the `nix` ecosystem, I decided to start with something more familiar - Fish. It turns out that it's possible to debug variable modifications with Fish by using [event handlers](https://fishshell.com/docs/current/index.html#event), which we can place at the very beginning of the [initialisation](https://fishshell.com/docs/current/index.html#initialization) process, which is `$__fish_data_dir/config.fish` - a configuration file shipped with Fish itself that's loaded first. In general, no one should ever modify this file, but we're debugging, so it's fine. I also use the [status](https://fishshell.com/docs/current/cmds/status.html#cmd-status) function to display extra information (mostly interested in the stack trace).
 
 ``` fish
 # Add these lines to the very beginning of $__fish_data_dir/config.fish

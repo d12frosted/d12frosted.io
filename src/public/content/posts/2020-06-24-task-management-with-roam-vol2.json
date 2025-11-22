@@ -17,7 +17,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing how I improved the agenda view for org-roam notes by fixing category display. Rather than showing file IDs, we can now show meaningful categories based on note titles or explicit CATEGORY properties. I've included a function to automatically extract and format categories, plus options to handle long titles gracefully. The result is a cleaner, more readable agenda that better integrates with org-roam's note-taking approach.",
+  "description": "Fixing category display in org-roam agenda views by showing meaningful categories based on note titles instead of file IDs, with automatic extraction and formatting for clean, readable results.",
   "tags": [
     "emacs",
     "org-roam"

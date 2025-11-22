@@ -17,7 +17,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing my approach to managing person-related tasks in org-roam notes. I explain how to use filetags to automatically tag all tasks in a person's note (like @FrodoBaggins), maintaining the tag inheritance functionality from regular org-mode while moving to individual roam notes. I've included code to automate the tagging process, making it easier to maintain consistency when adding new people notes.",
+  "description": "Managing person-related tasks in org-roam using filetags to automatically tag all tasks (like @FrodoBaggins), maintaining tag inheritance whilst moving to individual notes.",
   "tags": [
     "emacs",
     "org-roam"

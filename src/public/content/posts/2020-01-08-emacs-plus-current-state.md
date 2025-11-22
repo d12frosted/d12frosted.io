@@ -30,38 +30,38 @@ I moved from Travis to GitHub Workflows, which gave a decent boost in compilatio
 | `--HEAD`                 | \-      | 11m 18s |
 | `--HEAD --with-xwidgets` | \-      | 11m 15s |
 
-This gives me better visibility on the build breakages (both when patch application fails or it's because of the upstream issue).
+This gives me better visibility into build breakages (both when patch application fails and when it's an upstream issue).
 
-All of the used patches were moved to the `emacs-plus` repository, so they are always with formula. And I added support for running builds on CI with patches from PR.
+All the patches I use have been moved to the `emacs-plus` repository, so they're always bundled with the formula. I've also added support for running CI builds with patches from pull requests.
 
-And in order to better maintain the patches I've created [emacs-plus-basis](https://github.com/d12frosted/emacs-plus-basis) repository, which is basically a fork of Emacs repository with patches applied on top. Everyday CI fetches the latest updates from the upstream and applies the patches on top. And if it fails, I get a notification. So it gives me visibility of patch application failures. And it gives me environment to fix named patches.
+To better maintain the patches, I've created the [emacs-plus-basis](https://github.com/d12frosted/emacs-plus-basis) repository, which is basically a fork of the Emacs repository with patches applied on top. Every day, CI fetches the latest updates from upstream and applies the patches. If it fails, I get a notification. This gives me visibility into patch application failures and provides an environment to fix these patches.
 
-While all these steps should improve stability of the `emacs-plus`, I am aware that build breakages are impossible to avoid (upstream changes very fast). What I am achieving here is better visibility and tools to address breakages more quickly.
+Whilst all these steps should improve the stability of `emacs-plus`, I'm aware that build breakages are impossible to avoid (upstream changes very quickly). What I'm achieving here is better visibility and better tools to address breakages more quickly.
 
 # Build options zoo
 
-What was not covered yet is the amount of build options. The initial idea behind `emacs-plus` is that users should not pass many custom options to `install` command. If you remember, back then everyone recommended to install Emacs from brew using the following command:
+What I haven't covered yet is the sheer number of build options. The initial idea behind `emacs-plus` was that users shouldn't need to pass many custom options to the `install` command. If you remember, back then everyone recommended installing Emacs from Homebrew using the following command:
 
 ``` bash
 $ brew install emacs --with-cocoa --with-gnutls --with-rsvg --with-imagemagick
 ```
 
-All of these options where recommended to most of the users. So I decided to turn them on by default.
+All of these options were recommended to most users, so I decided to turn them on by default:
 
 ``` bash
 $ brew install emacs-plus
 ```
 
-In my ideal world, the only options users should pass is the icon choice and experimental or controversial stuff.
+In my ideal world, the only options users should pass are the icon choice and experimental or controversial features.
 
-I still don't have a solution, but I am willing to decrease amount of available options. For example, I think that no one actually installs without cocoa and without x11. So the choice must be between these two options. GnuTLS? Well, why would anyone want to install Emacs without it? `librsvg` and `libxml2`? Does it hurt if installed with it? I want `emacs-plus` be as simple as possible, while still providing things that are not available from the official Emacs formula.
+I still don't have a solution, but I'm willing to decrease the number of available options. For example, I don't think anyone actually installs without Cocoa or without X11 - so the choice should be between these two options. GnuTLS? Well, why would anyone want to install Emacs without it? `librsvg` and `libxml2`? Does it hurt to have them included? I want `emacs-plus` to be as simple as possible whilst still providing things that aren't available from the official Emacs formula.
 
-Unfortunately, I don't have anonymous statistics about options usage. So I still don't have any decision in this field. Will keep you posted :)
+Unfortunately, I don't have anonymous statistics about option usage, so I still don't have any decisions in this area. I'll keep you posted!
 
 # Cask
 
-This is something people are waiting for. I understand why, but I don't have time to invest into this project. At least now. If someone wants to step in - I would be super glad and grateful!
+This is something people are waiting for. I understand why, but I don't have time to invest in this right now. If someone wants to step in, I'd be super glad and grateful!
 
 # Final words
 
-That being said, all contributions are welcome! Let's keep in touch ;)
+All contributions are welcome! Let's keep in touch.
