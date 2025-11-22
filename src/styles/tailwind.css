@@ -20,11 +20,52 @@
   --color-xp-orange: #E9AE4E;
   --color-critical-red: #D66853;
   --color-magic-purple: #C5BBDB;
+
+  /* Custom spacing */
+  --spacing-18: 4.5rem;
+  --spacing-112: 28rem;
+  --spacing-120: 30rem;
+
+  /* Custom letter spacing */
+  --letter-spacing-tighter: -0.02em;
+
+  /* Custom line height */
+  --line-height-relaxed-plus: 1.7;
 }
 
 @utility prose {
   a {
     @apply text-mp-blue underline decoration-mp-blue/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink/50;
+  }
+
+  blockquote {
+    border-left-width: 3px;
+    border-left-color: var(--color-mp-blue);
+    font-style: normal;
+    padding-left: 1rem;
+  }
+
+  blockquote p:first-of-type::before,
+  blockquote p:first-of-type::after {
+    content: none;
+  }
+
+  code {
+    background-color: var(--color-code-bg);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0;
+    font-weight: 500;
+  }
+
+  code::before,
+  code::after {
+    content: '';
+  }
+
+  pre {
+    background-color: var(--color-code-bg);
+    border-left: 3px solid var(--color-mp-blue);
+    border-radius: 0;
   }
 }
 
