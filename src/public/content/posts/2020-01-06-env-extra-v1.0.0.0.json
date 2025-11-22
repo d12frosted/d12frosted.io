@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": null,
   "hide": null,
   "pinned": null,
   "title": "env-extra v1.0.0.0",
@@ -10,10 +10,10 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Introducing env-extra, my small Haskell library that improves environment variable handling with features like Text input support, flexible return types, and better error handling. It wraps System.Environment to reduce boilerplate while adding some nice parsing capabilities. Check it out on Hackage if you're tired of Text.pack/unpack and liftIO everywhere!",
+  "description": "Introducing env-extra, a small Haskell library that improves environment variable handling with Text support, flexible return types, and better error handling—reducing boilerplate from System.Environment.",
   "tags": [
     "haskell",
     "release",
-    "env-exta"
+    "env-extra"
   ]
 }

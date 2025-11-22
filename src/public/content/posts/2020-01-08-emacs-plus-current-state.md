@@ -1,27 +1,27 @@
-Not everyone knows, but [emacs-plus](https://github.com/d12frosted/homebrew-emacs-plus) is almost an April Fool's joke that was late for 1 day. Its [initial release](https://github.com/d12frosted/homebrew-emacs-plus/commit/6c85ae34d2649512a3088207b5f2a81c23cd8630) was on 2nd April 2016 and the only feature it had compared to the official Emacs formula back in the day was Spacemacs icon (installed by default). Homebrew maintainers didn't want to increase the complexity of the Emacs formula, so I've put that burden on myself, created a tap with one additional icon and after several years info command for `emacs-plus` prints a wall of options.
+Not everyone knows this, but [emacs-plus](https://github.com/d12frosted/homebrew-emacs-plus) is almost an April Fool's joke that was a day late. Its [initial release](https://github.com/d12frosted/homebrew-emacs-plus/commit/6c85ae34d2649512a3088207b5f2a81c23cd8630) was on 2nd April 2016, and the only feature it had compared to the official Emacs formula back then was the Spacemacs icon (installed by default). Homebrew maintainers didn't want to increase the complexity of the Emacs formula, so I took that burden on myself. I created a tap with one additional icon, and after several years, the info command for `emacs-plus` now prints a wall of options.
 
-I am very happy to see so many users of this feature-inclusive (and sometimes experimental) formula. I am grateful to all of you. I would've abandoned this project a year ago if it would not you! And I think it's fair to (in)formally share the current state of the project and shed some light on my plans.
+I'm very happy to see so many users of this feature-inclusive (and sometimes experimental) formula. I'm grateful to all of you - I would've abandoned this project a year ago if it weren't for you! I think it's fair to share the current state of the project and shed some light on my plans.
 
 <!--more-->
 
 # The problem
 
-During the last year (or maybe even more), `emacs-plus` overgrown with issues. Here is my top list.
+Over the last year (or perhaps even longer), `emacs-plus` has accumulated several issues. Here's my top list:
 
-1.  Experimental `xwidgets` build was breaking time to time and only thanks to users (mostly [Ag Ibragimov](https://github.com/agzam)) I would acknowledge it.
-2.  While I state that `HEAD` builds are not supported, I still want this option to work. First of all, for Emacs users to easily get the latest features. And secondly, for Emacs maintainers to get feedback from the users.
-3.  Patches are located outside of the project and their destiny is unclear.
-4.  It's hard to contribute a new patch or a patch fix inside the `emacs-plus` repository, because you have to mess with the URLs and branch names.
-5.  Travis builds are very slow. The default build takes 7 minutes, from sources - 13 minutes, build HEAD was impossible. I'd like to test much more build options and their combination.
-6.  Too many options are given to the users, which kind of contradicts my initial idea.
+1.  The experimental `xwidgets` build would break from time to time, and I would only learn about it thanks to users (mostly [Ag Ibragimov](https://github.com/agzam)).
+2.  Whilst I state that `HEAD` builds aren't supported, I still want this option to work. First, so Emacs users can easily get the latest features. Second, so Emacs maintainers can get feedback from users.
+3.  Patches are located outside the project, and their future is unclear.
+4.  It's hard to contribute a new patch or patch fix to the `emacs-plus` repository because you have to mess with URLs and branch names.
+5.  Travis builds are very slow. The default build takes 7 minutes, builds from source take 13 minutes, and HEAD builds were impossible. I'd like to test many more build options and their combinations.
+6.  Too many options are given to users, which contradicts my initial idea.
 
-When it comes to build failures, all of them can be divided into two categories - patch application failure or upstream issue.
+Build failures can be divided into two categories: patch application failures or upstream issues.
 
 # Visibility and stability
 
-In order to address the named issues, I've performed the following actions.
+To address these issues, I've taken the following actions:
 
-I moved from Travis to GitHub Workflows, which gave such a decent boost in compiling time. It also enabled me to add the `HEAD` and `xwidgets` options to the build matrix. I would love to add `x11` as well, but I didn't figure out how to setup XQuartz on build machines. I haven't really measured the build time, but here are some examples that I fetched from the build history. Also I've heard that Travis improved their machines so more calculating power is given to the users now.
+I moved from Travis to GitHub Workflows, which gave a decent boost in compilation time. It also enabled me to add the `HEAD` and `xwidgets` options to the build matrix. I'd love to add `x11` as well, but I haven't figured out how to set up XQuartz on build machines. I haven't really measured the build time precisely, but here are some examples I pulled from the build history. Also, I've heard that Travis has improved their machines, so more computing power is now available to users.
 
 | Options                  | Travis  | GitHub  |
 |--------------------------|---------|---------|

@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": null,
   "hide": null,
   "pinned": null,
   "title": "flyspell-correct v0.5",
@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Announcing flyspell-correct 0.5, with a new rapid mode for fixing multiple words in one run, plus some function renames and bug fixes. The update also improves skipping behavior and adds test coverage. Check out the full changelog and let me know if you encounter any issues!",
+  "description": "Announcing flyspell-correct 0.5 with rapid mode for fixing multiple words in one run, function renames, improved skipping behaviour, and test coverage.",
   "tags": [
     "emacs",
     "release",

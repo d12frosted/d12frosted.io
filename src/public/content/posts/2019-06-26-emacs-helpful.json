@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": null,
   "hide": null,
   "pinned": null,
   "title": "Emacs: reusing window for helpful buffers",
@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing a quick tip for improving how the helpful package manages windows in Emacs. By customizing helpful-switch-buffer-function, we can make help navigation more intuitive - keeping the original code visible while browsing documentation. The solution is just a few lines of Elisp that makes help buffers behave more predictably.",
+  "description": "How to make the helpful package reuse windows more sensibly in Emacs by customizing helpful-switch-buffer-function to keep your code visible whilst browsing documentation.",
   "tags": [
     "emacs"
   ]
