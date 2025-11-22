@@ -406,6 +406,11 @@ HARD-DEPS. But in this case these are functions on
                        (forward-line 1))
                      (point)))
                  (point-max)))))
+    (save-excursion
+      (replace-string-in-region
+       "—" " - "
+       (point-min)
+       (point-max)))
     (save-buffer)))
 
 
