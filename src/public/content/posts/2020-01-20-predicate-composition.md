@@ -1,4 +1,4 @@
-They say functional programming has many essences and the composition is one of them. Thanks to the wonderful dot operator, we know how to compose functions like `a -> b` and `b -> c` to get a function `a -> c`. But in some cases functions are not that simple and it becomes tricky to compose them nicely.
+They say functional programming has many essences, and composition is one of them. Thanks to the wonderful dot operator, we know how to compose functions like `a -> b` and `b -> c` to get a function `a -> c`. However, in some cases, functions aren't that simple, and it becomes tricky to compose them nicely.
 
 ``` haskell
 valid :: a -> Bool
@@ -18,13 +18,13 @@ valid = check1 .&& (check2 .|| check3)
 (.||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
 ```
 
-Apart from implementing combinators for predicate composition, we want to avoid any runtime penalty from using abstractions. In this article we are going to implement the following functions and investigate how far we can go with abstractions until performance degrades. Or maybe it won't degrade. Who knows?
+Apart from implementing combinators for predicate composition, we want to avoid any runtime penalty from using abstractions. In this article, we're going to implement these functions and investigate how far we can go with abstractions before performance degrades. Or maybe it won't degrade at all. Who knows?
 
 <!--more-->
 
 # Inline implementation
 
-Before we jump into the void, lets draw a baseline by keeping implementation simple.
+Before we jump into the void, let's draw a baseline by keeping the implementation simple.
 
 ``` haskell
 module Main (main) where
@@ -36,7 +36,7 @@ main = do
   print result
 ```
 
-Haskell language is abstract and high-level thus in some cases in order to really understand what the program does we need to look at the intermediate language called [Core](https://www.aosabook.org/en/ghc.html) (or System FC) produced by Glasgow Haskell Compiler (GHC) when it compiles[^1] our program. This reduced code is the end result of GHC's optmisations-by-transformation process, which iteratively rewrites the original code into more optimised versions in a smaller language.
+Haskell is an abstract and high-level language, so in some cases, to really understand what a programme does, we need to look at the intermediate language called [Core](https://www.aosabook.org/en/ghc.html) (or System FC) produced by the Glasgow Haskell Compiler (GHC) when it compiles[^1] our programme. This reduced code is the end result of GHC's optimisations-by-transformation process, which iteratively rewrites the original code into more optimised versions in a smaller language.
 
 In order to dump the intermediate code in Core language we need to ask GHC to do it. We use `-O` (or `-O2`) to enable optimisations and `-ddump-simpl` to dump the simplified output, which can be combined with `-ddump-to-file` to write result into a file instead of `stdout`. More options are described in the [GHC manual](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/debugging.html#debugging-the-compiler).
 
@@ -108,7 +108,7 @@ So this how it looks in Core, verbose but really straightforward.
 
 # Reason to read the line
 
-Strictly speaking there is no need for reading integer from `stdin` in our example. After all, we care only about the predicates. But GHC is pretty aggressive in terms of in-lining and simplifications when optimisations are enabled. With `-O2` there will be even more cross-module optimisation compared to `-O`.
+Strictly speaking, there's no need to read an integer from `stdin` in our example. After all, we only care about the predicates. However, GHC is quite aggressive with inlining and simplifications when optimisations are enabled. With `-O2`, there's even more cross-module optimisation compared to `-O`.
 
 ``` haskell
 module Main (main) where
@@ -133,9 +133,9 @@ main
       GHC.IO.Handle.FD.stdout GHC.Show.$fShowBool2 GHC.Types.True
 ```
 
-As you can see, it figured out that there is no need to evaluate it in runtime. But in order to compare different implementations of composition operators, we don't want compiler to inline the result.
+As you can see, it figured out that there's no need to evaluate it at runtime. However, to compare different implementations of composition operators, we don't want the compiler to inline the result.
 
-If you are curious about reductions steps, you can pass `-v` option to `ghc` to be more verbose. When you build with `-v`, compilation of the version with `getLine` is less verbose than without.
+If you're curious about reduction steps, you can pass the `-v` option to `ghc` to be more verbose. When you build with `-v`, compilation of the version with `getLine` is less verbose than without it.
 
 # Trivial implementation
 
@@ -188,7 +188,7 @@ If we compile it, the relevant part in the Core language is the same.
 ...
 ```
 
-While our code looks better, there are no runtime penalties. In short, with `-O` option GHC always tries to inline small functions (based on [unfolding-creation-threshold](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/using-optimisation.html#ghc-flag--funfolding-creation-threshold=%E2%9F%A8n%E2%9F%A9) and heuristics) thus avoiding the call overhead and enabling other optimisations (like replacing whole expression with its result). And when unfolding doesn't happen for some of the reasons and you really think that it should happen (make such decision based on CPU and memory profiling), then put [INLINE pragma](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#inline-pragma).
+Whilst our code looks better, there are no runtime penalties. In short, with the `-O` option, GHC always tries to inline small functions (based on [unfolding-creation-threshold](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/using-optimisation.html#ghc-flag--funfolding-creation-threshold=%E2%9F%A8n%E2%9F%A9) and heuristics), thus avoiding call overhead and enabling other optimisations (like replacing the entire expression with its result). If unfolding doesn't happen for some reason and you really think it should (make such decisions based on CPU and memory profiling), then add an [INLINE pragma](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#inline-pragma).
 
 ``` haskell
 infixr 3 .&&
@@ -197,7 +197,7 @@ p1 .&& p2 = \a -> p1 a && p2 a
 {-# INLINE (.&&) #-}
 ```
 
-Please note that in-lining usually leads to bigger executable.
+Please note that inlining usually leads to a larger executable.
 
 # Using `newtype` wrappers
 
@@ -445,9 +445,9 @@ variance introduced by outliers: 30% (moderately inflated)
 
 # Final words
 
-I love that in Haskell one can use *some* of the abstractions without hurting the runtime. After all, as developers we want to simplify our *development* life with minimal negative influence on the application.
+I love that in Haskell we can use *some* abstractions without hurting runtime performance. After all, as developers, we want to simplify our *development* lives with minimal negative influence on the application.
 
-Today we implemented two simple operators for predicate composition using semigroups and coercion. And we saw that they don't introduce runtime penalty. Techniques that made it possible are usable in other scenarios.
+Today, we implemented two simple operators for predicate composition using semigroups and coercion. We've seen that they don't introduce any runtime penalty. The techniques that made this possible are applicable in other scenarios too.
 
 ``` haskell
 module Data.Monoid.Extra
