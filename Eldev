@@ -1,8 +1,11 @@
-; -*- mode: emacs-lisp; lexical-binding: t -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
+;; (add-to-list 'load-path (expand-file-name ".config/emacs/" (getenv "HOME")))
 
 (eldev-use-package-archive 'melpa)
 
-(add-to-list 'load-path (expand-file-name "emacs/" (getenv "XDG_CONFIG_HOME")))
+(setenv "PROJECTS_HOME" (expand-file-name "Developer/" (getenv "HOME")))
 
-(eldev-use-local-dependency (expand-file-name "publicatorg" (getenv "PROJECTS_HOME")))
+(eldev-use-local-dependency (expand-file-name "vulpea" (getenv "PROJECTS_HOME")))
 (eldev-use-local-dependency (expand-file-name "vino" (getenv "PROJECTS_HOME")))
+(eldev-use-local-dependency (expand-file-name "publicatorg" (getenv "PROJECTS_HOME")))

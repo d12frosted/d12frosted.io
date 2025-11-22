@@ -33,6 +33,9 @@
 ;;
 ;;; Code:
 
+(add-to-list 'load-path (expand-file-name ".config/emacs/" (getenv "HOME")))
+(add-to-list 'load-path (expand-file-name ".config/emacs/lisp" (getenv "HOME")))
+
 (require 'init)
 
 (require 'dash)
@@ -186,13 +189,17 @@ init file."
   (cond
    ((porg-rule-output-p obj)
     (let ((id (s-split ":" (porg-rule-output-id obj)))
-          (file (file-name-nondirectory (porg-rule-output-item obj))))
-      (org-roam-db-query
-       [:select hash
-                :from attachments
-                :where (and (= node-id $s1)
-                            (= file $s2))]
-       id file)))
+          (file (file-name-nondirectory (porg-rule-output-item obj)))
+          res)
+      (setq res
+            (emacsql
+             (vulpea-db)
+             [:select hash
+              :from attachments
+              :where (and (= note-id $s1)
+                          (= file $s2))]
+             id file))
+      res))
    (t (user-error "Unknown type of attachments %s" obj))))
 
 
@@ -207,11 +214,11 @@ init file."
 
 
 (cl-defun blog-make-outputs (&key file
-                                 attach-dir
-                                 attach-filter
-                                 soft-deps
-                                 hard-deps
-                                 outputs-extra)
+                                  attach-dir
+                                  attach-filter
+                                  soft-deps
+                                  hard-deps
+                                  outputs-extra)
   "Make outputs function for note.
 
 Just a wrapper around `porg-note-output' and
@@ -521,7 +528,11 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
            :type "json"
            :item note
            :file (file-name-replace-ext (porg-rule-output-file output) "json")
-           :hard-deps (list (porg-rule-output-id output)))))))))
+           :hard-deps (-distinct
+                       (-concat
+                        (list (porg-rule-output-id output))
+                        (porg-rule-output-hard-deps output)))
+           :soft-deps (porg-rule-output-soft-deps output))))))))
 
   (porg-batch-rule
    :name "nextjs/images"
@@ -569,7 +580,9 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                                         (user-error "%s is using %s as an image, but it does not exist"
                                                     (funcall #'porg-describe item) image))
                                       (unless (file-exists-p (porg-item-target-abs image-item))
-                                        (user-error "Image %s does not exist" (funcall #'porg-describe image-item)))
+                                        (user-error "Image %s does not exist at %S"
+                                                    (funcall #'porg-describe image-item)
+                                                    (porg-item-target-abs image-item)))
                                       `(("image" . ,(porg-item-target-rel image-item))
                                         ("image-width" . ,(shell-command-to-string
                                                            (format "identify -format '%%w' '%s'"
@@ -662,6 +675,8 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                         (format "identify -format %%W '%s'" (porg-item-item item))))))
            (porg-debug "input:  %s" (porg-item-item item))
            (porg-debug "output: %s" (porg-item-target-abs item))
+           (unless (executable-find "convert")
+             (user-error "Could not find 'convert' command line utility"))
            (if (> width max-width)
                (shell-command-to-string
                 (format "convert '%s' -strip -auto-orient -resize %sx100^ '%s'"
