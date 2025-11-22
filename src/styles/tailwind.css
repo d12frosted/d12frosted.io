@@ -4,12 +4,26 @@
 @theme {
   --font-sans: Inter, sans-serif;
   --font-sans--font-feature-settings: 'cv11';
-  --font-mono: Source Code Pro;
+  --font-mono: IBM Plex Mono, Source Code Pro, monospace;
+
+  /* Custom color palette - Emacs + jRPG inspired */
+  --color-paper: #FAFAF8;
+  --color-canvas: #FFFFFF;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #6B6B6B;
+  --color-border-soft: #E8E6E3;
+  --color-code-bg: #F0F4F8;
+
+  /* jRPG status colors */
+  --color-hp-green: #7FB069;
+  --color-mp-blue: #5F87AF;
+  --color-xp-orange: #E9AE4E;
+  --color-critical-red: #D66853;
 }
 
 @utility prose {
   a {
-    @apply text-sky-500;
+    @apply text-mp-blue underline decoration-mp-blue/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink/50;
   }
 }
 

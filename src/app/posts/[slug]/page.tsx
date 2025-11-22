@@ -67,29 +67,31 @@ export default async function Post({ params }: Props) {
 
   return (
     <article className="">
-      <header className="flex flex-col">
-        <div className="flex items-center gap-x-4 text-xs">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-x-4 text-xs">
-              <FormattedDate date={post.published} className="text-gray-500" />
-              <div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
-                {post.tags.join(' · ')}
-              </div>
-            </div>
-            <h1 className="mt-2 text-4xl font-bold text-slate-900">{post.title}</h1>
-          </div>
+      {/* Bold post header with architectural elements */}
+      <header className="mb-12 flex flex-col lg:mb-16">
+        {/* Monospace metadata */}
+        <div className="mb-6 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+          <FormattedDate date={post.published} />
+          <span>•</span>
+          <span>{post.tags.join(' · ')}</span>
         </div>
-        <p className="mt-5 line-clamp-24 text-sm/6 text-gray-600">{post.description}</p>
+
+        <h1 className="mb-6 text-4xl font-bold tracking-tight text-ink lg:text-5xl dark:text-white">{post.title}</h1>
+
+        <p className="text-xl leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+
+        {/* Bold geometric divider */}
+        <div className="mt-8 h-1 w-24 bg-mp-blue" />
       </header>
-      <hr className="my-8 border-gray-200" />
+
       <div
         id="post-content"
-        className="prose max-w-none prose-stone prose-h1:mt-6 prose-h1:mb-2 prose-h2:mt-4 prose-h2:mb-2 prose-p:mt-2 [&>ul]:mt-6 [&>ul]:list-['\2013\20'] [&>ul]:pl-5"
+        className="prose max-w-none prose-stone prose-h1:mt-12 prose-h1:mb-4 prose-h1:text-3xl prose-h1:font-bold prose-h1:tracking-tight prose-h2:mt-10 prose-h2:mb-3 prose-h2:text-2xl prose-h2:font-bold prose-h2:tracking-tight prose-p:mt-4 prose-p:leading-relaxed [&>ul]:mt-6 [&>ul]:list-['\2013\20'] [&>ul]:pl-5"
       >
         <CustomMarkdown context={context}>{post.content}</CustomMarkdown>
       </div>
 
-      <Comments className="mt-8" />
+      <Comments className="mt-16 lg:mt-24" />
     </article>
   )
 }

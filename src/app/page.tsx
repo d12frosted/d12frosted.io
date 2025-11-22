@@ -9,12 +9,19 @@ export default async function Home() {
 
   return (
     <>
+      {/* Bold hero section */}
       <div className="prose max-w-none prose-stone">
-        <h1>d12frosted</h1>
+        <h1 className="mb-8 text-5xl font-bold tracking-tight text-ink lg:text-6xl dark:text-white">d12frosted</h1>
         <CustomMarkdown>{aboutText}</CustomMarkdown>
-        <h2>From the blog</h2>
       </div>
-      <LatestPosts allPosts={allPosts} className="bg-white py-8" />
+
+      {/* Bold architectural divider */}
+      <div className="my-16 lg:my-24">
+        <div className="h-1 w-32 bg-mp-blue" />
+        <h2 className="mt-8 text-3xl font-bold tracking-tight text-ink lg:text-4xl dark:text-white">From the blog</h2>
+      </div>
+
+      <LatestPosts allPosts={allPosts} />
     </>
   )
 }

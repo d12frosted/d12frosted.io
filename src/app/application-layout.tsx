@@ -23,9 +23,9 @@ export function ApplicationLayout({
   // let pathname = usePathname()
 
   return (
-    <div className="relative isolate mx-auto flex min-h-svh max-w-6xl flex-col bg-white max-sm:mx-0 max-sm:w-full lg:bg-zinc-100 dark:bg-zinc-900 dark:lg:bg-zinc-950">
-      {/* Navbar */}
-      <header className="flex items-center px-4">
+    <div className="relative isolate mx-auto flex min-h-svh max-w-7xl flex-col bg-canvas max-sm:mx-0 max-sm:w-full lg:bg-paper dark:bg-zinc-900 dark:lg:bg-zinc-950">
+      {/* Bold navbar with stark contrast */}
+      <header className="border-b-4 border-ink bg-canvas px-6 py-4 lg:px-8 dark:border-white dark:bg-zinc-900">
         <div className="min-w-0 flex-1">
           <Navbar>
             <div className="">
@@ -34,7 +34,7 @@ export function ApplicationLayout({
                 width={128}
                 height={128}
                 alt="d12frosted icon"
-                className="mr-2 inline-grid size-10 shrink-0 align-middle outline outline-1 -outline-offset-1 *:col-start-1 *:row-start-1 sm:size-8"
+                className="mr-3 inline-grid size-12 shrink-0 align-middle *:col-start-1 *:row-start-1 sm:size-10"
               />
               <NavbarLabel className="max-sm:hidden">{siteConfig.name}</NavbarLabel>
             </div>
@@ -59,9 +59,9 @@ export function ApplicationLayout({
         </div>
       </header>
 
-      {/* Content */}
-      <main className="flex flex-1 flex-col pb-2 lg:px-2">
-        <div className="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:ring-1 lg:shadow-xs lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10">
+      {/* Spacious content area */}
+      <main className="flex flex-1 flex-col">
+        <div className="grow px-6 py-12 lg:px-16 lg:py-20">
           <div className="mx-auto max-w-6xl">{children}</div>
         </div>
       </main>
@@ -92,7 +92,7 @@ export function ApplicationLayoutWide({
               width={128}
               height={128}
               alt="d12frosted icon"
-              className="mr-2 inline-grid size-10 shrink-0 align-middle outline outline-1 -outline-offset-1 *:col-start-1 *:row-start-1 sm:size-8"
+              className="mr-2 inline-grid size-10 shrink-0 align-middle *:col-start-1 *:row-start-1 sm:size-8"
             />
             <NavbarLabel>{siteConfig.name}</NavbarLabel>
           </div>
@@ -124,7 +124,7 @@ export function ApplicationLayoutWide({
                 width={128}
                 height={128}
                 alt="d12frosted icon"
-                className="mr-2 inline-grid size-10 shrink-0 align-middle outline outline-1 -outline-offset-1 *:col-start-1 *:row-start-1 sm:size-8"
+                className="mr-2 inline-grid size-10 shrink-0 align-middle *:col-start-1 *:row-start-1 sm:size-8"
               />
               <NavbarLabel>{siteConfig.name}</NavbarLabel>
             </div>

@@ -34,30 +34,44 @@ function PostImage({
 }
 
 export function FeaturedPostCard({ post, className, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
+  // Bold accent color blocks - jRPG inspired
+  const getAccentColor = () => {
+    const tag = post.tags[0]?.toLowerCase() || ''
+    if (tag.includes('emacs') || tag.includes('org')) return 'bg-mp-blue'
+    if (tag.includes('haskell') || tag.includes('code')) return 'bg-hp-green'
+    if (tag.includes('tutorial') || tag.includes('guide')) return 'bg-xp-orange'
+    return 'bg-ink'
+  }
+
   return (
-    <article key={post.id} className={clsx("flex flex-col items-start group", className)} {...props}>
-      <div className="relative w-full">
+    <article key={post.id} className={clsx("group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900", className)} {...props}>
+      {/* Large hero image - brutalist, image-dominant */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-paper dark:bg-zinc-800">
         <PostImage
           post={post}
-          className="aspect-video w-full rounded-2xl object-contain group-hover:opacity-75 sm:aspect-[3/1] lg:aspect-[3/2]"
+          className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 rounded-2xl ring-1 ring-gray-900/10 ring-inset" />
+        {/* Bold color block overlay */}
+        <div className={clsx("absolute bottom-0 left-0 h-2 w-full", getAccentColor())} />
       </div>
-      <div className="">
-        <div className="mt-8 flex items-center gap-x-4 text-xs">
-          <FormattedDate date={post.published} className="text-gray-500" />
-          <div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
-            {post.tags.join(' · ')}
-          </div>
+
+      {/* Spacious content area */}
+      <div className="p-8">
+        {/* Monospace metadata */}
+        <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+          <FormattedDate date={post.published} />
+          <span>•</span>
+          <span>{post.tags[0]}</span>
         </div>
-        <div className="group relative">
-          <h3 className="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
+
+        <div className="relative">
+          <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
             <a href={post.href}>
               <span className="absolute inset-0" />
               {post.title}
             </a>
           </h3>
-          <p className="mt-5 line-clamp-24 text-sm/6 text-gray-600">{post.description}</p>
+          <p className="mt-4 line-clamp-2 text-base leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
         </div>
       </div>
     </article>
@@ -65,30 +79,46 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
 }
 
 export function RegularPostCard({ post, className, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {
+  // Bold accent color blocks
+  const getAccentColor = () => {
+    const tag = post.tags[0]?.toLowerCase() || ''
+    if (tag.includes('emacs') || tag.includes('org')) return 'bg-mp-blue'
+    if (tag.includes('haskell') || tag.includes('code')) return 'bg-hp-green'
+    if (tag.includes('tutorial') || tag.includes('guide')) return 'bg-xp-orange'
+    return 'bg-ink'
+  }
+
   return (
-    <article className={clsx('group relative isolate flex flex-col gap-8 lg:flex-row', className)} {...props}>
-      <div className="relative aspect-video sm:aspect-[3/1] lg:aspect-square lg:w-64 lg:shrink-0">
-        <PostImage
-          post={post}
-          className="absolute inset-0 size-full rounded-2xl object-contain group-hover:opacity-75"
-        />
-        <div className="absolute inset-0 rounded-2xl ring-1 ring-gray-900/10 ring-inset" />
-      </div>
-      <div>
-        <div className="flex items-center gap-x-4 text-xs">
-          <FormattedDate date={post.published} className="text-gray-500" />
-          <div className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
-            {post.tags.join(' · ')}
-          </div>
+    <article className={clsx('group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900', className)} {...props}>
+      <div className="flex flex-col lg:flex-row lg:items-stretch">
+        {/* Large image - brutalist approach */}
+        <div className="relative aspect-video w-full overflow-hidden bg-paper lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-zinc-800">
+          <PostImage
+            post={post}
+            className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
+          />
+          {/* Bold accent block */}
+          <div className={clsx("absolute bottom-0 right-0 h-full w-2 lg:h-2 lg:w-full", getAccentColor())} />
         </div>
-        <div className="group relative">
-          <h3 className="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
-            <a href={post.href}>
-              <span className="absolute inset-0" />
-              {post.title}
-            </a>
-          </h3>
-          <p className="mt-5 text-sm/6 text-gray-600">{post.description}</p>
+
+        {/* Spacious content */}
+        <div className="flex flex-1 flex-col justify-center p-8 lg:p-12">
+          {/* Monospace metadata */}
+          <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+            <FormattedDate date={post.published} />
+            <span>•</span>
+            <span>{post.tags[0]}</span>
+          </div>
+
+          <div className="relative">
+            <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue lg:text-3xl dark:text-white dark:group-hover:text-mp-blue">
+              <a href={post.href}>
+                <span className="absolute inset-0" />
+                {post.title}
+              </a>
+            </h3>
+            <p className="mt-4 text-base leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+          </div>
         </div>
       </div>
     </article>
