@@ -1,5 +1,21 @@
-[flyspell-correct](https://github.com/d12frosted/flyspell-correct) is a package for distraction-free words correction with flyspell via selected interface. It's available on [GitHub](https://github.com/d12frosted/flyspell-correct) and MELPA.
+I'm pleased to announce the first official release of [flyspell-correct](https://github.com/d12frosted/flyspell-correct) (v0.1)! If you're not familiar with the package, it provides distraction-free spell-checking correction for Emacs through various completion interfaces. You can read the [introduction post](https://d12frosted.io/posts/flyspell-correct-intro) for more details.
 
-Not long ago I have released the first version of `flyspell-correct`. There are several interesting changes compared to initial implementation. First of all, I divided this package into four different packages - core and interfaces. This allowed me to properly setup dependencies and also solved some problems with `helm` interface. Second important change - I've added a function called `flyspell-correct-previous-word-generic`, which is useful when the misspelled word is not under point, but long behind it. Right now I realise that it doesn't work as perfect as I want, so I'll improve it in the next release.
+# What's new in v0.1
 
-You can find more information about `flyspell-correct` on [GitHub](https://github.com/d12frosted/flyspell-correct).
+Since the initial implementation, I've made several important changes:
+
+## Package restructuring
+
+I've split the monolithic package into separate core and interface packages. This means `flyspell-correct` is now the core package, whilst the interfaces (Ivy, Helm, Popup, and Ido) are distributed as separate packages. This restructuring allows for:
+
+- Proper dependency management
+- Cleaner separation of concerns
+- Fixes for some issues with the Helm interface
+
+## New function for backwards correction
+
+I've added `flyspell-correct-previous-word-generic`, which makes it easier to correct misspelt words that are behind the cursor. Whilst this function works, I've already identified some areas for improvement, which I'll address in the next release.
+
+# Installation
+
+You can install `flyspell-correct` from MELPA, and find the source code on [GitHub](https://github.com/d12frosted/flyspell-correct). For detailed documentation and usage examples, please refer to the [README](https://github.com/d12frosted/flyspell-correct) file.

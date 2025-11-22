@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A practical guide on error handling in shell scripts, focusing on the use of set -e (exit-on-error mode) and trap commands to manage failures and cleanup operations, with clear examples demonstrating how to write more robust shell scripts.",
+  "description": "Learn how to write robust shell scripts that handle errors gracefully. This practical guide covers exit-on-error mode (set -e), signal traps for cleanup operations, and best practices for preventing corrupted states when commands fail.",
   "tags": [
     "shell"
   ]

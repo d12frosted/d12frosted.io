@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing my script 'gifify' that simplifies creating high-quality GIFs with FFmpeg using custom palettes. It wraps FFmpeg's powerful features in a user-friendly interface, letting you control quality settings like FPS and scaling while automating the palette generation process. I've included visual examples comparing default vs custom palettes, plus complete installation instructions and source code.",
+  "description": "Learn how to create high-quality GIFs from video using FFmpeg's custom palette generation. I share my 'gifify' script that automates the process, with options for FPS, scaling, and compression, plus visual examples comparing default vs custom palettes.",
   "tags": [
     "shell"
   ]

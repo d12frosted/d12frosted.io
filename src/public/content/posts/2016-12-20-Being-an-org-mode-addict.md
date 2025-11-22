@@ -1,10 +1,10 @@
 <img src="/images/2016-12-20-Being-an-org-mode-addict/2022-07-19-18-39-02-59ca88ab-671f-4c5e-9bf8-25547bbadbc2.webp" class="d12-image-1/2" />
 
-It is funny how I vainly try to escape devilish `org-mode`. I have several major concerns regarding it as a GTD system and a note taking system, but after all, whatever I try to replace it with, I always return to `org-mode`. Mostly because it's simple (at least at the top level) and makes me feel more confident about my thoughts, tasks and the future. But on the other hand, it makes me really angry because it forces me to make some uncomfortable decisions.
+It's amusing how I keep trying (and failing) to escape the clutches of `org-mode`. I have several major concerns about using it as both a GTD system and a note-taking system. Yet, whatever I try to replace it with, I always return to `org-mode`. Mostly because it's simple (at least at the surface level) and makes me feel more confident about my thoughts, tasks, and the future. On the other hand, it frustrates me because it forces uncomfortable decisions.
 
 <!--more-->
 
-Michael Hall has a nice [blog post](https://mike.puddingtime.org/vintage/2010/02/03/orgmode-in-your) about `org-mode` being a GNU-shaped devil on his dot unplanned blog. It's really an interesting read. My favourite part is about all the devilness of Emacs in general and org-mode in particular.
+Michael Hall has an excellent [blog post](https://mike.puddingtime.org/vintage/2010/02/03/orgmode-in-your) about `org-mode` being a GNU-shaped devil on his dot unplanned blog. It's a genuinely interesting read. My favourite part is about the devilish nature of Emacs in general and `org-mode` in particular.
 
 > With Emacs, you don’t just go “la la la … I’m gonna add org mode back and call it a day!” You think to yourself, “I love org mode. I wish there was an easy way to turn an e-mail message into a todo …” and the next thing you know you’re dealing with how to configure GNUS.
 >
@@ -24,4 +24,4 @@ Michael Hall has a nice [blog post](https://mike.puddingtime.org/vintage/2010/02
 >
 > That’s right … because org-mode is just a collection of lisp running in an editor. It cannot impose more complex features on you. **The genius of org-mode is that you will eventually impose more complex features on yourself.**
 
-Indeed. The more time passes the more complex stuff I impose on myself. When I stop thinking about it, I am really happy. Because I know that I started to use Spacemacs on 16 April 2015. And that today I have two important meetings and a booked table in a Chinese restaurant. And most importantly - there is a clear list of PRs I am going to merge on my weekends. This is a true happiness, isn't it? And addiction is a great thing.
+Indeed. The more time passes, the more complex features I impose on myself. When I stop thinking about it, though, I'm genuinely happy. Because I know that I started using Spacemacs on 16 April 2015. That today I have two important meetings and a booked table at a Chinese restaurant. And most importantly, there's a clear list of PRs I'm going to merge over the weekend. This is true happiness, isn't it? And addiction is a wonderful thing.

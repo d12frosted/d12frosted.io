@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A detailed exploration of managing Cabal dependency issues in Haskell, offering practical solutions through sandbox usage and custom Fish shell functions.",
+  "description": "A historical look at solving Cabal Hell when installing Haskell executables. Learn how to use Cabal sandboxes to isolate dependencies and automate the process with custom Fish shell functions. Note: Stack and Nix-style builds have since made this approach obsolete.",
   "tags": [
     "haskell"
   ]

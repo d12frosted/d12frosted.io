@@ -1,10 +1,17 @@
-I have always been inspired by the people who use (or at least can use) terminal for any kind of activity that is associated with programming. Sure, every task has its own set of instruments to be solved with. But there are instruments that you can count on in almost any situation. That's why I spend so much time in the terminal.
+I've always admired people who can do virtually everything programming-related from the terminal. Whilst every task has its own specialised tools, there are some instruments you can rely on in almost any situation. That's why I spend so much time in the terminal—it's the one constant across different projects and environments.
 
-For a long time (like a year and a half) I was using `zsh` beefed with `oh-my-zsh`. While it was providing me a lot of crucial functionality, I wasn't very happy about `oh-my-zsh`, so when someone mentioned `fish` in comments to Use Haskell for shell scripting thread on Reddit, I decided to give it a try after few minutes of reading how awesome `fish` is.
+For about a year and a half, I was using `zsh` beefed up with `oh-my-zsh`. Whilst it provided crucial functionality, I wasn't entirely happy with the `oh-my-zsh` ecosystem. When someone mentioned `fish` in the comments of a Use Haskell for shell scripting thread on Reddit, I decided to give it a try after reading a few minutes about how excellent it is.
 
-In this article I am going to share my thoughts after using `fish`. But keep in mind that this is not a tutorial to `fish` (mostly because it already has a good written one, which covers most important aspects of day-to-day `fish`, but you might also want to read full documentation to get the full grasp).
+In this post, I'll share my experience using `fish` after making the switch. This isn't a tutorial (the shell already has an excellent one, and you might also want to read the full documentation), but rather a review of what makes `fish` special and whether it's worth switching.
 
-Exploring new stuff is fun. So even if you are totally happy with your setup, I highly advice you to take a look at `fish`.
+**What you'll learn:**
+
+- How Fish compares to traditional shells like Zsh
+- Fish's powerful out-of-the-box autocompletion features
+- Configuration options and customisation approaches
+- Trade-offs between POSIX compatibility and user experience
+
+Exploring new tools is fun. So even if you're totally happy with your current setup, I'd encourage you to consider what `fish` has to offer.
 
 <!--more-->
 
@@ -12,38 +19,38 @@ Exploring new stuff is fun. So even if you are totally happy with your setup, I 
 
 For installation guide, check official site or readme file on [GitHub](https://github.com/fish-shell/fish-shell).
 
-After installation you might want to make `fish` your default shell, so you need to use `chsh`:
+After installation, you might want to make `fish` your default shell. To do this, use `chsh`:
 
 ``` bash
 $ chsh -s $(which fish)
 ```
 
-On OS X (and some other systems) you might face an error saying `chsh:his ex /path/to/fish: non-standard shell`. In this case, you need to modify `/etc/shells` file by adding the path to your fish.
+On macOS (and some other systems), you might encounter an error saying `chsh: /path/to/fish: non-standard shell`. In this case, you need to modify the `/etc/shells` file by adding the path to Fish:
 
 ``` bash
 $ sudo sh -c 'echo $(which fish) >> /etc/shells'
 ```
 
-In case of any other problems - may the force be with you. Otherwise - you are ready to dive in.
+For any other problems, may the force be with you. Otherwise, you're ready to dive in.
 
 # Fish: first impression
 
-The first thing to notice in `fish` - blazingly fast completion and suggestions based on history, man pages and custom rules. This is something that amazed me so much when I saw it in action, because I remember how tricky it is to configure such things in `bash` and `zsh`, but here you have everything and even more out of box.
+The first thing you'll notice in `fish` is blazingly fast completion and suggestions based on history, man pages, and custom rules. This amazed me when I first saw it in action, because I remember how tricky it is to configure such things in `bash` and ~zsh~—but here you get everything and more out of the box.
 
 <img src="/images/2015-02-07-make-the-fish-fly/2022-07-19_17-11-16_fish-suggestions.gif" class="d12-image-3/4" />
 
-What I like about suggestions - they can be narrowed to commands and arguments. For example, when the prompt is empty, typing `↑` navigates you through all your history. If you type something like `stack`, all history will be narrowed to `stack` command only. And if you type `stack build` you'll get even more narrowing. It's like a tree, where every word you type selects a branch of completion. Sure enough, it's a little bit smarter than this.
+What I particularly like about Fish's suggestions is how they narrow based on what you've typed. For example, when the prompt is empty, typing `↑` navigates through your entire history. If you type `stack`, the history narrows to show only `stack` commands. Type `stack build` and it narrows even further. It's like a tree where every word you type selects a more specific branch. Of course, it's actually a bit smarter than this simple metaphor suggests.
 
 <img src="/images/2015-02-07-make-the-fish-fly/2022-07-19-17-35-48-fish-suggestions.webp" class="d12-image-1/2" />
 
-The second thing about `fish` completions - they are based on `man` pages. In `bash` you have `bash-completion`, in `oh-my-zsh` you have plug-ins (and when you have a lot of them, your life becomes kind of laggy). But `fish` takes a lot of completions from `man` pages. And it works so fast, that it's just amazing. Now I don't need to remove everything I typed just to check `man` when I forget which key I need, `-N` or `-n`. All completions are paginated, and you can scroll them to find what you need. Super productive.
+The second impressive feature is how `fish` generates completions from `man` pages. In `bash`, you rely on `bash-completion`; in `oh-my-zsh`, you install plugins (and when you have many of them, everything becomes laggy). Fish, however, automatically parses `man` pages for completions, and it does so incredibly fast. I no longer need to clear what I've typed just to check `man` when I forget whether I need `-N` or `-n`. All completions are paginated, so you can scroll through them to find what you need. It's superb for productivity.
 
 <figure class="d12-image-3/4">
 <img src="/images/2015-02-07-make-the-fish-fly/2022-07-19-17-36-39-1423317617.webp" />
 <figcaption>Fish generates them automatically by parsing your installed man pages</figcaption>
 </figure>
 
-So you better keep pressing `<tab>` in different situations to see what else it can complete for you.
+So you'd better keep pressing `<tab>` in different situations to discover what else it can complete for you.
 
 ``` bash
 λ git checkout <tab>
@@ -54,13 +61,13 @@ But yeah, sometimes command you are executing doesn't have its own `man` page. F
 
 # Fish: configurations
 
-`Fish` comes with really great configurations out of the box. For most users, it might be enough to configure only their prompt and `PATH` variable. You should understand that `Fish` as a product [believes](https://fishshell.com/docs/current/design.html#design-configurability) that "configurability is the root of all evil". So "every configuration option in a program is a place where the program is too stupid to figure out for itself what the user really wants, and should be considered a failure of both the program and the programmer who implemented it".
+`Fish` comes with excellent out-of-the-box configurations. For most users, it's enough to configure only the prompt and `PATH` variable. You should understand that `Fish` as a product [believes](https://fishshell.com/docs/current/design.html#design-configurability) that "configurability is the root of all evil". Their philosophy is that "every configuration option in a programme is a place where the programme is too stupid to figure out for itself what the user really wants, and should be considered a failure of both the programme and the programmer who implemented it".
 
-Some might find this argument a little bit too much. In my opinion, `Fish` developers made a great work at providing great 'defaults' (ah, the irony). But in any case, there are things that are by design configurable. Like visuals and environment variables.
+Some might find this argument a bit extreme. In my opinion, though, the `Fish` developers have done an excellent job of providing sensible defaults (the irony isn't lost on me). That said, there are things that are intentionally configurable, such as visuals and environment variables.
 
-Since `Fish` is a 'friendly fish', they allow to configure a lot of things from the browser, just run `fish_config` function in terminal and have fun.
+Since `Fish` is a 'friendly fish', it allows you to configure many things from your browser. Just run the `fish_config` function in your terminal and explore the options.
 
-On startup, `fish` evaluates files `/path/to/fish/config.fish`, `/etc/fish/config.fish` and `$HOME/.config/fish/config.fish` in specified order. If you want to change `fish` configurations, you should modify only `/etc/fish/config.fish` file for system wide configurations and `$HOME/.config/fish/config.fish` file for user only configurations.
+On startup, `fish` evaluates files in this order: `/path/to/fish/config.fish`, `/etc/fish/config.fish`, and `$HOME/.config/fish/config.fish`. If you want to change `fish` configurations, modify `/etc/fish/config.fish` for system-wide configurations or `$HOME/.config/fish/config.fish` for user-only configurations.
 
 Actually, `fish` supports `$XDG_CONFIG_HOME` variable for specifying the path to user-only configurations directory. You need to set this variable to the path of the directory that contains `fish` directory. I do use it because I like to have all dot files in one repository. You can change its value by using the `set` function:
 
@@ -78,17 +85,17 @@ function fish_prompt -d "Write out the prompt"
 end
 ```
 
-Before rushing into creating your own prompt, I recommend to check some prompts that are available from box. Just `fish_config` and go to `Prompt` tab. Or use [mine](https://github.com/d12frosted/environment/blob/master/fish/functions/fish_prompt.fish), which has a cool feature - it notifies you when some long-running command finishes. I describe it briefly in a [separate article](/posts/2017-06-13-Fish-notify-me-when-you-finish).
+Before rushing into creating your own prompt, I recommend checking some of the prompts available out of the box. Just run `fish_config` and go to the `Prompt` tab. Alternatively, use [mine](https://github.com/d12frosted/environment/blob/master/fish/functions/fish_prompt.fish), which has a cool feature—it notifies you when long-running commands finish. I describe this briefly in a [separate article](/posts/2017-06-13-Fish-notify-me-when-you-finish).
 
 # Fish: one language to script them all
 
-**Update** Lately `Fish` started to move towards more POSIX-compatible syntax, so this argument is not as valid as was before.
+**Update:** `Fish` has recently started moving towards more POSIX-compatible syntax, so this argument isn't as valid as it once was.
 
-As you might already know, `fish` has its own scripting language that does not care about POSIX compatibility. And in my opinion, this is the most controversial point in discussions like 'zsh vs fish'. While it's less verbose and more obvious, I see `fish` language as unnecessary drag. Seriously, when I need to write any script that can't be described in one or two lines - I prefer to use `Haskell`. And also there are tons of great `sh` one-liners that I can't call from the `fish` shell. And `git cat-file -p branch^{tree}` becomes `git cat-file -p branch^\{tree\}`.
+As you might already know, `fish` has its own scripting language that doesn't prioritise POSIX compatibility. In my opinion, this is the most controversial aspect of discussions like 'Zsh vs Fish'. Whilst it's less verbose and more intuitive, I see the `fish` language as an unnecessary complication. When I need to write any script that can't be described in one or two lines, I prefer to use `Haskell`. Additionally, there are countless great `sh` one-liners that don't work in the `fish` shell without modification. For example, `git cat-file -p branch^{tree}` becomes `git cat-file -p branch^\{tree\}`.
 
 # Conclusion
 
-`Fish` does not try to be everything but it does try to have a great out of the box experience. You definitely should give it a shot to make your own conclusion. Because everyone is a unique case.
+`Fish` doesn't try to be everything, but it does aim to provide an excellent out-of-the-box experience. You should definitely give it a try and form your own conclusion—everyone's needs are different.
 
 ## Advantages
 
@@ -101,19 +108,19 @@ As you might already know, `fish` has its own scripting language that does not c
 
 ## Disadvantages
 
-- Not POSIX compatible. While I do like some differences from `sh`, I prefer to use `sh` language for little scripts. When I need to write something non-trivial I better use `Haskell`. Seriously, in my opinion - `fish` language is an overhead. But actually, this is a really minor drawback, which strikes only when you want to use great `sh` one-liners.
+- Not POSIX compatible. Whilst I appreciate some of Fish's improvements over `sh`, I prefer using `sh` for small scripts. For anything non-trivial, I'd rather use `Haskell`. In my opinion, Fish's custom language is an unnecessary complexity. However, this is a minor drawback that only matters when you want to use classic `sh` one-liners.
 
-I don't name `fish` dependency as a drawback, because I don't work in an environment that I can't change for my needs. And anyway `Haskell` with all packages I need is far more heavy dependency then `fish`. So don't be angry.
+I don't list Fish as a dependency drawback because I don't work in environments I can't modify. Besides, `Haskell` with all the packages I need is a far heavier dependency than `fish`, so it would be hypocritical to complain.
 
 # Epilogue
 
-I am really tired of `oh-my-zsh`. It's a great project, but it's too big for me as it has so many stuff I don't need. As a project it suffers from being popular. The last time I checked it's repository I found 417 unresolved pull requests. Some of them are few years old. Most of them are not paid any attention. I understand the reasons for this situation. But understanding doesn't make me happy.
+I've grown tired of `oh-my-zsh`. It's a great project, but it's too large for my needs—it includes so much I don't use. The project suffers from its popularity. The last time I checked its repository, I found 417 unresolved pull requests, some of them years old, most receiving no attention. I understand the reasons for this situation, but understanding doesn't make it less frustrating.
 
-I know that one can use `zsh` without `oh-my-zsh` (or any other similar project). You can keep your configurations [minimal](https://github.com/jleclanche/dotfiles/blob/master/.zshrc) or copy-paste huge amount of code just to keep all the fancy stuff at your bay.
+I know you can use `zsh` without `oh-my-zsh` (or any similar project). You can keep your configurations [minimal](https://github.com/jleclanche/dotfiles/blob/master/.zshrc), or copy-paste huge amounts of code to maintain all the fancy features.
 
-While I like to play with configurations, in this particular case I really enjoy using `fish`. Most of the stuff just works, and I can focus on some specific functionality that I need.
+Whilst I usually enjoy tinkering with configurations, in this case I genuinely appreciate `fish`'s approach. Most things just work, allowing me to focus on specific functionality I actually need.
 
-So go ahead and try out what `fish` can give you. Don't be afraid of making the switch. If you have any questions, you can email me and I will be happy to help you.
+So go ahead and try what `fish` offers. Don't be afraid of making the switch. If you have any questions, feel free to email me—I'll be happy to help.
 
 **Have a nice shell-time!**
 

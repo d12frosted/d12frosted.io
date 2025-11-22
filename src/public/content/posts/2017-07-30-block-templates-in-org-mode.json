@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A tip about Org mode's built-in structure templates that make inserting source blocks and other structural elements much easier - no need for custom solutions when you can use C-c C-, or the legacy Easy Template system with <s<TAB>.",
+  "description": "Discover Org mode's built-in structure templates that make inserting source blocks and other structural elements effortless. Learn how to use C-c C-, for modern template insertion or enable the legacy Easy Template system with <s<TAB> for quick shortcuts.",
   "tags": [
     "emacs",
     "org-mode"

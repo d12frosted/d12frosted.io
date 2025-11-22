@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "An introduction to flyspell-correct, an Emacs package offering flexible spell-checking interfaces through popular completion frameworks like Ivy, Helm, and Popup, while providing distraction-free word correction capabilities and customizable interface options.",
+  "description": "Introducing flyspell-correct, a unified Emacs package that brings distraction-free spell-checking correction to your favourite completion framework. Learn how to correct misspelt words without leaving your current position, implement custom interfaces, and use rapid mode to fix multiple mistakes efficiently.",
   "tags": [
     "emacs",
     "release",

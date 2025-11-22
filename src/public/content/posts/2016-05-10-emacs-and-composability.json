@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "An opinion piece defending Emacs' extensibility approach versus Vim's composability, highlighting how Emacs' flexible architecture allows for implementing Vim-like features while offering multiple paths to customization through community-driven configurations.",
+  "description": "A defence of Emacs' extensibility philosophy in response to discussions about Vim's composability. Exploring how Emacs' flexible architecture allows the community to implement any feature they value—including composability itself—whilst offering multiple paths to customisation.",
   "tags": [
     "emacs"
   ]

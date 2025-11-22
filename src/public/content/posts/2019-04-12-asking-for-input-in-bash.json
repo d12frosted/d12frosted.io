@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing how I improved a configuration script by creating a reusable 'ask' function that handles both required and optional inputs. Instead of using eval for variable manipulation, I opted for bash's safer indirection and declare features. The result is cleaner, more maintainable code that's still compatible across different bash versions.",
+  "description": "Learn how to create a reusable 'ask' function in Bash that handles both required and optional user inputs with default values. Discover why bash's indirection and declare features are safer alternatives to eval for variable manipulation.",
   "tags": [
     "shell"
   ]

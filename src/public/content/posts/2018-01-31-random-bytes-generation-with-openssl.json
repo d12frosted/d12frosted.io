@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing a quick OpenSSL tip for generating random bytes - using the rand command with hex or base64 encoding lets you create high-entropy random strings for passwords and other uses. Just remember to account for the encoding's effect on output length.",
+  "description": "A quick tip for generating high-entropy random bytes using OpenSSL's rand command. Learn how to use hex or base64 encoding to create valid random strings for passwords, and how to handle the output length when encoding changes the byte count.",
   "tags": [
     "shell"
   ]

@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing a simple Fish shell hack I built to help stay focused - it notifies me when long-running commands complete instead of getting distracted while waiting. The solution uses Fish's CMD_DURATION variable to detect lengthy commands and send notifications when they finish. While originally made for macOS, you can easily adapt it for other systems.",
+  "description": "A simple Fish shell hack to help you stay focused: get notified when long-running commands complete instead of getting distracted whilst waiting. Learn how to use Fish's CMD_DURATION variable to detect lengthy commands and send notifications when they finish.",
   "tags": [
     "fish",
     "environment"

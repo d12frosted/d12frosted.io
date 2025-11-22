@@ -1,8 +1,17 @@
-Maybe I did something really wrong in my life, because I constantly run into **Cabal Hell**. That feeling of powerlessness is refreshing, though depressing. And I hate it the most when I just need to install an executable from Hackage, like `pandoc`.
+**Important note:** In the years since I wrote this post, the Haskell community has made tremendous progress in fighting **Cabal Hell**. Thanks to [Stack](https://haskell.fpcomplete.com/get-started) and [Nix-style Local Builds](https://cabal.readthedocs.io/en/latest/nix-local-build-overview.html), the solution I describe below is no longer necessary. I'm keeping this post for historical reference (and to keep my blog from looking abandoned).
 
-But hey, we are software engineers after all. So I decided to write a little helper script to avoid world destruction and get desired executable in my `$PATH`.
+—
 
-**Important note.** In the last few years Haskell community did a great job in order to fight the **Cabal Hell**. And thanks to [Stack](https://haskell.fpcomplete.com/get-started) and [Nix-style Local Builds](https://cabal.readthedocs.io/en/latest/nix-local-build-overview.html) my solution is no longer required. I keep it just for historical reference (and to keep my blog relatively busy).
+Perhaps I did something terribly wrong in a past life, because I constantly run into **Cabal Hell**. That feeling of powerlessness is simultaneously refreshing and depressing. I hate it most when I simply need to install an executable from Hackage, like `pandoc`.
+
+But we're software engineers, after all. So I decided to write a helper script to avoid world destruction and get the desired executable into my `$PATH`.
+
+**What you'll learn:**
+
+- Understanding Cabal Hell and its causes
+- Using Cabal sandboxes to isolate dependencies
+- Installing Haskell executables without polluting your global package database
+- Automating the process with Fish shell functions
 
 <!--more-->
 
@@ -14,29 +23,29 @@ But hey, we are software engineers after all. So I decided to write a little hel
 
 > **What is the difficulty caused by Cabal-install?**
 >
-> The main difficulty with Cabal is otherwise known as 'dependency hell', in which the cabal-install does not manage to install a desired package for a reason or another, leading to large amount of manual work. As an example of this difficulty, consider a case where the user wishes to install packages A and B. Both of these work with package C, but not with the same version of C.
+> The main difficulty with Cabal is otherwise known as 'dependency hell', in which cabal-install fails to install a desired package for one reason or another, leading to extensive manual work. As an example of this difficulty, consider a case where the user wishes to install packages A and B. Both work with package C, but not with the same version of C.
 >
 > [Haskell Wiki](https://wiki.haskell.org/Cabal/Survival)
 
 <img src="/images/2015-04-05-cabal-and-executables/2022-07-19-17-49-57-1428233775.webp" class="d12-image-1/2" />
 
-I need to confess. Sometimes I solve ****Cabal Hell**** by using this method with `rm -rf`. ****Cabal Hell**** is like cancer - it's very hard to cure this disease without ruining your environment (in our case - packages database). But with **Cabal Hell** comes one good thing - you can use some tools in order to prevent this bizarre to happen with you. For such purposes, you can use cabal sandboxes, Stackage or nixos. Probably there are some other handy solutions or tools, but this is all I know.
+I need to confess: sometimes I solve **Cabal Hell** by using the `rm -rf` method. **Cabal Hell** is like a disease—it's very hard to cure without ruining your environment (in this case, your package database). However, there is some good news: you can use tools to prevent this bizarre situation from happening. For these purposes, you can use Cabal sandboxes, Stackage, or NixOS. There are probably other handy solutions, but these are the ones I'm familiar with.
 
-`Stackage` is great, but it doesn't work for me very well because sometimes I need to install 'heavy' packages that are not on `Stackage`. Also, I work on a reliably fast computer, so I don't mind to waste thirty seconds more on the compilation. Safety is more preferable. As for `nixos` – I haven't tried it yet. But I know that it helps to find compilation problems very good. So actually, many thanks to the people that made `Stackage` and `nixos`.
+`Stackage` is excellent, but it doesn't work very well for me because sometimes I need to install 'heavy' packages that aren't on `Stackage`. Also, I work on a reliably fast computer, so I don't mind spending an extra thirty seconds on compilation—safety is more important. As for `NixOS`, I haven't tried it yet, but I know it's very good at finding compilation problems. Many thanks to the people who created `Stackage` and `NixOS`.
 
 # Sandboxes
 
-I think that sandboxes are really great. Usually, I install globally only commonly used packages. Everything else comes via sandboxes. Sometimes the project I am working on has dependencies that can't be installed from Hackage. In such cases I use
+I think sandboxes are brilliant. Usually, I only install commonly used packages globally. Everything else goes through sandboxes. Sometimes the project I'm working on has dependencies that can't be installed from Hackage. In such cases, I use:
 
 ``` bash
 $ cabal sandbox add-source path/to/non-hackage/dependency
 ```
 
-So I don't need to install such dependencies globally. And if this dependency is very heavy and problem-bringing, then it can save my global packages database.
+This means I don't need to install such dependencies globally. If a dependency is particularly heavy and problematic, this approach can save my global package database.
 
-But you use Haskell not only for writing libraries (funny, isn't it?). Sometimes you need to install some executables. So here comes the 'executables' part.
+However, you don't use Haskell only for writing libraries (amusing, isn't it?). Sometimes you need to install executables. This is where the 'executables' part comes in.
 
-Usually, I install executables by using the following sequence of commands:
+Usually, I install executables using the following sequence of commands:
 
 ``` fish
 $ cd path/to/cabal/project
@@ -46,9 +55,9 @@ $ cabal install
 $ cp .cabal-sandbox/bin/executable ~/.bin/executable
 ```
 
-This works because, executables are usually completely stand-alone, so you can build them in a sandbox and then move them to any location of your choice. This approach helps to keep the system (or user) wide packages database clean and free from conflicts. I move executable into `~/.bin` (but make sure that `~/.bin` is in `$PATH`), because when something breaks in my packages database I want to keep these executables (they made nothing bad!).
+This works because executables are usually completely standalone, so you can build them in a sandbox and then move them to any location of your choice. This approach helps keep the system-wide (or user-wide) package database clean and free from conflicts. I move the executable to `~/.bin` (ensuring `~/.bin` is in `$PATH`) because when something breaks in my package database, I want to keep these executables—they've done nothing wrong!
 
-But it's very boring to call this commands every time I want to install any executables, so I wrote a simple `fish` function that installs executable from `.cabal` file in the current directory for you.
+However, it's tedious to run these commands every time I want to install an executable, so I wrote a simple `fish` function that installs the executable from the `.cabal` file in the current directory for you.
 
 ``` fish
 function cabal-install-bin -d "Install executables from .cabal file in current directory"
@@ -64,7 +73,7 @@ function cabal-install-bin -d "Install executables from .cabal file in current d
   if test c -ne 1
     set_color $error_color
     if test c -eq 0
-      echo "Couldn' find cabal file in (pwd)"
+      echo "Couldn't find cabal file in (pwd)"
     else
       echo "Found $c cabal files. Think about it!"
     end
@@ -123,12 +132,12 @@ function cabal-install-bin -d "Install executables from .cabal file in current d
   set_color $msg_color
   echo "Copying $name to ~/.bin"
   set_color normal
-  # now copy executable to ~/.bing
+  # now copy executable to ~/.bin
   cp ".cabal-sandbox/bin/$name" "$HOME/.bin/$name"
 end
 ```
 
-But for situations when I don't care about package sources and it's available on hackage, I wrote another function (that reuses `cabal-install-bin`).
+For situations when I don't care about the package sources and it's available on Hackage, I wrote another function (that reuses `cabal-install-bin`).
 
 ``` fish
 function cabal-unpack-and-install-bin -a package -d "Unpack and install specified executable package from cabal."
@@ -163,8 +172,8 @@ function cabal-unpack-and-install-bin -a package -d "Unpack and install specifie
 end
 ```
 
-It just downloads sources of a single package to the `$TMPDIR` (you might want to change this to something different, depending on your system), then installs executable (using `cabal-install-bin` function) and removes sources dir. Useful, isn't it?
+This function downloads the sources of a single package to `$TMPDIR` (you might want to change this depending on your system), installs the executable (using the `cabal-install-bin` function), and removes the source directory. Useful, isn't it?
 
-You can grab the latest version of these function on [GitHub](https://github.com/d12frosted/environment/tree/master/fish/functions).
+You can grab the latest version of these functions on [GitHub](https://github.com/d12frosted/environment/tree/master/fish/functions).
 
 **Happy Haskell coding!**

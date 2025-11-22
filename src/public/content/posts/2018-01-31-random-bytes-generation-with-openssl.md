@@ -1,12 +1,14 @@
-Sometimes you just have to generate some random bytes with high entropy. And OpenSSL can help you with this task.
+Sometimes you need to generate random bytes with high entropy—perhaps for a password, a secret key, or testing purposes. OpenSSL provides a simple command for this task: `rand`.
 
 <!--more-->
+
+The basic syntax is straightforward:
 
 ``` bash
 $ openssl rand [options] num
 ```
 
-The `rand` command outputs `num` pseudo-random bytes. Since in most cases we don't want to deal with edge bytes, it's better to use either `-hex` or `-base64` option in order to encode output and thus lead to a valid password.
+The `rand` command outputs `num` pseudo-random bytes. However, since raw bytes often contain unprintable characters, it's better to use either `-hex` or `-base64` encoding to ensure the output is a valid, printable string suitable for passwords and keys.
 
 ``` bash
 $ openssl rand 16
@@ -19,7 +21,7 @@ $ openssl rand -base64 16
 o1DqThmx1DWGoPAidi6DKQ==
 ```
 
-Another problem is the length. When you use `-hex` or `-base64` option the output string is longer than passed `num`. In order to keep the desired length, you have to chop it. For example, using the `cut` command.
+One thing to note: when you use `-hex` or `-base64` encoding, the output string is longer than the `num` parameter you specified. This is because encoding increases the data size. If you need a specific output length, you can truncate the result using the `cut` command.
 
 ``` bash
 $ openssl rand -hex 16 | cut -c1-16
@@ -29,8 +31,8 @@ $ openssl rand -base64 16 | cut -c1-16
 4HIcmt4vTcmchbHU
 ```
 
-Some useful links:
+# Further reading
 
-- [Rand command manual](https://wiki.openssl.org/index.php/Manual:Rand(1))
-- [OpenSSL random numbers](https://wiki.openssl.org/index.php/Random_Numbers)
-- [Password Haystack](https://www.grc.com/haystack.htm)
+- [Rand command manual](https://wiki.openssl.org/index.php/Manual:Rand(1)) – Official OpenSSL documentation for the rand command
+- [OpenSSL random numbers](https://wiki.openssl.org/index.php/Random_Numbers) – Understanding random number generation in OpenSSL
+- [Password Haystack](https://www.grc.com/haystack.htm) – Analysing password strength and entropy

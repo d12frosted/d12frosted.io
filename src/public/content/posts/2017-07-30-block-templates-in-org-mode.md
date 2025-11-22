@@ -1,18 +1,18 @@
-Anyone would agree that typing `#+begin_src ... #+end_src` blocks manually feels **strange**.
+I think everyone would agree that manually typing `#+begin_src ... #+end_src` blocks feels tedious.
 
-In order to make life easier, some people implement helpers to insert these blocks. For example, Chris Done has `org-begin-template` function in his [configs](https://github.com/chrisdone/chrisdone-emacs/blob/master/config/org.el#L30). Other people use [yatemplate](https://github.com/mineo/yatemplate) to create generic or specific templates for blocks.
+To make life easier, some people implement helpers to insert these blocks. For example, Chris Done has an `org-begin-template` function in his [configs](https://github.com/chrisdone/chrisdone-emacs/blob/master/config/org.el#L30), whilst others use [yatemplate](https://github.com/mineo/yatemplate) to create generic or specific templates for blocks.
 
-But what is most fascinating, is that `org-mode` bundles with templates for some structural elements like these blocks. And instead of copy-pasting solutions into your `.emacs` file, take a look at [Structure Templates](https://orgmode.org/org.html#Structure-Templates).
+What's most fascinating, though, is that `org-mode` bundles templates for structural elements like these blocks. Instead of copy-pasting solutions into your `.emacs` file, take a look at [Structure Templates](https://orgmode.org/org.html#Structure-Templates)—a built-in feature that solves this problem elegantly.
 
 <!--more-->
 
-With just a few keystrokes, it is possible to insert empty an structural block, such as `#+begin_src ... #+end_src`, or to wrap existing text in such a block. Just type `C-c C-,` (`org-insert-structure-template`) to prompt for a type of block structure, and insert the block at point. If the region is active, it is wrapped in the block. Available structure types are defined in `org-structure-template-alist`, see the docstring for adding or changing values.
+With just a few keystrokes, you can insert an empty structural block (such as `#+begin_src ... #+end_src`) or wrap existing text in such a block. Simply type `C-c C-,` (`org-insert-structure-template`) to prompt for the type of block structure, and the block will be inserted at point. If the region is active, it will be wrapped in the block. Available structure types are defined in =org-structure-template-alist=—see the docstring for details on adding or changing values.
 
-You can also use an old Easy Template system, which is disabled by default in Org mode 9.2 and upper. One can turn it back by enabling `org-tempo` module either by adding it to `org-modules` variable or by `(require 'org-tempo)`.
+You can also use the old Easy Template system, which is disabled by default in Org mode 9.2 and above. You can re-enable it by enabling the `org-tempo` module, either by adding it to the `org-modules` variable or by calling `(require 'org-tempo)`.
 
-With this feature, you type `<` followed by template selector, then hit `TAB` and voilà. For source blocks, it's just `<s<TAB>`.
+With this feature, you type `<` followed by a template selector, then hit `TAB`, and voilà! For source blocks, it's just `<s<TAB>`.
 
-Just for reference, here is a list of available templates and their corresponding selectors. Please note that this table might become out of date, so it's better to refer to the official documentation.
+For reference, here's a list of available templates and their corresponding selectors. Please note that this table might become outdated, so it's best to refer to the official documentation.
 
 | Key | Template                            |
 |-----|-------------------------------------|
