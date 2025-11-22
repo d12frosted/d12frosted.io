@@ -39,7 +39,7 @@ All colors defined in `src/styles/tailwind.css` under `@theme`:
 ## Key Technical Decisions
 
 ### Content Management
-- **Blog posts**: Synced from Vulpea database (org-roam notes)
+- **Blog posts**: Synced from Vulpea database (org notes)
 - **DO NOT EDIT**: Post content files are managed externally - only edit layout/styling
 - Posts are markdown with custom handlers for D3 visualizations, related posts, etc.
 
