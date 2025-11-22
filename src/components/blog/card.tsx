@@ -30,7 +30,7 @@ function PostImage({
   const source = getSource()
   if (source) return <Image src={source} alt="Post illustration" className={className} {...props} />
 
-  return <RandomImage className={className} />
+  return <RandomImage tags={post.tags} className={className} />
 }
 
 export function FeaturedPostCard({ post, className, ...props }: React.ComponentProps<'article'> & { post: BlogPost }) {

@@ -1,25 +1,41 @@
 'use client'
 
-import { Direction, getRandomGradient } from '@/lib/random-gradient'
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
 
 export function RandomImage({
-  intensity,
-  direction,
+  tags = [],
   className,
   ...props
 }: React.ComponentProps<'div'> & {
-  intensity?: number
-  direction?: Direction
+  tags?: string[]
 }) {
-  const [gradient, setGradient] = useState<string>("")
+  // Use same color logic as accent bars for consistency
+  const getBackgroundColor = () => {
+    const tag = tags[0]?.toLowerCase() || ''
+    if (tag.includes('emacs') || tag.includes('org')) return 'bg-mp-blue'
+    if (tag.includes('haskell') || tag.includes('code')) return 'bg-hp-green'
+    if (tag.includes('tutorial') || tag.includes('guide')) return 'bg-xp-orange'
+    return 'bg-magic-purple'
+  }
 
-  useEffect(() => {
-    const v = getRandomGradient(intensity, direction)
-    console.log(v)
-    setGradient(v)
-  }, [intensity, direction])
+  // Brutalist geometric pattern using repeating linear gradients
+  const pattern = {
+    backgroundImage: `
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(255, 255, 255, 0.1) 20px,
+        rgba(255, 255, 255, 0.1) 40px
+      )
+    `
+  }
 
-  return <div className={clsx(className, "bg-gradient-to-br from-neutral-300 to-slate-300", gradient)} {...props} />
+  return (
+    <div
+      className={clsx(className, getBackgroundColor())}
+      style={pattern}
+      {...props}
+    />
+  )
 }
