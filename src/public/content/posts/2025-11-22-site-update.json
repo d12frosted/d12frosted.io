@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Fresh Coat of Paint: Redesigning d12frosted.io",
+  "id": "623b0c8f-3207-4c2f-969d-490485b1aa59",
+  "related": null,
+  "update": "2025-11-22",
+  "date": "2025-11-22",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "A complete visual overhaul of this site—migrating from Hakyll to Next.js, adopting a brutalist + jRPG aesthetic, and upgrading to Tailwind CSS v4.1. Sharp corners, bold colors, and way less fighting with build systems.",
+  "tags": [
+    "blog"
+  ]
+}
