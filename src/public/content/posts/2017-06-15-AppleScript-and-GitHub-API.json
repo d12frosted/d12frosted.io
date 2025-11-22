@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": null,
   "hide": null,
   "pinned": null,
   "title": "AppleScript and the GitHub API",
@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Sharing my initial venture into AppleScript with a GitHub API client I wrote while building an OmniFocus integration. While it works for my needs - fetching GitHub issue details to create OmniFocus tasks - it's quite basic and has some limitations. The script supports simple authentication and data extraction, though it could be more efficient when fetching multiple values.",
+  "description": "Building a GitHub API client in AppleScript for OmniFocus integration. The script handles authentication and data extraction, though it has some efficiency limitations when fetching multiple values.",
   "tags": [
     "applescript"
   ]

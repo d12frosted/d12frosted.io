@@ -1,4 +1,4 @@
-When we write libraries for others (including ourselves) to use we often require some preconditions to be met. Sometimes we just make them implicit (in the form of folklore, passed from developer to developer during post mortem ritual). In other cases we encode the possibility of failure due to unsatisfied preconditions.
+When we write libraries for others (including ourselves) to use, we often require some preconditions to be met. Sometimes we make them implicit (in the form of folklore, passed from developer to developer during post-mortem rituals). In other cases, we encode the possibility of failure due to unsatisfied preconditions.
 
 ``` haskell
 safeHead :: [a] -> Maybe a
@@ -6,7 +6,7 @@ safeHead [] = None
 safehead (a:_) = Just a
 ```
 
-Is this is the only thing we can do? Definitely no! Is it the best thing we can do? Depends on the situation.
+Is this the only thing we can do? Definitely not! Is it the best thing we can do? It depends on the situation.
 
 This article is part of the readings series where I take one topic and share links to related articles and papers. This time our focus is precondition encoding.
 

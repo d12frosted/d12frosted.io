@@ -1,12 +1,12 @@
-In stocks Emacs there is a function `move-to-beginning-of-line` which is bound to `C-a` by default. It does exactly what its name implies - moves the cursor to the beginning of line. In case of indented code this is usually not what I want, but instead I would love to move the first visible character of line.
+In stock Emacs, there's a function called `move-to-beginning-of-line`, which is bound to `C-a` by default. It does exactly what its name implies - it moves the cursor to the beginning of the line. However, when working with indented code, this is usually not what I want. Instead, I'd prefer to move to the first visible character of the line.
 
 <img src="/images/2020-06-04-beginning-of-line/2022-07-19_20-59-00_beginning-of-line-haskell.gif" class="d12-image-1/2" />
 
-There are packages that does this and even more (for example, [mwim](https://github.com/alezost/mwim.el)), but if for some reason you don't want to add one more package to your dependencies, or you care only about moving to the beginning of line, then you might grab the code that I share in the details. There is a version that also knows how to work with org mode headers and lists.
+There are packages that do this and even more (for example, [mwim](https://github.com/alezost/mwim.el)), but if you don't want to add another package to your dependencies, or if you only care about moving to the beginning of the line, then you might grab the code I share below. I've also included a version that works intelligently with org-mode headers and lists.
 
 <img src="/images/2020-06-04-beginning-of-line/2022-07-19_20-59-20_beginning-of-line-org.gif" class="d12-image-1/2" />
 
-The implementation is pretty straight-forward. We just disable visual movement and jump to first visible character using `back-to-indentation` and if we didn't change our location, then we move the beginning of line.
+The implementation is quite straightforward. We disable visual movement and jump to the first visible character using `back-to-indentation`. If we didn't change our location, then we move to the beginning of the line.
 
 ``` commonlisp
 (defun +beginning-of-line (arg)
@@ -32,7 +32,7 @@ the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line] '+beginning-of-line)
 ```
 
-Now when it comes to similar thing in `org-mode`, it's more tricky. In some sense, it's adaptation o `org-beginning-of-line`, which doesn't support desired order of stop points, e.g. I want to stop at first meaningful character, then go left to the first visible character and only then to the beginning of line.
+When it comes to implementing something similar in `org-mode`, it's more tricky. In some sense, it's an adaptation of `org-beginning-of-line`, which doesn't support the desired order of stop points. For example, I want to stop at the first meaningful character, then move left to the first visible character, and only then to the beginning of the line.
 
 ``` commonlisp
 (defun +org-beginning-of-line (arg)

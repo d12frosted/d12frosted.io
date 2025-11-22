@@ -1,4 +1,4 @@
-I've always admired people who can do virtually everything programming-related from the terminal. Whilst every task has its own specialised tools, there are some instruments you can rely on in almost any situation. That's why I spend so much time in the terminal—it's the one constant across different projects and environments.
+I've always admired people who can do virtually everything programming-related from the terminal. Whilst every task has its own specialised tools, there are some instruments you can rely on in almost any situation. That's why I spend so much time in the terminal - it's the one constant across different projects and environments.
 
 For about a year and a half, I was using `zsh` beefed up with `oh-my-zsh`. Whilst it provided crucial functionality, I wasn't entirely happy with the `oh-my-zsh` ecosystem. When someone mentioned `fish` in the comments of a Use Haskell for shell scripting thread on Reddit, I decided to give it a try after reading a few minutes about how excellent it is.
 
@@ -35,7 +35,7 @@ For any other problems, may the force be with you. Otherwise, you're ready to di
 
 # Fish: first impression
 
-The first thing you'll notice in `fish` is blazingly fast completion and suggestions based on history, man pages, and custom rules. This amazed me when I first saw it in action, because I remember how tricky it is to configure such things in `bash` and ~zsh~—but here you get everything and more out of the box.
+The first thing you'll notice in `fish` is blazingly fast completion and suggestions based on history, man pages, and custom rules. This amazed me when I first saw it in action, because I remember how tricky it is to configure such things in `bash` and `zsh` - but here you get everything and more out of the box.
 
 <img src="/images/2015-02-07-make-the-fish-fly/2022-07-19_17-11-16_fish-suggestions.gif" class="d12-image-3/4" />
 
@@ -85,7 +85,7 @@ function fish_prompt -d "Write out the prompt"
 end
 ```
 
-Before rushing into creating your own prompt, I recommend checking some of the prompts available out of the box. Just run `fish_config` and go to the `Prompt` tab. Alternatively, use [mine](https://github.com/d12frosted/environment/blob/master/fish/functions/fish_prompt.fish), which has a cool feature—it notifies you when long-running commands finish. I describe this briefly in a [separate article](/posts/2017-06-13-Fish-notify-me-when-you-finish).
+Before rushing into creating your own prompt, I recommend checking some of the prompts available out of the box. Just run `fish_config` and go to the `Prompt` tab. Alternatively, use [mine](https://github.com/d12frosted/environment/blob/master/fish/functions/fish_prompt.fish), which has a cool feature - it notifies you when long-running commands finish. I describe this briefly in a [separate article](/posts/2017-06-13-Fish-notify-me-when-you-finish).
 
 # Fish: one language to script them all
 
@@ -95,7 +95,7 @@ As you might already know, `fish` has its own scripting language that doesn't pr
 
 # Conclusion
 
-`Fish` doesn't try to be everything, but it does aim to provide an excellent out-of-the-box experience. You should definitely give it a try and form your own conclusion—everyone's needs are different.
+`Fish` doesn't try to be everything, but it does aim to provide an excellent out-of-the-box experience. You should definitely give it a try and form your own conclusion - everyone's needs are different.
 
 ## Advantages
 
@@ -114,13 +114,13 @@ I don't list Fish as a dependency drawback because I don't work in environments 
 
 # Epilogue
 
-I've grown tired of `oh-my-zsh`. It's a great project, but it's too large for my needs—it includes so much I don't use. The project suffers from its popularity. The last time I checked its repository, I found 417 unresolved pull requests, some of them years old, most receiving no attention. I understand the reasons for this situation, but understanding doesn't make it less frustrating.
+I've grown tired of `oh-my-zsh`. It's a great project, but it's too large for my needs - it includes so much I don't use. The project suffers from its popularity. The last time I checked its repository, I found 417 unresolved pull requests, some of them years old, most receiving no attention. I understand the reasons for this situation, but understanding doesn't make it less frustrating.
 
 I know you can use `zsh` without `oh-my-zsh` (or any similar project). You can keep your configurations [minimal](https://github.com/jleclanche/dotfiles/blob/master/.zshrc), or copy-paste huge amounts of code to maintain all the fancy features.
 
 Whilst I usually enjoy tinkering with configurations, in this case I genuinely appreciate `fish`'s approach. Most things just work, allowing me to focus on specific functionality I actually need.
 
-So go ahead and try what `fish` offers. Don't be afraid of making the switch. If you have any questions, feel free to email me—I'll be happy to help.
+So go ahead and try what `fish` offers. Don't be afraid of making the switch. If you have any questions, feel free to email me - I'll be happy to help.
 
 **Have a nice shell-time!**
 

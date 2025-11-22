@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": null,
   "hide": null,
   "pinned": null,
   "title": "Git: conditional configurations",
@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Exploring Git's conditional includes feature and comparing it to my git-config-manager tool - while the native solution elegantly handles many use cases, there might still be room for some unique features I've been planning to add.",
+  "description": "Exploring Git's conditional includes feature and comparing it to my git-config-manager tool—whilst the native solution elegantly handles many use cases, there's still room for unique features.",
   "tags": [
     "git"
   ]

@@ -1,6 +1,6 @@
 Yet another tale about Bash script refactoring. This time, the configuration script of [mirror-elpa](https://github.com/d12frosted/mirror-elpa) has undergone some changes, and I like the result so much that I decided to share it.
 
-Imagine you want your users to provide some input—for example, repository owner and name. You need this value, so if the user doesn't provide one, you ask again. However, you also want to support default values, so that if the user doesn't provide any value but there's a default available, you use that instead.
+Imagine you want your users to provide some input - for example, repository owner and name. You need this value, so if the user doesn't provide one, you ask again. However, you also want to support default values, so that if the user doesn't provide any value but there's a default available, you use that instead.
 
 And you can only use Bash.
 

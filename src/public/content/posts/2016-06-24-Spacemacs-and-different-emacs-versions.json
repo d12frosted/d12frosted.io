@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": null,
   "hide": null,
   "pinned": null,
   "title": "Using Spacemacs with several Emacs versions",
@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A helpful tip for Spacemacs users about using version-specific package directories to avoid reinstalling packages when switching between different Emacs versions, featuring a simple configuration solution.",
+  "description": "How to use version-specific package directories in Spacemacs to avoid reinstalling packages when switching between different Emacs versions.",
   "tags": [
     "emacs"
   ]

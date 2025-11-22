@@ -1,8 +1,8 @@
-Have you ever found yourself writing in Emacs, spotted a spelling mistake a few lines back, and felt annoyed at having to manually navigate back to fix it? Whilst [Flyspell](https://www.emacswiki.org/emacs/FlySpell) does an excellent job of highlighting these errors, correcting them can feel clunky—especially when you're used to the sleek completion interfaces offered by modern frameworks like [Ivy](https://github.com/abo-abo/swiper), [Helm](https://github.com/emacs-helm/helm), or [popup.el](https://github.com/auto-complete/popup-el).
+Have you ever found yourself writing in Emacs, spotted a spelling mistake a few lines back, and felt annoyed at having to manually navigate back to fix it? Whilst [Flyspell](https://www.emacswiki.org/emacs/FlySpell) does an excellent job of highlighting these errors, correcting them can feel clunky - especially when you're used to the sleek completion interfaces offered by modern frameworks like [Ivy](https://github.com/abo-abo/swiper), [Helm](https://github.com/emacs-helm/helm), or [popup.el](https://github.com/auto-complete/popup-el).
 
 When I switched from Helm to Ivy, I discovered that whilst correction packages existed for popup.el ([wiki](https://www.emacswiki.org/emacs/FlySpell#toc11), [flyspell-popup](https://github.com/xuchunyang/flyspell-popup)) and Helm ([helm-flyspell](https://github.com/pronobis/helm-flyspell)), there wasn't a unified solution that worked across different completion frameworks. Each package essentially did the same thing, just with different front-ends. This seemed wasteful.
 
-That's why I created [flyspell-correct](https://github.com/d12frosted/flyspell-correct)—a unified package for distraction-free word correction that works with any completion interface you prefer. It's available on [GitHub](https://github.com/d12frosted/flyspell-correct) and MELPA.
+That's why I created [flyspell-correct](https://github.com/d12frosted/flyspell-correct) - a unified package for distraction-free word correction that works with any completion interface you prefer. It's available on [GitHub](https://github.com/d12frosted/flyspell-correct) and MELPA.
 
 **What you'll learn in this post:**
 
@@ -27,7 +27,7 @@ To get started, install the package from MELPA and set the `flyspell-correct-int
 
 # Implementing custom interfaces
 
-One of the key features of flyspell-correct is its extensibility. You can implement your own correction interface to match your workflow preferences. A custom interface is simply a function that accepts two arguments—a list of correction candidates and the incorrect word—and returns either a replacement word or a `(command, word)` tuple.
+One of the key features of flyspell-correct is its extensibility. You can implement your own correction interface to match your workflow preferences. A custom interface is simply a function that accepts two arguments - a list of correction candidates and the incorrect word - and returns either a replacement word or a `(command, word)` tuple.
 
 The available commands are:
 
@@ -104,4 +104,4 @@ You can change the correction direction by calling `flyspell-correct-wrapper` wi
 
 # Final thoughts
 
-I hope flyspell-correct makes spell-checking in Emacs a more pleasant experience for you. The package is [open source](https://github.com/d12frosted/flyspell-correct), and contributions are warmly welcome—whether that's bug reports, feature requests, or pull requests. Happy writing!
+I hope flyspell-correct makes spell-checking in Emacs a more pleasant experience for you. The package is [open source](https://github.com/d12frosted/flyspell-correct), and contributions are warmly welcome - whether that's bug reports, feature requests, or pull requests. Happy writing!

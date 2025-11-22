@@ -1,6 +1,6 @@
-As you might know, Eru is the supreme deity of Arda. The first things that Eru created where the Ainur. He then bade the Ainur to sing to him. Each Ainu had a particular theme given by Eru. Sure enough, Eru makes the 'World and All That Is'.
+As you might know, Eru is the supreme deity of Arda. The first things that Eru created were the Ainur. He then bade the Ainur to sing to him. Each Ainu had a particular theme given by Eru. Sure enough, Eru makes the 'World and All That Is'.
 
-So when I get a new clean system there is nothing yet. And so I call upon the wisdom and power of `Eru.sh` - the one who creates Ainur and the 'World and All That Is'.
+So when I get a new, clean system, there is nothing yet. And so I call upon the wisdom and power of `Eru.sh` - the one who creates Ainur and the 'World and All That Is'.
 
 ``` bash
 $ curl https://raw.githubusercontent.com/d12frosted/environment/master/bootstrap/eru.sh | bash
@@ -26,14 +26,14 @@ $ ./bootstrap/eru.sh repositories brew # to help with repositories and brew
 => Guardian Theme :: Checking operating system
 => Supporting Theme :: Defining helpers
 => Supporting Theme :: Defining variables
-=> Guardian Theme :: Ensure all directories exists
+=> Guardian Theme :: Ensure all directories exist
 -> SSH Theme :: Checking SSH keys
 -> Repositories Theme :: Sync environment repository
 -> Repositories Theme :: Sync repositories from Repofile
 -> Linking Theme :: Link all files as defined in Linkfile
 ```
 
-Every theme that begins with `=>` is a mandatory theme - the one you can't skip. Every theme prefixed with `->` is an optional one. If you don't specify any themes, all optional themes are sung. If you do specify at leas t one theme - only specified are sang.
+Every theme that begins with `=>` is a mandatory theme - the one you can't skip. Every theme prefixed with `->` is an optional one. If you don't specify any themes, all optional themes are sung. If you do specify at least one theme, only the specified ones are sung.
 
 <img src="/images/2018-11-04-revisiting-eru/2022-07-19-20-39-54-eru-example-2.webp" class="d12-image-1/2" />
 
@@ -41,24 +41,24 @@ You can find the latest version of `Eru.sh` on [GitHub](https://github.com/d12fr
 
 # Interesting stuff
 
-Mythology is great, but let's check what's cool about `Eru.sh`.
+Mythology is great, but let's look at what's cool about `Eru.sh`.
 
-1.  It installs and updates a lot of applications and utilities that I use on a daily basis.
-2.  It installs my configurations for these applications. The most important ones are `Emacs`, `fish`, `skhd`, `chunkwm`. Plus it tries to set up different parts of macOS for my liking.
-3.  It works in an incremental fashion. In general, it installs only what is missing. So in case when my environment is up to date, `Eru.sh` is almost instant.
-4.  It allows you to setup only specific parts. For example, you can only install dependencies or sync mandatory repositories. Or do both.
+1.  It installs and updates many applications and utilities that I use daily.
+2.  It installs my configurations for these applications. The most important ones are `Emacs`, `fish`, `skhd`, and `chunkwm`. Plus, it tries to set up different parts of macOS to my liking.
+3.  It works in an incremental fashion. In general, it only installs what's missing. So when my environment is up to date, `Eru.sh` is almost instant.
+4.  It allows you to set up only specific parts. For example, you can install only dependencies or sync mandatory repositories, or do both.
 
-This means, that on a fresh system I can easily get my environment just by running one command and waiting for a long time. But in a working environment, I can easily get the latest version of it. This comes in handy since I use more than one computer.
+This means that on a fresh system, I can easily get my environment just by running one command and waiting for a while. However, in a working environment, I can easily get the latest version of it. This comes in handy since I use more than one computer.
 
 ## Bash magic
 
-`Eru.sh` is written in bash because it must work on systems without Haskell preinstalled. Features of bash4 are not used, because of the same reasons, it is not available on a clean macOS.
+`Eru.sh` is written in Bash because it must work on systems without Haskell preinstalled. Bash 4 features aren't used for the same reason - it's not available on a clean macOS.
 
-`Eru.sh` is mostly a boring bash script. But there are several points that I find interesting myself.
+`Eru.sh` is mostly a boring Bash script. However, there are several points that I find interesting.
 
 ### Mapping files
 
-There are themes that perform the same action over a set of arguments. In order to avoid noise in `Eru.sh` these arguments are stored in external files (rule files). For example, `repositories` theme synchronises repositories by rules specified in the `Repofile`, which looks like the following.
+There are themes that perform the same action over a set of arguments. To avoid noise in `Eru.sh`, these arguments are stored in external files (rule files). For example, the `repositories` theme synchronises repositories according to rules specified in the `Repofile`, which looks like this:
 
 ``` text
 $HOME/.spacemacs syl20bnr/spacemacs develop
@@ -68,9 +68,9 @@ $DEVELOPER/org-drawer-list d12frosted/org-drawer-list
 $DEVELOPER/flyspell-correct d12frosted/flyspell-correct
 ```
 
-Every line specifies a rule - target location of the repository, remote repository URL (fir GitHub one case specify only `owner/repo` instead of a full HTTPS/SSH URL) and branch to use.
+Every line specifies a rule: the target location of the repository, remote repository URL (for GitHub, one can specify only `owner/repo` instead of a full HTTPS/SSH URL), and the branch to use.
 
-There is also a function that gets these value as arguments and does all the job. In the case of `repositories` theme, the function is called `sync_repo`.
+There's also a function that gets these values as arguments and does all the work. In the case of the `repositories` theme, the function is called `sync_repo`.
 
 One can easily write a script reading a given file line by line and passing them to a function. For example,
 
@@ -80,9 +80,9 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 done < "Repofile"
 ```
 
-Please note that `$line` should not be put in parenthesis otherwise whole line will be passed as a first argument, but we want to split it into multiple arguments by a space.
+Please note that `$line` shouldn't be put in quotation marks; otherwise, the whole line will be passed as the first argument, but we want to split it into multiple arguments by spaces.
 
-While this works, it doesn't scale, requires repetition and decreases the level of code readability. Let's abstract it a little bit by extracting the logic of reading the lines and passing them to a function.
+Whilst this works, it doesn't scale, requires repetition, and decreases code readability. Let's abstract it a bit by extracting the logic of reading lines and passing them to a function.
 
 ``` bash
 function map_lines() {
@@ -94,7 +94,7 @@ function map_lines() {
 map_lines sync_repo "Repofile"
 ```
 
-Now it looks like a Functor for a file. No repetition, it does scale well and we know exactly what is the purpose of `map_lines sync_repo "RepoFile"`.
+Now this resembles a functor for a file. There's no repetition, it scales well, and the purpose of `map_lines sync_repo "Repofile"` is immediately clear.
 
 ### Dealing with multiple optional themes
 
@@ -172,7 +172,7 @@ function theme_guard() {
   fi
 }
 
-theme_guard "$REPOSITORIES" "Repositores" && {
+theme_guard "$REPOSITORIES" "Repositories" && {
   map_lines sync_repo "$target/bootstrap/Repofile"
 }
 
@@ -216,9 +216,9 @@ $ echo ${!CUSTOM_VAR_REF}
 
 ```
 
-Though if you want to expand variables in arbitrary string (like, `$HOME/config.json`), you'll have to use `eval`.
+Though if you want to expand variables in an arbitrary string (like `$HOME/config.json`), you'll have to use `eval`.
 
-Right now we are passing two arguments to `theme_guard`: a guarding variable value and the name of a theme. But the code looks similar - the first one is prefixed with the `$` sign and is in uppercase, while the second one is in capital case. In order to deal with case, we can use `awk`.
+Right now we're passing two arguments to `theme_guard`: a guarding variable value and the name of a theme. But the code looks similar - the first one is prefixed with the `$` sign and is in uppercase, whilst the second one is in capital case. In order to deal with case conversion, we can use `awk`.
 
 ``` bash
 function theme_guard() {
@@ -234,7 +234,7 @@ function theme_guard() {
   fi
 }
 
-theme_guard "Repositores" && {
+theme_guard "Repositories" && {
   map_lines sync_repo "$target/bootstrap/Repofile"
 }
 
@@ -247,7 +247,7 @@ theme_guard "Brew" && {
 }
 ```
 
-We got a very small improvement - we just don't need to pass the theme name to the `theme_guard` twice. But I find it satisfying anyway. Also, it will come handy a little bit later.
+We've achieved a small improvement - we no longer need to pass the theme name to `theme_guard` twice. I find this satisfying, and it will come in handy later.
 
 Now let's go back to the variable declaration. It turns out that we can use `eval` to declare variables as well.
 
@@ -280,7 +280,7 @@ $ CUSTOM_VAL=12
 bash: CUSTOM_VAL: readonly variable
 ```
 
-So let's use this `declare` for our good.
+So let's use `declare` to our advantage.
 
 ``` bash
 ALL="true"
@@ -298,7 +298,7 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 ```
 
-While this becomes a little bit harder to understand it saves us a lot of repetition. The only thing I would improve here immediately is to add a unique prefix to variable names, so user does not interfere with other variables. The final version looks like it.
+Whilst this becomes a little harder to understand, it saves us a lot of repetition. The only thing I would improve here immediately is to add a unique prefix to variable names, so the user doesn't interfere with other variables. The final version looks like this:
 
 ``` bash
 ALL="true"
@@ -328,7 +328,7 @@ function theme_guard() {
   fi
 }
 
-theme_guard "Repositores" && {
+theme_guard "Repositories" && {
   map_lines sync_repo "$target/bootstrap/Repofile"
 }
 
@@ -341,7 +341,7 @@ theme_guard "Brew" && {
 }
 ```
 
-Just by extracting checks into separate function, by using `declare` to define variables and variable indirection to read value of variables we highly improved initial code. Less redundancy, clearer intention and ability to scale in terms of themes.
+Just by extracting checks into a separate function, using `declare` to define variables, and using variable indirection to read the value of variables, we've significantly improved the initial code. Less redundancy, clearer intention, and the ability to scale in terms of themes.
 
 # Epilogue
 

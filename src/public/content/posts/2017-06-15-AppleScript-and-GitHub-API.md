@@ -1,14 +1,14 @@
-AppleScript is a powerful scripting language that allows to directly control scriptable applications and some parts of macOS. The language itself can be a little bit frustrating for those who are not familiar with natural language programming paradigm. For example, with AppleScript, you can `tell application "Preview" to quit` or ask someone to `print pages 1 thru 5 of document 2`.
+AppleScript is a powerful scripting language that allows you to directly control scriptable applications and some parts of macOS. The language itself can be frustrating for those who aren't familiar with the natural language programming paradigm. For example, with AppleScript, you can `tell application "Preview" to quit` or ask someone to `print pages 1 thru 5 of document 2`.
 
-But my goal is not to promote or demote AppleScript. Instead, I wish to share a little script that I've fetched while [experimenting](/being-an-org-mode-addict) with [OmniFocus 2](https://www.omnigroup.com/omnifocus). I hate to manually capture issues that I care about, so I started to work on a script that takes URL from an active tab in Safari and sends it to OmniFocus into the right project with useful title and body.
+But my goal isn't to promote or demote AppleScript. Instead, I want to share a little script I wrote whilst [experimenting](/being-an-org-mode-addict) with [OmniFocus 2](https://www.omnigroup.com/omnifocus). I hate manually capturing issues that I care about, so I started working on a script that takes the URL from an active tab in Safari and sends it to OmniFocus - into the right project with a useful title and body.
 
 For example, I want [d12frosted/flyspell-correct#30](https://github.com/d12frosted/flyspell-correct/issues/30) to go into the `flyspell-correct` project with title and description taken from that issue.
 
 <!--more-->
 
-Without going into too many details about irrelevant parts of that script, I just wish to share the part that communicates with GitHub. Note that this script is not part of any repository and I doubt that it ever will. Mostly because it's unfinished and I don't want to maintain full API support. And any feedback is welcome (I am so very new to AppleScript!).
+Without going into too many details about the full script, I'd like to share the part that communicates with GitHub. Note that this script isn't part of any repository and probably never will be, mostly because it's unfinished and I don't want to maintain full API support. Any feedback is welcome (I'm very new to AppleScript!).
 
-Here is an example of getting the title of `d12frosted/private-repository#42`. First we setup `GitHubClient` by setting the path to [jq](https://stedolan.github.io/jq/) and by setting credentials. Then we ask it to get a specific issue and select from it the title. Select verb accepts any(?) `jq` command. The latest verb `commit` does all the dirty job - sends a request to GitHub and then pipes the result to `jq`.
+Here's an example of getting the title of `d12frosted/private-repository#42`. First we set up `GitHubClient` by setting the path to [jq](https://stedolan.github.io/jq/) and our credentials. Then we ask it to get a specific issue and select the title from it. The `select` verb accepts any `jq` command. Finally, the `commit` verb does all the dirty work - it sends a request to GitHub and then pipes the result to `jq`.
 
 ``` applescript
 property jqPath : "/usr/local/bin/jq"
@@ -112,7 +112,7 @@ end getIssue
 
 And so on.
 
-While this implementation works for me, it has several drawbacks.
+Whilst this implementation works for me, it has several drawbacks:
 
-- If you wish to get several values from API call, you have to call `commit` for every `select` verb. It means that the same request will be sent multiple times.
-- `GitHubClient` doesn't support any other authentication method except for login-pass(token) pair.
+- If you wish to get several values from an API call, you have to call `commit` for every `select` verb, which means that the same request will be sent multiple times.
+- `GitHubClient` only supports authentication via username and access token (no other authentication methods).

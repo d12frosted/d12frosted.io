@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A deep dive into predicate composition in Haskell, exploring different approaches from simple functions to Semigroup and coercion. Discover how to create elegant abstractions without runtime penalties by leveraging GHC's optimisations, newtype wrappers, and Core analysis.",
+  "description": "Exploring predicate composition in Haskell through multiple implementation approaches—from simple operators to Semigroup instances and coercion. Learn how to create elegant abstractions without runtime penalties by leveraging GHC's optimisation capabilities, complete with Core dumps and benchmarks.",
   "tags": [
     "haskell"
   ]

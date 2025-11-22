@@ -18,7 +18,7 @@ valid = check1 .&& (check2 .|| check3)
 (.||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
 ```
 
-Apart from implementing combinators for predicate composition, we want to avoid any runtime penalty from using abstractions. In this article, we're going to implement these functions and investigate how far we can go with abstractions before performance degrades. Or maybe it won't degrade at all. Who knows?
+Apart from implementing combinators for predicate composition, we want to avoid any runtime penalty from using abstractions. In this article, we're going to implement these functions and investigate how far we can go with abstractions before performance degrades. Or perhaps it won't degrade at all. Who knows?
 
 <!--more-->
 
@@ -108,7 +108,7 @@ So this how it looks in Core, verbose but really straightforward.
 
 # Reason to read the line
 
-Strictly speaking, there's no need to read an integer from `stdin` in our example. After all, we only care about the predicates. However, GHC is quite aggressive with inlining and simplifications when optimisations are enabled. With `-O2`, there's even more cross-module optimisation compared to `-O`.
+Strictly speaking, there's no need to read an integer from `stdin` in our example. After all, we care only about the predicates. However, GHC is pretty aggressive in terms of inlining and simplifications when optimisations are enabled. With `-O2`, there will be even more cross-module optimisation compared to `-O`.
 
 ``` haskell
 module Main (main) where
@@ -135,7 +135,7 @@ main
 
 As you can see, it figured out that there's no need to evaluate it at runtime. However, to compare different implementations of composition operators, we don't want the compiler to inline the result.
 
-If you're curious about reduction steps, you can pass the `-v` option to `ghc` to be more verbose. When you build with `-v`, compilation of the version with `getLine` is less verbose than without it.
+If you're curious about reduction steps, you can pass the `-v` option to `ghc` to be more verbose. When you build with `-v`, compilation of the version with `getLine` is less verbose than without.
 
 # Trivial implementation
 
@@ -188,7 +188,7 @@ If we compile it, the relevant part in the Core language is the same.
 ...
 ```
 
-Whilst our code looks better, there are no runtime penalties. In short, with the `-O` option, GHC always tries to inline small functions (based on [unfolding-creation-threshold](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/using-optimisation.html#ghc-flag--funfolding-creation-threshold=%E2%9F%A8n%E2%9F%A9) and heuristics), thus avoiding call overhead and enabling other optimisations (like replacing the entire expression with its result). If unfolding doesn't happen for some reason and you really think it should (make such decisions based on CPU and memory profiling), then add an [INLINE pragma](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#inline-pragma).
+Whilst our code looks better, there are no runtime penalties. In short, with the `-O` option, GHC always tries to inline small functions (based on [unfolding-creation-threshold](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/using-optimisation.html#ghc-flag--funfolding-creation-threshold=%E2%9F%A8n%E2%9F%A9) and heuristics), thus avoiding the call overhead and enabling other optimisations (like replacing the whole expression with its result). If unfolding doesn't happen for some reason and you really think it should (make such a decision based on CPU and memory profiling), then add an [INLINE pragma](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#inline-pragma).
 
 ``` haskell
 infixr 3 .&&
@@ -445,9 +445,9 @@ variance introduced by outliers: 30% (moderately inflated)
 
 # Final words
 
-I love that in Haskell we can use *some* abstractions without hurting runtime performance. After all, as developers, we want to simplify our *development* lives with minimal negative influence on the application.
+I love that in Haskell, one can use *some* abstractions without hurting runtime performance. After all, as developers, we want to simplify our *development* life with minimal negative influence on the application.
 
-Today, we implemented two simple operators for predicate composition using semigroups and coercion. We've seen that they don't introduce any runtime penalty. The techniques that made this possible are applicable in other scenarios too.
+Today, we implemented two simple operators for predicate composition using semigroups and coercion. We saw that they don't introduce any runtime penalty. The techniques that made this possible are usable in other scenarios as well.
 
 ``` haskell
 module Data.Monoid.Extra

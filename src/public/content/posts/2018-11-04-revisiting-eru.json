@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": null,
   "hide": null,
   "pinned": null,
   "title": "Revisiting Eru",
@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "Introducing Eru.sh, my system bootstrapping script. This bash script helps me set up my development environment across different machines by installing applications, configuring tools like Emacs and Fish shell, and syncing repositories. I've also shared some interesting bash programming patterns I used to make the code more maintainable, like mapping over files and handling optional themes. While it's not the most elegant solution, it gets the job done efficiently!",
+  "description": "Introducing Eru.sh, my system bootstrapping script that sets up my development environment across different machines. Learn how I use Bash patterns like mapping over files and handling optional themes to make the code more maintainable, plus how to avoid eval whilst still achieving dynamic variable handling.",
   "tags": [
     "shell"
   ]

@@ -1,4 +1,4 @@
-Sometimes you need to generate random bytes with high entropy—perhaps for a password, a secret key, or testing purposes. OpenSSL provides a simple command for this task: `rand`.
+Sometimes you need to generate random bytes with high entropy - perhaps for a password, a secret key, or testing purposes. OpenSSL provides a simple command for this task: `rand`.
 
 <!--more-->
 

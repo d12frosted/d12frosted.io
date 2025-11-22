@@ -1,4 +1,4 @@
-Have you ever written a shell script that failed halfway through, leaving your system in a corrupted state? Perhaps a temporary file wasn't cleaned up, or a half-finished operation left things in an inconsistent state. It's frustrating, and the typical solution—littering your script with `if` statements to check every command—quickly becomes unwieldy and distracts from solving the actual problem.
+Have you ever written a shell script that failed halfway through, leaving your system in a corrupted state? Perhaps a temporary file wasn't cleaned up, or a half-finished operation left things in an inconsistent state. It's frustrating, and the typical solution - littering your script with `if` statements to check every command - quickly becomes unwieldy and distracts from solving the actual problem.
 
 Fortunately, the shell provides elegant built-in mechanisms for handling errors. In this post, I'll show you how to write more robust shell scripts using exit-on-error mode and signal traps.
 
@@ -11,7 +11,7 @@ Fortunately, the shell provides elegant built-in mechanisms for handling errors.
 
 <!--more-->
 
-Before we dive into the techniques, let's define two helper functions—=success= and `failure`. We'll use these in our examples to represent abstract commands that always succeed and always fail, respectively.
+Before we dive into the techniques, let's define two helper functions - `success` and `failure`. We'll use these in our examples to represent abstract commands that always succeed and always fail, respectively.
 
 ``` bash
 # just like true, but also echoes
@@ -54,7 +54,7 @@ success
 # result is 1 (failure)
 ```
 
-This works well and behaves like imperative code in most programming languages—whenever one piece of the execution chain fails, the whole chain fails unless we explicitly handle it. However, there's a fundamental problem: you must be explicit about behaviour that should be enabled by default.
+This works well and behaves like imperative code in most programming languages - whenever one piece of the execution chain fails, the whole chain fails unless we explicitly handle it. However, there's a fundamental problem: you must be explicit about behaviour that should be enabled by default.
 
 Fortunately, the shell provides a better solution. The `sh` command has a special exit-on-error mode which, when enabled, forces the shell to exit whenever a simple command returns a non-zero status code. You can enable this mode by running `sh` with the `-e` option, or by calling `set -e` within your script.
 

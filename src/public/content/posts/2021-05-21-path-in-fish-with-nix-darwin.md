@@ -88,7 +88,7 @@ Turns out, `fish` mimics behaviour of `path_helper` macOS (BSD) utility, which m
 path_helper(8)                       Nixpkgs System Manager's Manual                       path_helper(8)
 
 NAME
-     path_helper — helper for constructing PATH environment variable
+     path_helper  -  helper for constructing PATH environment variable
 
 SYNOPSIS
      path_helper [-c | -s]

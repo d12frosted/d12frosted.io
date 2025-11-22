@@ -10,7 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
-  "description": "A look at different ways to handle preconditions in Haskell libraries, exploring approaches from simple Maybe types to more sophisticated type-level guarantees. Through examples from Alexis King's \"Parse, don't validate\" and Matt Noonan's \"Ghosts of Departed Proofs\", I discuss how we can leverage Haskell's type system to make illegal states unrepresentable while maintaining runtime performance.",
+  "description": "Exploring different approaches to encoding preconditions in Haskell libraries, from simple Maybe types to sophisticated type-level guarantees. Drawing on insights from Alexis King's \"Parse, don't validate\" and Matt Noonan's \"Ghosts of Departed Proofs\", learn how to make illegal states unrepresentable.",
   "tags": [
     "haskell",
     "readings"

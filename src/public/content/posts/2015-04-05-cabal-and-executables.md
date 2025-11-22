@@ -29,9 +29,9 @@ But we're software engineers, after all. So I decided to write a helper script t
 
 <img src="/images/2015-04-05-cabal-and-executables/2022-07-19-17-49-57-1428233775.webp" class="d12-image-1/2" />
 
-I need to confess: sometimes I solve **Cabal Hell** by using the `rm -rf` method. **Cabal Hell** is like a disease—it's very hard to cure without ruining your environment (in this case, your package database). However, there is some good news: you can use tools to prevent this bizarre situation from happening. For these purposes, you can use Cabal sandboxes, Stackage, or NixOS. There are probably other handy solutions, but these are the ones I'm familiar with.
+I need to confess: sometimes I solve **Cabal Hell** by using the `rm -rf` method. **Cabal Hell** is like a disease - it's very hard to cure without ruining your environment (in this case, your package database). However, there is some good news: you can use tools to prevent this bizarre situation from happening. For these purposes, you can use Cabal sandboxes, Stackage, or NixOS. There are probably other handy solutions, but these are the ones I'm familiar with.
 
-`Stackage` is excellent, but it doesn't work very well for me because sometimes I need to install 'heavy' packages that aren't on `Stackage`. Also, I work on a reliably fast computer, so I don't mind spending an extra thirty seconds on compilation—safety is more important. As for `NixOS`, I haven't tried it yet, but I know it's very good at finding compilation problems. Many thanks to the people who created `Stackage` and `NixOS`.
+`Stackage` is excellent, but it doesn't work very well for me because sometimes I need to install 'heavy' packages that aren't on `Stackage`. Also, I work on a reliably fast computer, so I don't mind spending an extra thirty seconds on compilation - safety is more important. As for `NixOS`, I haven't tried it yet, but I know it's very good at finding compilation problems. Many thanks to the people who created `Stackage` and `NixOS`.
 
 # Sandboxes
 
@@ -55,7 +55,7 @@ $ cabal install
 $ cp .cabal-sandbox/bin/executable ~/.bin/executable
 ```
 
-This works because executables are usually completely standalone, so you can build them in a sandbox and then move them to any location of your choice. This approach helps keep the system-wide (or user-wide) package database clean and free from conflicts. I move the executable to `~/.bin` (ensuring `~/.bin` is in `$PATH`) because when something breaks in my package database, I want to keep these executables—they've done nothing wrong!
+This works because executables are usually completely standalone, so you can build them in a sandbox and then move them to any location of your choice. This approach helps keep the system-wide (or user-wide) package database clean and free from conflicts. I move the executable to `~/.bin` (ensuring `~/.bin` is in `$PATH`) because when something breaks in my package database, I want to keep these executables - they've done nothing wrong!
 
 However, it's tedious to run these commands every time I want to install an executable, so I wrote a simple `fish` function that installs the executable from the `.cabal` file in the current directory for you.
 
