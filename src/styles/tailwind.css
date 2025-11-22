@@ -67,6 +67,12 @@
     border-left: 3px solid var(--color-mp-blue);
     border-radius: 0;
   }
+
+  pre code {
+    background-color: transparent;
+    padding: 0;
+    font-weight: 400;
+  }
 }
 
 @utility d12-image {
