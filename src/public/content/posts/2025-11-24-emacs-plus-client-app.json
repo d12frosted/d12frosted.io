@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "emacs-plus: Emacs Client.app",
+  "id": "70bef43c-0cfe-4ce6-8993-618330594ec5",
+  "related": null,
+  "update": "2025-11-24",
+  "date": "2025-11-24",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "After fixing PATH injection on macOS 15, I'm dusting off a year-old feature: proper Finder integration for emacsclient. Using AppleScript instead of shell scripts, Emacs Client.app now handles file opening from Finder, drag-and-drop, and auto-starts the daemon. With one cosmetic icon issue that needs your help to solve.",
+  "tags": [
+    "emacs-plus"
+  ]
+}
