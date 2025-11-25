@@ -164,6 +164,8 @@ None of these helped, so the root cause remains unclear.
 
 If you have experience with macOS icon caching or Launch Services, **I'd love your help**! The relevant code is in `Library/EmacsBase.rb` in the `create_emacs_client_app` method. Check out [the implementation on GitHub](https://github.com/d12frosted/homebrew-emacs-plus).
 
+**Update \[2025-11-25\]:** This issue has been resolved in [commit caae572](https://github.com/d12frosted/homebrew-emacs-plus/commit/caae572cc12817adf7ed6cf34c06920125fa1484). The fix involved using `sips` and `DeRez/Rez` to properly embed the icon resource into the compiled AppleScript application.
+
 # What's Next: Community Patches and Icons
 
 This big feature is done (minus the icon glitch), and I'm already planning the next major improvement: **a community patches and icons system** (see [issue \#851](https://github.com/d12frosted/homebrew-emacs-plus/issues/851)).
