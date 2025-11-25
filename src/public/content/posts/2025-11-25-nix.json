@@ -1,0 +1,18 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Why I ditched Nix after ~4 years",
+  "id": "3793252d-417d-4327-833b-95c5b4573a0f",
+  "related": null,
+  "update": "2025-11-25",
+  "date": "2025-11-25",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "After using Nix, nix-darwin, and home-manager for 4-5 years, I've finally switched back to Homebrew and bash scripts. Here's why the promise of reproducibility didn't hold up on macOS, and how freeing 80GB of disk space was the final push I needed.",
+  "tags": [
+    "nix",
+    "macos"
+  ]
+}
