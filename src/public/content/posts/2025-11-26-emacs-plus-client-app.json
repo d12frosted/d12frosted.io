@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "The Emacs Widget Library: A Critique and Case Study",
+  "id": "bc95d639-2187-48dc-88a7-1937c38eed72",
+  "related": null,
+  "update": "2025-11-26",
+  "date": "2025-11-26",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "A deep dive into Emacs's widget library: what it does well, where it falls apart, and a step-by-step case study of building a table widget with editable cells. Includes working code and hard-won lessons about state management, layout hacks, and cursor position preservation.",
+  "tags": [
+    "emacs"
+  ]
+}
