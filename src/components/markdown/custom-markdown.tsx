@@ -42,6 +42,68 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
       rehypePlugins={[rehypeKatex, rehypeRaw]}
       components={{
         ...props.components,
+
+        h1({ children, node, className, ...rest }) {
+          return (
+            <h1 className={clsx('relative', className)} {...rest}>
+              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+                #1
+              </span>
+              {children}
+            </h1>
+          )
+        },
+        h2({ children, node, className, ...rest }) {
+          return (
+            <h2 className={clsx('relative', className)} {...rest}>
+              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+                #2
+              </span>
+              {children}
+            </h2>
+          )
+        },
+        h3({ children, node, className, ...rest }) {
+          return (
+            <h3 className={clsx('relative', className)} {...rest}>
+              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+                #3
+              </span>
+              {children}
+            </h3>
+          )
+        },
+        h4({ children, node, className, ...rest }) {
+          return (
+            <h4 className={clsx('relative', className)} {...rest}>
+              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+                #4
+              </span>
+              {children}
+            </h4>
+          )
+        },
+        h5({ children, node, className, ...rest }) {
+          return (
+            <h5 className={clsx('relative', className)} {...rest}>
+              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+                #5
+              </span>
+              {children}
+            </h5>
+          )
+        },
+        h6({ children, node, className, ...rest }) {
+          return (
+            <h6 className={clsx('relative', className)} {...rest}>
+              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+                #6
+              </span>
+              {children}
+            </h6>
+          )
+        },
+
         pre(props) {
           const { children, node, ...rest } = props
           const nonPreElement = findChildThat(
@@ -55,7 +117,11 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
           if (nonPreElement) {
             return nonPreElement
           }
-          return <pre className="bg-white p-0" {...rest}>{children}</pre>
+          return (
+            <pre className="bg-white p-0" {...rest}>
+              {children}
+            </pre>
+          )
         },
 
         code(props) {
@@ -88,8 +154,10 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
               }
               return (
                 <div className="my-12 border-l-4 border-mp-blue bg-code-bg p-8 lg:my-16">
-                  <h2 className="!mb-6 !mt-0 text-2xl font-bold tracking-tight text-ink dark:text-white">Related posts</h2>
-                  <div className="prose prose-stone max-w-none [&>ul]:mt-0 [&>ul]:list-['\2013\20'] [&>ul]:pl-5 [&_a]:font-normal [&_a]:text-mp-blue [&_a]:underline [&_a]:decoration-mp-blue/30 [&_a]:underline-offset-2 [&_a]:transition-colors [&_a:hover]:text-ink [&_a:hover]:decoration-ink/50">
+                  <h2 className="!mt-0 !mb-6 text-2xl font-bold tracking-tight text-ink dark:text-white">
+                    Related posts
+                  </h2>
+                  <div className="prose max-w-none prose-stone [&_a]:font-normal [&_a]:text-mp-blue [&_a]:underline [&_a]:decoration-mp-blue/30 [&_a]:underline-offset-2 [&_a]:transition-colors [&_a:hover]:text-ink [&_a:hover]:decoration-ink/50 [&>ul]:mt-0 [&>ul]:list-['\\2013\\20'] [&>ul]:pl-5">
                     <CustomMarkdown>{md}</CustomMarkdown>
                   </div>
                 </div>
@@ -97,10 +165,10 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
             }
             function t(l: string): string {
               // prism doesn't know about emacs-lisp and commonlisp
-              if (l === "emacs-lisp") return "lisp"
-              if (l === "commonlisp") return "lisp"
+              if (l === 'emacs-lisp') return 'lisp'
+              if (l === 'commonlisp') return 'lisp'
               // close enough, right?
-              if (l === "fish") return "bash"
+              if (l === 'fish') return 'bash'
               return l
             }
             return (
@@ -121,7 +189,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
           if (src && src.endsWith('.mp4')) {
             return (
               // @ts-ignore
-              <video autoPlay muted playsInline preload="auto" loop {...props} >
+              <video autoPlay muted playsInline preload="auto" loop {...props}>
                 <source src={src} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>

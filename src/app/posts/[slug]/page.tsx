@@ -1,3 +1,4 @@
+import { Comments } from '@/components/blog/comments'
 import { FormattedDate } from '@/components/blog/date'
 import { getImage } from '@/components/content/images'
 import { CustomMarkdown } from '@/components/markdown/custom-markdown'
@@ -6,7 +7,6 @@ import { getAllPosts, getPostBySlug } from '@/lib/posts'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
-import {Comments} from "@/components/blog/comments";
 
 type PageParams = {
   slug: string
