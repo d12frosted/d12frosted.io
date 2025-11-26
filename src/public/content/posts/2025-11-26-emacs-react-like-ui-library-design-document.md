@@ -9,7 +9,7 @@ Emacs's built-in `widget.el` library provides a foundation for creating interact
 - **Coupled state**: Widget state is mixed with rendering logic.
 - **Limited composition**: Composing widgets into complex layouts is cumbersome.
 
-This library aims to bring React's declarative, component-based model to Emacs, enabling developers to build complex UIs by describing *what* should be rendered, not *how* to update it.
+vui.el aims to bring React's declarative, component-based model to Emacs, enabling developers to build complex UIs by describing *what* should be rendered, not *how* to update it.
 
 ## Core Philosophy
 
@@ -65,7 +65,7 @@ This library aims to bring React's declarative, component-based model to Emacs, 
                               v
 +-----------------------------------------------------------------+
 |                    Component Registry                           |
-|  Stores component definitions (type -> definition)              |
+|  Stores component definitions (type -> definition)               |
 +-----------------------------------------------------------------+
                               |
                               v
@@ -137,7 +137,7 @@ State Change
 
 **Decision 4: Buffer is the "DOM"** - Text content + overlays + text properties - All buffer mutations go through the renderer, never direct
 
-**Decision 5: Build on widget.el for input primitives** - `ui-field` wraps widget field (not raw text + overlays) - `ui-button` wraps widget button - `ui-select` may use widget-choice internally - TAB navigation, field editing come free from widget library - Reconciler updates widget values rather than delete/recreate where possible - We provide: component model, state management, layout, reconciliation - Widget.el provides: battle-tested input handling, keyboard navigation
+**Decision 5: Build on widget.el for input primitives** - `vui-field` wraps widget field (not raw text + overlays) - `vui-button` wraps widget button - `vui-select` may use widget-choice internally - TAB navigation, field editing come free from widget library - Reconciler updates widget values rather than delete/recreate where possible - We provide: component model, state management, layout, reconciliation - Widget.el provides: battle-tested input handling, keyboard navigation
 
 **Decision 6: Two-pass rendering architecture** - **Pass 1 (Measure)**: Calculate dimensions without buffer mutation - Width of each vnode (for tables, boxes) - \[Future: Height for multi-line support in horizontal layouts\] - **Pass 2 (Render)**: Insert into buffer with known dimensions - Even if MVP only uses pass 1 for width, the infrastructure exists for future multi-line support
 
@@ -148,7 +148,7 @@ State Change
 A component definition is a template—it describes *how* to create instances.
 
 ``` elisp
-(cl-defstruct (ui-component-def (:constructor ui-component-def--create))
+(cl-defstruct (vui-component-def (:constructor vui-component-def--create))
   "Definition of a component type."
   name                    ; Symbol identifying this component type
   props-spec              ; List of (:name :type :default :required) plists
@@ -173,19 +173,19 @@ A component definition is a template—it describes *how* to create instances.
 An instance is a live component in the tree with actual props, state, and buffer position.
 
 ``` elisp
-(cl-defstruct (ui-instance (:constructor ui-instance--create))
+(cl-defstruct (vui-instance (:constructor vui-instance--create))
   "A live instance of a component."
   id                      ; Unique identifier (for debugging/tracking)
   key                     ; User-provided key for reconciliation (can be nil)
-  def                     ; Reference to ui-component-def
+  def                     ; Reference to vui-component-def
 
   ;; Data
   props                   ; Plist of current props
   state                   ; Current state (mutable)
 
   ;; Tree structure
-  parent                  ; Parent ui-instance (nil for root)
-  children                ; List of child ui-instances (rendered children)
+  parent                  ; Parent vui-instance (nil for root)
+  children                ; List of child vui-instances (rendered children)
 
   ;; Buffer binding
   buffer                  ; Buffer this instance is rendered into
@@ -209,29 +209,29 @@ The virtual tree is what render functions produce. It's a pure data structure.
 
 ``` elisp
 ;; Base structure for all virtual nodes
-(cl-defstruct (ui-vnode (:constructor nil))
+(cl-defstruct (vui-vnode (:constructor nil))
   "Base type for virtual tree nodes."
   key)                    ; Optional key for reconciliation
 
 ;; A reference to a component (will be instantiated)
-(cl-defstruct (ui-vnode-component (:include ui-vnode)
-                                   (:constructor ui-vnode-component--create))
+(cl-defstruct (vui-vnode-component (:include vui-vnode)
+                                   (:constructor vui-vnode-component--create))
   "Virtual node representing a component."
   type                    ; Symbol  -  the component type name
   props                   ; Plist of props to pass
   children)               ; List of child vnodes (passed as :children prop)
 
 ;; Primitive: raw text
-(cl-defstruct (ui-vnode-text (:include ui-vnode)
-                              (:constructor ui-vnode-text--create))
+(cl-defstruct (vui-vnode-text (:include vui-vnode)
+                              (:constructor vui-vnode-text--create))
   "Virtual node representing plain text."
   content                 ; String
   face                    ; Face or nil
   properties)             ; Additional text properties plist
 
 ;; Primitive: editable field
-(cl-defstruct (ui-vnode-field (:include ui-vnode)
-                               (:constructor ui-vnode-field--create))
+(cl-defstruct (vui-vnode-field (:include vui-vnode)
+                               (:constructor vui-vnode-field--create))
   "Virtual node representing an editable text field."
   value                   ; Current string value
   size                    ; Width in characters (nil = variable)
@@ -240,8 +240,8 @@ The virtual tree is what render functions produce. It's a pure data structure.
   keymap)                 ; Optional keymap for the field
 
 ;; Primitive: clickable button
-(cl-defstruct (ui-vnode-button (:include ui-vnode)
-                                (:constructor ui-vnode-button--create))
+(cl-defstruct (vui-vnode-button (:include vui-vnode)
+                                (:constructor vui-vnode-button--create))
   "Virtual node representing a button."
   label                   ; String or child vnode
   face
@@ -249,19 +249,19 @@ The virtual tree is what render functions produce. It's a pure data structure.
   disabled-p)
 
 ;; Primitive: newline
-(cl-defstruct (ui-vnode-newline (:include ui-vnode)
-                                 (:constructor ui-vnode-newline--create))
+(cl-defstruct (vui-vnode-newline (:include vui-vnode)
+                                 (:constructor vui-vnode-newline--create))
   "Virtual node representing a line break.")
 
 ;; Primitive: horizontal space
-(cl-defstruct (ui-vnode-space (:include ui-vnode)
-                               (:constructor ui-vnode-space--create))
+(cl-defstruct (vui-vnode-space (:include vui-vnode)
+                               (:constructor vui-vnode-space--create))
   "Virtual node representing whitespace."
   width)                  ; Number of spaces
 
 ;; Container: sequence of children (renders children in order)
-(cl-defstruct (ui-vnode-fragment (:include ui-vnode)
-                                  (:constructor ui-vnode-fragment--create))
+(cl-defstruct (vui-vnode-fragment (:include vui-vnode)
+                                  (:constructor vui-vnode-fragment--create))
   "Virtual node that groups children without wrapper."
   children)               ; List of child vnodes
 ```
@@ -271,19 +271,19 @@ The virtual tree is what render functions produce. It's a pure data structure.
 The reconciler produces a list of operations to transform the buffer.
 
 ``` elisp
-(cl-defstruct (ui-op-insert (:constructor ui-op-insert--create))
+(cl-defstruct (vui-op-insert (:constructor vui-op-insert--create))
   "Insert content at position."
   position                ; Buffer position (integer)
   vnode                   ; The vnode to render
   parent-instance)        ; Parent instance for context
 
-(cl-defstruct (ui-op-delete (:constructor ui-op-delete--create))
+(cl-defstruct (vui-op-delete (:constructor vui-op-delete--create))
   "Delete a region."
   start                   ; Start position
   end                     ; End position
   instance)               ; The instance being removed
 
-(cl-defstruct (ui-op-replace (:constructor ui-op-replace--create))
+(cl-defstruct (vui-op-replace (:constructor vui-op-replace--create))
   "Replace content in region."
   start
   end
@@ -291,7 +291,7 @@ The reconciler produces a list of operations to transform the buffer.
   new-vnode
   instance)
 
-(cl-defstruct (ui-op-update-props (:constructor ui-op-update-props--create))
+(cl-defstruct (vui-op-update-props (:constructor vui-op-update-props--create))
   "Update text properties/overlays without changing content."
   start
   end
@@ -299,7 +299,7 @@ The reconciler produces a list of operations to transform the buffer.
   new-props
   instance)
 
-(cl-defstruct (ui-op-move (:constructor ui-op-move--create))
+(cl-defstruct (vui-op-move (:constructor vui-op-move--create))
   "Move a region to a new position (for keyed reordering)."
   from-start
   from-end
@@ -312,14 +312,14 @@ The reconciler produces a list of operations to transform the buffer.
 For passing data deeply without prop drilling.
 
 ``` elisp
-(cl-defstruct (ui-context (:constructor ui-context--create))
+(cl-defstruct (vui-context (:constructor vui-context--create))
   "A context for sharing data across component tree."
   name                    ; Symbol identifying this context
   default-value)          ; Default if no provider found
 
-(cl-defstruct (ui-context-provider (:constructor ui-context-provider--create))
+(cl-defstruct (vui-context-provider (:constructor vui-context-provider--create))
   "Runtime provider binding."
-  context                 ; The ui-context
+  context                 ; The vui-context
   value)                  ; Current provided value
 ```
 
@@ -328,7 +328,7 @@ For passing data deeply without prop drilling.
 Passed through the tree during rendering, carrying inherited state.
 
 ``` elisp
-(cl-defstruct (ui-render-context (:constructor ui-render-context--create))
+(cl-defstruct (vui-render-context (:constructor vui-render-context--create))
   "Context passed during rendering."
 
   ;; Indentation
@@ -349,17 +349,17 @@ Passed through the tree during rendering, carrying inherited state.
   ;; Parent reference (for cursor restoration)
   parent-instance)
 
-(defvar ui--render-context nil
+(defvar vui--render-context nil
   "Dynamically bound during render.")
 
-(defun ui-context-face (type)
+(defun vui-context-face (type)
   "Get face of TYPE (:base, :input, :muted, :accent) from context."
-  (when ui--render-context
+  (when vui--render-context
     (pcase type
-      (:base (ui-render-context-face-base ui--render-context))
-      (:input (ui-render-context-face-input ui--render-context))
-      (:muted (ui-render-context-face-muted ui--render-context))
-      (:accent (ui-render-context-face-accent ui--render-context)))))
+      (:base (vui-render-context-face-base vui--render-context))
+      (:input (vui-render-context-face-input vui--render-context))
+      (:muted (vui-render-context-face-muted vui--render-context))
+      (:accent (vui-render-context-face-accent vui--render-context)))))
 ```
 
 ## Scheduler
@@ -367,7 +367,7 @@ Passed through the tree during rendering, carrying inherited state.
 Manages batched updates.
 
 ``` elisp
-(cl-defstruct (ui-scheduler (:constructor ui-scheduler--create))
+(cl-defstruct (vui-scheduler (:constructor vui-scheduler--create))
   "Manages the render queue."
   dirty-roots             ; Set of root instances needing re-render
   pending-effects         ; List of (instance . effect-fn) to run after commit
@@ -409,25 +409,25 @@ Manages batched updates.
   :render
   (if editing
       ;; Editing mode
-      (ui-fragment
-        (ui-field :value edit-text
+      (vui-fragment
+        (vui-field :value edit-text
                   :on-change (lambda (v) (setf edit-text v))
                   :keymap todo-edit-keymap)
-        (ui-text " ")
-        (ui-button :label "Cancel"
+        (vui-text " ")
+        (vui-button :label "Cancel"
                    :on-click (lambda ()
                                (setf editing nil)
                                (setf edit-text text))))
     ;; Display mode
-    (ui-fragment
-      (ui-button :label (if done "[x]" "[ ]")
+    (vui-fragment
+      (vui-button :label (if done "[x]" "[ ]")
                  :on-click on-toggle)
-      (ui-text " ")
-      (ui-text text :face (if done 'shadow nil))
+      (vui-text " ")
+      (vui-text text :face (if done 'shadow nil))
       (when on-delete
-        (ui-fragment
-          (ui-text " ")
-          (ui-button :label "×" :on-click on-delete))))))
+        (vui-fragment
+          (vui-text " ")
+          (vui-button :label "×" :on-click on-delete))))))
 ```
 
 ## Macro Expansion
@@ -437,8 +437,8 @@ The `defcomponent` macro expands to:
 ``` elisp
 (progn
   ;; Register the component definition
-  (ui-register-component
-   (ui-component-def--create
+  (vui-register-component
+   (vui-component-def--create
     :name 'todo-item
     :docstring "A single todo item with checkbox and text."
     :props-spec '((:name text :type string :required t)
@@ -465,7 +465,7 @@ The `defcomponent` macro expands to:
   ;; Define a constructor function for convenience
   (defun todo-item (&rest props)
     "Create a todo-item component. [Generated]"
-    (ui-vnode-component--create
+    (vui-vnode-component--create
      :type 'todo-item
      :props props
      :key (plist-get props :key))))
@@ -484,7 +484,7 @@ Each binding is (NAME INITIAL-VALUE) or (NAME INITIAL-VALUE SETTER-NAME).
 Example:
   (let-state ((count 0)
               (name \"\" set-name))
-    (ui-button :on-click (lambda () (cl-incf count))))"
+    (vui-button :on-click (lambda () (cl-incf count))))"
   ...)
 ```
 
@@ -492,50 +492,50 @@ Expansion:
 
 ``` elisp
 (let-state ((count 0))
-  (ui-button :on-click (lambda () (cl-incf count))))
+  (vui-button :on-click (lambda () (cl-incf count))))
 
 ;; Expands to:
-(let* ((--ui-instance-- (ui--current-instance))
-       (count (plist-get (ui-instance-state --ui-instance--) :count)))
+(let* ((--vui-instance-- (vui--current-instance))
+       (count (plist-get (vui-instance-state --vui-instance--) :count)))
   (cl-symbol-macrolet
-      ((count (ui--state-accessor --ui-instance-- :count)))
-    (ui-button :on-click (lambda () (cl-incf count)))))
+      ((count (vui--state-accessor --vui-instance-- :count)))
+    (vui-button :on-click (lambda () (cl-incf count)))))
 ```
 
-Where `ui--state-accessor` is a generalised variable that: 1. Reads from instance state 2. On `setf`, updates state and marks instance dirty
+Where `vui--state-accessor` is a generalised variable that: 1. Reads from instance state 2. On `setf`, updates state and marks instance dirty
 
 ## Primitive Constructors
 
 ``` elisp
-(defun ui-text (content &rest props)
+(defun vui-text (content &rest props)
   "Create a text vnode.
 
 CONTENT is the string to display.
 PROPS can include :face, :key, :properties."
-  (ui-vnode-text--create
+  (vui-vnode-text--create
    :key (plist-get props :key)
    :content content
    :face (plist-get props :face)
    :properties (plist-get props :properties)))
 
-(defun ui-button (&rest props)
+(defun vui-button (&rest props)
   "Create a button vnode.
 
 PROPS must include :label, :on-click.
 Optional: :face, :disabled, :key."
-  (ui-vnode-button--create
+  (vui-vnode-button--create
    :key (plist-get props :key)
    :label (plist-get props :label)
    :face (plist-get props :face)
    :on-click (plist-get props :on-click)
    :disabled-p (plist-get props :disabled)))
 
-(defun ui-field (&rest props)
+(defun vui-field (&rest props)
   "Create an editable field vnode.
 
 PROPS should include :value, :on-change.
 Optional: :size, :face, :keymap, :key."
-  (ui-vnode-field--create
+  (vui-vnode-field--create
    :key (plist-get props :key)
    :value (or (plist-get props :value) "")
    :size (plist-get props :size)
@@ -543,22 +543,22 @@ Optional: :size, :face, :keymap, :key."
    :on-change (plist-get props :on-change)
    :keymap (plist-get props :keymap)))
 
-(defun ui-fragment (&rest children)
+(defun vui-fragment (&rest children)
   "Group multiple vnodes without adding wrapper text.
 
 Filters out nil children for conditional rendering."
-  (ui-vnode-fragment--create
+  (vui-vnode-fragment--create
    :children (remq nil (flatten-list children))))
 
-(defun ui-newline ()
+(defun vui-newline ()
   "Create a line break vnode."
-  (ui-vnode-newline--create))
+  (vui-vnode-newline--create))
 
-(defun ui-space (&optional width)
+(defun vui-space (&optional width)
   "Create horizontal whitespace.
 
 WIDTH defaults to 1."
-  (ui-vnode-space--create :width (or width 1)))
+  (vui-vnode-space--create :width (or width 1)))
 ```
 
 ## Input Capturing Primitives
@@ -567,8 +567,8 @@ Beyond inline-editable fields, we need components that capture input via prompts
 
 ``` elisp
 ;; Selection from options (uses completing-read)
-(cl-defstruct (ui-vnode-select (:include ui-vnode)
-                                (:constructor ui-vnode-select--create))
+(cl-defstruct (vui-vnode-select (:include vui-vnode)
+                                (:constructor vui-vnode-select--create))
   "Selection widget using completing-read."
   value                   ; Current selected value
   options                 ; List of options (strings or (display . value) pairs)
@@ -577,7 +577,7 @@ Beyond inline-editable fields, we need components that capture input via prompts
   require-match           ; Must select from options?
   face)
 
-(defun ui-select (&rest props)
+(defun vui-select (&rest props)
   "Create a selection vnode.
 
 Renders as a button showing current value. When clicked,
@@ -589,7 +589,7 @@ PROPS:
   :on-change - Called with new selection
   :prompt - Minibuffer prompt (default: \"Select: \")
   :require-match - If t, must choose from options"
-  (ui-vnode-select--create
+  (vui-vnode-select--create
    :key (plist-get props :key)
    :value (plist-get props :value)
    :options (plist-get props :options)
@@ -598,20 +598,20 @@ PROPS:
    :require-match (plist-get props :require-match)
    :face (plist-get props :face)))
 
-(defun ui--render-select (vnode parent-instance)
+(defun vui--render-select (vnode parent-instance)
   "Render a select as a clickable button."
-  (let* ((value (ui-vnode-select-value vnode))
-         (options (ui-vnode-select-options vnode))
-         (on-change (ui-vnode-select-on-change vnode))
-         (prompt (ui-vnode-select-prompt vnode))
-         (require-match (ui-vnode-select-require-match vnode))
+  (let* ((value (vui-vnode-select-value vnode))
+         (options (vui-vnode-select-options vnode))
+         (on-change (vui-vnode-select-on-change vnode))
+         (prompt (vui-vnode-select-prompt vnode))
+         (require-match (vui-vnode-select-require-match vnode))
          (display-value (or value "[none]")))
 
     ;; Render as button
-    (ui--render-button
-     (ui-vnode-button--create
-      :label (format "%s ▾" display-value)
-      :face (or (ui-vnode-select-face vnode) 'button)
+    (vui--render-button
+     (vui-vnode-button--create
+      :label (format "%s v" display-value)
+      :face (or (vui-vnode-select-face vnode) 'button)
       :on-click (lambda ()
                   (let ((choice (completing-read
                                  prompt
@@ -624,8 +624,8 @@ PROPS:
      parent-instance)))
 
 ;; Number input with increment/decrement
-(cl-defstruct (ui-vnode-number (:include ui-vnode)
-                                (:constructor ui-vnode-number--create))
+(cl-defstruct (vui-vnode-number (:include vui-vnode)
+                                (:constructor vui-vnode-number--create))
   "Numeric input with optional spinner."
   value                   ; Current number
   min                     ; Minimum value (optional)
@@ -635,9 +635,9 @@ PROPS:
   spinner-p               ; Show +/- buttons?
   face)
 
-(defun ui-number (&rest props)
+(defun vui-number (&rest props)
   "Create a number input vnode."
-  (ui-vnode-number--create
+  (vui-vnode-number--create
    :key (plist-get props :key)
    :value (or (plist-get props :value) 0)
    :min (plist-get props :min)
@@ -648,17 +648,17 @@ PROPS:
    :face (plist-get props :face)))
 
 ;; Checkbox (boolean toggle)
-(cl-defstruct (ui-vnode-checkbox (:include ui-vnode)
-                                  (:constructor ui-vnode-checkbox--create))
+(cl-defstruct (vui-vnode-checkbox (:include vui-vnode)
+                                  (:constructor vui-vnode-checkbox--create))
   "Boolean checkbox."
   checked-p
   on-change
   label
   face)
 
-(defun ui-checkbox (&rest props)
+(defun vui-checkbox (&rest props)
   "Create a checkbox vnode."
-  (ui-vnode-checkbox--create
+  (vui-vnode-checkbox--create
    :key (plist-get props :key)
    :checked-p (plist-get props :checked)
    :on-change (plist-get props :on-change)
@@ -671,13 +671,13 @@ PROPS:
 Components can be hidden without being destroyed, preserving their state:
 
 ``` elisp
-(cl-defstruct (ui-vnode-hidden (:include ui-vnode)
-                                (:constructor ui-vnode-hidden--create))
+(cl-defstruct (vui-vnode-hidden (:include vui-vnode)
+                                (:constructor vui-vnode-hidden--create))
   "Container that can hide its children."
   visible-p               ; Whether children are rendered
   child)                  ; The child vnode
 
-(defun ui-hidden (visible-p child)
+(defun vui-hidden (visible-p child)
   "Conditionally hide CHILD while preserving its instance.
 
 Unlike (when visible-p child), the instance is NOT destroyed
@@ -685,26 +685,26 @@ when hidden. State is preserved, and effects continue running.
 
 Use this when you want to toggle visibility frequently without
 losing component state."
-  (ui-vnode-hidden--create
+  (vui-vnode-hidden--create
    :visible-p visible-p
    :child child))
 
-(defun ui--render-hidden (vnode parent-instance)
+(defun vui--render-hidden (vnode parent-instance)
   "Render a hidden container."
-  (let ((visible (ui-vnode-hidden-visible-p vnode))
-        (child (ui-vnode-hidden-child vnode)))
+  (let ((visible (vui-vnode-hidden-visible-p vnode))
+        (child (vui-vnode-hidden-child vnode)))
 
     (if visible
         ;; Render child normally
-        (ui--instantiate-and-render child parent-instance)
+        (vui--instantiate-and-render child parent-instance)
 
       ;; Create instance but don't render content
       ;; Markers point to same position (zero-width region)
       (let* ((start (point-marker))
-             (instance (ui--create-hidden-instance child parent-instance)))
-        (setf (ui-instance-region-start instance) start)
-        (setf (ui-instance-region-end instance) start)
-        (setf (ui-instance-visible-p instance) nil)
+             (instance (vui--create-hidden-instance child parent-instance)))
+        (setf (vui-instance-region-start instance) start)
+        (setf (vui-instance-region-end instance) start)
+        (setf (vui-instance-visible-p instance) nil)
         instance))))
 
 ;; Hidden instances still have state and can run effects
@@ -719,11 +719,11 @@ losing component state."
   (detail-panel :data data))
 
 ;; Hidden: instance preserved, just not rendered
-(ui-hidden show-details
+(vui-hidden show-details
   (detail-panel :data data))
 ```
 
-Use `ui-hidden` when: - Toggling visibility frequently (tabs, accordions) - Component has expensive initialization - You want to preserve user input in hidden forms
+Use `vui-hidden` when: - Toggling visibility frequently (tabs, accordions) - Component has expensive initialization - You want to preserve user input in hidden forms
 
 # Reconciliation Algorithm
 
@@ -738,80 +738,80 @@ For Emacs, we add a third concern: 3. **Preserve cursor position** — track whi
 ## Algorithm Structure
 
 ``` example
-reconcile(old-instance, new-vnode) → list of operations
+reconcile(old-instance, new-vnode) -> list of operations
 
 1. If new-vnode is nil:
-   → Return [DELETE old-instance]
+   -> Return [DELETE old-instance]
 
 2. If old-instance is nil:
-   → Return [INSERT new-vnode]
+   -> Return [INSERT new-vnode]
 
-3. If types differ (old-instance.type ≠ new-vnode.type):
-   → Return [DELETE old-instance, INSERT new-vnode]
+3. If types differ (old-instance.type != new-vnode.type):
+   -> Return [DELETE old-instance, INSERT new-vnode]
 
 4. If types match:
    a. Check should-update (if false, skip with no ops)
-   b. Diff props → property update operations
+   b. Diff props -> property update operations
    c. Render new children from new-vnode
    d. Reconcile old children with new children
-   → Return combined operations
+   -> Return combined operations
 ```
 
 ## Detailed Reconciliation Logic
 
 ``` elisp
-(defun ui--reconcile (old-instance new-vnode parent-instance)
+(defun vui--reconcile (old-instance new-vnode parent-instance)
   "Reconcile OLD-INSTANCE with NEW-VNODE.
 
-Returns a list of ui-op-* structures.
+Returns a list of vui-op-* structures.
 PARENT-INSTANCE is used for context when creating new instances."
   (cond
    ;; Case 1: Nothing new  -  delete old
    ((null new-vnode)
     (if old-instance
-        (list (ui-op-delete--create
-               :start (marker-position (ui-instance-region-start old-instance))
-               :end (marker-position (ui-instance-region-end old-instance))
+        (list (vui-op-delete--create
+               :start (marker-position (vui-instance-region-start old-instance))
+               :end (marker-position (vui-instance-region-end old-instance))
                :instance old-instance))
       nil))
 
    ;; Case 2: Nothing old  -  insert new
    ((null old-instance)
-    (list (ui-op-insert--create
-           :position (ui--insertion-point parent-instance)
+    (list (vui-op-insert--create
+           :position (vui--insertion-point parent-instance)
            :vnode new-vnode
            :parent-instance parent-instance)))
 
    ;; Case 3: Type mismatch  -  replace entirely
-   ((not (ui--same-type-p old-instance new-vnode))
-    (list (ui-op-delete--create
-           :start (marker-position (ui-instance-region-start old-instance))
-           :end (marker-position (ui-instance-region-end old-instance))
+   ((not (vui--same-type-p old-instance new-vnode))
+    (list (vui-op-delete--create
+           :start (marker-position (vui-instance-region-start old-instance))
+           :end (marker-position (vui-instance-region-end old-instance))
            :instance old-instance)
-          (ui-op-insert--create
-           :position (marker-position (ui-instance-region-start old-instance))
+          (vui-op-insert--create
+           :position (marker-position (vui-instance-region-start old-instance))
            :vnode new-vnode
            :parent-instance parent-instance)))
 
    ;; Case 4: Same type  -  diff and recurse
    (t
-    (ui--reconcile-same-type old-instance new-vnode))))
+    (vui--reconcile-same-type old-instance new-vnode))))
 
-(defun ui--same-type-p (instance vnode)
+(defun vui--same-type-p (instance vnode)
   "Check if INSTANCE and VNODE represent the same component type."
   (cond
    ;; Component vnodes
-   ((ui-vnode-component-p vnode)
-    (and (ui-instance-def instance)
-         (eq (ui-component-def-name (ui-instance-def instance))
-             (ui-vnode-component-type vnode))))
+   ((vui-vnode-component-p vnode)
+    (and (vui-instance-def instance)
+         (eq (vui-component-def-name (vui-instance-def instance))
+             (vui-vnode-component-type vnode))))
    ;; Primitive vnodes  -  check struct type
-   ((ui-vnode-text-p vnode)
-    (ui--primitive-text-p instance))
-   ((ui-vnode-button-p vnode)
-    (ui--primitive-button-p instance))
-   ((ui-vnode-field-p vnode)
-    (ui--primitive-field-p instance))
+   ((vui-vnode-text-p vnode)
+    (vui--primitive-text-p instance))
+   ((vui-vnode-button-p vnode)
+    (vui--primitive-button-p instance))
+   ((vui-vnode-field-p vnode)
+    (vui--primitive-field-p instance))
    ;; etc.
    (t nil)))
 ```
@@ -819,48 +819,48 @@ PARENT-INSTANCE is used for context when creating new instances."
 ## Reconciling Same-Type Components
 
 ``` elisp
-(defun ui--reconcile-same-type (old-instance new-vnode)
+(defun vui--reconcile-same-type (old-instance new-vnode)
   "Reconcile when types match. Returns list of operations."
   (let ((ops nil)
-        (old-props (ui-instance-props old-instance))
-        (new-props (ui-vnode-component-props new-vnode))
-        (old-state (ui-instance-state old-instance)))
+        (old-props (vui-instance-props old-instance))
+        (new-props (vui-vnode-component-props new-vnode))
+        (old-state (vui-instance-state old-instance)))
 
     ;; Check should-update optimisation
-    (when (ui--should-update-p old-instance old-props new-props old-state)
+    (when (vui--should-update-p old-instance old-props new-props old-state)
 
       ;; Update instance props (in place)
-      (setf (ui-instance-props old-instance) new-props)
+      (setf (vui-instance-props old-instance) new-props)
 
       ;; Re-render to get new child vtree
-      (let* ((def (ui-instance-def old-instance))
-             (render-fn (ui-component-def-render-fn def))
+      (let* ((def (vui-instance-def old-instance))
+             (render-fn (vui-component-def-render-fn def))
              (new-vtree (funcall render-fn new-props old-state))
-             (old-vtree (ui-instance-last-vtree old-instance)))
+             (old-vtree (vui-instance-last-vtree old-instance)))
 
         ;; Reconcile children
-        (setq ops (ui--reconcile-children
-                   (ui-instance-children old-instance)
-                   (ui--vtree-children new-vtree)
+        (setq ops (vui--reconcile-children
+                   (vui-instance-children old-instance)
+                   (vui--vtree-children new-vtree)
                    old-instance))
 
         ;; Cache new vtree
-        (setf (ui-instance-last-vtree old-instance) new-vtree)
-        (setf (ui-instance-last-props old-instance) new-props)
-        (setf (ui-instance-last-state old-instance) old-state)))
+        (setf (vui-instance-last-vtree old-instance) new-vtree)
+        (setf (vui-instance-last-props old-instance) new-props)
+        (setf (vui-instance-last-state old-instance) old-state)))
 
     ops))
 
-(defun ui--should-update-p (instance old-props new-props old-state)
+(defun vui--should-update-p (instance old-props new-props old-state)
   "Determine if INSTANCE should re-render."
-  (let ((def (ui-instance-def instance)))
-    (if-let ((should-update-fn (ui-component-def-should-update-fn def)))
+  (let ((def (vui-instance-def instance)))
+    (if-let ((should-update-fn (vui-component-def-should-update-fn def)))
         ;; Custom should-update function
         (funcall should-update-fn old-props new-props
-                 old-state (ui-instance-state instance))
+                 old-state (vui-instance-state instance))
       ;; Default: update if props or state changed
       (or (not (equal old-props new-props))
-          (not (equal old-state (ui-instance-state instance)))))))
+          (not (equal old-state (vui-instance-state instance)))))))
 ```
 
 ## Reconciling Children Lists (The Key Algorithm)
@@ -868,7 +868,7 @@ PARENT-INSTANCE is used for context when creating new instances."
 This is where keys become critical. Without keys, inserting at the beginning of a list would cause all children to be "replaced".
 
 ``` elisp
-(defun ui--reconcile-children (old-children new-vnodes parent-instance)
+(defun vui--reconcile-children (old-children new-vnodes parent-instance)
   "Reconcile list of OLD-CHILDREN with NEW-VNODES.
 
 Uses keys for efficient matching. Returns list of operations."
@@ -880,7 +880,7 @@ Uses keys for efficient matching. Returns list of operations."
 
     ;; Index old children by key
     (dolist (child old-children)
-      (let ((key (ui-instance-key child)))
+      (let ((key (vui-instance-key child)))
         (if key
             (puthash key child old-keyed)
           (push child old-unkeyed))))
@@ -888,7 +888,7 @@ Uses keys for efficient matching. Returns list of operations."
 
     ;; Index new vnodes by key
     (dolist (vnode new-vnodes)
-      (let ((key (ui-vnode-key vnode)))
+      (let ((key (vui-vnode-key vnode)))
         (if key
             (puthash key vnode new-keyed)
           (push vnode new-unkeyed))))
@@ -900,10 +900,10 @@ Uses keys for efficient matching. Returns list of operations."
                  (if old-child
                      ;; Key exists in both  -  reconcile
                      (progn
-                       (push (ui--reconcile old-child new-vnode parent-instance) ops)
+                       (push (vui--reconcile old-child new-vnode parent-instance) ops)
                        (remhash key old-keyed))
                    ;; New key  -  insert
-                   (push (ui-op-insert--create
+                   (push (vui-op-insert--create
                           :vnode new-vnode
                           :parent-instance parent-instance)
                          ops))))
@@ -911,10 +911,10 @@ Uses keys for efficient matching. Returns list of operations."
 
     ;; Remaining old keyed children were removed
     (maphash (lambda (_key old-child)
-               (push (ui-op-delete--create
+               (push (vui-op-delete--create
                       :instance old-child
-                      :start (marker-position (ui-instance-region-start old-child))
-                      :end (marker-position (ui-instance-region-end old-child)))
+                      :start (marker-position (vui-instance-region-start old-child))
+                      :end (marker-position (vui-instance-region-end old-child)))
                      ops))
              old-keyed)
 
@@ -924,7 +924,7 @@ Uses keys for efficient matching. Returns list of operations."
       (while (or old-iter new-iter)
         (let ((old-child (car old-iter))
               (new-vnode (car new-iter)))
-          (push (ui--reconcile old-child new-vnode parent-instance) ops)
+          (push (vui--reconcile old-child new-vnode parent-instance) ops)
           (setq old-iter (cdr old-iter))
           (setq new-iter (cdr new-iter)))))
 
@@ -937,28 +937,28 @@ Uses keys for efficient matching. Returns list of operations."
 Primitive vnodes (text, button, field) have simpler reconciliation:
 
 ``` elisp
-(defun ui--reconcile-primitive-text (old-instance new-vnode)
+(defun vui--reconcile-primitive-text (old-instance new-vnode)
   "Reconcile a text primitive."
-  (let ((old-content (ui--primitive-text-content old-instance))
-        (new-content (ui-vnode-text-content new-vnode))
-        (old-face (ui--primitive-text-face old-instance))
-        (new-face (ui-vnode-text-face new-vnode))
-        (start (marker-position (ui-instance-region-start old-instance)))
-        (end (marker-position (ui-instance-region-end old-instance))))
+  (let ((old-content (vui--primitive-text-content old-instance))
+        (new-content (vui-vnode-text-content new-vnode))
+        (old-face (vui--primitive-text-face old-instance))
+        (new-face (vui-vnode-text-face new-vnode))
+        (start (marker-position (vui-instance-region-start old-instance)))
+        (end (marker-position (vui-instance-region-end old-instance))))
 
     (cond
      ;; Content changed  -  replace text
      ((not (string= old-content new-content))
-      (list (ui-op-replace--create
+      (list (vui-op-replace--create
              :start start
              :end end
-             :old-vnode (ui--instance-to-vnode old-instance)
+             :old-vnode (vui--instance-to-vnode old-instance)
              :new-vnode new-vnode
              :instance old-instance)))
 
      ;; Only face changed  -  update properties
      ((not (equal old-face new-face))
-      (list (ui-op-update-props--create
+      (list (vui-op-update-props--create
              :start start
              :end end
              :old-props (list :face old-face)
@@ -968,27 +968,27 @@ Primitive vnodes (text, button, field) have simpler reconciliation:
      ;; No change
      (t nil))))
 
-(defun ui--reconcile-primitive-field (old-instance new-vnode)
+(defun vui--reconcile-primitive-field (old-instance new-vnode)
   "Reconcile an editable field primitive."
-  (let ((old-value (ui--primitive-field-value old-instance))
-        (new-value (ui-vnode-field-value new-vnode))
-        (start (marker-position (ui-instance-region-start old-instance)))
-        (end (marker-position (ui-instance-region-end old-instance))))
+  (let ((old-value (vui--primitive-field-value old-instance))
+        (new-value (vui-vnode-field-value new-vnode))
+        (start (marker-position (vui-instance-region-start old-instance)))
+        (end (marker-position (vui-instance-region-end old-instance))))
 
     ;; Fields are special: user might be editing
     ;; Only update if value changed AND field is not focused
     (if (and (not (string= old-value new-value))
-             (not (ui--field-focused-p old-instance)))
-        (list (ui-op-replace--create
+             (not (vui--field-focused-p old-instance)))
+        (list (vui-op-replace--create
                :start start
                :end end
-               :old-vnode (ui--instance-to-vnode old-instance)
+               :old-vnode (vui--instance-to-vnode old-instance)
                :new-vnode new-vnode
                :instance old-instance))
       ;; Update callbacks even if value unchanged
       (progn
-        (setf (ui--primitive-field-on-change old-instance)
-              (ui-vnode-field-on-change new-vnode))
+        (setf (vui--primitive-field-on-change old-instance)
+              (vui-vnode-field-on-change new-vnode))
         nil))))
 ```
 
@@ -997,7 +997,7 @@ Primitive vnodes (text, button, field) have simpler reconciliation:
 Operations must be applied in the correct order to maintain valid buffer positions:
 
 ``` elisp
-(defun ui--sort-operations (ops)
+(defun vui--sort-operations (ops)
   "Sort operations for safe application.
 
 Deletions are sorted by position descending (delete from end first).
@@ -1011,21 +1011,21 @@ This prevents position shifts from invalidating later operations."
     ;; Categorise
     (dolist (op ops)
       (cond
-       ((ui-op-delete-p op) (push op deletes))
-       ((ui-op-insert-p op) (push op inserts))
-       ((ui-op-replace-p op) (push op updates))
-       ((ui-op-update-props-p op) (push op updates))
-       ((ui-op-move-p op) (push op moves))))
+       ((vui-op-delete-p op) (push op deletes))
+       ((vui-op-insert-p op) (push op inserts))
+       ((vui-op-replace-p op) (push op updates))
+       ((vui-op-update-props-p op) (push op updates))
+       ((vui-op-move-p op) (push op moves))))
 
     ;; Sort
     (setq deletes (sort deletes
                         (lambda (a b)
-                          (> (ui-op-delete-start a)
-                             (ui-op-delete-start b)))))
+                          (> (vui-op-delete-start a)
+                             (vui-op-delete-start b)))))
     (setq inserts (sort inserts
                         (lambda (a b)
-                          (< (ui-op-insert-position a)
-                             (ui-op-insert-position b)))))
+                          (< (vui-op-insert-position a)
+                             (vui-op-insert-position b)))))
 
     ;; Order: deletes first (from end), then updates, then inserts
     (append deletes updates inserts moves)))
@@ -1045,8 +1045,8 @@ The key insight from React: by assuming different types produce different trees,
 
 In React/browser contexts, focus management is relatively simple — elements have a `focus()` method and the browser tracks which element is focused. In Emacs, **point** (the cursor position) is the primary interaction mechanism, and it's always somewhere in the buffer.
 
-When we re-render components: - Text may be inserted before point → point should stay on the same logical content - Text may be deleted → point might need to move to a valid position
-- The component containing point might be replaced → we need to restore to equivalent position - The component containing point might be deleted entirely → we need a fallback
+When we re-render components: - Text may be inserted before point -\> point should stay on the same logical content - Text may be deleted -\> point might need to move to a valid position
+- The component containing point might be replaced -\> we need to restore to equivalent position - The component containing point might be deleted entirely -\> we need a fallback
 
 ## Goals
 
@@ -1060,11 +1060,11 @@ When we re-render components: - Text may be inserted before point → point shou
 Before any buffer mutations, we capture the cursor context:
 
 ``` elisp
-(cl-defstruct (ui-cursor-context (:constructor ui-cursor-context--create))
+(cl-defstruct (vui-cursor-context (:constructor vui-cursor-context--create))
   "Captured cursor state for restoration after re-render."
 
   ;; Which instance owns point?
-  instance                ; The leaf ui-instance containing point
+  instance                ; The leaf vui-instance containing point
   instance-path           ; List of ancestor instances (root first)
 
   ;; Position within the instance
@@ -1089,61 +1089,61 @@ Before any buffer mutations, we capture the cursor context:
 ## Capturing Cursor Context
 
 ``` elisp
-(defun ui--capture-cursor-context (root-instance)
+(defun vui--capture-cursor-context (root-instance)
   "Capture cursor context before re-render.
 
-Returns a ui-cursor-context or nil if point is outside ROOT-INSTANCE."
+Returns a vui-cursor-context or nil if point is outside ROOT-INSTANCE."
   (let ((pt (point)))
     ;; Check if point is within root
-    (when (and (>= pt (marker-position (ui-instance-region-start root-instance)))
-               (<= pt (marker-position (ui-instance-region-end root-instance))))
+    (when (and (>= pt (marker-position (vui-instance-region-start root-instance)))
+               (<= pt (marker-position (vui-instance-region-end root-instance))))
 
-      (let ((instance (ui--find-leaf-instance-at-point root-instance pt))
+      (let ((instance (vui--find-leaf-instance-at-point root-instance pt))
             (path nil))
         (when instance
           ;; Build path from root to instance
           (let ((current instance))
             (while current
               (push current path)
-              (setq current (ui-instance-parent current))))
+              (setq current (vui-instance-parent current))))
 
-          (ui-cursor-context--create
+          (vui-cursor-context--create
            :instance instance
            :instance-path path
            :offset-from-start (- pt (marker-position
-                                     (ui-instance-region-start instance)))
+                                     (vui-instance-region-start instance)))
            :offset-from-end (- (marker-position
-                                (ui-instance-region-end instance)) pt)
-           :field-p (ui--primitive-field-p instance)
-           :field-value (when (ui--primitive-field-p instance)
-                          (ui--primitive-field-value instance))
-           :field-cursor-pos (when (ui--primitive-field-p instance)
+                                (vui-instance-region-end instance)) pt)
+           :field-p (vui--primitive-field-p instance)
+           :field-value (when (vui--primitive-field-p instance)
+                          (vui--primitive-field-value instance))
+           :field-cursor-pos (when (vui--primitive-field-p instance)
                                (- pt (marker-position
-                                      (ui-instance-region-start instance))))
-           :sibling-index (ui--sibling-index instance)
-           :sibling-key (ui-instance-key instance)
+                                      (vui-instance-region-start instance))))
+           :sibling-index (vui--sibling-index instance)
+           :sibling-key (vui-instance-key instance)
            :original-point pt
            :original-mark (when (mark t) (marker-position (mark-marker)))
            :mark-active-p mark-active))))))
 
-(defun ui--find-leaf-instance-at-point (instance pt)
+(defun vui--find-leaf-instance-at-point (instance pt)
   "Find the deepest (leaf) instance containing PT."
-  (let ((start (marker-position (ui-instance-region-start instance)))
-        (end (marker-position (ui-instance-region-end instance))))
+  (let ((start (marker-position (vui-instance-region-start instance)))
+        (end (marker-position (vui-instance-region-end instance))))
     (when (and (>= pt start) (<= pt end))
       ;; Check children first (depth-first)
       (let ((found nil))
-        (dolist (child (ui-instance-children instance))
+        (dolist (child (vui-instance-children instance))
           (when (and (not found)
-                     (>= pt (marker-position (ui-instance-region-start child)))
-                     (<= pt (marker-position (ui-instance-region-end child))))
-            (setq found (ui--find-leaf-instance-at-point child pt))))
+                     (>= pt (marker-position (vui-instance-region-start child)))
+                     (<= pt (marker-position (vui-instance-region-end child))))
+            (setq found (vui--find-leaf-instance-at-point child pt))))
         (or found instance)))))
 
-(defun ui--sibling-index (instance)
+(defun vui--sibling-index (instance)
   "Return the index of INSTANCE among its parent's children."
-  (when-let ((parent (ui-instance-parent instance)))
-    (cl-position instance (ui-instance-children parent) :test #'eq)))
+  (when-let ((parent (vui-instance-parent instance)))
+    (cl-position instance (vui-instance-children parent) :test #'eq)))
 ```
 
 ## Restoring Cursor Context
@@ -1153,107 +1153,107 @@ After mutations are applied, we restore point using the captured context.
 **Key principle**: When the component owning cursor is destroyed, place cursor at the position where that component *was* — i.e., at the start of where the destroyed component lived within its parent. This feels most natural to users.
 
 ``` elisp
-(defun ui--restore-cursor-context (context root-instance)
+(defun vui--restore-cursor-context (context root-instance)
   "Restore cursor position from CONTEXT after re-render.
 
 Uses a series of fallback strategies if the original instance is gone.
 
 Strategy priority:
-1. Find same instance by key path → restore offset within it
-2. Find instance by structural path → restore offset
-3. Instance destroyed → go to where it WAS (parent's child position)
-4. Parent also destroyed → original position if valid
-5. Everything gone → start of root"
+1. Find same instance by key path -> restore offset within it
+2. Find instance by structural path -> restore offset
+3. Instance destroyed -> go to where it WAS (parent's child position)
+4. Parent also destroyed -> original position if valid
+5. Everything gone -> start of root"
   (when context
     (let ((restored nil))
 
       ;; Strategy 1: Find instance by key path
-      (setq restored (ui--restore-by-key-path context root-instance))
+      (setq restored (vui--restore-by-key-path context root-instance))
 
       ;; Strategy 2: Find instance by structural path
       (unless restored
-        (setq restored (ui--restore-by-structural-path context root-instance)))
+        (setq restored (vui--restore-by-structural-path context root-instance)))
 
       ;; Strategy 3: Component destroyed  -  go to where it was in parent
       ;; This is the most user-friendly behavior: cursor stays at the
       ;; "gap" where the component used to be
       (unless restored
-        (setq restored (ui--restore-to-destroyed-position context root-instance)))
+        (setq restored (vui--restore-to-destroyed-position context root-instance)))
 
       ;; Strategy 4: Use original position if still valid
       (unless restored
-        (setq restored (ui--restore-by-original-position context root-instance)))
+        (setq restored (vui--restore-by-original-position context root-instance)))
 
       ;; Strategy 5: Go to start of root
       (unless restored
-        (goto-char (marker-position (ui-instance-region-start root-instance))))
+        (goto-char (marker-position (vui-instance-region-start root-instance))))
 
       ;; Restore mark if it was active
-      (when (ui-cursor-context-mark-active-p context)
-        (ui--restore-mark context root-instance)))))
+      (when (vui-cursor-context-mark-active-p context)
+        (vui--restore-mark context root-instance)))))
 
-(defun ui--restore-to-destroyed-position (context root-instance)
+(defun vui--restore-to-destroyed-position (context root-instance)
   "Place cursor where the destroyed component was.
 
 Finds the parent, then positions at the start of where the Nth child
 would be (based on original sibling index)."
-  (let* ((path (ui-cursor-context-instance-path context))
+  (let* ((path (vui-cursor-context-instance-path context))
          (parent-path (butlast path))
-         (sibling-idx (ui-cursor-context-sibling-index context)))
+         (sibling-idx (vui-cursor-context-sibling-index context)))
 
-    (when-let ((parent (ui--find-by-path parent-path root-instance)))
-      (let ((children (ui-instance-children parent)))
+    (when-let ((parent (vui--find-by-path parent-path root-instance)))
+      (let ((children (vui-instance-children parent)))
         (cond
          ;; Parent has children  -  go to the one at our old index (or last)
          (children
           (let* ((target-idx (min sibling-idx (1- (length children))))
                  (target (nth target-idx children)))
-            (goto-char (marker-position (ui-instance-region-start target)))
+            (goto-char (marker-position (vui-instance-region-start target)))
             t))
 
          ;; Parent has no children  -  go to parent's content start
          (t
-          (goto-char (marker-position (ui-instance-region-start parent)))
+          (goto-char (marker-position (vui-instance-region-start parent)))
           t))))))
 
-(defun ui--restore-by-key-path (context root-instance)
+(defun vui--restore-by-key-path (context root-instance)
   "Try to find instance by following keys in the path."
-  (let ((path (ui-cursor-context-instance-path context))
+  (let ((path (vui-cursor-context-instance-path context))
         (current root-instance))
 
     ;; Walk down the path, matching by key where possible
     (catch 'failed
       (dolist (path-instance (cdr path)) ; Skip root
-        (let ((key (ui-instance-key path-instance))
+        (let ((key (vui-instance-key path-instance))
               (found nil))
           (if key
               ;; Look for child with same key
-              (dolist (child (ui-instance-children current))
-                (when (equal (ui-instance-key child) key)
+              (dolist (child (vui-instance-children current))
+                (when (equal (vui-instance-key child) key)
                   (setq found child)))
             ;; No key  -  try structural match
             (let ((idx (cl-position path-instance
-                                    (ui-cursor-context-instance-path context)
+                                    (vui-cursor-context-instance-path context)
                                     :test #'eq)))
-              (setq found (nth (ui--sibling-index path-instance)
-                               (ui-instance-children current)))))
+              (setq found (nth (vui--sibling-index path-instance)
+                               (vui-instance-children current)))))
           (if found
               (setq current found)
             (throw 'failed nil))))
 
       ;; Found the instance  -  restore position within it
-      (ui--goto-instance-offset current context)
+      (vui--goto-instance-offset current context)
       t)))
 
-(defun ui--restore-by-structural-path (context root-instance)
+(defun vui--restore-by-structural-path (context root-instance)
   "Try to find instance by following sibling indices."
-  (let ((path (ui-cursor-context-instance-path context))
+  (let ((path (vui-cursor-context-instance-path context))
         (current root-instance))
 
     (catch 'failed
       (dolist (path-instance (cdr path))
-        (let* ((target-idx (ui--sibling-index path-instance))
-               (children (ui-instance-children current))
+        (let* ((target-idx (vui--sibling-index path-instance))
+               (children (vui-instance-children current))
                (found (and target-idx
                            (< target-idx (length children))
                            (nth target-idx children))))
@@ -1261,18 +1261,18 @@ would be (based on original sibling index)."
               (setq current found)
             (throw 'failed nil))))
 
-      (ui--goto-instance-offset current context)
+      (vui--goto-instance-offset current context)
       t)))
 
-(defun ui--restore-by-sibling (context root-instance)
+(defun vui--restore-by-sibling (context root-instance)
   "Try to find a sibling of the original instance."
-  (let* ((path (ui-cursor-context-instance-path context))
+  (let* ((path (vui-cursor-context-instance-path context))
          (parent-path (butlast path))
-         (parent (ui--find-by-path parent-path root-instance)))
+         (parent (vui--find-by-path parent-path root-instance)))
 
     (when parent
-      (let* ((idx (ui-cursor-context-sibling-index context))
-             (children (ui-instance-children parent))
+      (let* ((idx (vui-cursor-context-sibling-index context))
+             (children (vui-instance-children parent))
              (target (cond
                       ;; Same index if it exists
                       ((and idx (< idx (length children)))
@@ -1280,28 +1280,28 @@ would be (based on original sibling index)."
                       ;; Last child if original index too high
                       (children (car (last children))))))
         (when target
-          (goto-char (marker-position (ui-instance-region-start target)))
+          (goto-char (marker-position (vui-instance-region-start target)))
           t)))))
 
-(defun ui--restore-by-original-position (context root-instance)
+(defun vui--restore-by-original-position (context root-instance)
   "Check if original position is still within root bounds."
-  (let ((pt (ui-cursor-context-original-point context))
-        (start (marker-position (ui-instance-region-start root-instance)))
-        (end (marker-position (ui-instance-region-end root-instance))))
+  (let ((pt (vui-cursor-context-original-point context))
+        (start (marker-position (vui-instance-region-start root-instance)))
+        (end (marker-position (vui-instance-region-end root-instance))))
     (when (and (>= pt start) (<= pt end))
       (goto-char pt)
       t)))
 
-(defun ui--goto-instance-offset (instance context)
+(defun vui--goto-instance-offset (instance context)
   "Move point to appropriate position within INSTANCE."
-  (let ((start (marker-position (ui-instance-region-start instance)))
-        (end (marker-position (ui-instance-region-end instance)))
-        (offset (ui-cursor-context-offset-from-start context)))
+  (let ((start (marker-position (vui-instance-region-start instance)))
+        (end (marker-position (vui-instance-region-end instance)))
+        (offset (vui-cursor-context-offset-from-start context)))
 
     ;; For fields, try to preserve cursor position within text
-    (if (and (ui-cursor-context-field-p context)
-             (ui--primitive-field-p instance))
-        (let ((field-pos (ui-cursor-context-field-cursor-pos context))
+    (if (and (vui-cursor-context-field-p context)
+             (vui--primitive-field-p instance))
+        (let ((field-pos (vui-cursor-context-field-cursor-pos context))
               (field-len (- end start)))
           (goto-char (+ start (min field-pos field-len))))
 
@@ -1314,15 +1314,15 @@ would be (based on original sibling index)."
 Fields require extra care because the user may be mid-edit:
 
 ``` elisp
-(defun ui--field-focused-p (instance)
+(defun vui--field-focused-p (instance)
   "Check if INSTANCE is a focused field (point is inside it)."
-  (and (ui--primitive-field-p instance)
+  (and (vui--primitive-field-p instance)
        (let ((pt (point))
-             (start (marker-position (ui-instance-region-start instance)))
-             (end (marker-position (ui-instance-region-end instance))))
+             (start (marker-position (vui-instance-region-start instance)))
+             (end (marker-position (vui-instance-region-end instance))))
          (and (>= pt start) (<= pt end)))))
 
-(defun ui--preserve-field-edit (old-instance new-vnode commit-fn)
+(defun vui--preserve-field-edit (old-instance new-vnode commit-fn)
   "Special handling for re-rendering a field that's being edited.
 
 If the field is focused and user has made changes, we have options:
@@ -1331,11 +1331,11 @@ If the field is focused and user has made changes, we have options:
 3. Preserve user's edits and ignore incoming value
 
 This function returns the vnode to actually render."
-  (if (ui--field-focused-p old-instance)
+  (if (vui--field-focused-p old-instance)
       ;; Field is focused  -  check for conflicts
-      (let ((user-value (ui--get-field-buffer-content old-instance))
-            (old-value (ui--primitive-field-value old-instance))
-            (new-value (ui-vnode-field-value new-vnode)))
+      (let ((user-value (vui--get-field-buffer-content old-instance))
+            (old-value (vui--primitive-field-value old-instance))
+            (new-value (vui-vnode-field-value new-vnode)))
 
         (cond
          ;; User hasn't changed anything  -  safe to update
@@ -1349,15 +1349,15 @@ This function returns the vnode to actually render."
          ;; Conflict: user has edits AND incoming value differs
          ;; Strategy: preserve user's edits, schedule update for later
          (t
-          (ui--schedule-deferred-field-update old-instance new-vnode)
+          (vui--schedule-deferred-field-update old-instance new-vnode)
           ;; Return vnode with user's current value
-          (ui-vnode-field--create
-           :key (ui-vnode-key new-vnode)
+          (vui-vnode-field--create
+           :key (vui-vnode-key new-vnode)
            :value user-value
-           :size (ui-vnode-field-size new-vnode)
-           :face (ui-vnode-field-face new-vnode)
-           :on-change (ui-vnode-field-on-change new-vnode)
-           :keymap (ui-vnode-field-keymap new-vnode)))))
+           :size (vui-vnode-field-size new-vnode)
+           :face (vui-vnode-field-face new-vnode)
+           :on-change (vui-vnode-field-on-change new-vnode)
+           :keymap (vui-vnode-field-keymap new-vnode)))))
 
     ;; Field not focused  -  update normally
     new-vnode))
@@ -1366,11 +1366,11 @@ This function returns the vnode to actually render."
 ## Mark and Region Preservation
 
 ``` elisp
-(defun ui--restore-mark (context root-instance)
+(defun vui--restore-mark (context root-instance)
   "Restore mark position if possible."
-  (when-let ((original-mark (ui-cursor-context-original-mark context)))
-    (let ((start (marker-position (ui-instance-region-start root-instance)))
-          (end (marker-position (ui-instance-region-end root-instance))))
+  (when-let ((original-mark (vui-cursor-context-original-mark context)))
+    (let ((start (marker-position (vui-instance-region-start root-instance)))
+          (end (marker-position (vui-instance-region-end root-instance))))
       ;; Only restore if mark is still within bounds
       (when (and (>= original-mark start) (<= original-mark end))
         (push-mark original-mark t t)))))
@@ -1381,21 +1381,21 @@ This function returns the vnode to actually render."
 The cursor preservation wraps the entire commit phase:
 
 ``` elisp
-(defun ui--commit-phase (root-instance operations)
+(defun vui--commit-phase (root-instance operations)
   "Apply OPERATIONS to buffer, preserving cursor position."
-  (let ((context (ui--capture-cursor-context root-instance)))
+  (let ((context (vui--capture-cursor-context root-instance)))
 
     ;; Apply all operations
     (let ((inhibit-read-only t)
           (inhibit-modification-hooks t))
-      (dolist (op (ui--sort-operations operations))
-        (ui--apply-operation op)))
+      (dolist (op (vui--sort-operations operations))
+        (vui--apply-operation op)))
 
     ;; Restore cursor
-    (ui--restore-cursor-context context root-instance)
+    (vui--restore-cursor-context context root-instance)
 
     ;; Run post-commit hooks
-    (ui--run-commit-hooks root-instance)))
+    (vui--run-commit-hooks root-instance)))
 ```
 
 # Layout System
@@ -1419,37 +1419,37 @@ However, we can achieve flexible layouts using: - Whitespace for horizontal spac
 Layout primitives need access to a render context that tracks the current indentation level:
 
 ``` elisp
-(cl-defstruct (ui-render-context (:constructor ui-render-context--create))
+(cl-defstruct (vui-render-context (:constructor vui-render-context--create))
   "Context passed during rendering."
   indent-level            ; Current left margin (characters)
   indent-string           ; String to use for indentation (default spaces)
   column                  ; Current column position
   line-start-p)           ; Are we at the start of a line?
 
-(defvar ui--render-context nil
+(defvar vui--render-context nil
   "Dynamically bound during rendering.")
 
-(defun ui--current-indent ()
+(defun vui--current-indent ()
   "Get current indentation level."
-  (if ui--render-context
-      (ui-render-context-indent-level ui--render-context)
+  (if vui--render-context
+      (vui-render-context-indent-level vui--render-context)
     0))
 
-(defun ui--emit-indent ()
+(defun vui--emit-indent ()
   "Emit indentation at start of line if needed."
-  (when (and ui--render-context
-             (ui-render-context-line-start-p ui--render-context)
-             (> (ui-render-context-indent-level ui--render-context) 0))
-    (insert (ui--make-indent-string))
-    (setf (ui-render-context-line-start-p ui--render-context) nil)))
+  (when (and vui--render-context
+             (vui-render-context-line-start-p vui--render-context)
+             (> (vui-render-context-indent-level vui--render-context) 0))
+    (insert (vui--make-indent-string))
+    (setf (vui-render-context-line-start-p vui--render-context) nil)))
 
-(defun ui--make-indent-string ()
+(defun vui--make-indent-string ()
   "Create indentation string for current level."
-  (let ((level (ui-render-context-indent-level ui--render-context))
-        (char (or (ui-render-context-indent-string ui--render-context) " ")))
+  (let ((level (vui-render-context-indent-level vui--render-context))
+        (char (or (vui-render-context-indent-string vui--render-context) " ")))
     (if (= (length char) 1)
         (make-string level (string-to-char char))
-      ;; Multi-char indent string (e.g., "│ ")
+      ;; Multi-char indent string (e.g., "| ")
       (let ((result ""))
         (dotimes (_ level)
           (setq result (concat result char)))
@@ -1461,19 +1461,19 @@ Layout primitives need access to a render context that tracks the current indent
 The `indent` component establishes a left margin for all descendants:
 
 ``` elisp
-(cl-defstruct (ui-vnode-indent (:include ui-vnode)
-                                (:constructor ui-vnode-indent--create))
+(cl-defstruct (vui-vnode-indent (:include vui-vnode)
+                                (:constructor vui-vnode-indent--create))
   "Indentation container."
   amount                  ; Number of characters to indent
   char                    ; Character/string for indent (default space)
   children)               ; Child vnodes
 
-(defun ui-indent (amount &rest args)
+(defun vui-indent (amount &rest args)
   "Indent children by AMOUNT characters.
 
 Usage:
-  (ui-indent 2 child1 child2)
-  (ui-indent 2 :char \"│ \" child1 child2)  ; tree-style indent"
+  (vui-indent 2 child1 child2)
+  (vui-indent 2 :char \"| \" child1 child2)  ; tree-style indent"
   (let ((char " ")
         (children nil))
 
@@ -1484,63 +1484,63 @@ Usage:
 
     (setq children (remq nil (flatten-list args)))
 
-    (ui-vnode-indent--create
+    (vui-vnode-indent--create
      :amount amount
      :char char
      :children children)))
 
-(defun ui--render-indent (vnode parent-instance)
+(defun vui--render-indent (vnode parent-instance)
   "Render an indent container."
-  (let* ((amount (ui-vnode-indent-amount vnode))
-         (char (or (ui-vnode-indent-char vnode) " "))
-         (old-context ui--render-context)
-         (new-context (ui-render-context--create
-                       :indent-level (+ (ui--current-indent) amount)
+  (let* ((amount (vui-vnode-indent-amount vnode))
+         (char (or (vui-vnode-indent-char vnode) " "))
+         (old-context vui--render-context)
+         (new-context (vui-render-context--create
+                       :indent-level (+ (vui--current-indent) amount)
                        :indent-string char
                        :column (if old-context
-                                   (ui-render-context-column old-context)
+                                   (vui-render-context-column old-context)
                                  0)
                        :line-start-p (if old-context
-                                         (ui-render-context-line-start-p old-context)
+                                         (vui-render-context-line-start-p old-context)
                                        t))))
 
     ;; Render children with increased indent
-    (let ((ui--render-context new-context))
-      (dolist (child (ui-vnode-indent-children vnode))
-        (ui--render-vnode child parent-instance)))))
+    (let ((vui--render-context new-context))
+      (dolist (child (vui-vnode-indent-children vnode))
+        (vui--render-vnode child parent-instance)))))
 ```
 
 **Indent propagation for newlines:**
 
 ``` elisp
-(defun ui--render-newline (vnode parent-instance)
+(defun vui--render-newline (vnode parent-instance)
   "Render a newline, respecting indent context."
   (insert "\n")
 
   ;; Mark that we're at line start (indent will be emitted on next content)
-  (when ui--render-context
-    (setf (ui-render-context-line-start-p ui--render-context) t)
-    (setf (ui-render-context-column ui--render-context) 0))
+  (when vui--render-context
+    (setf (vui-render-context-line-start-p vui--render-context) t)
+    (setf (vui-render-context-column vui--render-context) 0))
 
-  (ui--create-primitive-instance 'newline vnode parent-instance
+  (vui--create-primitive-instance 'newline vnode parent-instance
                                   (1- (point)) (point)))
 
-(defun ui--render-text (vnode parent-instance)
+(defun vui--render-text (vnode parent-instance)
   "Render text, emitting indent at line starts."
   (let ((start (point))
-        (content (ui-vnode-text-content vnode))
-        (face (ui-vnode-text-face vnode)))
+        (content (vui-vnode-text-content vnode))
+        (face (vui-vnode-text-face vnode)))
 
     ;; Handle multi-line content
     (let ((lines (split-string content "\n")))
       (dotimes (i (length lines))
         (when (> i 0)
           (insert "\n")
-          (when ui--render-context
-            (setf (ui-render-context-line-start-p ui--render-context) t)))
+          (when vui--render-context
+            (setf (vui-render-context-line-start-p vui--render-context) t)))
 
         ;; Emit indent if at line start
-        (ui--emit-indent)
+        (vui--emit-indent)
 
         ;; Insert line content
         (insert (nth i lines))))
@@ -1549,7 +1549,7 @@ Usage:
     (when face
       (put-text-property start (point) 'face face))
 
-    (ui--create-primitive-instance 'text vnode parent-instance start (point))))
+    (vui--create-primitive-instance 'text vnode parent-instance start (point))))
 ```
 
 ### Fragment (No Layout)
@@ -1557,9 +1557,9 @@ Usage:
 Simply concatenates children:
 
 ``` elisp
-(defun ui-fragment (&rest children)
+(defun vui-fragment (&rest children)
   "Group children with no additional layout."
-  (ui-vnode-fragment--create
+  (vui-vnode-fragment--create
    :children (remq nil (flatten-list children))))
 ```
 
@@ -1568,19 +1568,19 @@ Simply concatenates children:
 Places children horizontally with optional spacing:
 
 ``` elisp
-(cl-defstruct (ui-vnode-hstack (:include ui-vnode)
-                                (:constructor ui-vnode-hstack--create))
+(cl-defstruct (vui-vnode-hstack (:include vui-vnode)
+                                (:constructor vui-vnode-hstack--create))
   "Horizontal layout container."
   children                ; List of child vnodes
   spacing                 ; Spaces between children (default 1)
   align)                  ; :left, :center, :right (for fixed-width containers)
 
-(defun ui-hstack (&rest args)
+(defun vui-hstack (&rest args)
   "Create a horizontal stack layout.
 
-Usage: (ui-hstack child1 child2 child3)
-       (ui-hstack :spacing 2 child1 child2)
-       (ui-hstack :align :center :width 40 child1 child2)"
+Usage: (vui-hstack child1 child2 child3)
+       (vui-hstack :spacing 2 child1 child2)
+       (vui-hstack :align :center :width 40 child1 child2)"
   (let ((spacing 1)
         (align :left)
         (width nil)
@@ -1597,7 +1597,7 @@ Usage: (ui-hstack child1 child2 child3)
     ;; Remaining args are children
     (setq children (remq nil (flatten-list args)))
 
-    (ui-vnode-hstack--create
+    (vui-vnode-hstack--create
      :children children
      :spacing spacing
      :align align)))
@@ -1606,10 +1606,10 @@ Usage: (ui-hstack child1 child2 child3)
 Rendering h-stack:
 
 ``` elisp
-(defun ui--render-hstack (vnode)
+(defun vui--render-hstack (vnode)
   "Render a horizontal stack to buffer."
-  (let ((spacing (or (ui-vnode-hstack-spacing vnode) 1))
-        (children (ui-vnode-hstack-children vnode))
+  (let ((spacing (or (vui-vnode-hstack-spacing vnode) 1))
+        (children (vui-vnode-hstack-children vnode))
         (space-str nil))
 
     (setq space-str (make-string spacing ?\s))
@@ -1618,7 +1618,7 @@ Rendering h-stack:
       (dolist (child children)
         (unless first
           (insert space-str))
-        (ui--render-vnode child)
+        (vui--render-vnode child)
         (setq first nil)))))
 ```
 
@@ -1627,19 +1627,19 @@ Rendering h-stack:
 Places children vertically:
 
 ``` elisp
-(cl-defstruct (ui-vnode-vstack (:include ui-vnode)
-                                (:constructor ui-vnode-vstack--create))
+(cl-defstruct (vui-vnode-vstack (:include vui-vnode)
+                                (:constructor vui-vnode-vstack--create))
   "Vertical layout container."
   children                ; List of child vnodes
   spacing                 ; Blank lines between children (default 0)
   indent)                 ; Left indent for all children (default 0)
 
-(defun ui-vstack (&rest args)
+(defun vui-vstack (&rest args)
   "Create a vertical stack layout.
 
-Usage: (ui-vstack child1 child2 child3)
-       (ui-vstack :spacing 1 child1 child2)  ; blank line between
-       (ui-vstack :indent 2 child1 child2)   ; 2-space indent"
+Usage: (vui-vstack child1 child2 child3)
+       (vui-vstack :spacing 1 child1 child2)  ; blank line between
+       (vui-vstack :indent 2 child1 child2)   ; 2-space indent"
   (let ((spacing 0)
         (indent 0)
         (children nil))
@@ -1652,7 +1652,7 @@ Usage: (ui-vstack child1 child2 child3)
 
     (setq children (remq nil (flatten-list args)))
 
-    (ui-vnode-vstack--create
+    (vui-vnode-vstack--create
      :children children
      :spacing spacing
      :indent indent)))
@@ -1661,11 +1661,11 @@ Usage: (ui-vstack child1 child2 child3)
 Rendering v-stack:
 
 ``` elisp
-(defun ui--render-vstack (vnode)
+(defun vui--render-vstack (vnode)
   "Render a vertical stack to buffer."
-  (let ((spacing (or (ui-vnode-vstack-spacing vnode) 0))
-        (indent (or (ui-vnode-vstack-indent vnode) 0))
-        (children (ui-vnode-vstack-children vnode))
+  (let ((spacing (or (vui-vnode-vstack-spacing vnode) 0))
+        (indent (or (vui-vnode-vstack-indent vnode) 0))
+        (children (vui-vnode-vstack-children vnode))
         (indent-str nil)
         (spacing-str nil))
 
@@ -1677,7 +1677,7 @@ Rendering v-stack:
         (unless first
           (insert spacing-str))
         (insert indent-str)
-        (ui--render-vnode child)
+        (vui--render-vnode child)
         (insert "\n")
         (setq first nil)))))
 ```
@@ -1687,8 +1687,8 @@ Rendering v-stack:
 A container with fixed width, supporting alignment:
 
 ``` elisp
-(cl-defstruct (ui-vnode-box (:include ui-vnode)
-                             (:constructor ui-vnode-box--create))
+(cl-defstruct (vui-vnode-box (:include vui-vnode)
+                             (:constructor vui-vnode-box--create))
   "Fixed-width container with alignment."
   child                   ; Single child vnode
   width                   ; Width in characters
@@ -1697,10 +1697,10 @@ A container with fixed width, supporting alignment:
   border                  ; nil or border character
   fill)                   ; Character to fill empty space
 
-(defun ui-box (&rest args)
+(defun vui-box (&rest args)
   "Create a fixed-width box.
 
-Usage: (ui-box :width 20 :align :center child)"
+Usage: (vui-box :width 20 :align :center child)"
   (let ((width 20)
         (align :left)
         (padding '(0 . 0))
@@ -1719,7 +1719,7 @@ Usage: (ui-box :width 20 :align :center child)"
 
     (setq child (car args))
 
-    (ui-vnode-box--create
+    (vui-vnode-box--create
      :child child
      :width width
      :align align
@@ -1752,8 +1752,8 @@ Each column can specify:
 **Static optimisation**: For tables with fixed content, `:static t` skips re-measurement and reuses cached column widths. Use when you know content won't change size.
 
 ``` elisp
-(cl-defstruct (ui-vnode-table (:include ui-vnode)
-                               (:constructor ui-vnode-table--create))
+(cl-defstruct (vui-vnode-table (:include vui-vnode)
+                               (:constructor vui-vnode-table--create))
   "Table layout with rows and columns."
   columns                 ; List of column specs
   rows                    ; List of rows, each row is list of cell vnodes
@@ -1762,7 +1762,7 @@ Each column can specify:
   stripe-face             ; Face for alternating rows
   static-p)               ; If t, skip re-measurement (optimisation)
 
-(defun ui-table (&rest args)
+(defun vui-table (&rest args)
   "Create a table layout.
 
 Column spec properties:
@@ -1779,7 +1779,7 @@ Table properties:
   :stripe FACE    - Face for alternating rows
 
 Usage:
-  (ui-table
+  (vui-table
     :columns ((:min-width 5 :max-width 20 :header \"Name\")
               (:width 7 :header \"Price\" :align :right)
               (:width 5 :header \"Qty\" :align :right))
@@ -1787,14 +1787,14 @@ Usage:
            (\"Бейбі Бургер\" \"260 UAH\" \"2\")))"
   ...)
 
-(cl-defstruct (ui-vnode-row (:include ui-vnode)
-                             (:constructor ui-vnode-row--create))
+(cl-defstruct (vui-vnode-row (:include vui-vnode)
+                             (:constructor vui-vnode-row--create))
   "A table row."
   cells                   ; List of cell vnodes
   header-p)               ; Is this a header row?
 
-(cl-defstruct (ui-vnode-cell (:include ui-vnode)
-                              (:constructor ui-vnode-cell--create))
+(cl-defstruct (vui-vnode-cell (:include vui-vnode)
+                              (:constructor vui-vnode-cell--create))
   "A table cell."
   content                 ; Child vnode
   colspan                 ; Column span (default 1)
@@ -1804,18 +1804,18 @@ Usage:
 Table rendering (uses two-pass for width calculation):
 
 ``` elisp
-(defun ui--render-table (vnode)
+(defun vui--render-table (vnode)
   "Render a table to buffer."
-  (let* ((columns (ui-vnode-table-columns vnode))
-         (rows (ui-vnode-table-rows vnode))
-         (border (ui-vnode-table-border vnode))
+  (let* ((columns (vui-vnode-table-columns vnode))
+         (rows (vui-vnode-table-rows vnode))
+         (border (vui-vnode-table-border vnode))
          ;; Pass 1: Calculate column widths
-         (col-widths (ui--calculate-column-widths columns rows)))
+         (col-widths (vui--calculate-column-widths columns rows)))
 
     ;; Pass 2: Render with known widths
     ;; Render header if present
-    (when (ui-vnode-table-header-p vnode)
-      (ui--render-table-row
+    (when (vui-vnode-table-header-p vnode)
+      (vui--render-table-row
        (mapcar (lambda (c) (plist-get c :header)) columns)
        col-widths
        columns
@@ -1823,17 +1823,17 @@ Table rendering (uses two-pass for width calculation):
        'header))
 
     ;; Render separator
-    (when (and (ui-vnode-table-header-p vnode) border)
-      (ui--render-table-separator col-widths border))
+    (when (and (vui-vnode-table-header-p vnode) border)
+      (vui--render-table-separator col-widths border))
 
     ;; Render data rows
     (let ((row-idx 0))
       (dolist (row rows)
-        (ui--render-table-row row col-widths columns border
+        (vui--render-table-row row col-widths columns border
                               (if (cl-evenp row-idx) 'even 'odd))
         (cl-incf row-idx)))))
 
-(defun ui--calculate-column-widths (columns rows static-p cached-widths)
+(defun vui--calculate-column-widths (columns rows static-p cached-widths)
   "Calculate actual column widths based on specs and content.
 
 If STATIC-P and CACHED-WIDTHS exist, return cached.
@@ -1856,24 +1856,24 @@ Otherwise measure all cells and compute widths respecting constraints."
       (dolist (row rows)
         (cl-loop for cell in row
                  for i from 0
-                 do (let ((width (ui--measure-cell-width cell)))
+                 do (let ((width (vui--measure-cell-width cell)))
                       (aset content-widths i
                             (max (aref content-widths i) width)))))
 
       ;; Apply constraints from column specs
       (cl-loop for col in columns
                for i from 0
-               collect (ui--apply-width-constraints
+               collect (vui--apply-width-constraints
                         col (aref content-widths i))))))
 
-(defun ui--measure-cell-width (cell)
+(defun vui--measure-cell-width (cell)
   "Measure the display width of CELL content."
   (cond
    ((stringp cell) (string-width cell))
-   ((ui-vnode-p cell)
+   ((vui-vnode-p cell)
     ;; Render to temp buffer and measure
     (with-temp-buffer
-      (ui--render-vnode-for-measure cell)
+      (vui--render-vnode-for-measure cell)
       (goto-char (point-min))
       ;; Width is max line length (in case of unexpected newlines)
       (let ((max-width 0))
@@ -1884,7 +1884,7 @@ Otherwise measure all cells and compute widths respecting constraints."
         max-width)))
    (t 0)))
 
-(defun ui--apply-width-constraints (col-spec content-width)
+(defun vui--apply-width-constraints (col-spec content-width)
   "Apply column constraints to CONTENT-WIDTH.
 
 Returns the final column width."
@@ -1900,11 +1900,11 @@ Returns the final column width."
           (when max-w (setq width (min width max-w)))
           width)))))
 
-(defun ui--render-table-row (cells widths columns border row-type)
+(defun vui--render-table-row (cells widths columns border row-type)
   "Render a single table row."
   (let ((border-char (pcase border
                        (:ascii "|")
-                       (:unicode "│")
+                       (:unicode "|")
                        (_ ""))))
 
     (insert border-char)
@@ -1912,16 +1912,16 @@ Returns the final column width."
              for width in widths
              for col in columns
              do (progn
-                  (ui--render-table-cell cell width (plist-get col :align))
+                  (vui--render-table-cell cell width (plist-get col :align))
                   (insert border-char)))
     (insert "\n")))
 
-(defun ui--render-table-cell (content width align)
+(defun vui--render-table-cell (content width align)
   "Render a cell with padding to WIDTH."
   (let* ((text (if (stringp content)
                    content
                  (with-temp-buffer
-                   (ui--render-vnode content)
+                   (vui--render-vnode content)
                    (buffer-string))))
          (text-width (string-width text))
          (padding (- width text-width))
@@ -1941,20 +1941,20 @@ Returns the final column width."
 For rendering lists with bullets or numbers:
 
 ``` elisp
-(cl-defstruct (ui-vnode-list (:include ui-vnode)
-                              (:constructor ui-vnode-list--create))
+(cl-defstruct (vui-vnode-list (:include vui-vnode)
+                              (:constructor vui-vnode-list--create))
   "List layout with markers."
   items                   ; List of item vnodes
   marker-fn               ; (lambda (index) marker-string) or :bullet, :number
   indent)                 ; Indent for continuation lines
 
-(defun ui-list (&rest args)
+(defun vui-list (&rest args)
   "Create a list layout.
 
 Usage:
-  (ui-list :marker :bullet item1 item2 item3)
-  (ui-list :marker :number item1 item2)
-  (ui-list :marker (lambda (i) (format \"%c) \" (+ ?a i))) item1 item2)"
+  (vui-list :marker :bullet item1 item2 item3)
+  (vui-list :marker :number item1 item2)
+  (vui-list :marker (lambda (i) (format \"%c) \" (+ ?a i))) item1 item2)"
   (let ((marker :bullet)
         (indent 2)
         (items nil))
@@ -1967,7 +1967,7 @@ Usage:
 
     (setq items (remq nil (flatten-list args)))
 
-    (ui-vnode-list--create
+    (vui-vnode-list--create
      :items items
      :marker-fn (pcase marker
                   (:bullet (lambda (_i) "• "))
@@ -1984,7 +1984,7 @@ Usage:
 For responsive layouts based on buffer/window width:
 
 ``` elisp
-(defun ui-when-wide (min-width then-vnode &optional else-vnode)
+(defun vui-when-wide (min-width then-vnode &optional else-vnode)
   "Render THEN-VNODE if window is at least MIN-WIDTH columns.
 
 Otherwise render ELSE-VNODE (or nothing if nil)."
@@ -1992,30 +1992,30 @@ Otherwise render ELSE-VNODE (or nothing if nil)."
       then-vnode
     else-vnode))
 
-(defun ui-responsive (&rest breakpoints)
+(defun vui-responsive (&rest breakpoints)
   "Choose layout based on window width.
 
 BREAKPOINTS is a plist of (WIDTH VNODE ...).
 Returns the vnode for the largest width that fits.
 
 Usage:
-  (ui-responsive
-    80 (ui-hstack col1 col2 col3)   ; Wide: 3 columns
-    60 (ui-hstack col1 (ui-vstack col2 col3))  ; Medium: 2 columns
-    0  (ui-vstack col1 col2 col3))  ; Narrow: 1 column"
+  (vui-responsive
+    80 (vui-hstack col1 col2 col3)   ; Wide: 3 columns
+    60 (vui-hstack col1 (vui-vstack col2 col3))  ; Medium: 2 columns
+    0  (vui-vstack col1 col2 col3))  ; Narrow: 1 column"
   (let ((width (window-width))
         (result nil))
     (cl-loop for (min-w vnode) on breakpoints by #'cddr
              when (>= width min-w)
              do (setq result vnode)
              and return nil)
-    (or result (ui-fragment))))
+    (or result (vui-fragment))))
 ```
 
 ## Spacing and Alignment Utilities
 
 ``` elisp
-(defun ui-pad (padding child)
+(defun vui-pad (padding child)
   "Add PADDING around CHILD.
 
 PADDING can be:
@@ -2024,21 +2024,21 @@ PADDING can be:
   - (L T R B): left, top, right, bottom"
   ...)
 
-(defun ui-align (alignment child)
+(defun vui-align (alignment child)
   "Align CHILD within available space.
 
 ALIGNMENT is :left, :center, or :right."
   ...)
 
-(defun ui-separator (&optional char width)
+(defun vui-separator (&optional char width)
   "Create a horizontal separator line."
-  (ui-vnode-text--create
-   :content (make-string (or width (window-width)) (or char ?─))
+  (vui-vnode-text--create
+   :content (make-string (or width (window-width)) (or char ?-))
    :face 'shadow))
 
-(defun ui-blank-lines (n)
+(defun vui-blank-lines (n)
   "Create N blank lines."
-  (ui-vnode-text--create
+  (vui-vnode-text--create
    :content (make-string n ?\n)))
 ```
 
@@ -2055,30 +2055,30 @@ When a child in `h-stack` contains newlines, the layout breaks. We have options:
 **Decision**: For MVP, we forbid newlines in h-stack children. Use v-stack for multi-line content.
 
 ``` elisp
-(defun ui--validate-hstack-child (vnode)
+(defun vui--validate-hstack-child (vnode)
   "Ensure VNODE doesn't contain newlines."
-  (when (ui-vnode-text-p vnode)
-    (when (string-match-p "\n" (ui-vnode-text-content vnode))
+  (when (vui-vnode-text-p vnode)
+    (when (string-match-p "\n" (vui-vnode-text-content vnode))
       (error "h-stack children cannot contain newlines"))))
 ```
 
 ### Text Wrapping
 
-The library does **not** handle text wrapping. Content that exceeds window width will either: - Extend beyond visible area (if `truncate-lines` is t) - Wrap at window edge (if `truncate-lines` is nil)
+vui.el does **not** handle text wrapping. Content that exceeds window width will either: - Extend beyond visible area (if `truncate-lines` is t) - Wrap at window edge (if `truncate-lines` is nil)
 
-For controlled wrapping, use `fill-region` on content before passing to components, or implement a `ui-wrapped-text` component that pre-wraps.
+For controlled wrapping, use `fill-region` on content before passing to components, or implement a `vui-wrapped-text` component that pre-wraps.
 
 ### Read-Only Regions
 
 Text that shouldn't be edited needs protection:
 
 ``` elisp
-(defun ui--render-text (vnode parent-instance)
+(defun vui--render-text (vnode parent-instance)
   "Render text with read-only protection."
   (let ((start (point))
-        (content (ui-vnode-text-content vnode)))
+        (content (vui-vnode-text-content vnode)))
 
-    (ui--emit-indent)
+    (vui--emit-indent)
     (insert content)
 
     ;; Make non-field text read-only
@@ -2098,17 +2098,17 @@ Fields explicitly remove read-only in their region.
 Users expect TAB/S-TAB to move between interactive elements (fields, buttons):
 
 ``` elisp
-(defvar ui-mode-map
+(defvar vui-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "TAB") #'ui-next-field)
-    (define-key map (kbd "<tab>") #'ui-next-field)
-    (define-key map (kbd "S-TAB") #'ui-prev-field)
-    (define-key map (kbd "<backtab>") #'ui-prev-field)
-    (define-key map (kbd "RET") #'ui-activate)
+    (define-key map (kbd "TAB") #'vui-next-field)
+    (define-key map (kbd "<tab>") #'vui-next-field)
+    (define-key map (kbd "S-TAB") #'vui-prev-field)
+    (define-key map (kbd "<backtab>") #'vui-prev-field)
+    (define-key map (kbd "RET") #'vui-activate)
     map)
   "Keymap for UI navigation.")
 
-(defun ui-next-field ()
+(defun vui-next-field ()
   "Move to next interactive element."
   (interactive)
   (let ((start (point))
@@ -2116,7 +2116,7 @@ Users expect TAB/S-TAB to move between interactive elements (fields, buttons):
     ;; Search forward for next button/field overlay
     (while (and (not found) (< (point) (point-max)))
       (goto-char (next-overlay-change (point)))
-      (when (ui--interactive-overlay-at (point))
+      (when (vui--interactive-overlay-at (point))
         (setq found t)))
 
     ;; Wrap around
@@ -2124,35 +2124,35 @@ Users expect TAB/S-TAB to move between interactive elements (fields, buttons):
       (goto-char (point-min))
       (while (and (not found) (< (point) start))
         (goto-char (next-overlay-change (point)))
-        (when (ui--interactive-overlay-at (point))
+        (when (vui--interactive-overlay-at (point))
           (setq found t))))
 
     (unless found
       (goto-char start)
       (message "No interactive elements"))))
 
-(defun ui--interactive-overlay-at (pos)
+(defun vui--interactive-overlay-at (pos)
   "Check for interactive overlay at POS."
   (cl-find-if (lambda (ov)
-                (or (overlay-get ov 'ui-button)
-                    (overlay-get ov 'ui-field)))
+                (or (overlay-get ov 'vui-button)
+                    (overlay-get ov 'vui-field)))
               (overlays-at pos)))
 ```
 
 ## Focus Tracking
 
 ``` elisp
-(defvar-local ui--focused-instance nil
+(defvar-local vui--focused-instance nil
   "Currently focused instance, if any.")
 
-(defun ui-focus (instance)
+(defun vui-focus (instance)
   "Set focus to INSTANCE."
-  (when ui--focused-instance
-    (ui--blur ui--focused-instance))
-  (setq ui--focused-instance instance)
+  (when vui--focused-instance
+    (vui--blur vui--focused-instance))
+  (setq vui--focused-instance instance)
   (when instance
-    (goto-char (marker-position (ui-instance-region-start instance)))
-    (run-hooks 'ui-focus-hook)))
+    (goto-char (marker-position (vui-instance-region-start instance)))
+    (run-hooks 'vui-focus-hook)))
 ```
 
 ## Undo Integration
@@ -2160,17 +2160,17 @@ Users expect TAB/S-TAB to move between interactive elements (fields, buttons):
 Buffer changes should integrate with Emacs undo:
 
 ``` elisp
-(defun ui--commit-operations (operations root-instance)
+(defun vui--commit-operations (operations root-instance)
   "Apply OPERATIONS with undo integration."
   (let ((inhibit-read-only t))
 
     ;; Group all changes as single undo step
     (undo-boundary)
 
-    (with-current-buffer (ui-instance-buffer root-instance)
-      (let ((sorted-ops (ui--sort-operations operations)))
+    (with-current-buffer (vui-instance-buffer root-instance)
+      (let ((sorted-ops (vui--sort-operations operations)))
         (dolist (op sorted-ops)
-          (ui--apply-operation op))))
+          (vui--apply-operation op))))
 
     (undo-boundary)))
 ```
@@ -2188,7 +2188,7 @@ For MVP, we disable undo in UI buffers and provide explicit undo-like actions (e
 Our markers should work correctly with narrowing, but rendering assumes full buffer access:
 
 ``` elisp
-(defun ui-render (vnode &optional buffer position)
+(defun vui-render (vnode &optional buffer position)
   "Render VNODE. Temporarily widens buffer if narrowed."
   (save-restriction
     (widen)
@@ -2205,13 +2205,13 @@ When multiple independent UI trees exist in one buffer:
 3.  **Potential issue**: Inserting text in one tree shifts positions of later trees
 
 ``` elisp
-(defun ui--validate-non-overlapping (new-root buffer)
+(defun vui--validate-non-overlapping (new-root buffer)
   "Ensure NEW-ROOT doesn't overlap existing roots."
-  (let ((new-start (marker-position (ui-instance-region-start new-root)))
-        (new-end (marker-position (ui-instance-region-end new-root))))
-    (dolist (existing (ui--buffer-roots buffer))
-      (let ((ex-start (marker-position (ui-instance-region-start existing)))
-            (ex-end (marker-position (ui-instance-region-end existing))))
+  (let ((new-start (marker-position (vui-instance-region-start new-root)))
+        (new-end (marker-position (vui-instance-region-end new-root))))
+    (dolist (existing (vui--buffer-roots buffer))
+      (let ((ex-start (marker-position (vui-instance-region-start existing)))
+            (ex-end (marker-position (vui-instance-region-end existing))))
         (when (and (< new-start ex-end) (> new-end ex-start))
           (error "UI regions cannot overlap"))))))
 ```
@@ -2224,34 +2224,34 @@ When multiple independent UI trees exist in one buffer:
           (items :type list))
 
   :render
-  (ui-vstack
+  (vui-vstack
     ;; Header
-    (ui-hstack
-      (ui-text title :face 'bold)
-      (ui-space 4)
-      (ui-text (format-time-string "%Y-%m-%d") :face 'shadow))
+    (vui-hstack
+      (vui-text title :face 'bold)
+      (vui-space 4)
+      (vui-text (format-time-string "%Y-%m-%d") :face 'shadow))
 
-    (ui-separator)
+    (vui-separator)
 
     ;; Stats row
-    (ui-hstack :spacing 4
+    (vui-hstack :spacing 4
       (mapcar (lambda (stat)
-                (ui-box :width 15 :align :center
-                  (ui-vstack
-                    (ui-text (plist-get stat :value) :face 'bold)
-                    (ui-text (plist-get stat :label) :face 'shadow))))
+                (vui-box :width 15 :align :center
+                  (vui-vstack
+                    (vui-text (plist-get stat :value) :face 'bold)
+                    (vui-text (plist-get stat :label) :face 'shadow))))
               stats))
 
-    (ui-blank-lines 1)
+    (vui-blank-lines 1)
 
     ;; Main content (responsive)
-    (ui-responsive
-      100 (ui-hstack :spacing 2
-            (ui-box :width 48 (sidebar))
-            (ui-box :width 48 (main-content items)))
-      0 (ui-vstack
+    (vui-responsive
+      100 (vui-hstack :spacing 2
+            (vui-box :width 48 (sidebar))
+            (vui-box :width 48 (main-content items)))
+      0 (vui-vstack
           (sidebar)
-          (ui-separator)
+          (vui-separator)
           (main-content items)))))
 ```
 
@@ -2278,7 +2278,7 @@ State in this system follows React's model:
 | | local state | |
 | +-------------+ |
 +--------+--------+
-         | props (v) + callbacks (^)
+         | props (|) + callbacks (^)
 +--------v--------+
 |   Child         |
 | +-------------+ |
@@ -2292,31 +2292,31 @@ State in this system follows React's model:
 Each component instance has a state slot. Changes to state mark the instance dirty and schedule a re-render.
 
 ``` elisp
-(defvar ui--current-instance nil
+(defvar vui--current-instance nil
   "Dynamically bound to the current instance during render.")
 
-(defun ui-set-state! (instance key value)
+(defun vui-set-state! (instance key value)
   "Set state KEY to VALUE in INSTANCE, triggering re-render."
-  (let* ((old-state (ui-instance-state instance))
+  (let* ((old-state (vui-instance-state instance))
          (old-value (plist-get old-state key)))
 
     ;; Only update if value changed
     (unless (equal old-value value)
       ;; Update state
-      (setf (ui-instance-state instance)
+      (setf (vui-instance-state instance)
             (plist-put (copy-sequence old-state) key value))
 
       ;; Mark dirty and schedule re-render
-      (ui--mark-dirty instance)
-      (ui--schedule-render (ui--root-instance instance)))))
+      (vui--mark-dirty instance)
+      (vui--schedule-render (vui--root-instance instance)))))
 
-(defun ui-get-state (instance key)
+(defun vui-get-state (instance key)
   "Get state KEY from INSTANCE."
-  (plist-get (ui-instance-state instance) key))
+  (plist-get (vui-instance-state instance) key))
 
 ;; Generalised variable for setf support
-(gv-define-setter ui-get-state (value instance key)
-  `(ui-set-state! ,instance ,key ,value))
+(gv-define-setter vui-get-state (value instance key)
+  `(vui-set-state! ,instance ,key ,value))
 ```
 
 ## The `let-state` Macro
@@ -2335,8 +2335,8 @@ If SETTER-NAME is provided, it's bound to a setter function.
 Example:
   (let-state ((count 0)
               (name \"\" set-name))
-    (ui-button :on-click (lambda () (cl-incf count)))
-    (ui-button :on-click (lambda () (funcall set-name \"Bob\"))))"
+    (vui-button :on-click (lambda () (cl-incf count)))
+    (vui-button :on-click (lambda () (funcall set-name \"Bob\"))))"
 
   (declare (indent 1))
 
@@ -2353,23 +2353,23 @@ Example:
              (key (intern (format ":%s" name))))
 
         ;; State accessor binding
-        (push `(,name (ui-get-state ,instance-sym ,key)) state-bindings)
+        (push `(,name (vui-get-state ,instance-sym ,key)) state-bindings)
 
         ;; Setter binding (if named)
         (when setter-name
           (push `(,setter-name
-                  (lambda (v) (ui-set-state! ,instance-sym ,key v)))
+                  (lambda (v) (vui-set-state! ,instance-sym ,key v)))
                 setter-bindings))
 
         ;; GV expander for setf
-        (push `(,name (lambda (v) (ui-set-state! ,instance-sym ,key v)))
+        (push `(,name (lambda (v) (vui-set-state! ,instance-sym ,key v)))
               gv-bindings)))
 
     ;; Generate expansion
-    `(let ((,instance-sym ui--current-instance))
+    `(let ((,instance-sym vui--current-instance))
        ;; Initialise state if needed (first render)
-       (unless (ui-instance-state ,instance-sym)
-         (setf (ui-instance-state ,instance-sym)
+       (unless (vui-instance-state ,instance-sym)
+         (setf (vui-instance-state ,instance-sym)
                (list ,@(cl-loop for b in bindings
                                 collect (intern (format ":%s" (car b)))
                                 collect (cadr b)))))
@@ -2382,17 +2382,17 @@ Example:
          (cl-symbol-macrolet
              ,(cl-loop for (name setter-fn) in gv-bindings
                        collect `(,name
-                                 (ui--state-place ,instance-sym
+                                 (vui--state-place ,instance-sym
                                                   ,(intern (format ":%s" name)))))
            ,@body)))))
 
 ;; Define a gv-expander for our state place
-(gv-define-expander ui--state-place
+(gv-define-expander vui--state-place
   (lambda (do &rest args)
-    (gv-letplace (getter setter) `(ui-get-state ,@args)
+    (gv-letplace (getter setter) `(vui-get-state ,@args)
       (funcall do getter
                (lambda (v)
-                 `(ui-set-state! ,(car args) ,(cadr args) ,v))))))
+                 `(vui-set-state! ,(car args) ,(cadr args) ,v))))))
 ```
 
 ## Derived State (Computed Values)
@@ -2409,7 +2409,7 @@ VALUE is recomputed only when DEPS change.
 Example:
   (let-memo ((filtered-items (items filter-text)
                (seq-filter (lambda (i) (string-match filter-text i)) items)))
-    (ui-list :items filtered-items))"
+    (vui-list :items filtered-items))"
 
   (declare (indent 1))
 
@@ -2423,20 +2423,20 @@ Example:
             (cache-key (gensym "memo-cache")))
 
         (push `(,name
-                (ui--memo-get-or-compute
+                (vui--memo-get-or-compute
                  ,instance-sym
                  ',cache-key
                  (list ,@deps)
                  (lambda () ,compute)))
               memo-bindings)))
 
-    `(let ((,instance-sym ui--current-instance))
+    `(let ((,instance-sym vui--current-instance))
        (let (,@(nreverse memo-bindings))
          ,@body))))
 
-(defun ui--memo-get-or-compute (instance cache-key deps compute-fn)
+(defun vui--memo-get-or-compute (instance cache-key deps compute-fn)
   "Get cached value or compute and cache it."
-  (let* ((memo-cache (ui-instance-memo-cache instance))
+  (let* ((memo-cache (vui-instance-memo-cache instance))
          (cached (gethash cache-key memo-cache))
          (cached-deps (car cached))
          (cached-value (cdr cached)))
@@ -2473,16 +2473,16 @@ Example:
   (let ((instance-sym (gensym "instance"))
         (effect-id (gensym "effect")))
 
-    `(let ((,instance-sym ui--current-instance))
-       (ui--register-effect
+    `(let ((,instance-sym vui--current-instance))
+       (vui--register-effect
         ,instance-sym
         ',effect-id
         (list ,@deps)
         (lambda () ,@body)))))
 
-(defun ui--register-effect (instance effect-id deps effect-fn)
+(defun vui--register-effect (instance effect-id deps effect-fn)
   "Register an effect to run after commit."
-  (let* ((effects (ui-instance-effects instance))
+  (let* ((effects (vui-instance-effects instance))
          (prev-effect (assq effect-id effects))
          (prev-deps (nth 1 prev-effect)))
 
@@ -2492,12 +2492,12 @@ Example:
 
       ;; Schedule effect for post-commit
       (push (list effect-id deps effect-fn (nth 3 prev-effect))
-            (ui-scheduler-pending-effects (ui--get-scheduler))))))
+            (vui-scheduler-pending-effects (vui--get-scheduler))))))
 
-(defun ui--run-pending-effects ()
+(defun vui--run-pending-effects ()
   "Run all pending effects after commit."
-  (let ((effects (ui-scheduler-pending-effects (ui--get-scheduler))))
-    (setf (ui-scheduler-pending-effects (ui--get-scheduler)) nil)
+  (let ((effects (vui-scheduler-pending-effects (vui--get-scheduler))))
+    (setf (vui-scheduler-pending-effects (vui--get-scheduler)) nil)
 
     (dolist (effect effects)
       (let ((effect-id (nth 0 effect))
@@ -2513,7 +2513,7 @@ Example:
         (let ((new-cleanup (funcall effect-fn)))
           ;; Store cleanup for next time
           (when (functionp new-cleanup)
-            (ui--store-cleanup effect-id new-cleanup)))))))
+            (vui--store-cleanup effect-id new-cleanup)))))))
 ```
 
 ## Refs (Mutable References Without Re-render)
@@ -2540,12 +2540,12 @@ Example:
   (let ((instance-sym (gensym "instance"))
         (ref-id (gensym "ref")))
 
-    `(let ((,instance-sym ui--current-instance))
-       (ui--get-or-create-ref ,instance-sym ',ref-id ,initial-value))))
+    `(let ((,instance-sym vui--current-instance))
+       (vui--get-or-create-ref ,instance-sym ',ref-id ,initial-value))))
 
-(defun ui--get-or-create-ref (instance ref-id initial-value)
+(defun vui--get-or-create-ref (instance ref-id initial-value)
   "Get existing ref or create new one."
-  (let ((refs (ui-instance-refs instance)))
+  (let ((refs (vui-instance-refs instance)))
     (or (gethash ref-id refs)
         (let ((ref (cons initial-value nil)))
           (puthash ref-id ref refs)
@@ -2566,17 +2566,17 @@ unnecessary re-renders.
 Example:
   (let ((handle-click (use-callback (item-id)
                         (lambda () (delete-item item-id)))))
-    (ui-button :on-click handle-click))"
+    (vui-button :on-click handle-click))"
 
   (declare (indent 1))
 
-  `(ui--memo-callback ui--current-instance
+  `(vui--memo-callback vui--current-instance
                       (list ,@deps)
                       (lambda () ,@body)))
 
-(defun ui--memo-callback (instance deps make-callback)
+(defun vui--memo-callback (instance deps make-callback)
   "Return cached callback or create new one if deps changed."
-  (let* ((cache (ui-instance-callback-cache instance))
+  (let* ((cache (vui-instance-callback-cache instance))
          (cache-key (sxhash make-callback))
          (cached (gethash cache-key cache))
          (cached-deps (car cached))
@@ -2594,24 +2594,24 @@ Example:
 Multiple state changes should be batched into a single re-render:
 
 ``` elisp
-(defvar ui--batch-depth 0
+(defvar vui--batch-depth 0
   "Nesting depth of batch operations.")
 
-(defvar ui--batched-updates nil
+(defvar vui--batched-updates nil
   "List of (instance . state-updates) pending in current batch.")
 
-(defmacro ui-batch (&rest body)
+(defmacro vui-batch (&rest body)
   "Batch state updates in BODY into a single re-render."
-  `(let ((ui--batch-depth (1+ ui--batch-depth)))
+  `(let ((vui--batch-depth (1+ vui--batch-depth)))
      (unwind-protect
          (progn ,@body)
-       (when (= ui--batch-depth 1)
-         (ui--flush-batched-updates)))))
+       (when (= vui--batch-depth 1)
+         (vui--flush-batched-updates)))))
 
-(defun ui--flush-batched-updates ()
+(defun vui--flush-batched-updates ()
   "Apply all batched updates and trigger single re-render."
-  (let ((updates ui--batched-updates))
-    (setq ui--batched-updates nil)
+  (let ((updates vui--batched-updates))
+    (setq vui--batched-updates nil)
 
     ;; Group updates by instance
     (let ((by-instance (make-hash-table :test 'eq)))
@@ -2624,15 +2624,15 @@ Multiple state changes should be batched into a single re-render:
 
       ;; Apply updates and mark dirty
       (maphash (lambda (instance changes)
-                 (let ((state (ui-instance-state instance)))
+                 (let ((state (vui-instance-state instance)))
                    (dolist (change changes)
                      (setq state (plist-put state (car change) (cdr change))))
-                   (setf (ui-instance-state instance) state)
-                   (ui--mark-dirty instance)))
+                   (setf (vui-instance-state instance) state)
+                   (vui--mark-dirty instance)))
                by-instance))
 
     ;; Schedule single re-render
-    (ui--schedule-render-if-needed)))
+    (vui--schedule-render-if-needed)))
 ```
 
 ## Reducer Pattern (Complex State Logic)
@@ -2650,11 +2650,11 @@ Example:
   (let* ((result (use-reducer #'my-reducer initial-state))
          (state (car result))
          (dispatch (cdr result)))
-    (ui-button :on-click (lambda () (funcall dispatch '(:type increment)))))"
+    (vui-button :on-click (lambda () (funcall dispatch '(:type increment)))))"
 
   (let ((instance-sym (gensym "instance")))
 
-    `(let ((,instance-sym ui--current-instance))
+    `(let ((,instance-sym vui--current-instance))
        (let-state ((state ,initial-state))
          (cons state
                (lambda (action)
@@ -2699,14 +2699,14 @@ Context solves the "prop drilling" problem  -  passing data through many layers 
 Without context:
 ```
 
-App (theme) → Layout (theme) → Sidebar (theme) → Button (uses theme)
+App (theme) -\> Layout (theme) -\> Sidebar (theme) -\> Button (uses theme)
 
 ``` example
 
 With context:
 ```
 
-App (provides theme) → … → Button (consumes theme directly)
+App (provides theme) -\> … -\> Button (consumes theme directly)
 
 ``` example
 
@@ -2733,7 +2733,7 @@ Example:
     `(progn
        ;; The context object
        (defvar ,context-var
-         (ui-context--create
+         (vui-context--create
           :name ',name
           :default-value ,default-value)
          ,(or docstring (format "Context for %s." name)))
@@ -2741,7 +2741,7 @@ Example:
        ;; Provider function
        (defun ,provider-fn (value &rest children)
          ,(format "Provide %s context with VALUE to CHILDREN." name)
-         (ui-vnode-provider--create
+         (vui-vnode-provider--create
           :context ,context-var
           :value value
           :children children))
@@ -2749,27 +2749,27 @@ Example:
        ;; Consumer hook
        (defun ,consumer-fn ()
          ,(format "Get current %s context value." name)
-         (ui--consume-context ,context-var)))))
+         (vui--consume-context ,context-var)))))
 ```
 
 ## Context Data Structures
 
 ``` elisp
-(cl-defstruct (ui-context (:constructor ui-context--create))
+(cl-defstruct (vui-context (:constructor vui-context--create))
   "A context definition."
   name                    ; Symbol identifying this context
   default-value)          ; Value when no provider found
 
-(cl-defstruct (ui-vnode-provider (:include ui-vnode)
-                                  (:constructor ui-vnode-provider--create))
+(cl-defstruct (vui-vnode-provider (:include vui-vnode)
+                                  (:constructor vui-vnode-provider--create))
   "A context provider vnode."
-  context                 ; The ui-context being provided
+  context                 ; The vui-context being provided
   value                   ; The value to provide
   children)               ; Child vnodes
 
-(cl-defstruct (ui-context-binding (:constructor ui-context-binding--create))
+(cl-defstruct (vui-context-binding (:constructor vui-context-binding--create))
   "Runtime binding of a context to a value."
-  context                 ; The ui-context
+  context                 ; The vui-context
   value                   ; Current provided value
   provider-instance)      ; The instance that's providing this
 ```
@@ -2779,44 +2779,44 @@ Example:
 During render, we maintain a stack of context bindings:
 
 ``` elisp
-(defvar ui--context-stack nil
+(defvar vui--context-stack nil
   "Stack of context bindings during render.
-Each entry is a ui-context-binding.")
+Each entry is a vui-context-binding.")
 
-(defun ui--consume-context (context)
+(defun vui--consume-context (context)
   "Get the current value of CONTEXT.
 
 Searches up the context stack for a matching provider.
 Returns default-value if no provider found."
-  (or (cl-loop for binding in ui--context-stack
-               when (eq (ui-context-binding-context binding) context)
-               return (ui-context-binding-value binding))
-      (ui-context-default-value context)))
+  (or (cl-loop for binding in vui--context-stack
+               when (eq (vui-context-binding-context binding) context)
+               return (vui-context-binding-value binding))
+      (vui-context-default-value context)))
 
-(defun ui--with-context-provider (context value body-fn)
+(defun vui--with-context-provider (context value body-fn)
   "Execute BODY-FN with CONTEXT bound to VALUE."
-  (let ((ui--context-stack
-         (cons (ui-context-binding--create
+  (let ((vui--context-stack
+         (cons (vui-context-binding--create
                 :context context
                 :value value
-                :provider-instance ui--current-instance)
-               ui--context-stack)))
+                :provider-instance vui--current-instance)
+               vui--context-stack)))
     (funcall body-fn)))
 ```
 
 ## Rendering Providers
 
 ``` elisp
-(defun ui--render-provider (vnode)
+(defun vui--render-provider (vnode)
   "Render a context provider vnode."
-  (let ((context (ui-vnode-provider-context vnode))
-        (value (ui-vnode-provider-value vnode))
-        (children (ui-vnode-provider-children vnode)))
+  (let ((context (vui-vnode-provider-context vnode))
+        (value (vui-vnode-provider-value vnode))
+        (children (vui-vnode-provider-children vnode)))
 
-    (ui--with-context-provider context value
+    (vui--with-context-provider context value
       (lambda ()
         (dolist (child children)
-          (ui--render-vnode child))))))
+          (vui--render-vnode child))))))
 ```
 
 ## Context Change Detection
@@ -2824,25 +2824,25 @@ Returns default-value if no provider found."
 When a context value changes, all consumers need to re-render:
 
 ``` elisp
-(defun ui--context-consumers (context root-instance)
+(defun vui--context-consumers (context root-instance)
   "Find all instances that consume CONTEXT under ROOT-INSTANCE."
   (let ((consumers nil))
-    (ui--walk-instance-tree
+    (vui--walk-instance-tree
      root-instance
      (lambda (instance)
-       (when (ui--instance-consumes-context-p instance context)
+       (when (vui--instance-consumes-context-p instance context)
          (push instance consumers))))
     consumers))
 
-(defun ui--instance-consumes-context-p (instance context)
+(defun vui--instance-consumes-context-p (instance context)
   "Check if INSTANCE's render function uses CONTEXT."
   ;; We track this during render
-  (memq context (ui-instance-consumed-contexts instance)))
+  (memq context (vui-instance-consumed-contexts instance)))
 
-(defun ui--mark-context-consumers-dirty (context provider-instance)
+(defun vui--mark-context-consumers-dirty (context provider-instance)
   "Mark all consumers of CONTEXT as dirty."
-  (dolist (consumer (ui--context-consumers context provider-instance))
-    (ui--mark-dirty consumer)))
+  (dolist (consumer (vui--context-consumers context provider-instance))
+    (vui--mark-dirty consumer)))
 ```
 
 ## Optimising Context Updates
@@ -2850,23 +2850,23 @@ When a context value changes, all consumers need to re-render:
 To avoid re-rendering the entire subtree when context changes:
 
 ``` elisp
-(defun ui--reconcile-provider (old-instance new-vnode)
+(defun vui--reconcile-provider (old-instance new-vnode)
   "Reconcile a context provider."
-  (let* ((context (ui-vnode-provider-context new-vnode))
-         (old-value (ui--provider-value old-instance))
-         (new-value (ui-vnode-provider-value new-vnode)))
+  (let* ((context (vui-vnode-provider-context new-vnode))
+         (old-value (vui--provider-value old-instance))
+         (new-value (vui-vnode-provider-value new-vnode)))
 
     ;; Update provider value
-    (setf (ui--provider-value old-instance) new-value)
+    (setf (vui--provider-value old-instance) new-value)
 
     ;; If value changed, mark consumers dirty
     (unless (equal old-value new-value)
-      (ui--mark-context-consumers-dirty context old-instance))
+      (vui--mark-context-consumers-dirty context old-instance))
 
     ;; Continue reconciling children normally
-    (ui--reconcile-children
-     (ui-instance-children old-instance)
-     (ui-vnode-provider-children new-vnode)
+    (vui--reconcile-children
+     (vui-instance-children old-instance)
+     (vui-vnode-provider-children new-vnode)
      old-instance)))
 ```
 
@@ -2884,7 +2884,7 @@ Components can consume multiple contexts:
   (let ((theme (use-theme))
         (locale (use-locale))
         (user (use-user)))
-    (ui-text
+    (vui-text
      (format (get-greeting locale) (plist-get user :name))
      :face (if (eq theme 'dark) 'bold 'default))))
 ```
@@ -2894,26 +2894,26 @@ Components can consume multiple contexts:
 For many contexts, a composition helper:
 
 ``` elisp
-(defun ui-providers (providers &rest children)
+(defun vui-providers (providers &rest children)
   "Nest multiple context providers.
 
 PROVIDERS is a list of (context . value) pairs.
 
 Example:
-  (ui-providers
+  (vui-providers
     `((,theme-context . dark)
       (,locale-context . \"en\")
       (,user-context . ,current-user))
     (app-content))"
 
   (if (null providers)
-      (ui-fragment children)
+      (vui-fragment children)
     (let ((provider (car providers))
           (rest (cdr providers)))
-      (ui-vnode-provider--create
+      (vui-vnode-provider--create
        :context (car provider)
        :value (cdr provider)
-       :children (list (apply #'ui-providers rest children))))))
+       :children (list (apply #'vui-providers rest children))))))
 ```
 
 ## Example: Theme Context
@@ -2929,7 +2929,7 @@ Example:
 
   :render
   (let ((theme (use-theme)))
-    (ui-button
+    (vui-button
      :label label
      :on-click on-click
      :face (pcase theme
@@ -2942,12 +2942,12 @@ Example:
 
   :render
   (let ((theme (use-theme)))
-    (ui-vstack
-      (ui-text title :face (if (eq theme 'dark)
+    (vui-vstack
+      (vui-text title :face (if (eq theme 'dark)
                                'header-dark
                              'header-light))
-      (ui-separator)
-      (ui-fragment children))))
+      (vui-separator)
+      (vui-fragment children))))
 
 ;; App with theme switching
 (defcomponent app
@@ -2955,9 +2955,9 @@ Example:
 
   :render
   (theme-provider theme
-    (ui-vstack
+    (vui-vstack
       ;; Theme toggle
-      (ui-button
+      (vui-button
        :label (format "Theme: %s" theme)
        :on-click (lambda ()
                    (setf theme (if (eq theme 'light) 'dark 'light))))
@@ -3047,54 +3047,54 @@ Components go through distinct phases:
 ## Hook Execution
 
 ``` elisp
-(defun ui--run-mount-hooks (instance)
+(defun vui--run-mount-hooks (instance)
   "Run mount hooks for INSTANCE and its descendants."
-  (unless (ui-instance-mounted-p instance)
-    (setf (ui-instance-mounted-p instance) t)
+  (unless (vui-instance-mounted-p instance)
+    (setf (vui-instance-mounted-p instance) t)
 
     ;; Run children first (bottom-up)
-    (dolist (child (ui-instance-children instance))
-      (ui--run-mount-hooks child))
+    (dolist (child (vui-instance-children instance))
+      (vui--run-mount-hooks child))
 
     ;; Run this instance's hook
-    (when-let ((hook (ui-component-def-on-mount
-                      (ui-instance-def instance))))
-      (let ((ui--current-instance instance))
+    (when-let ((hook (vui-component-def-on-mount
+                      (vui-instance-def instance))))
+      (let ((vui--current-instance instance))
         (condition-case err
             (funcall hook)
           (error
-           (ui--handle-lifecycle-error instance 'on-mount err)))))))
+           (vui--handle-lifecycle-error instance 'on-mount err)))))))
 
-(defun ui--run-update-hooks (instance prev-props prev-state)
+(defun vui--run-update-hooks (instance prev-props prev-state)
   "Run update hook for INSTANCE."
-  (when-let ((hook (ui-component-def-on-update
-                    (ui-instance-def instance))))
-    (let ((ui--current-instance instance))
+  (when-let ((hook (vui-component-def-on-update
+                    (vui-instance-def instance))))
+    (let ((vui--current-instance instance))
       (condition-case err
           (funcall hook prev-props prev-state)
         (error
-         (ui--handle-lifecycle-error instance 'on-update err))))))
+         (vui--handle-lifecycle-error instance 'on-update err))))))
 
-(defun ui--run-unmount-hooks (instance)
+(defun vui--run-unmount-hooks (instance)
   "Run unmount hooks for INSTANCE and its descendants."
-  (when (ui-instance-mounted-p instance)
+  (when (vui-instance-mounted-p instance)
     ;; Run this instance's hook first (top-down)
-    (when-let ((hook (ui-component-def-on-unmount
-                      (ui-instance-def instance))))
-      (let ((ui--current-instance instance))
+    (when-let ((hook (vui-component-def-on-unmount
+                      (vui-instance-def instance))))
+      (let ((vui--current-instance instance))
         (condition-case err
             (funcall hook)
           (error
-           (ui--handle-lifecycle-error instance 'on-unmount err)))))
+           (vui--handle-lifecycle-error instance 'on-unmount err)))))
 
     ;; Run effect cleanups
-    (ui--run-all-effect-cleanups instance)
+    (vui--run-all-effect-cleanups instance)
 
     ;; Run children
-    (dolist (child (ui-instance-children instance))
-      (ui--run-unmount-hooks child))
+    (dolist (child (vui-instance-children instance))
+      (vui--run-unmount-hooks child))
 
-    (setf (ui-instance-mounted-p instance) nil)))
+    (setf (vui-instance-mounted-p instance) nil)))
 ```
 
 ## Effect Lifecycle
@@ -3102,45 +3102,45 @@ Components go through distinct phases:
 Effects have their own lifecycle interleaved with component lifecycle:
 
 ``` elisp
-(defun ui--run-effects-after-commit (instance)
+(defun vui--run-effects-after-commit (instance)
   "Run pending effects for INSTANCE after commit."
-  (dolist (effect (ui-instance-pending-effects instance))
+  (dolist (effect (vui-instance-pending-effects instance))
     (let* ((effect-id (nth 0 effect))
            (deps (nth 1 effect))
            (effect-fn (nth 2 effect))
-           (prev-cleanup (ui--get-effect-cleanup instance effect-id)))
+           (prev-cleanup (vui--get-effect-cleanup instance effect-id)))
 
       ;; Run previous cleanup
       (when prev-cleanup
         (condition-case err
             (funcall prev-cleanup)
           (error
-           (ui--handle-effect-error instance effect-id 'cleanup err))))
+           (vui--handle-effect-error instance effect-id 'cleanup err))))
 
       ;; Run effect
       (condition-case err
           (let ((cleanup (funcall effect-fn)))
-            (ui--store-effect-cleanup instance effect-id cleanup))
+            (vui--store-effect-cleanup instance effect-id cleanup))
         (error
-         (ui--handle-effect-error instance effect-id 'effect err)))))
+         (vui--handle-effect-error instance effect-id 'effect err)))))
 
   ;; Clear pending effects
-  (setf (ui-instance-pending-effects instance) nil))
+  (setf (vui-instance-pending-effects instance) nil))
 
-(defun ui--run-all-effect-cleanups (instance)
+(defun vui--run-all-effect-cleanups (instance)
   "Run all effect cleanups for INSTANCE (on unmount)."
   (maphash (lambda (effect-id cleanup)
              (when cleanup
                (condition-case err
                    (funcall cleanup)
                  (error
-                  (ui--handle-effect-error instance effect-id 'cleanup err)))))
-           (ui-instance-effect-cleanups instance)))
+                  (vui--handle-effect-error instance effect-id 'cleanup err)))))
+           (vui-instance-effect-cleanups instance)))
 ```
 
 ## Timing Guarantees
 
-The library provides these timing guarantees:
+vui.el provides these timing guarantees:
 
 1.  **on-mount** is called after the component is visible in the buffer
 2.  **on-update** is called after changes are visible
@@ -3165,7 +3165,7 @@ With batching:
 
 ``` elisp
 ;; Good: 1 re-render
-(ui-batch
+(vui-batch
   (setf count (1+ count))
   (setf name "Bob")
   (setf items (cons x items)))
@@ -3175,7 +3175,7 @@ With batching:
 ## Scheduler Structure
 
 ``` elisp
-(cl-defstruct (ui-scheduler (:constructor ui-scheduler--create))
+(cl-defstruct (vui-scheduler (:constructor vui-scheduler--create))
   "Manages the render queue and update batching."
 
   ;; Render queue
@@ -3183,7 +3183,7 @@ With batching:
   dirty-roots              ; List of root instances to process
 
   ;; Batching
-  batch-depth              ; Current nesting depth of ui-batch
+  batch-depth              ; Current nesting depth of vui-batch
   pending-state-updates    ; List of (instance key value) to apply
 
   ;; Rendering state
@@ -3202,13 +3202,13 @@ With batching:
   render-count             ; Total renders (for debugging)
   last-render-time)        ; Duration of last render cycle
 
-(defvar ui--scheduler nil
+(defvar vui--scheduler nil
   "The global scheduler instance.")
 
-(defun ui--get-scheduler ()
+(defun vui--get-scheduler ()
   "Get or create the global scheduler."
-  (or ui--scheduler
-      (setq ui--scheduler (ui-scheduler--create
+  (or vui--scheduler
+      (setq vui--scheduler (vui-scheduler--create
                            :dirty-instances (make-hash-table :test 'eq)
                            :batch-depth 0
                            :idle-delay 0.01))))
@@ -3217,142 +3217,142 @@ With batching:
 ## Marking Dirty
 
 ``` elisp
-(defun ui--mark-dirty (instance)
+(defun vui--mark-dirty (instance)
   "Mark INSTANCE as needing re-render."
-  (let ((scheduler (ui--get-scheduler)))
+  (let ((scheduler (vui--get-scheduler)))
     ;; Add to dirty set
-    (puthash instance t (ui-scheduler-dirty-instances scheduler))
+    (puthash instance t (vui-scheduler-dirty-instances scheduler))
 
     ;; Find and track root
-    (let ((root (ui--root-instance instance)))
-      (unless (memq root (ui-scheduler-dirty-roots scheduler))
-        (push root (ui-scheduler-dirty-roots scheduler))))
+    (let ((root (vui--root-instance instance)))
+      (unless (memq root (vui-scheduler-dirty-roots scheduler))
+        (push root (vui-scheduler-dirty-roots scheduler))))
 
     ;; Schedule render (unless already rendering or batching)
-    (unless (or (ui-scheduler-is-rendering-p scheduler)
-                (> (ui-scheduler-batch-depth scheduler) 0))
-      (ui--schedule-render))))
+    (unless (or (vui-scheduler-is-rendering-p scheduler)
+                (> (vui-scheduler-batch-depth scheduler) 0))
+      (vui--schedule-render))))
 
-(defun ui--root-instance (instance)
+(defun vui--root-instance (instance)
   "Find the root instance for INSTANCE."
   (let ((current instance))
-    (while (ui-instance-parent current)
-      (setq current (ui-instance-parent current)))
+    (while (vui-instance-parent current)
+      (setq current (vui-instance-parent current)))
     current))
 ```
 
 ## Scheduling Renders
 
 ``` elisp
-(defun ui--schedule-render ()
+(defun vui--schedule-render ()
   "Schedule a render cycle, batching rapid changes."
-  (let ((scheduler (ui--get-scheduler)))
-    (unless (ui-scheduler-idle-timer scheduler)
-      (setf (ui-scheduler-idle-timer scheduler)
+  (let ((scheduler (vui--get-scheduler)))
+    (unless (vui-scheduler-idle-timer scheduler)
+      (setf (vui-scheduler-idle-timer scheduler)
             (run-with-idle-timer
-             (ui-scheduler-idle-delay scheduler)
+             (vui-scheduler-idle-delay scheduler)
              nil
-             #'ui--process-scheduled-render)))))
+             #'vui--process-scheduled-render)))))
 
-(defun ui--process-scheduled-render ()
+(defun vui--process-scheduled-render ()
   "Process all scheduled renders."
-  (let ((scheduler (ui--get-scheduler)))
+  (let ((scheduler (vui--get-scheduler)))
     ;; Clear timer
-    (setf (ui-scheduler-idle-timer scheduler) nil)
+    (setf (vui-scheduler-idle-timer scheduler) nil)
 
     ;; Process if not already rendering
-    (unless (ui-scheduler-is-rendering-p scheduler)
-      (ui--render-cycle))))
+    (unless (vui-scheduler-is-rendering-p scheduler)
+      (vui--render-cycle))))
 
-(defun ui--render-cycle ()
+(defun vui--render-cycle ()
   "Execute a complete render cycle."
-  (let* ((scheduler (ui--get-scheduler))
+  (let* ((scheduler (vui--get-scheduler))
          (start-time (current-time)))
 
-    (setf (ui-scheduler-is-rendering-p scheduler) t)
+    (setf (vui-scheduler-is-rendering-p scheduler) t)
 
     (unwind-protect
         (progn
           ;; Phase 1: Apply pending state updates
-          (ui--apply-pending-state-updates scheduler)
+          (vui--apply-pending-state-updates scheduler)
 
           ;; Phase 2: Render dirty trees
-          (let ((roots (ui-scheduler-dirty-roots scheduler)))
-            (setf (ui-scheduler-dirty-roots scheduler) nil)
-            (clrhash (ui-scheduler-dirty-instances scheduler))
+          (let ((roots (vui-scheduler-dirty-roots scheduler)))
+            (setf (vui-scheduler-dirty-roots scheduler) nil)
+            (clrhash (vui-scheduler-dirty-instances scheduler))
 
             (dolist (root roots)
-              (ui--render-root root)))
+              (vui--render-root root)))
 
           ;; Phase 3: Run effects
-          (ui--run-pending-effects))
+          (vui--run-pending-effects))
 
       ;; Cleanup
-      (setf (ui-scheduler-is-rendering-p scheduler) nil)
-      (setf (ui-scheduler-last-render-time scheduler)
+      (setf (vui-scheduler-is-rendering-p scheduler) nil)
+      (setf (vui-scheduler-last-render-time scheduler)
             (float-time (time-subtract (current-time) start-time)))
-      (cl-incf (ui-scheduler-render-count scheduler)))))
+      (cl-incf (vui-scheduler-render-count scheduler)))))
 
-(defun ui--render-root (root-instance)
+(defun vui--render-root (root-instance)
   "Render a single root instance tree."
-  (let ((context (ui--capture-cursor-context root-instance)))
+  (let ((context (vui--capture-cursor-context root-instance)))
 
     ;; Render phase: build new virtual tree
-    (let* ((def (ui-instance-def root-instance))
-           (props (ui-instance-props root-instance))
-           (state (ui-instance-state root-instance))
-           (new-vtree (let ((ui--current-instance root-instance))
-                        (funcall (ui-component-def-render-fn def)
+    (let* ((def (vui-instance-def root-instance))
+           (props (vui-instance-props root-instance))
+           (state (vui-instance-state root-instance))
+           (new-vtree (let ((vui--current-instance root-instance))
+                        (funcall (vui-component-def-render-fn def)
                                  props state))))
 
       ;; Diff phase: compare with old tree
-      (let ((ops (ui--reconcile-children
-                  (ui-instance-children root-instance)
-                  (ui--vtree-children new-vtree)
+      (let ((ops (vui--reconcile-children
+                  (vui-instance-children root-instance)
+                  (vui--vtree-children new-vtree)
                   root-instance)))
 
         ;; Commit phase: apply to buffer
-        (ui--commit-operations ops root-instance)
+        (vui--commit-operations ops root-instance)
 
         ;; Update cache
-        (setf (ui-instance-last-vtree root-instance) new-vtree)))
+        (setf (vui-instance-last-vtree root-instance) new-vtree)))
 
     ;; Restore cursor
-    (ui--restore-cursor-context context root-instance)))
+    (vui--restore-cursor-context context root-instance)))
 ```
 
 ## Batching API
 
 ``` elisp
-(defmacro ui-batch (&rest body)
+(defmacro vui-batch (&rest body)
   "Batch all state updates in BODY into a single render.
 
 Use this when making multiple state changes that should
 result in a single re-render.
 
 Example:
-  (ui-batch
+  (vui-batch
     (setf count (1+ count))
     (setf items (cons new-item items)))"
 
-  `(let* ((scheduler (ui--get-scheduler))
-          (was-batching (> (ui-scheduler-batch-depth scheduler) 0)))
-     (cl-incf (ui-scheduler-batch-depth scheduler))
+  `(let* ((scheduler (vui--get-scheduler))
+          (was-batching (> (vui-scheduler-batch-depth scheduler) 0)))
+     (cl-incf (vui-scheduler-batch-depth scheduler))
      (unwind-protect
          (progn ,@body)
-       (cl-decf (ui-scheduler-batch-depth scheduler))
+       (cl-decf (vui-scheduler-batch-depth scheduler))
        (when (and (not was-batching)
-                  (= (ui-scheduler-batch-depth scheduler) 0))
-         (ui--flush-batch scheduler)))))
+                  (= (vui-scheduler-batch-depth scheduler) 0))
+         (vui--flush-batch scheduler)))))
 
-(defun ui--flush-batch (scheduler)
+(defun vui--flush-batch (scheduler)
   "Apply all batched updates and trigger render."
   ;; Apply pending state updates
-  (ui--apply-pending-state-updates scheduler)
+  (vui--apply-pending-state-updates scheduler)
 
   ;; Schedule render if there are dirty instances
-  (when (ui-scheduler-dirty-roots scheduler)
-    (ui--schedule-render)))
+  (when (vui-scheduler-dirty-roots scheduler)
+    (vui--schedule-render)))
 ```
 
 ## Immediate vs Deferred Rendering
@@ -3360,26 +3360,26 @@ Example:
 Sometimes you need immediate rendering (e.g., for testing):
 
 ``` elisp
-(defun ui-flush-sync ()
+(defun vui-flush-sync ()
   "Synchronously flush all pending renders.
 
 Use sparingly  -  mainly for testing or when you need
 immediate visual feedback."
-  (let ((scheduler (ui--get-scheduler)))
+  (let ((scheduler (vui--get-scheduler)))
     ;; Cancel any pending idle timer
-    (when (ui-scheduler-idle-timer scheduler)
-      (cancel-timer (ui-scheduler-idle-timer scheduler))
-      (setf (ui-scheduler-idle-timer scheduler) nil))
+    (when (vui-scheduler-idle-timer scheduler)
+      (cancel-timer (vui-scheduler-idle-timer scheduler))
+      (setf (vui-scheduler-idle-timer scheduler) nil))
 
     ;; Process immediately
-    (while (ui-scheduler-dirty-roots scheduler)
-      (ui--render-cycle))))
+    (while (vui-scheduler-dirty-roots scheduler)
+      (vui--render-cycle))))
 
-(defmacro ui-sync (&rest body)
+(defmacro vui-sync (&rest body)
   "Execute BODY and flush renders synchronously."
   `(progn
      ,@body
-     (ui-flush-sync)))
+     (vui-flush-sync)))
 ```
 
 ## Priority Scheduling (Advanced)
@@ -3387,58 +3387,58 @@ immediate visual feedback."
 For complex UIs, different updates can have different priorities:
 
 ``` elisp
-(defvar ui--priority-queues
+(defvar vui--priority-queues
   (list :immediate nil    ; User interactions
         :normal nil       ; State updates
         :deferred nil)    ; Background updates
   "Priority queues for scheduled work.")
 
-(defun ui--schedule-with-priority (priority work)
+(defun vui--schedule-with-priority (priority work)
   "Schedule WORK with given PRIORITY."
-  (let ((queue (plist-get ui--priority-queues priority)))
-    (plist-put ui--priority-queues priority (cons work queue)))
-  (ui--schedule-render))
+  (let ((queue (plist-get vui--priority-queues priority)))
+    (plist-put vui--priority-queues priority (cons work queue)))
+  (vui--schedule-render))
 
-(defun ui--process-priority-queues ()
+(defun vui--process-priority-queues ()
   "Process work in priority order."
   ;; Immediate: process all
-  (dolist (work (nreverse (plist-get ui--priority-queues :immediate)))
+  (dolist (work (nreverse (plist-get vui--priority-queues :immediate)))
     (funcall work))
-  (plist-put ui--priority-queues :immediate nil)
+  (plist-put vui--priority-queues :immediate nil)
 
   ;; Normal: process all
-  (dolist (work (nreverse (plist-get ui--priority-queues :normal)))
+  (dolist (work (nreverse (plist-get vui--priority-queues :normal)))
     (funcall work))
-  (plist-put ui--priority-queues :normal nil)
+  (plist-put vui--priority-queues :normal nil)
 
   ;; Deferred: process one, reschedule rest
-  (when-let ((deferred (plist-get ui--priority-queues :deferred)))
+  (when-let ((deferred (plist-get vui--priority-queues :deferred)))
     (funcall (car (last deferred)))
-    (plist-put ui--priority-queues :deferred (butlast deferred))
-    (when (plist-get ui--priority-queues :deferred)
-      (ui--schedule-render))))
+    (plist-put vui--priority-queues :deferred (butlast deferred))
+    (when (plist-get vui--priority-queues :deferred)
+      (vui--schedule-render))))
 ```
 
 ## Render Metrics
 
 ``` elisp
-(defun ui-render-metrics ()
+(defun vui-render-metrics ()
   "Return metrics about rendering performance."
-  (let ((scheduler (ui--get-scheduler)))
-    (list :total-renders (ui-scheduler-render-count scheduler)
-          :last-render-ms (* 1000 (ui-scheduler-last-render-time scheduler))
-          :pending-roots (length (ui-scheduler-dirty-roots scheduler))
-          :pending-effects (length (ui-scheduler-pending-effects scheduler)))))
+  (let ((scheduler (vui--get-scheduler)))
+    (list :total-renders (vui-scheduler-render-count scheduler)
+          :last-render-ms (* 1000 (vui-scheduler-last-render-time scheduler))
+          :pending-roots (length (vui-scheduler-dirty-roots scheduler))
+          :pending-effects (length (vui-scheduler-pending-effects scheduler)))))
 
-(defun ui-debug-render-cycle ()
+(defun vui-debug-render-cycle ()
   "Enable debug logging for render cycles."
-  (advice-add 'ui--render-cycle :around
+  (advice-add 'vui--render-cycle :around
               (lambda (orig-fn)
                 (message "UI: Starting render cycle...")
                 (let ((result (funcall orig-fn)))
                   (message "UI: Render complete in %.2fms"
-                           (* 1000 (ui-scheduler-last-render-time
-                                    (ui--get-scheduler))))
+                           (* 1000 (vui-scheduler-last-render-time
+                                    (vui--get-scheduler))))
                   result))))
 
 ---
@@ -3451,14 +3451,14 @@ The buffer renderer is responsible for:
 1. Translating vnodes into buffer content
 2. Applying diff operations to the buffer
 3. Managing overlays and text properties
-4. Maintaining the instance ↔ buffer mapping
+4. Maintaining the instance <-> buffer mapping
 
 ** Initial Rendering
 
 When mounting a new tree:
 
 #+begin_src elisp
-(defun ui-render (vnode &optional buffer position)
+(defun vui-render (vnode &optional buffer position)
   "Render VNODE into BUFFER at POSITION.
 
 BUFFER defaults to current buffer.
@@ -3473,58 +3473,58 @@ Returns the root instance."
         (goto-char position)
 
         (let* ((start-marker (point-marker))
-               (instance (ui--instantiate-and-render vnode nil)))
+               (instance (vui--instantiate-and-render vnode nil)))
 
           ;; Set up markers
           (set-marker-insertion-type start-marker t)
-          (setf (ui-instance-region-start instance) start-marker)
-          (setf (ui-instance-region-end instance) (point-marker))
-          (setf (ui-instance-buffer instance) buffer)
+          (setf (vui-instance-region-start instance) start-marker)
+          (setf (vui-instance-region-end instance) (point-marker))
+          (setf (vui-instance-buffer instance) buffer)
 
           ;; Register as root
-          (ui--register-root instance buffer)
+          (vui--register-root instance buffer)
 
           ;; Run mount hooks
-          (ui--run-mount-hooks instance)
+          (vui--run-mount-hooks instance)
 
           instance)))))
 
-(defun ui--instantiate-and-render (vnode parent-instance)
+(defun vui--instantiate-and-render (vnode parent-instance)
   "Create instance from VNODE and render to buffer."
   (cond
    ;; Component vnode
-   ((ui-vnode-component-p vnode)
-    (ui--instantiate-component vnode parent-instance))
+   ((vui-vnode-component-p vnode)
+    (vui--instantiate-component vnode parent-instance))
 
    ;; Fragment
-   ((ui-vnode-fragment-p vnode)
-    (ui--render-fragment vnode parent-instance))
+   ((vui-vnode-fragment-p vnode)
+    (vui--render-fragment vnode parent-instance))
 
    ;; Primitives
-   ((ui-vnode-text-p vnode)
-    (ui--render-text vnode parent-instance))
+   ((vui-vnode-text-p vnode)
+    (vui--render-text vnode parent-instance))
 
-   ((ui-vnode-button-p vnode)
-    (ui--render-button vnode parent-instance))
+   ((vui-vnode-button-p vnode)
+    (vui--render-button vnode parent-instance))
 
-   ((ui-vnode-field-p vnode)
-    (ui--render-field vnode parent-instance))
+   ((vui-vnode-field-p vnode)
+    (vui--render-field vnode parent-instance))
 
-   ((ui-vnode-newline-p vnode)
-    (ui--render-newline vnode parent-instance))
+   ((vui-vnode-newline-p vnode)
+    (vui--render-newline vnode parent-instance))
 
-   ((ui-vnode-space-p vnode)
-    (ui--render-space vnode parent-instance))
+   ((vui-vnode-space-p vnode)
+    (vui--render-space vnode parent-instance))
 
    ;; Layout containers
-   ((ui-vnode-hstack-p vnode)
-    (ui--render-hstack vnode parent-instance))
+   ((vui-vnode-hstack-p vnode)
+    (vui--render-hstack vnode parent-instance))
 
-   ((ui-vnode-vstack-p vnode)
-    (ui--render-vstack vnode parent-instance))
+   ((vui-vnode-vstack-p vnode)
+    (vui--render-vstack vnode parent-instance))
 
-   ((ui-vnode-provider-p vnode)
-    (ui--render-provider vnode parent-instance))
+   ((vui-vnode-provider-p vnode)
+    (vui--render-provider vnode parent-instance))
 
    (t (error "Unknown vnode type: %S" vnode))))
 ```
@@ -3532,12 +3532,12 @@ Returns the root instance."
 ## Rendering Primitives
 
 ``` elisp
-(defun ui--render-text (vnode parent-instance)
+(defun vui--render-text (vnode parent-instance)
   "Render a text vnode."
   (let ((start (point))
-        (content (ui-vnode-text-content vnode))
-        (face (ui-vnode-text-face vnode))
-        (props (ui-vnode-text-properties vnode)))
+        (content (vui-vnode-text-content vnode))
+        (face (vui-vnode-text-face vnode))
+        (props (vui-vnode-text-properties vnode)))
 
     ;; Insert text
     (insert content)
@@ -3551,16 +3551,16 @@ Returns the root instance."
       (add-text-properties start (point) props))
 
     ;; Create instance
-    (ui--create-primitive-instance
+    (vui--create-primitive-instance
      'text vnode parent-instance start (point))))
 
-(defun ui--render-button (vnode parent-instance)
+(defun vui--render-button (vnode parent-instance)
   "Render a button vnode."
   (let ((start (point))
-        (label (ui-vnode-button-label vnode))
-        (face (or (ui-vnode-button-face vnode) 'button))
-        (on-click (ui-vnode-button-on-click vnode))
-        (disabled (ui-vnode-button-disabled-p vnode)))
+        (label (vui-vnode-button-label vnode))
+        (face (or (vui-vnode-button-face vnode) 'button))
+        (on-click (vui-vnode-button-on-click vnode))
+        (disabled (vui-vnode-button-disabled-p vnode)))
 
     ;; Insert button text
     (insert (if (stringp label) label "[button]"))
@@ -3569,18 +3569,18 @@ Returns the root instance."
     (let ((overlay (make-overlay start (point))))
       (overlay-put overlay 'face (if disabled 'shadow face))
       (overlay-put overlay 'mouse-face (unless disabled 'highlight))
-      (overlay-put overlay 'keymap (ui--button-keymap on-click disabled))
-      (overlay-put overlay 'ui-button t)
-      (overlay-put overlay 'ui-on-click on-click)
+      (overlay-put overlay 'keymap (vui--button-keymap on-click disabled))
+      (overlay-put overlay 'vui-button t)
+      (overlay-put overlay 'vui-on-click on-click)
       (overlay-put overlay 'help-echo (unless disabled "Click to activate"))
 
       ;; Create instance with overlay
-      (let ((instance (ui--create-primitive-instance
+      (let ((instance (vui--create-primitive-instance
                        'button vnode parent-instance start (point))))
-        (push overlay (ui-instance-overlays instance))
+        (push overlay (vui-instance-overlays instance))
         instance))))
 
-(defun ui--button-keymap (on-click disabled)
+(defun vui--button-keymap (on-click disabled)
   "Create keymap for button."
   (let ((map (make-sparse-keymap)))
     (unless disabled
@@ -3592,14 +3592,14 @@ Returns the root instance."
         (lambda () (interactive) (funcall on-click))))
     map))
 
-(defun ui--render-field (vnode parent-instance)
+(defun vui--render-field (vnode parent-instance)
   "Render an editable field vnode."
   (let* ((start (point))
-         (value (ui-vnode-field-value vnode))
-         (size (ui-vnode-field-size vnode))
-         (face (or (ui-vnode-field-face vnode) 'widget-field))
-         (on-change (ui-vnode-field-on-change vnode))
-         (keymap (ui-vnode-field-keymap vnode)))
+         (value (vui-vnode-field-value vnode))
+         (size (vui-vnode-field-size vnode))
+         (face (or (vui-vnode-field-face vnode) 'widget-field))
+         (on-change (vui-vnode-field-on-change vnode))
+         (keymap (vui-vnode-field-keymap vnode)))
 
     ;; Insert value with padding if fixed size
     (if size
@@ -3611,24 +3611,24 @@ Returns the root instance."
     (let ((overlay (make-overlay start (point) nil t nil)))
       (overlay-put overlay 'face face)
       (overlay-put overlay 'field t)
-      (overlay-put overlay 'ui-field t)
+      (overlay-put overlay 'vui-field t)
       (overlay-put overlay 'modification-hooks
-                   (list (ui--make-field-modification-hook on-change)))
+                   (list (vui--make-field-modification-hook on-change)))
       (overlay-put overlay 'insert-in-front-hooks
-                   (list #'ui--field-insert-hook))
+                   (list #'vui--field-insert-hook))
       (overlay-put overlay 'insert-behind-hooks
-                   (list #'ui--field-insert-hook))
+                   (list #'vui--field-insert-hook))
 
       ;; Apply custom keymap
       (when keymap
         (overlay-put overlay 'keymap keymap))
 
-      (let ((instance (ui--create-primitive-instance
+      (let ((instance (vui--create-primitive-instance
                        'field vnode parent-instance start (point))))
-        (push overlay (ui-instance-overlays instance))
+        (push overlay (vui-instance-overlays instance))
         instance))))
 
-(defun ui--make-field-modification-hook (on-change)
+(defun vui--make-field-modification-hook (on-change)
   "Create modification hook that calls ON-CHANGE."
   (lambda (overlay after-p beg end &optional length)
     (when (and after-p on-change)
@@ -3641,73 +3641,73 @@ Returns the root instance."
 ## Applying Diff Operations
 
 ``` elisp
-(defun ui--commit-operations (operations root-instance)
+(defun vui--commit-operations (operations root-instance)
   "Apply OPERATIONS to buffer."
   (let ((inhibit-read-only t)
         (inhibit-modification-hooks t)
-        (buffer (ui-instance-buffer root-instance)))
+        (buffer (vui-instance-buffer root-instance)))
 
     (with-current-buffer buffer
       ;; Sort operations for safe application
-      (let ((sorted-ops (ui--sort-operations operations)))
+      (let ((sorted-ops (vui--sort-operations operations)))
         (dolist (op sorted-ops)
-          (ui--apply-operation op))))))
+          (vui--apply-operation op))))))
 
-(defun ui--apply-operation (op)
+(defun vui--apply-operation (op)
   "Apply a single diff operation."
   (cond
-   ((ui-op-delete-p op)
-    (ui--apply-delete op))
+   ((vui-op-delete-p op)
+    (vui--apply-delete op))
 
-   ((ui-op-insert-p op)
-    (ui--apply-insert op))
+   ((vui-op-insert-p op)
+    (vui--apply-insert op))
 
-   ((ui-op-replace-p op)
-    (ui--apply-replace op))
+   ((vui-op-replace-p op)
+    (vui--apply-replace op))
 
-   ((ui-op-update-props-p op)
-    (ui--apply-update-props op))
+   ((vui-op-update-props-p op)
+    (vui--apply-update-props op))
 
-   ((ui-op-move-p op)
-    (ui--apply-move op))))
+   ((vui-op-move-p op)
+    (vui--apply-move op))))
 
-(defun ui--apply-delete (op)
+(defun vui--apply-delete (op)
   "Apply a delete operation."
-  (let ((instance (ui-op-delete-instance op)))
+  (let ((instance (vui-op-delete-instance op)))
     ;; Run unmount hooks first
-    (ui--run-unmount-hooks instance)
+    (vui--run-unmount-hooks instance)
 
     ;; Remove overlays
-    (dolist (overlay (ui-instance-overlays instance))
+    (dolist (overlay (vui-instance-overlays instance))
       (delete-overlay overlay))
 
     ;; Delete text
-    (delete-region (ui-op-delete-start op) (ui-op-delete-end op))
+    (delete-region (vui-op-delete-start op) (vui-op-delete-end op))
 
     ;; Clean up markers
-    (set-marker (ui-instance-region-start instance) nil)
-    (set-marker (ui-instance-region-end instance) nil)))
+    (set-marker (vui-instance-region-start instance) nil)
+    (set-marker (vui-instance-region-end instance) nil)))
 
-(defun ui--apply-insert (op)
+(defun vui--apply-insert (op)
   "Apply an insert operation."
-  (goto-char (ui-op-insert-position op))
-  (let ((instance (ui--instantiate-and-render
-                   (ui-op-insert-vnode op)
-                   (ui-op-insert-parent-instance op))))
+  (goto-char (vui-op-insert-position op))
+  (let ((instance (vui--instantiate-and-render
+                   (vui-op-insert-vnode op)
+                   (vui-op-insert-parent-instance op))))
 
     ;; Add to parent's children
-    (when-let ((parent (ui-op-insert-parent-instance op)))
-      (push instance (ui-instance-children parent)))
+    (when-let ((parent (vui-op-insert-parent-instance op)))
+      (push instance (vui-instance-children parent)))
 
     ;; Run mount hooks
-    (ui--run-mount-hooks instance)))
+    (vui--run-mount-hooks instance)))
 
-(defun ui--apply-replace (op)
+(defun vui--apply-replace (op)
   "Apply a replace operation."
-  (let ((start (ui-op-replace-start op))
-        (end (ui-op-replace-end op))
-        (instance (ui-op-replace-instance op))
-        (new-vnode (ui-op-replace-new-vnode op)))
+  (let ((start (vui-op-replace-start op))
+        (end (vui-op-replace-end op))
+        (instance (vui-op-replace-instance op))
+        (new-vnode (vui-op-replace-new-vnode op)))
 
     ;; Preserve cursor context
     (let ((at-start (= (point) start))
@@ -3715,136 +3715,136 @@ Returns the root instance."
           (offset (- (point) start)))
 
       ;; Delete old content
-      (dolist (overlay (ui-instance-overlays instance))
+      (dolist (overlay (vui-instance-overlays instance))
         (delete-overlay overlay))
-      (setf (ui-instance-overlays instance) nil)
+      (setf (vui-instance-overlays instance) nil)
       (delete-region start end)
 
       ;; Insert new content
       (goto-char start)
-      (ui--render-vnode-into-instance new-vnode instance)
+      (vui--render-vnode-into-instance new-vnode instance)
 
       ;; Restore cursor approximately
       (cond
        (at-start (goto-char (marker-position
-                             (ui-instance-region-start instance))))
+                             (vui-instance-region-start instance))))
        (at-end (goto-char (marker-position
-                           (ui-instance-region-end instance))))
+                           (vui-instance-region-end instance))))
        (t (goto-char (min (+ start offset)
                           (marker-position
-                           (ui-instance-region-end instance)))))))))
+                           (vui-instance-region-end instance)))))))))
 
-(defun ui--apply-update-props (op)
+(defun vui--apply-update-props (op)
   "Apply a property update operation."
-  (let ((start (ui-op-update-props-start op))
-        (end (ui-op-update-props-end op))
-        (new-props (ui-op-update-props-new-props op)))
+  (let ((start (vui-op-update-props-start op))
+        (end (vui-op-update-props-end op))
+        (new-props (vui-op-update-props-new-props op)))
 
     ;; Update text properties
     (when-let ((face (plist-get new-props :face)))
       (put-text-property start end 'face face))
 
     ;; Update overlay properties if instance has overlays
-    (when-let* ((instance (ui-op-update-props-instance op))
-                (overlays (ui-instance-overlays instance)))
+    (when-let* ((instance (vui-op-update-props-instance op))
+                (overlays (vui-instance-overlays instance)))
       (dolist (overlay overlays)
         (when-let ((face (plist-get new-props :face)))
           (overlay-put overlay 'face face))))))
 ```
 
-## Instance ↔ Buffer Mapping
+## Instance \<-\> Buffer Mapping
 
 ``` elisp
-(defun ui--instance-at-point (&optional pos)
+(defun vui--instance-at-point (&optional pos)
   "Find the leaf instance at POS (default: point)."
   (let ((pos (or pos (point))))
     (catch 'found
-      (dolist (root (ui--buffer-roots (current-buffer)))
-        (when-let ((instance (ui--find-instance-at-pos root pos)))
+      (dolist (root (vui--buffer-roots (current-buffer)))
+        (when-let ((instance (vui--find-instance-at-pos root pos)))
           (throw 'found instance))))))
 
-(defun ui--find-instance-at-pos (instance pos)
+(defun vui--find-instance-at-pos (instance pos)
   "Find deepest instance containing POS."
-  (let ((start (marker-position (ui-instance-region-start instance)))
-        (end (marker-position (ui-instance-region-end instance))))
+  (let ((start (marker-position (vui-instance-region-start instance)))
+        (end (marker-position (vui-instance-region-end instance))))
     (when (and (>= pos start) (<= pos end))
       ;; Check children first
-      (or (cl-loop for child in (ui-instance-children instance)
-                   thereis (ui--find-instance-at-pos child pos))
+      (or (cl-loop for child in (vui-instance-children instance)
+                   thereis (vui--find-instance-at-pos child pos))
           instance))))
 
-(defvar-local ui--buffer-roots nil
+(defvar-local vui--buffer-roots nil
   "List of root instances rendered in this buffer.")
 
-(defun ui--register-root (instance buffer)
+(defun vui--register-root (instance buffer)
   "Register INSTANCE as a root in BUFFER."
   (with-current-buffer buffer
-    (push instance ui--buffer-roots)))
+    (push instance vui--buffer-roots)))
 
-(defun ui--unregister-root (instance)
+(defun vui--unregister-root (instance)
   "Unregister INSTANCE as a root."
-  (when-let ((buffer (ui-instance-buffer instance)))
+  (when-let ((buffer (vui-instance-buffer instance)))
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
-        (setq ui--buffer-roots (delq instance ui--buffer-roots))))))
+        (setq vui--buffer-roots (delq instance vui--buffer-roots))))))
 
-(defun ui--buffer-roots (buffer)
+(defun vui--buffer-roots (buffer)
   "Get all root instances in BUFFER."
-  (buffer-local-value 'ui--buffer-roots buffer))
+  (buffer-local-value 'vui--buffer-roots buffer))
 ```
 
 ## Overlay Management
 
 ``` elisp
-(defun ui--clean-instance-overlays (instance)
+(defun vui--clean-instance-overlays (instance)
   "Remove all overlays belonging to INSTANCE."
-  (dolist (overlay (ui-instance-overlays instance))
+  (dolist (overlay (vui-instance-overlays instance))
     (when (overlay-buffer overlay)
       (delete-overlay overlay)))
-  (setf (ui-instance-overlays instance) nil))
+  (setf (vui-instance-overlays instance) nil))
 
-(defun ui--update-overlay-region (instance start end)
+(defun vui--update-overlay-region (instance start end)
   "Update overlay regions for INSTANCE."
-  (dolist (overlay (ui-instance-overlays instance))
+  (dolist (overlay (vui-instance-overlays instance))
     (move-overlay overlay start end)))
 
-(defun ui--overlay-at-point ()
+(defun vui--overlay-at-point ()
   "Get the UI overlay at point, if any."
   (cl-find-if (lambda (ov)
-                (or (overlay-get ov 'ui-button)
-                    (overlay-get ov 'ui-field)))
+                (or (overlay-get ov 'vui-button)
+                    (overlay-get ov 'vui-field)))
               (overlays-at (point))))
 ```
 
 ## Buffer Teardown
 
 ``` elisp
-(defun ui-unmount (instance)
+(defun vui-unmount (instance)
   "Unmount INSTANCE and remove from buffer."
   (when instance
     ;; Run unmount hooks
-    (ui--run-unmount-hooks instance)
+    (vui--run-unmount-hooks instance)
 
     ;; Remove from buffer
     (let ((inhibit-read-only t)
-          (buffer (ui-instance-buffer instance)))
+          (buffer (vui-instance-buffer instance)))
       (when (buffer-live-p buffer)
         (with-current-buffer buffer
           (delete-region
-           (marker-position (ui-instance-region-start instance))
-           (marker-position (ui-instance-region-end instance))))))
+           (marker-position (vui-instance-region-start instance))
+           (marker-position (vui-instance-region-end instance))))))
 
     ;; Clean up
-    (ui--unregister-root instance)
-    (ui--clean-instance-overlays instance)
-    (set-marker (ui-instance-region-start instance) nil)
-    (set-marker (ui-instance-region-end instance) nil)))
+    (vui--unregister-root instance)
+    (vui--clean-instance-overlays instance)
+    (set-marker (vui-instance-region-start instance) nil)
+    (set-marker (vui-instance-region-end instance) nil)))
 
-(defun ui-unmount-buffer (&optional buffer)
+(defun vui-unmount-buffer (&optional buffer)
   "Unmount all UI instances in BUFFER."
   (let ((buffer (or buffer (current-buffer))))
-    (dolist (root (ui--buffer-roots buffer))
-      (ui-unmount root))))
+    (dolist (root (vui--buffer-roots buffer))
+      (vui-unmount root))))
 
 ---
 
@@ -3864,19 +3864,19 @@ Errors can occur at different phases:
 Like React, we support error boundaries  -  components that catch errors in their subtree:
 
 #+begin_src elisp
-(cl-defstruct (ui-vnode-error-boundary (:include ui-vnode)
-                                        (:constructor ui-vnode-error-boundary--create))
+(cl-defstruct (vui-vnode-error-boundary (:include vui-vnode)
+                                        (:constructor vui-vnode-error-boundary--create))
   "Error boundary container."
   child                   ; Normal child vnode
   fallback-fn             ; (lambda (error) vnode)  -  what to render on error
   on-error)               ; (lambda (error info) void)  -  error reporting
 
-(defun ui-error-boundary (&rest args)
+(defun vui-error-boundary (&rest args)
   "Create an error boundary.
 
 Usage:
-  (ui-error-boundary
-    :fallback (lambda (err) (ui-text (format \"Error: %s\" err)))
+  (vui-error-boundary
+    :fallback (lambda (err) (vui-text (format \"Error: %s\" err)))
     :on-error (lambda (err info) (log-error err info))
     (potentially-failing-component))"
 
@@ -3892,11 +3892,11 @@ Usage:
 
     (setq child (car args))
 
-    (ui-vnode-error-boundary--create
+    (vui-vnode-error-boundary--create
      :child child
      :fallback-fn (or fallback-fn
                       (lambda (err)
-                        (ui-text (format "Error: %S" err)
+                        (vui-text (format "Error: %S" err)
                                  :face 'error)))
      :on-error on-error)))
 ```
@@ -3904,101 +3904,101 @@ Usage:
 ## Error Boundary Implementation
 
 ``` elisp
-(defun ui--render-error-boundary (vnode parent-instance)
+(defun vui--render-error-boundary (vnode parent-instance)
   "Render an error boundary."
-  (let* ((instance (ui--create-error-boundary-instance vnode parent-instance))
-         (child-vnode (ui-vnode-error-boundary-child vnode))
-         (fallback-fn (ui-vnode-error-boundary-fallback-fn vnode))
-         (on-error (ui-vnode-error-boundary-on-error vnode)))
+  (let* ((instance (vui--create-error-boundary-instance vnode parent-instance))
+         (child-vnode (vui-vnode-error-boundary-child vnode))
+         (fallback-fn (vui-vnode-error-boundary-fallback-fn vnode))
+         (on-error (vui-vnode-error-boundary-on-error vnode)))
 
     (condition-case err
         ;; Try to render child normally
-        (let ((child-instance (ui--instantiate-and-render
+        (let ((child-instance (vui--instantiate-and-render
                                child-vnode instance)))
-          (setf (ui-instance-children instance) (list child-instance))
-          (setf (ui-instance-error instance) nil))
+          (setf (vui-instance-children instance) (list child-instance))
+          (setf (vui-instance-error instance) nil))
 
       ;; On error, render fallback
       (error
-       (setf (ui-instance-error instance) err)
+       (setf (vui-instance-error instance) err)
 
        ;; Report error
        (when on-error
          (funcall on-error err
-                  (list :component (ui-vnode-error-boundary-child vnode)
+                  (list :component (vui-vnode-error-boundary-child vnode)
                         :phase 'render)))
 
        ;; Render fallback
        (let ((fallback-vnode (funcall fallback-fn err)))
-         (let ((fallback-instance (ui--instantiate-and-render
+         (let ((fallback-instance (vui--instantiate-and-render
                                    fallback-vnode instance)))
-           (setf (ui-instance-children instance) (list fallback-instance))))))
+           (setf (vui-instance-children instance) (list fallback-instance))))))
 
     instance))
 
-(defun ui--recover-from-error (boundary-instance)
+(defun vui--recover-from-error (boundary-instance)
   "Attempt to recover from error in BOUNDARY-INSTANCE."
-  (when (ui-instance-error boundary-instance)
+  (when (vui-instance-error boundary-instance)
     ;; Clear error and trigger re-render
-    (setf (ui-instance-error boundary-instance) nil)
-    (ui--mark-dirty boundary-instance)))
+    (setf (vui-instance-error boundary-instance) nil)
+    (vui--mark-dirty boundary-instance)))
 ```
 
 ## Catching Lifecycle Errors
 
 ``` elisp
-(defun ui--handle-lifecycle-error (instance phase error)
+(defun vui--handle-lifecycle-error (instance phase error)
   "Handle error in lifecycle hook."
-  (let ((boundary (ui--find-error-boundary instance)))
+  (let ((boundary (vui--find-error-boundary instance)))
     (if boundary
         ;; Propagate to boundary
         (progn
-          (setf (ui-instance-error boundary) error)
-          (when-let ((on-error (ui-vnode-error-boundary-on-error
-                                (ui-instance-last-vtree boundary))))
+          (setf (vui-instance-error boundary) error)
+          (when-let ((on-error (vui-vnode-error-boundary-on-error
+                                (vui-instance-last-vtree boundary))))
             (funcall on-error error (list :instance instance :phase phase)))
-          (ui--mark-dirty boundary))
+          (vui--mark-dirty boundary))
 
       ;; No boundary  -  log and continue
       (message "UI lifecycle error in %s (%s): %S"
-               (ui-component-def-name (ui-instance-def instance))
+               (vui-component-def-name (vui-instance-def instance))
                phase
                error))))
 
-(defun ui--find-error-boundary (instance)
+(defun vui--find-error-boundary (instance)
   "Find nearest error boundary ancestor of INSTANCE."
-  (let ((current (ui-instance-parent instance)))
+  (let ((current (vui-instance-parent instance)))
     (while current
-      (when (ui--error-boundary-p current)
+      (when (vui--error-boundary-p current)
         (cl-return current))
-      (setq current (ui-instance-parent current)))))
+      (setq current (vui-instance-parent current)))))
 
-(defun ui--error-boundary-p (instance)
+(defun vui--error-boundary-p (instance)
   "Check if INSTANCE is an error boundary."
-  (and (ui-instance-def instance)
-       (eq (ui-component-def-name (ui-instance-def instance))
-           'ui--error-boundary)))
+  (and (vui-instance-def instance)
+       (eq (vui-component-def-name (vui-instance-def instance))
+           'vui--error-boundary)))
 ```
 
 ## Catching Effect Errors
 
 ``` elisp
-(defun ui--handle-effect-error (instance effect-id phase error)
+(defun vui--handle-effect-error (instance effect-id phase error)
   "Handle error in effect."
-  (let ((boundary (ui--find-error-boundary instance)))
+  (let ((boundary (vui--find-error-boundary instance)))
     (if boundary
         (progn
-          (setf (ui-instance-error boundary) error)
-          (when-let ((on-error (ui-vnode-error-boundary-on-error
-                                (ui-instance-last-vtree boundary))))
+          (setf (vui-instance-error boundary) error)
+          (when-let ((on-error (vui-vnode-error-boundary-on-error
+                                (vui-instance-last-vtree boundary))))
             (funcall on-error error
                      (list :instance instance
                            :effect-id effect-id
                            :phase phase)))
-          (ui--mark-dirty boundary))
+          (vui--mark-dirty boundary))
 
       (message "UI effect error in %s (effect %s, %s): %S"
-               (ui-component-def-name (ui-instance-def instance))
+               (vui-component-def-name (vui-instance-def instance))
                effect-id phase error))))
 ```
 
@@ -4007,28 +4007,28 @@ Usage:
 Event handlers run outside the render cycle, so we wrap them:
 
 ``` elisp
-(defun ui--wrap-event-handler (handler instance)
+(defun vui--wrap-event-handler (handler instance)
   "Wrap HANDLER to catch and report errors."
   (lambda (&rest args)
     (condition-case err
         (apply handler args)
       (error
-       (ui--handle-event-error instance err)))))
+       (vui--handle-event-error instance err)))))
 
-(defun ui--handle-event-error (instance error)
+(defun vui--handle-event-error (instance error)
   "Handle error from event handler."
   ;; For event errors, we just log  -  don't break the UI
   (message "UI event handler error in %s: %S"
            (if instance
-               (ui-component-def-name (ui-instance-def instance))
+               (vui-component-def-name (vui-instance-def instance))
              "unknown")
            error)
 
   ;; Optionally call global error handler
-  (when ui-global-error-handler
-    (funcall ui-global-error-handler error instance 'event)))
+  (when vui-global-error-handler
+    (funcall vui-global-error-handler error instance 'event)))
 
-(defvar ui-global-error-handler nil
+(defvar vui-global-error-handler nil
   "Function called for all UI errors.
 Signature: (lambda (error instance phase) ...)")
 ```
@@ -4036,12 +4036,12 @@ Signature: (lambda (error instance phase) ...)")
 ## Development Mode Helpers
 
 ``` elisp
-(defvar ui-debug-mode nil
+(defvar vui-debug-mode nil
   "When non-nil, enable verbose error reporting.")
 
-(defun ui--debug-error (error context)
+(defun vui--debug-error (error context)
   "Log detailed error information when debugging."
-  (when ui-debug-mode
+  (when vui-debug-mode
     (message "UI Error Details:")
     (message "  Error: %S" error)
     (message "  Context: %S" context)
@@ -4050,38 +4050,38 @@ Signature: (lambda (error instance phase) ...)")
       (cl-loop for frame in (seq-take frames 10)
                do (message "    %S" frame)))))
 
-(defmacro ui-with-debug (&rest body)
+(defmacro vui-with-debug (&rest body)
   "Execute BODY with debug mode enabled."
-  `(let ((ui-debug-mode t))
+  `(let ((vui-debug-mode t))
      ,@body))
 ```
 
 ## Recovery Strategies
 
 ``` elisp
-(defun ui-reset-component (instance)
+(defun vui-reset-component (instance)
   "Reset INSTANCE to initial state, clearing errors."
   (when instance
     ;; Clear error state
-    (setf (ui-instance-error instance) nil)
+    (setf (vui-instance-error instance) nil)
 
     ;; Reset to initial state
-    (let* ((def (ui-instance-def instance))
-           (initial-state-fn (ui-component-def-initial-state-fn def))
-           (props (ui-instance-props instance)))
-      (setf (ui-instance-state instance)
+    (let* ((def (vui-instance-def instance))
+           (initial-state-fn (vui-component-def-initial-state-fn def))
+           (props (vui-instance-props instance)))
+      (setf (vui-instance-state instance)
             (if initial-state-fn
                 (funcall initial-state-fn props)
               nil)))
 
     ;; Trigger re-render
-    (ui--mark-dirty instance)))
+    (vui--mark-dirty instance)))
 
-(defun ui-reset-tree (root-instance)
+(defun vui-reset-tree (root-instance)
   "Reset entire tree under ROOT-INSTANCE."
-  (ui--walk-instance-tree
+  (vui--walk-instance-tree
    root-instance
-   #'ui-reset-component))
+   #'vui-reset-component))
 
 ---
 
@@ -4108,22 +4108,22 @@ Signature: (lambda (error instance phase) ...)")
 
 | Function | Description | Key Props |
 |----|----|----|
-| `(ui-text CONTENT &rest PROPS)` | Plain text | `:face`, `:properties` |
-| `(ui-button &rest PROPS)` | Clickable button | `:label`, `:on-click`, `:disabled` |
-| `(ui-field &rest PROPS)` | Editable text field | `:value`, `:on-change`, `:size`, `:keymap` |
-| `(ui-newline)` | Line break |  |
-| `(ui-space &optional WIDTH)` | Horizontal space |  |
-| `(ui-fragment &rest CHILDREN)` | Group without wrapper |  |
+| `(vui-text CONTENT &rest PROPS)` | Plain text | `:face`, `:properties` |
+| `(vui-button &rest PROPS)` | Clickable button | `:label`, `:on-click`, `:disabled` |
+| `(vui-field &rest PROPS)` | Editable text field | `:value`, `:on-change`, `:size`, `:keymap` |
+| `(vui-newline)` | Line break |  |
+| `(vui-space &optional WIDTH)` | Horizontal space |  |
+| `(vui-fragment &rest CHILDREN)` | Group without wrapper |  |
 
 ## Layout VNodes
 
 | Function | Description | Key Props |
 |----|----|----|
-| `(ui-hstack &rest ARGS)` | Horizontal layout | `:spacing`, `:align` |
-| `(ui-vstack &rest ARGS)` | Vertical layout | `:spacing`, `:indent` |
-| `(ui-box &rest ARGS)` | Fixed-width container | `:width`, `:align`, `:padding` |
-| `(ui-table &rest ARGS)` | Table layout | `:columns`, `:rows`, `:border` |
-| `(ui-list &rest ARGS)` | Bulleted/numbered list | `:marker`, `:indent` |
+| `(vui-hstack &rest ARGS)` | Horizontal layout | `:spacing`, `:align` |
+| `(vui-vstack &rest ARGS)` | Vertical layout | `:spacing`, `:indent` |
+| `(vui-box &rest ARGS)` | Fixed-width container | `:width`, `:align`, `:padding` |
+| `(vui-table &rest ARGS)` | Table layout | `:columns`, `:rows`, `:border` |
+| `(vui-list &rest ARGS)` | Bulleted/numbered list | `:marker`, `:indent` |
 
 ## State Hooks
 
@@ -4169,44 +4169,44 @@ Signature: (lambda (error instance phase) ...)")
 
 ``` elisp
 ;; Mount tree into buffer
-(ui-render VNODE &optional BUFFER POSITION) → INSTANCE
+(vui-render VNODE &optional BUFFER POSITION) -> INSTANCE
 
 ;; Unmount
-(ui-unmount INSTANCE)
-(ui-unmount-buffer &optional BUFFER)
+(vui-unmount INSTANCE)
+(vui-unmount-buffer &optional BUFFER)
 
 ;; Force synchronous flush
-(ui-flush-sync)
+(vui-flush-sync)
 
 ;; Batch updates
-(ui-batch &rest BODY)
+(vui-batch &rest BODY)
 ```
 
 # Error Handling
 
 ``` elisp
 ;; Error boundary
-(ui-error-boundary
+(vui-error-boundary
   :fallback (lambda (err) FALLBACK-VNODE)
   :on-error (lambda (err info) ...)
   CHILD)
 
 ;; Recovery
-(ui-reset-component INSTANCE)
-(ui-reset-tree ROOT-INSTANCE)
+(vui-reset-component INSTANCE)
+(vui-reset-tree ROOT-INSTANCE)
 ```
 
 ## Utilities
 
 ``` elisp
 ;; Find instance at point
-(ui--instance-at-point &optional POS)
+(vui--instance-at-point &optional POS)
 
 ;; Render metrics
-(ui-render-metrics) → plist
+(vui-render-metrics) -> plist
 
 ;; Debug mode
-(setq ui-debug-mode t)
+(setq vui-debug-mode t)
 ```
 
 # Implementation Roadmap
@@ -4215,7 +4215,7 @@ Signature: (lambda (error instance phase) ...)")
 
 **Goal**: Render static component trees with basic interactivity
 
-**1.1 Data Structures** - \[ \] Define all cl-defstructs (vnode types, instance, context, scheduler) - \[ \] Component registry (hash-table mapping name → definition) - \[ \] Basic `defcomponent` macro (props only, no state yet)
+**1.1 Data Structures** - \[ \] Define all cl-defstructs (vnode types, instance, context, scheduler) - \[ \] Component registry (hash-table mapping name -\> definition) - \[ \] Basic `defcomponent` macro (props only, no state yet)
 
 **1.2 Initial Rendering** - \[ \] Render primitives: text, button, newline, space - \[ \] Fragment support - \[ \] Marker-based region tracking (start/end per instance) - \[ \] Overlay creation for buttons - \[ \] Read-only text protection
 
@@ -4229,7 +4229,7 @@ Signature: (lambda (error instance phase) ...)")
 
 **Goal**: Efficient updates via diffing
 
-**2.1 Virtual Tree Diffing** - \[ \] Implement `ui--reconcile` main function - \[ \] Type comparison logic - \[ \] Key-based child matching - \[ \] Operation generation (insert, delete, replace, update-props)
+**2.1 Virtual Tree Diffing** - \[ \] Implement `vui--reconcile` main function - \[ \] Type comparison logic - \[ \] Key-based child matching - \[ \] Operation generation (insert, delete, replace, update-props)
 
 **2.2 Commit Phase** - \[ \] Apply delete operations (from end to start) - \[ \] Apply insert operations - \[ \] Apply replace operations - \[ \] Apply property update operations - \[ \] Operation sorting for safe application
 
@@ -4253,13 +4253,13 @@ Signature: (lambda (error instance phase) ...)")
 
 **Goal**: Production-ready features
 
-**4.1 Layout Primitives** - \[ \] `ui-hstack` with spacing - \[ \] `ui-vstack` with spacing and indent - \[ \] `ui-indent` with render context propagation - \[ \] `ui-box` with fixed width and alignment - \[ \] Basic `ui-table` support
+**4.1 Layout Primitives** - \[ \] `vui-hstack` with spacing - \[ \] `vui-vstack` with spacing and indent - \[ \] `vui-indent` with render context propagation - \[ \] `vui-box` with fixed width and alignment - \[ \] Basic `vui-table` support
 
 **4.2 Lifecycle Hooks** - \[ \] `on-mount` (after first render) - \[ \] `on-update` (after re-render, with prev props/state) - \[ \] `on-unmount` (before removal) - \[ \] Proper hook ordering (children before parents for mount)
 
-**4.3 Error Handling** - \[ \] `ui-error-boundary` component - \[ \] Lifecycle error catching and propagation - \[ \] Event handler error wrapping - \[ \] `ui-reset-component` for recovery
+**4.3 Error Handling** - \[ \] `vui-error-boundary` component - \[ \] Lifecycle error catching and propagation - \[ \] Event handler error wrapping - \[ \] `vui-reset-component` for recovery
 
-**4.4 Scheduler Improvements** - \[ \] `ui-batch` for grouping state updates - \[ \] Idle-time rendering via timer - \[ \] `ui-flush-sync` for immediate updates
+**4.4 Scheduler Improvements** - \[ \] `vui-batch` for grouping state updates - \[ \] Idle-time rendering via timer - \[ \] `vui-flush-sync` for immediate updates
 
 **Deliverable**: Full-featured UI library with layouts, error handling, and optimised updates.
 
@@ -4288,11 +4288,11 @@ Signature: (lambda (error instance phase) ...)")
 
 **Unit Tests** - Each data structure constructor - Macro expansions - Individual reconciliation operations
 
-**Integration Tests** - Multi-component render scenarios - State change → re-render → correct output - Cursor preservation across various mutations
+**Integration Tests** - Multi-component render scenarios - State change -\> re-render -\> correct output - Cursor preservation across various mutations
 
-**Visual/Buffer Tests** - Render component → verify buffer contents - Compare before/after for operations
+**Visual/Buffer Tests** - Render component -\> verify buffer contents - Compare before/after for operations
 
-**Property-Based Testing** (optional) - Random trees → reconcile → correct result - Random state changes → consistent state
+**Property-Based Testing** (optional) - Random trees -\> reconcile -\> correct result - Random state changes -\> consistent state
 
 ## Dependencies
 
@@ -4323,7 +4323,7 @@ Existing widget.el code can coexist. To wrap a widget:
           (widget-props :default nil))
 
   :render
-  (ui-vnode-widget--create
+  (vui-vnode-widget--create
    :widget-type widget-type
    :widget-props widget-props))
 ```
@@ -4341,13 +4341,13 @@ Existing widget.el code can coexist. To wrap a widget:
           (on-delete :required t))
 
   :render
-  (ui-hstack
-    (ui-button
+  (vui-hstack
+    (vui-button
      :label (if (plist-get todo :done) "[x]" "[ ]")
      :on-click (lambda () (funcall on-toggle (plist-get todo :id))))
-    (ui-text (plist-get todo :text)
+    (vui-text (plist-get todo :text)
              :face (if (plist-get todo :done) 'shadow nil))
-    (ui-button :label "×"
+    (vui-button :label "×"
                :on-click (lambda () (funcall on-delete (plist-get todo :id))))))
 
 (defcomponent todo-list
@@ -4355,12 +4355,12 @@ Existing widget.el code can coexist. To wrap a widget:
           (new-text ""))
 
   :render
-  (ui-vstack
+  (vui-vstack
     ;; Input
-    (ui-hstack
-      (ui-field :value new-text
+    (vui-hstack
+      (vui-field :value new-text
                 :on-change (lambda (v) (setf new-text v)))
-      (ui-button :label "Add"
+      (vui-button :label "Add"
                  :on-click (lambda ()
                              (push (list :id (cl-gensym)
                                         :text new-text
@@ -4369,7 +4369,7 @@ Existing widget.el code can coexist. To wrap a widget:
                              (setf new-text ""))))
 
     ;; List
-    (ui-vstack
+    (vui-vstack
       (mapcar (lambda (todo)
                 (todo-item
                  :key (plist-get todo :id)
@@ -4390,7 +4390,7 @@ Existing widget.el code can coexist. To wrap a widget:
               todos))
 
     ;; Summary
-    (ui-text (format "%d items, %d completed"
+    (vui-text (format "%d items, %d completed"
                      (length todos)
                      (cl-count-if (lambda (t) (plist-get t :done)) todos))
              :face 'shadow)))
@@ -4406,9 +4406,9 @@ Existing widget.el code can coexist. To wrap a widget:
   :render
   (let ((name (file-name-nondirectory path))
         (is-dir (file-directory-p path)))
-    (ui-hstack
-      (ui-text (if is-dir "📁" "📄"))
-      (ui-button :label name
+    (vui-hstack
+      (vui-text (if is-dir "📁" "📄"))
+      (vui-button :label name
                  :on-click (lambda () (funcall on-select path))))))
 
 (defcomponent file-browser
@@ -4421,20 +4421,20 @@ Existing widget.el code can coexist. To wrap a widget:
 
   :render
   (let ((entries (directory-files current-dir t "^[^.]")))
-    (ui-vstack
+    (vui-vstack
       ;; Breadcrumb
-      (ui-hstack
-        (ui-button :label "↑"
+      (vui-hstack
+        (vui-button :label "^"
                    :on-click (lambda ()
                                (setf current-dir
                                      (file-name-directory
                                       (directory-file-name current-dir)))))
-        (ui-text current-dir :face 'bold))
+        (vui-text current-dir :face 'bold))
 
-      (ui-separator)
+      (vui-separator)
 
       ;; File list
-      (ui-vstack
+      (vui-vstack
         (mapcar (lambda (path)
                   (file-item
                    :key path
@@ -4447,23 +4447,23 @@ Existing widget.el code can coexist. To wrap a widget:
 
       ;; Selection
       (when selected
-        (ui-fragment
-          (ui-separator)
-          (ui-text (format "Selected: %s" selected) :face 'success))))))
+        (vui-fragment
+          (vui-separator)
+          (vui-text (format "Selected: %s" selected) :face 'success))))))
 ```
 
 # Appendix C: Naming Conventions
 
-| Prefix         | Meaning                   |
-|----------------|---------------------------|
-| `ui-`          | Public API                |
-| `ui--`         | Internal/private          |
-| `ui-vnode-`    | Virtual node types        |
-| `ui-instance-` | Instance accessors        |
-| `ui-op-`       | Diff operations           |
-| `use-`         | Hooks (consume in render) |
-| `let-`         | Binding forms             |
-| `def`          | Definition forms          |
+| Prefix          | Meaning                   |
+|-----------------|---------------------------|
+| `vui-`          | Public API                |
+| `vui--`         | Internal/private          |
+| `vui-vnode-`    | Virtual node types        |
+| `vui-instance-` | Instance accessors        |
+| `vui-op-`       | Diff operations           |
+| `use-`          | Hooks (consume in render) |
+| `let-`          | Binding forms             |
+| `def`           | Definition forms          |
 
 # Appendix D: Open Questions & Future Work
 
@@ -4493,10 +4493,10 @@ Similarly, tables currently assume single-line cells. Multi-line cells would req
 
 **Current approach**: Layout is fixed. If content exceeds window width, it overflows.
 
-**Potential enhancements**: - `h-stack :wrap t` — wrap overflowing children to next line - `ui-table :stretch t` — proportionally stretch/shrink columns - Breakpoint-based layout selection
+**Potential enhancements**: - `h-stack :wrap t` — wrap overflowing children to next line - `vui-table :stretch t` — proportionally stretch/shrink columns - Breakpoint-based layout selection
 
 ``` elisp
-(ui-responsive
+(vui-responsive
   (>= (window-width) 80) (wide-layout)
   (>= (window-width) 40) (medium-layout)
   t (narrow-layout))
@@ -4514,14 +4514,14 @@ Future exploration: - State snapshots on each change - Integration with `undo-tr
 
 **Current approach**: Rely on widget.el's overlay properties for TAB navigation.
 
-**If that's insufficient**: Implement `ui-forward` / `ui-backward` that traverse instance tree for focusable components.
+**If that's insufficient**: Implement `vui-forward` / `vui-backward` that traverse instance tree for focusable components.
 
 ## D.6 Transient Integration
 
 For complex command palettes, integration with `transient.el` could provide: - Rich keyboard-driven menus - Persisted prefixes - Better than basic completing-read for complex choices
 
 ``` elisp
-(ui-transient :spec my-transient-spec
+(vui-transient :spec my-transient-spec
               :on-action handle-action)
 ```
 
@@ -4535,7 +4535,7 @@ Consider: - Screen reader compatibility - High contrast mode via face inheritanc
 
 ## D.9 Effects for Hidden Components
 
-When a component is hidden via `ui-hidden`: - Should effects continue running? (Current: yes) - Should they be paused? - What about effects with visual side effects?
+When a component is hidden via `vui-hidden`: - Should effects continue running? (Current: yes) - Should they be paused? - What about effects with visual side effects?
 
 React's "offscreen" API has similar questions. For now, effects continue.
 
