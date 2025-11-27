@@ -45,8 +45,8 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
 
   return (
     <article key={post.id} className={clsx("group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-canvas-dark", className)} {...props}>
-      {/* Large hero image - brutalist, image-dominant */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-paper dark:bg-paper-dark">
+      {/* Hero image - smaller on mobile, larger on desktop */}
+      <div className="relative aspect-[3/2] w-full overflow-hidden bg-paper sm:aspect-[4/3] dark:bg-paper-dark">
         <PostImage
           post={post}
           className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
@@ -55,8 +55,8 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
         <div className={clsx("absolute bottom-0 left-0 h-2 w-full", getAccentColor())} />
       </div>
 
-      {/* Spacious content area */}
-      <div className="p-8">
+      {/* Content area - smaller padding on mobile */}
+      <div className="p-5 sm:p-8">
         {/* Monospace metadata */}
         <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-ink-muted-dark">
           <FormattedDate date={post.published} />
@@ -91,8 +91,8 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
   return (
     <article className={clsx('group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-canvas-dark', className)} {...props}>
       <div className="flex flex-col lg:flex-row lg:items-stretch">
-        {/* Large image - brutalist approach */}
-        <div className="relative aspect-video w-full overflow-hidden bg-paper lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-paper-dark">
+        {/* Image - smaller on mobile, larger on desktop */}
+        <div className="relative aspect-[3/1] w-full overflow-hidden bg-paper sm:aspect-video lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-paper-dark">
           <PostImage
             post={post}
             className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
@@ -101,8 +101,8 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
           <div className={clsx("absolute bottom-0 right-0 h-full w-2 lg:h-2 lg:w-full", getAccentColor())} />
         </div>
 
-        {/* Spacious content */}
-        <div className="flex flex-1 flex-col justify-center p-8 lg:p-12">
+        {/* Content - smaller padding on mobile */}
+        <div className="flex flex-1 flex-col justify-center p-5 sm:p-8 lg:p-12">
           {/* Monospace metadata */}
           <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-ink-muted-dark">
             <FormattedDate date={post.published} />

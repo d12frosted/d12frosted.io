@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 
+/* Enable class-based dark mode (selector strategy) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Apply Inter's cv11 feature (single-story a) globally */
 html {
   font-feature-settings: 'cv11';
