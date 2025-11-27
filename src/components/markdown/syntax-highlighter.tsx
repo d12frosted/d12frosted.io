@@ -3,8 +3,6 @@
 import * as React from 'react'
 import { Prism as Highlighter, SyntaxHighlighterProps } from 'react-syntax-highlighter'
 
-import { fontMono } from '@/config/fonts'
-
 // Custom syntax theme matching our brutalist + jRPG color palette
 const customStyle = {
   'pre[class*="language-"]': {
@@ -68,7 +66,7 @@ export const SyntaxHighlighter: React.FC<Omit<SyntaxHighlighterProps, 'style' | 
         style={customStyle}
         language={language}
         PreTag="div"
-        codeTagProps={{ style: fontMono.style }}
+        codeTagProps={{ className: 'font-mono' }}
       >
         {children}
       </Highlighter>
