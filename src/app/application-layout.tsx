@@ -2,7 +2,6 @@ import { WineIcon } from '@/components/icons/wine'
 import { Navbar, NavbarDivider, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/navbar'
 import { Sidebar, SidebarBody, SidebarHeader, SidebarItem, SidebarSection } from '@/components/sidebar'
 import { StackedLayout } from '@/components/stacked-layout'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { siteConfig } from '@/config/config'
 import { SiGithub } from '@icons-pack/react-simple-icons'
 import { Analytics } from '@vercel/analytics/react'
@@ -25,9 +24,9 @@ export function ApplicationLayout({
   // let pathname = usePathname()
 
   return (
-    <div className="relative isolate mx-auto flex min-h-svh w-full max-w-7xl flex-col overflow-x-hidden bg-canvas lg:bg-paper dark:bg-canvas-dark dark:lg:bg-paper-dark">
+    <div className="relative isolate mx-auto flex min-h-svh w-full max-w-7xl flex-col bg-canvas overflow-x-hidden lg:bg-paper dark:bg-zinc-900 dark:lg:bg-zinc-950">
       {/* Bold navbar with stark contrast */}
-      <header className="border-b-4 border-ink bg-canvas px-4 py-4 lg:px-8 dark:border-ink-dark dark:bg-canvas-dark">
+      <header className="border-b-4 border-ink bg-canvas px-4 py-4 lg:px-8 dark:border-white dark:bg-zinc-900">
         <div className="min-w-0 flex-1">
           <Navbar>
             <div className="flex items-center">
@@ -50,7 +49,6 @@ export function ApplicationLayout({
             </NavbarSection>
             <NavbarSpacer />
             <NavbarSection>
-              <ThemeToggle />
               <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
                 <SiGithub />
               </NavbarItem>
