@@ -46,7 +46,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h1({ children, node, className, ...rest }) {
           return (
             <h1 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
                 #1
               </span>
               {children}
@@ -56,7 +56,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h2({ children, node, className, ...rest }) {
           return (
             <h2 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
                 #2
               </span>
               {children}
@@ -66,7 +66,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h3({ children, node, className, ...rest }) {
           return (
             <h3 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
                 #3
               </span>
               {children}
@@ -76,7 +76,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h4({ children, node, className, ...rest }) {
           return (
             <h4 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
                 #4
               </span>
               {children}
@@ -86,7 +86,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h5({ children, node, className, ...rest }) {
           return (
             <h5 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
                 #5
               </span>
               {children}
@@ -96,7 +96,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h6({ children, node, className, ...rest }) {
           return (
             <h6 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
+              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
                 #6
               </span>
               {children}
