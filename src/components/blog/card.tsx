@@ -56,7 +56,7 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
       </div>
 
       {/* Spacious content area */}
-      <div className="p-8">
+      <div className="p-6 sm:p-8">
         {/* Monospace metadata */}
         <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
           <FormattedDate date={post.published} />
@@ -91,8 +91,8 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
   return (
     <article className={clsx('group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900', className)} {...props}>
       <div className="flex flex-col lg:flex-row lg:items-stretch">
-        {/* Large image - brutalist approach */}
-        <div className="relative aspect-video w-full overflow-hidden bg-paper lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-zinc-800">
+        {/* Large image - smaller on mobile */}
+        <div className="relative aspect-[5/2] w-full overflow-hidden bg-paper sm:aspect-video lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-zinc-800">
           <PostImage
             post={post}
             className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
@@ -102,7 +102,7 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
         </div>
 
         {/* Spacious content */}
-        <div className="flex flex-1 flex-col justify-center p-8 lg:p-12">
+        <div className="flex flex-1 flex-col justify-center p-6 sm:p-8 lg:p-12">
           {/* Monospace metadata */}
           <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
             <FormattedDate date={post.published} />
