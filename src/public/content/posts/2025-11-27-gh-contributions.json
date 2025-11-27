@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Quantifying the Descent: A Script for GitHub Contributions",
+  "id": "19ad38e2-1900-4e13-82a5-1d6be6264336",
+  "related": null,
+  "update": "2025-11-27",
+  "date": "2025-11-27",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "A bash script to track GitHub contributions across all branches — because the official graph lies, and I needed data to correlate commit frequency with questionable life choices.",
+  "tags": [
+    "github"
+  ]
+}
