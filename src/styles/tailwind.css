@@ -1,8 +1,13 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 
+/* Apply Inter's cv11 feature (single-story a) globally */
+html {
+  font-feature-settings: 'cv11';
+}
+
 @theme {
-  --font-sans: Inter, sans-serif;
+  --font-sans: 'Inter var', Inter, sans-serif;
   --font-sans--font-feature-settings: 'cv11';
   --font-mono: IBM Plex Mono, Source Code Pro, monospace;
 

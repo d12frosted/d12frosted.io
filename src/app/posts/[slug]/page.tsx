@@ -70,7 +70,7 @@ export default async function Post({ params }: Props) {
       {/* Bold post header with architectural elements */}
       <header className="mb-12 flex flex-col lg:mb-16">
         {/* Monospace metadata */}
-        <div className="mb-6 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+        <div className="mb-6 flex items-center gap-x-4 font-mono text-xs tracking-wider text-ink-muted uppercase dark:text-zinc-500">
           <FormattedDate date={post.published} />
           <span>•</span>
           <span>{post.tags.join(' · ')}</span>

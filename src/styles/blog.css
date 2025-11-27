@@ -1,0 +1,10 @@
+/* Heading level indicators - hidden by default, visible on wide screens */
+.heading-level-indicator {
+    display: none;
+}
+
+@media (min-width: 1280px) {
+    .heading-level-indicator {
+        display: block;
+    }
+}

@@ -46,7 +46,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h1({ children, node, className, ...rest }) {
           return (
             <h1 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
+              <span className="heading-level-indicator absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
                 #1
               </span>
               {children}
@@ -56,7 +56,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h2({ children, node, className, ...rest }) {
           return (
             <h2 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
+              <span className="heading-level-indicator absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
                 #2
               </span>
               {children}
@@ -66,7 +66,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h3({ children, node, className, ...rest }) {
           return (
             <h3 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
+              <span className="heading-level-indicator absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
                 #3
               </span>
               {children}
@@ -76,7 +76,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h4({ children, node, className, ...rest }) {
           return (
             <h4 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
+              <span className="heading-level-indicator absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
                 #4
               </span>
               {children}
@@ -86,7 +86,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h5({ children, node, className, ...rest }) {
           return (
             <h5 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
+              <span className="heading-level-indicator absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
                 #5
               </span>
               {children}
@@ -96,7 +96,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         h6({ children, node, className, ...rest }) {
           return (
             <h6 className={clsx('relative', className)} {...rest}>
-              <span className="absolute !right-full top-1/2 mr-2 hidden w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted lg:block">
+              <span className="heading-level-indicator absolute !right-full top-1/2 mr-2 w-12 -translate-y-1/2 text-right font-mono text-xs uppercase tracking-wider text-ink-muted">
                 #6
               </span>
               {children}
@@ -153,11 +153,11 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
                 return <></>
               }
               return (
-                <div className="my-12 border-l-4 border-mp-blue bg-code-bg p-8 lg:my-16">
-                  <h2 className="!mt-0 !mb-6 text-2xl font-bold tracking-tight text-ink dark:text-white">
+                <div className="border-mp-blue bg-code-bg my-12 border-l-4 p-8 lg:my-16">
+                  <h2 className="text-ink !mb-6 !mt-0 text-2xl font-bold tracking-tight dark:text-white">
                     Related posts
                   </h2>
-                  <div className="prose max-w-none prose-stone [&_a]:font-normal [&_a]:text-mp-blue [&_a]:underline [&_a]:decoration-mp-blue/30 [&_a]:underline-offset-2 [&_a]:transition-colors [&_a:hover]:text-ink [&_a:hover]:decoration-ink/50 [&>ul]:mt-0 [&>ul]:list-['\\2013\\20'] [&>ul]:pl-5">
+                  <div className="prose prose-stone [&_a]:text-mp-blue [&_a]:decoration-mp-blue/30 [&_a:hover]:text-ink [&_a:hover]:decoration-ink/50 max-w-none [&>ul]:mt-0 [&>ul]:list-['\\\\2013\\\\20'] [&>ul]:pl-5 [&_a]:font-normal [&_a]:underline [&_a]:underline-offset-2 [&_a]:transition-colors">
                     <CustomMarkdown>{md}</CustomMarkdown>
                   </div>
                 </div>
