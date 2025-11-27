@@ -189,6 +189,7 @@ Edit `src/app/projects/page.tsx`:
 - Prose styles can override custom margins - use `!important` prefix when needed
 - Related posts block needs `!mt-0` on heading to remove prose top margin
 - Code blocks need wrapper div for full-height left border
+- **Tailwind responsive utilities don't work reliably in all contexts** (e.g., `lg:block` in markdown components). Use plain CSS with media queries in `src/styles/blog.css` instead. See `.heading-level-indicator` for an example.
 
 ## Project Context
 
