@@ -19,6 +19,14 @@ html {
   --color-border-soft: #E8E6E3;
   --color-code-bg: #F0F4F8;
 
+  /* Dark mode colors */
+  --color-paper-dark: #0A0A0A;
+  --color-canvas-dark: #141414;
+  --color-ink-dark: #E8E8E8;
+  --color-ink-muted-dark: #9A9A9A;
+  --color-border-soft-dark: #2A2A2A;
+  --color-code-bg-dark: #1A1A2E;
+
   /* jRPG status colors */
   --color-hp-green: #7FB069;
   --color-mp-blue: #5F87AF;
@@ -78,6 +86,23 @@ html {
     padding: 0;
     font-weight: 400;
   }
+}
+
+/* Dark mode prose styles */
+.dark .prose {
+  color: var(--color-ink-dark);
+}
+
+.dark .prose code {
+  background-color: var(--color-code-bg-dark);
+}
+
+.dark .prose pre {
+  background-color: var(--color-code-bg-dark);
+}
+
+.dark .prose a:hover {
+  color: var(--color-ink-dark);
 }
 
 @utility d12-image {

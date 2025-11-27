@@ -44,9 +44,9 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
   }
 
   return (
-    <article key={post.id} className={clsx("group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900", className)} {...props}>
+    <article key={post.id} className={clsx("group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-canvas-dark", className)} {...props}>
       {/* Large hero image - brutalist, image-dominant */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-paper dark:bg-zinc-800">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-paper dark:bg-paper-dark">
         <PostImage
           post={post}
           className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
@@ -58,20 +58,20 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
       {/* Spacious content area */}
       <div className="p-8">
         {/* Monospace metadata */}
-        <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+        <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-ink-muted-dark">
           <FormattedDate date={post.published} />
           <span>•</span>
           <span>{post.tags[0]}</span>
         </div>
 
         <div className="relative">
-          <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+          <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue dark:text-ink-dark dark:group-hover:text-mp-blue">
             <a href={post.href}>
               <span className="absolute inset-0" />
               {post.title}
             </a>
           </h3>
-          <p className="mt-4 line-clamp-2 text-base leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+          <p className="mt-4 line-clamp-2 text-base leading-relaxed text-ink-muted dark:text-ink-muted-dark">{post.description}</p>
         </div>
       </div>
     </article>
@@ -85,14 +85,14 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
     if (tag.includes('emacs') || tag.includes('org')) return 'bg-mp-blue'
     if (tag.includes('haskell') || tag.includes('code')) return 'bg-hp-green'
     if (tag.includes('tutorial') || tag.includes('guide')) return 'bg-xp-orange'
-    return 'bg-ink'
+    return 'bg-ink dark:bg-ink-dark'
   }
 
   return (
-    <article className={clsx('group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900', className)} {...props}>
+    <article className={clsx('group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-canvas-dark', className)} {...props}>
       <div className="flex flex-col lg:flex-row lg:items-stretch">
         {/* Large image - brutalist approach */}
-        <div className="relative aspect-video w-full overflow-hidden bg-paper lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-zinc-800">
+        <div className="relative aspect-video w-full overflow-hidden bg-paper lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-paper-dark">
           <PostImage
             post={post}
             className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
@@ -104,20 +104,20 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
         {/* Spacious content */}
         <div className="flex flex-1 flex-col justify-center p-8 lg:p-12">
           {/* Monospace metadata */}
-          <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+          <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-ink-muted-dark">
             <FormattedDate date={post.published} />
             <span>•</span>
             <span>{post.tags[0]}</span>
           </div>
 
           <div className="relative">
-            <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue lg:text-3xl dark:text-white dark:group-hover:text-mp-blue">
+            <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue lg:text-3xl dark:text-ink-dark dark:group-hover:text-mp-blue">
               <a href={post.href}>
                 <span className="absolute inset-0" />
                 {post.title}
               </a>
             </h3>
-            <p className="mt-4 text-base leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+            <p className="mt-4 text-base leading-relaxed text-ink-muted dark:text-ink-muted-dark">{post.description}</p>
           </div>
         </div>
       </div>

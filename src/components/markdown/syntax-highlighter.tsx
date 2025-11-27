@@ -59,14 +59,14 @@ export const SyntaxHighlighter: React.FC<Omit<SyntaxHighlighterProps, 'style' | 
   ...props
 }) => {
   return (
-    <div className="border-l-[3px] border-mp-blue overflow-x-auto bg-white">
+    <div className="overflow-x-auto border-l-[3px] border-mp-blue bg-white dark:bg-code-bg-dark">
       {/* @ts-ignore */}
       <Highlighter
         {...props}
         style={customStyle}
         language={language}
         PreTag="div"
-        codeTagProps={{ className: 'font-mono' }}
+        codeTagProps={{ className: 'font-mono dark:text-ink-dark' }}
       >
         {children}
       </Highlighter>
