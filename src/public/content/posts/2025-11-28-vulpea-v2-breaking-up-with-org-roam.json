@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Vulpea v2: a story of breaking up with org-roam",
+  "id": "9e8f1148-82b1-4bee-9bdf-3cad3877f17c",
+  "related": null,
+  "update": "2025-11-28",
+  "date": "2025-11-28",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Vulpea v2 drops its org-roam dependency. Here's how I got there - from monster SQL queries to materialised views to finally writing my own foundation.",
+  "tags": [
+    "vulpea"
+  ]
+}
