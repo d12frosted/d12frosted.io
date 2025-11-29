@@ -1,4 +1,4 @@
-In the summer of 2020 I wrote my [first post](https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html) in a series about task management with org-roam. Nearly five years later, that stack is still central to how I work. But things have shifted. Today I'm announcing vulpea v2 – a complete rewrite that no longer depends on org-roam.
+In the summer of 2020 I wrote my [first post](https://d12frosted.io/posts/2020-06-23-task-management-with-roam-vol1.html) in a series about task management with org-roam. Nearly five years later, that stack is still central to how I work. But things have shifted. Today I'm announcing vulpea v2 - a complete rewrite that no longer depends on org-roam.
 
 To be clear: org-roam remains one of the most important additions to the Emacs ecosystem in the past decade. Jethro's idea of bringing a Roam Research-like graph to Emacs, backed by SQLite, changed how many of us work. I'm grateful for everything it gave me and the community.
 
@@ -6,15 +6,15 @@ But vulpea and org-roam were always moving in different directions. This post is
 
 # The early days
 
-I found org-roam when it was still young. The core idea – caching note metadata with SQLite through EmacsQL – solved a real problem for me. I was building wine-tracking tools (which eventually became [vino](https://github.com/d12frosted/vino)), and relying on file-based search was both slow and fragile.
+I found org-roam when it was still young. The core idea - caching note metadata with SQLite through EmacsQL - solved a real problem for me. I was building wine-tracking tools (which eventually became [vino](https://github.com/d12frosted/vino)), and relying on file-based search was both slow and fragile.
 
-But it also became clear that org-roam was designed as an application, not a library. Extending it was hard. There was no straightforward way to add custom tables, influence the schema, or reuse parsed data cleanly. None of this was a "fault" – the project's goal was always explicit: replicate Roam Research in Emacs. It does that very well.
+But it also became clear that org-roam was designed as an application, not a library. Extending it was hard. There was no straightforward way to add custom tables, influence the schema, or reuse parsed data cleanly. None of this was a "fault" - the project's goal was always explicit: replicate Roam Research in Emacs. It does that very well.
 
-I needed something more like a foundation: a stable API layer, not a UI. So I wrote vulpea. The idea was simple: treat org-roam as an implementation detail and expose cleaner abstractions. `vulpea-note` is an example – a struct that doesn't leak internals and keeps the contract stable, regardless of the backend.
+I needed something more like a foundation: a stable API layer, not a UI. So I wrote vulpea. The idea was simple: treat org-roam as an implementation detail and expose cleaner abstractions. `vulpea-note` is an example - a struct that doesn't leak internals and keeps the contract stable, regardless of the backend.
 
 # Contributing to org-roam v2
 
-When Jethro began working on v2, I hoped the new architecture would allow for more extension points. I got involved early – reviewing designs, testing, contributing patches.
+When Jethro began working on v2, I hoped the new architecture would allow for more extension points. I got involved early - reviewing designs, testing, contributing patches.
 
 One of those patches became what I still consider the worst contribution of my career: [org-roam-node-list](https://github.com/org-roam/org-roam/blame/f4ba41cf3d59084e182a5186d432afc9aa3fc423/org-roam-node.el#L355-L428). That SQL query is mine. And it's still there.
 
@@ -51,7 +51,7 @@ FROM
 
 This query is a monster. Three levels of nested subqueries, multiple `GROUP BY` operations, string concatenation to build s-expressions in SQL. It "works" in the sense that it returns correct results. But it's slow, hard to maintain, and frankly embarrassing.
 
-The real issue wasn't the SQL itself – it was the underlying schema. Constructing a full node meant joining several tables on every query, and doing that for thousands of nodes was always going to be expensive.
+The real issue wasn't the SQL itself - it was the underlying schema. Constructing a full node meant joining several tables on every query, and doing that for thousands of nodes was always going to be expensive.
 
 But that monster taught me something important.
 
@@ -66,13 +66,13 @@ I documented this in a [GitHub discussion](https://github.com/d12frosted/vulpea/
 | regular DB      | 2280ms          | 1x      |
 | specialised SQL | 23ms            | 120x    |
 
-General queries improved 4–5x. Targeted ones up to 150x. On my wine database (8k+ notes at the time), that was the difference between "wait two seconds" and "it's already done".
+General queries improved 4-5x. Targeted ones up to 150x. On my wine database (8k+ notes at the time), that was the difference between "wait two seconds" and "it's already done".
 
 I [proposed the idea upstream](https://github.com/org-roam/org-roam/issues/1997), but it didn't quite land. Too many moving parts, too much that would need to be rethought. And my own priorities shifted elsewhere.
 
 # Growing apart
 
-Since then, there have been [many discussions](https://github.com/org-roam/org-roam/issues/2474) about org-roam performance. Some suggested exposing SQL tables directly as the API. I understand the appeal – raw SQL is fast – but I think it's the wrong direction.
+Since then, there have been [many discussions](https://github.com/org-roam/org-roam/issues/2474) about org-roam performance. Some suggested exposing SQL tables directly as the API. I understand the appeal - raw SQL is fast - but I think it's the wrong direction.
 
 If your database schema becomes your API, you lose any ability to evolve it. Every table, column, and index becomes public and untouchable without breaking users. That's not sustainable.
 
@@ -94,11 +94,11 @@ These weren't dealbreakers individually, but together they accumulated into a co
 
 # The conversation
 
-About a year ago, I talked with John Wiegley about all of this – the performance issues, the architectural mismatches, the maintenance burden. I said something like: "I think I should try rewriting vulpea without org-roam."
+About a year ago, I talked with John Wiegley about all of this - the performance issues, the architectural mismatches, the maintenance burden. I said something like: "I think I should try rewriting vulpea without org-roam."
 
 Then life intervened: war, personal matters, the general chaos of existence. Open source fell to the bottom of my priorities. A year went by.
 
-Only recently did I find myself with enough focus and time to revisit the idea. I'd also been experimenting with tools outside Emacs – Tana, Capacities – and came back with ideas I wanted to implement properly. For that, I needed a foundation I could trust.
+Only recently did I find myself with enough focus and time to revisit the idea. I'd also been experimenting with tools outside Emacs - Tana, Capacities - and came back with ideas I wanted to implement properly. For that, I needed a foundation I could trust.
 
 So I finally sat down and wrote it.
 
@@ -186,7 +186,7 @@ If you're coming from vulpea v1, migration is simple. Files remain the same; onl
 
 The main adjustments are configuration (use `vulpea-db-sync-directories`) and enabling autosync. The [migration guide](https://github.com/d12frosted/vulpea/blob/v2-rewrite/docs/migration.org) covers the details.
 
-My own migration (13k+ notes, several custom extensions and lots of code relying on vulpea) took about an evening – most of which I fixing old code that relied on org-roam directly.
+My own migration (13k+ notes, several custom extensions and lots of code relying on vulpea) took about an evening - most of which I fixing old code that relied on org-roam directly.
 
 # What's next
 

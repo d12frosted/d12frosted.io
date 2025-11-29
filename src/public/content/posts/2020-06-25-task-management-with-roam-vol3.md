@@ -1,3 +1,7 @@
+**Change Log**
+
+- **\[2025-11\]:** This series was written for vulpea v1 with org-roam. See [Vulpea v2: breaking up with org-roam](/posts/2025-11-28-vulpea-v2-breaking-up-with-org-roam) for context on vulpea v2, which no longer depends on org-roam. Updated guides are coming.
+
 In the previous articles ([Vol. 1](/posts/2020-06-23-task-management-with-roam-vol1) and [Vol. 2](/posts/2020-06-24-task-management-with-roam-vol2)), we walked the path to [org-roam](https://github.com/org-roam/org-roam) and solved the issue with clutter in the category column of the agenda. Today we're going to explore meta projects dedicated to a specific person, tag inheritance, and moving such projects to separate `org-roam` files. As a result, we'll have code for automatic tagging based on the title.
 
 Aside from regular meta projects (like a personal blog), I also create meta projects for people and locations. This is helpful because some tasks are really related to someone specifically. For example, when I need to return a borrowed book, I just create a task for it.

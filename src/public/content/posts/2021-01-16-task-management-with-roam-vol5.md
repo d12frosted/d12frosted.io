@@ -6,6 +6,7 @@ In this article, we're going to optimise `org-agenda` back to less than 1 second
 
 ## Change Log
 
+- **\[2025-11\]:** This series was written for vulpea v1 with org-roam. See [Vulpea v2: breaking up with org-roam](/posts/2025-11-28-vulpea-v2-breaking-up-with-org-roam) for context on vulpea v2, which no longer depends on org-roam. Updated guides are coming.
 - **\[2021-03-02\]:** Updated naming convention to match [personal configurations](https://github.com/d12frosted/environment/tree/master/emacs).
 - **\[2021-03-08\]:** [Gustav](https://github.com/Whil-) shared that `org-element-map` has an optional parameter `first-match` that works like `seq-find`, meaning that `vulpea-project-p` can be optimised.
 - **\[2021-05-10\]:** Updated post to reflect changes in [org-roam v2](https://github.com/org-roam/org-roam/pull/1401). Previous version of this article is available on [GitHub](https://github.com/d12frosted/d12frosted.io/blob/c16870cab6ebbaafdf73c7c3589abbd27c20ac52/posts/2021-01-16-task-management-with-roam-vol5.org).
@@ -168,7 +169,7 @@ This will visit each of your files and update the presence of `Project` tag acco
 
 # Result
 
-With little amount of `emacs-lisp` code we dramatically optimized `org-agenda` loading from $> 50$ seconds to $< 1$ second. Effectiveness of this approach depends on amount of files with `TODO` entries (the more you have, the less effective this approach becomes). One of the drawbacks is small (in my experience, neglectable) performance degradation of note visiting and note saving. Obviously, if a file contains thousands of headings, it affects performance. In defence, I would argue that such files are against the philosophy of `org-roam`, where you keep lots of small files as opposed to few huge files.
+With little amount of `emacs-lisp` code we dramatically optimized `org-agenda` loading from $`> 50`$ seconds to $`< 1`$ second. Effectiveness of this approach depends on amount of files with `TODO` entries (the more you have, the less effective this approach becomes). One of the drawbacks is small (in my experience, neglectable) performance degradation of note visiting and note saving. Obviously, if a file contains thousands of headings, it affects performance. In defence, I would argue that such files are against the philosophy of `org-roam`, where you keep lots of small files as opposed to few huge files.
 
 For you convenience, the full code is displayed below. It is also available as [GitHub Gist](https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e).
 
