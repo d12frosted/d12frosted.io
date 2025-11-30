@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Building Complex UIs in Emacs: Lessons from Three Approaches",
+  "id": "e5bf9ba5-d899-4385-9e98-07fbdb114f46",
+  "related": null,
+  "update": "2025-11-30",
+  "date": "2025-11-30",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Complex Emacs UIs are hard - multiple data sources, cascading updates, cursor management. I tried three approaches to the same interface: imperative rendering, widget.el with zones, and declarative components. Here's what I learned, and why I ended up writing a 2.5k line library.",
+  "tags": [
+    "emacs"
+  ]
+}
