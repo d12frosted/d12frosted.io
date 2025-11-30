@@ -36,7 +36,28 @@ There's something that makes Emacs UI fundamentally different from web UI: the c
 
 In a browser, your mouse pointer floats above the page. The DOM can rebuild entirely and your cursor stays where it is - hovering over whatever now happens to be under it. Annoying if a button moves, but survivable.
 
-In Emacs, point *is* how you interact with the buffer. It's not floating above the content; it's embedded in it. Every keystroke, every command operates relative to point. When you're editing a score in row 5 of a table and the buffer redraws, point needs to still be in row 5, in the same logical position. If it jumps to the beginning of the buffer - or worse, to some random position because the content length changed - you've lost your place. You have to visually relocate, navigate back, and try again.
+In Emacs, point is *the* position. It serves two masters simultaneously:
+
+1.  **For the user**: point is where you are. It's your focus, your context, your place in the document. Every navigation command moves it, every visual cue (the cursor, the highlighted line) follows it.
+
+2.  **For code**: point is where operations happen. `insert` adds text at point. `delete-char` removes from point. `looking-at` checks what's at point. Any code that modifies the buffer does so relative to point - and moves point as a side effect.
+
+This dual role creates tension. When your UI code runs, it needs to move point around to make edits: go here, insert this, go there, delete that. But when it's done, point must return to where the *user* expects it - not where the code left it.
+
+The obvious solution is `save-excursion`:
+
+``` commonlisp
+(save-excursion
+  (goto-char (point-min))
+  (insert "header\n")
+  ;; ... more edits
+  )
+;; point restored! ...right?
+```
+
+But `save-excursion` saves the *byte position*, not the *logical position*. If you insert text before the saved position, you'll restore to the wrong place - the byte offset is now pointing at different content. The user was on row 5; now they're on row 6, or in the middle of the header you just inserted.
+
+It gets worse with full redraws. If you `erase-buffer` and rebuild, there's no meaningful position to restore. The old byte offset points into completely new content. You're left with heuristics: maybe save the line number and column, rebuild, then try to go to that line and column. But what if the number of lines changed? What if the table structure is different?
 
 Imagine if web pages moved your mouse cursor to the top-left corner of the screen whenever anything changed in the DOM. That's what naive `erase-buffer` / `insert` cycles do in Emacs.
 
@@ -75,7 +96,7 @@ Simple. No framework. Full control.
 
 ## When this breaks down
 
-The first casualty is cursor position. That `goto-char` is a guess. If content above point changed length, you're in the wrong place. If a table row was added, you might jump to a completely different row. Saving `(point)` before and restoring after assumes the byte offset still means the same thing - it usually doesn't.
+The first casualty is cursor position. That `goto-char` is a guess. As discussed above, `save-excursion` doesn't help - it preserves byte position, not logical position. If content above point changed length, you're in the wrong place. If a table row was added, you might jump to a completely different row. Saving line and column numbers is better but still fragile: what if the number of lines changed?
 
 The scroll position is even harder. You can save `window-start` and restore it, but if any content before that position changed length, you'll be showing different lines. Some people try `(save-window-excursion ...)` but it doesn't survive buffer content changes. You end up with elaborate heuristics that work sometimes.
 
