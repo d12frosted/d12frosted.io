@@ -10,6 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
+  "description": "A 15-minute introduction to vui.el - React-style declarative UI components for Emacs. Learn props, state, composition, and the basics of building interactive interfaces without wrestling with buffers.",
   "tags": [
     "emacs"
   ]

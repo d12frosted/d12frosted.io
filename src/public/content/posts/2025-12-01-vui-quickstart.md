@@ -322,4 +322,4 @@ You might be wondering how vui.el handles re-rendering efficiently under the hoo
 | List             | `(vui-list items render-fn key-fn)`                  |
 | Fragment         | `(vui-fragment child1 child2 ...)`                   |
 | Newline          | `(vui-newline)`                                      |
-| Space            | `(vui-space :width n)`                               |
+| Space            | `(vui-space n)`                                      |
