@@ -205,23 +205,14 @@ Split into two components: a *container* that manages data, and a *presentationa
 ``` elisp
 ;; Container: manages data, decides what to render
 (defcomponent user-list-container ()
-  :state ((users nil) (loading t) (error nil))
-  :hooks ((use-async 'users
-            (lambda (resolve reject)
-              (condition-case err
-                  (funcall resolve (fetch-users))
-                (error (funcall reject (error-message-string err)))))))
   :render
-  (let* ((async-state (use-async 'users
-                        (lambda (resolve _reject)
-                          (funcall resolve (fetch-users)))))
-         (status (plist-get async-state :status)))
-    (pcase status
+  (let ((result (use-async 'users
+                  (lambda (resolve _reject)
+                    (fetch-users-async resolve)))))
+    (pcase (plist-get result :status)
       ('pending (vui-component 'loading-spinner))
-      ('error (vui-component 'error-message
-                :message (plist-get async-state :error)))
       ('ready (vui-component 'user-list-view
-                :users (plist-get async-state :data))))))
+                :users (plist-get result :data))))))
 
 ;; Presentational: pure rendering, receives everything via props
 (defcomponent user-list-view (users)
