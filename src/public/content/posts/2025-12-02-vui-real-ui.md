@@ -1,6 +1,6 @@
 The [quickstart](/posts/2025-12-01-vui-quickstart) showed you the primitives. Now let's build something real with [vui.el](https://github.com/d12frosted/vui.el) - a file browser. We'll build it incrementally, with something runnable after each step.
 
-If you haven't read the quickstart, note that vui.el requires lexical binding. Either evaluate code in an `.el` file with `;;; -*- lexical-binding: t -*-` at the top, or run `M-: (setq-local lexical-binding t)` in your buffer.
+If you haven't read the [quickstart](/posts/2025-12-01-vui-quickstart), note that [vui.el](https://github.com/d12frosted/vui.el) requires lexical binding. Either evaluate code in an `.el` file with `;;; -*- lexical-binding: t -*-` at the top, or run `M-: (setq-local lexical-binding t)` in your buffer.
 
 # What We're Building
 
