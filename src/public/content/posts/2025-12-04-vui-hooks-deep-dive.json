@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Vui.el Hooks Deep Dive",
+  "id": "3ecfb8e8-05ad-4466-aaa1-139ea4f8327f",
+  "related": null,
+  "update": "2025-12-02",
+  "date": "2025-12-04",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Master vui.el's four hooks - on-mount, on-unmount, use-effect, and use-async. Learn cleanup patterns, avoid stale closures with functional updates, and see runnable examples throughout.",
+  "tags": [
+    "emacs"
+  ]
+}
