@@ -157,7 +157,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
                   <h2 className="text-ink !mb-6 !mt-0 text-2xl font-bold tracking-tight dark:text-white">
                     Related posts
                   </h2>
-                  <div className="prose prose-stone [&_a]:text-mp-blue [&_a]:decoration-mp-blue/30 [&_a:hover]:text-ink [&_a:hover]:decoration-ink/50 max-w-none [&>ul]:mt-0 [&>ul]:list-['\\\\2013\\\\20'] [&>ul]:pl-5 [&_a]:font-normal [&_a]:underline [&_a]:underline-offset-2 [&_a]:transition-colors">
+                  <div className="related-posts-list prose prose-stone [&_a]:text-mp-blue [&_a]:decoration-mp-blue/30 [&_a:hover]:text-ink [&_a:hover]:decoration-ink/50 max-w-none [&_a]:font-normal [&_a]:underline [&_a]:underline-offset-2 [&_a]:transition-colors">
                     <CustomMarkdown>{md}</CustomMarkdown>
                   </div>
                 </div>

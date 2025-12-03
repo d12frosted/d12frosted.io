@@ -8,3 +8,10 @@
         display: block;
     }
 }
+
+/* Related posts list styling - use en-dash as bullet */
+.related-posts-list > ul {
+    list-style-type: "– ";
+    padding-left: 1.25rem;
+    margin-top: 0;
+}
