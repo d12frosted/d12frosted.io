@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "vui.el: Patterns and Pitfalls",
+  "id": "98a5de2c-bb98-4842-a69b-07bd8ea16a72",
+  "related": null,
+  "update": "2025-12-03",
+  "date": "2025-12-07",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Practical patterns and common mistakes when building vui.el applications",
+  "tags": [
+    "emacs"
+  ]
+}
