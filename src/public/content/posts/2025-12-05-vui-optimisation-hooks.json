@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "vui.el: Optimisation Hooks",
+  "id": "971ad548-3d68-4a95-8b82-3c141de34476",
+  "related": null,
+  "update": "2025-12-03",
+  "date": "2025-12-05",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Master use-ref, use-callback, and use-memo — the hooks that help you avoid unnecessary work. Learn when mutable references beat state, how stable callbacks prevent wasteful re-renders, and when memoisation pays off.",
+  "tags": [
+    "emacs"
+  ]
+}
