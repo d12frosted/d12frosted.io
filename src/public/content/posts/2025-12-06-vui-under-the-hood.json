@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "vui.el: Under the Hood",
+  "id": "96e9a006-87a5-4bfd-8cb9-8c00ebe4a38f",
+  "related": null,
+  "update": "2025-12-03",
+  "date": "2025-12-06",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "How vui.el works internally — virtual nodes, instances, reconciliation, and the render cycle",
+  "tags": [
+    "emacs"
+  ]
+}
