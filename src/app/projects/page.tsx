@@ -27,6 +27,13 @@ const projects: Project[] = [
     color: 'mp-blue',
   },
   {
+    name: 'vui.el',
+    repo: 'vui.el',
+    description: 'Declarative, component-based UI library for Emacs. React-like components with state, hooks, reconciliation, and layouts—rendered using native Emacs widgets.',
+    tags: ['Emacs Lisp', 'UI Framework', 'Developer Tools'],
+    color: 'mp-blue',
+  },
+  {
     name: 'flyspell-correct',
     repo: 'flyspell-correct',
     description: 'Distraction-free spell-checking interface for Emacs. Provides an intuitive way to correct spelling mistakes without leaving your workflow.',
