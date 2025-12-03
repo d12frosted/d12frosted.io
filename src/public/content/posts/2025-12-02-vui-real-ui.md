@@ -2,6 +2,9 @@ The [quickstart](/posts/2025-12-01-vui-quickstart) showed you the primitives. No
 
 If you haven't read the [quickstart](/posts/2025-12-01-vui-quickstart), note that [vui.el](https://github.com/d12frosted/vui.el) requires lexical binding. Either evaluate code in an `.el` file with `;;; -*- lexical-binding: t -*-` at the top, or run `M-: (setq-local lexical-binding t)` in your buffer.
 
+``` related_posts
+```
+
 # What We're Building
 
 A file browser with navigation, metadata display, and preview. Here's the mental model:

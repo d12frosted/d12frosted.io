@@ -1,5 +1,8 @@
 As your [vui.el](https://github.com/d12frosted/vui.el/) application grows, you'll face two challenges: deeply nested components that need access to shared data, and organising code to stay maintainable. This article tackles both.
 
+``` related_posts
+```
+
 # The Prop Drilling Problem
 
 Consider a theme switcher. The current theme needs to reach every component that renders styled content:

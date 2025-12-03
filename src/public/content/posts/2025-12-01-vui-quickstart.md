@@ -2,6 +2,9 @@ Building interactive UIs in Emacs has traditionally been [painful](/posts/2025-1
 
 This tutorial gets you from zero to a working component in 15 minutes.
 
+``` related_posts
+```
+
 # Installation
 
 vui.el isn't on MELPA yet. Clone the repository and add it to your load path:
