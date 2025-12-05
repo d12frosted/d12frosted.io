@@ -519,7 +519,8 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
          (let ((date (vulpea-buffer-prop-get "date"))
                (slug (or (vulpea-buffer-prop-get "slug")
                          (porg-slug (vulpea-note-title note)))))
-           (unless date (user-error "Post '%s' is missing date" (vulpea-note-title note)))
+           (unless date (user-error "Post '%s' (%s) is missing date" (vulpea-note-title note)
+                                    (vulpea-note-path note)))
            (concat (org-read-date nil nil date) "-" slug)))
        ".md"))
     :outputs-extra

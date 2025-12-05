@@ -72,14 +72,14 @@ The same result can be achieved by using `when`.
 
 There's another function we can use - `not`, which returns `t` if the argument is `nil`, and returns `nil` otherwise. Yes, it negates the value, but the result is one of the canonical booleans, so we're good.
 
-Since $a \equiv b$ is equivalent to $\neg a \equiv \neg b$, we can just compare negated values.
+Since $`a \equiv b`$ is equivalent to $`\neg a \equiv \neg b`$, we can just compare negated values.
 
-| $a$ | $b$ | $\neg a$ | $\neg b$ | $a \equiv b$ | $\neg a \equiv \neg b$ |
-|-----|-----|----------|----------|--------------|------------------------|
-| 0   | 0   | 1        | 1        | 1            | 1                      |
-| 0   | 1   | 1        | 0        | 0            | 0                      |
-| 1   | 0   | 0        | 1        | 0            | 0                      |
-| 1   | 1   | 0        | 0        | 1            | 1                      |
+| $`a`$ | $`b`$ | $`\neg a`$ | $`\neg b`$ | $`a \equiv b`$ | $`\neg a \equiv \neg b`$ |
+|-------|-------|------------|------------|----------------|--------------------------|
+| 0     | 0     | 1          | 1          | 1              | 1                        |
+| 0     | 1     | 1          | 0          | 0              | 0                        |
+| 1     | 0     | 0          | 1          | 0              | 0                        |
+| 1     | 1     | 0          | 0          | 1              | 1                        |
 
 ``` commonlisp
 (not "Some truth")                      ; => nil
