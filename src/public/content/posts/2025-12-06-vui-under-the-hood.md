@@ -42,8 +42,8 @@ vui.el follows the virtual DOM pattern:
 ┌──────────────────────────────────────────────────────────┐
 │                      Virtual Tree                        │
 │                                                          │
-│         vui-vnode-vstack                                 │
-│              │                                           │
+│       vui-vnode-vstack                                   │
+│             │                                            │
 │    ┌────────┼────────┐                                   │
 │    ▼        ▼        ▼                                   │
 │  text    button    field   ◄─── Virtual Nodes            │
