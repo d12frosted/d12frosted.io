@@ -19,6 +19,7 @@
   ],
   "description": "Build a working file browser from scratch in 8 incremental steps. Learn component decomposition, state lifting, callbacks, and the patterns that make UI code maintainable.",
   "tags": [
+    "vui",
     "emacs"
   ]
 }

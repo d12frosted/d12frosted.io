@@ -19,6 +19,7 @@
   ],
   "description": "Practical patterns and common mistakes when building vui.el applications",
   "tags": [
+    "vui",
     "emacs"
   ]
 }

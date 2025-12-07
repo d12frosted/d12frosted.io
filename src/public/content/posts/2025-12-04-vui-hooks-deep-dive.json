@@ -19,6 +19,7 @@
   ],
   "description": "Master vui.el's four hooks - on-mount, on-unmount, use-effect, and use-async. Learn cleanup patterns, avoid stale closures with functional updates, and see runnable examples throughout.",
   "tags": [
+    "vui",
     "emacs"
   ]
 }

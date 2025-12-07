@@ -19,6 +19,7 @@
   ],
   "description": "How vui.el works internally — virtual nodes, instances, reconciliation, and the render cycle",
   "tags": [
+    "vui",
     "emacs"
   ]
 }

@@ -66,6 +66,7 @@ import static_vino from "../../public/content/images/vino.png";
 import static_vulpea from "../../public/content/images/vulpea.png";
 import static_yabai from "../../public/content/images/yabai.png";
 import static_fish from "../../public/content/images/fish.png";
+import static_vui from "../../public/content/images/vui.png";
 
 const lookupMap = new Map<string, StaticImageData>([
   ["/images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp", pic_cd0fefec_39c8_4f72_aa4f_0b45c9b305f6_2022_07_19_22_04_15_org_roam_task_management_vol7_2],
@@ -127,6 +128,7 @@ const lookupMap = new Map<string, StaticImageData>([
   ["/images/vulpea.png", static_vulpea],
   ["/images/yabai.png", static_yabai],
   ["/images/fish.png", static_fish],
+  ["/images/vui.png", static_vui],
 ]);
 
 export function getImage(path: string): StaticImageData {

@@ -79,7 +79,8 @@
     ("static_vino" . "vino.png")
     ("static_vulpea" . "vulpea.png")
     ("static_yabai" . "yabai.png")
-    ("static_fish" . "fish.png")))
+    ("static_fish" . "fish.png")
+    ("static_vui" . "vui.png")))
 
 
 

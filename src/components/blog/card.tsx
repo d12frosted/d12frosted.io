@@ -14,6 +14,7 @@ function PostImage({
 }) {
   function getSource() {
     if (post.image) return getImage(post.image.replace('src/public/content', ''))
+    if (post.tags.includes('vui')) return getImage('/images/vui.png')
     if (post.tags.includes('vulpea')) return getImage('/images/vulpea.png')
     if (post.tags.includes('vino')) return getImage('/images/vino.png')
     if (post.tags.includes('org-mode')) return getImage('/images/org-mode.png')
@@ -44,7 +45,14 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
   }
 
   return (
-    <article key={post.id} className={clsx("group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900", className)} {...props}>
+    <article
+      key={post.id}
+      className={clsx(
+        'group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900',
+        className
+      )}
+      {...props}
+    >
       {/* Hero image - smaller on mobile */}
       <div className="relative aspect-[3/2] w-full overflow-hidden bg-paper sm:aspect-[4/3] dark:bg-zinc-800">
         <PostImage
@@ -52,26 +60,28 @@ export function FeaturedPostCard({ post, className, ...props }: React.ComponentP
           className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
         {/* Bold color block overlay */}
-        <div className={clsx("absolute bottom-0 left-0 h-2 w-full", getAccentColor())} />
+        <div className={clsx('absolute bottom-0 left-0 h-2 w-full', getAccentColor())} />
       </div>
 
       {/* Spacious content area */}
       <div className="p-6 sm:p-8">
         {/* Monospace metadata */}
-        <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+        <div className="mb-4 flex items-center gap-x-4 font-mono text-xs tracking-wider text-ink-muted uppercase dark:text-zinc-500">
           <FormattedDate date={post.published} />
           <span>•</span>
           <span>{post.tags[0]}</span>
         </div>
 
         <div className="relative">
-          <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+          <h3 className="text-2xl leading-tight font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
             <a href={post.href}>
               <span className="absolute inset-0" />
               {post.title}
             </a>
           </h3>
-          <p className="mt-4 line-clamp-2 text-base leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+          <p className="mt-4 line-clamp-2 text-base leading-relaxed text-ink-muted dark:text-zinc-400">
+            {post.description}
+          </p>
         </div>
       </div>
     </article>
@@ -89,7 +99,13 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
   }
 
   return (
-    <article className={clsx('group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900', className)} {...props}>
+    <article
+      className={clsx(
+        'group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900',
+        className
+      )}
+      {...props}
+    >
       <div className="flex flex-col lg:flex-row lg:items-stretch">
         {/* Large image - smaller on mobile */}
         <div className="relative aspect-[5/2] w-full overflow-hidden bg-paper sm:aspect-video lg:aspect-square lg:w-80 lg:shrink-0 dark:bg-zinc-800">
@@ -98,20 +114,20 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
             className="size-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
           {/* Bold accent block */}
-          <div className={clsx("absolute bottom-0 right-0 h-full w-2 lg:h-2 lg:w-full", getAccentColor())} />
+          <div className={clsx('absolute right-0 bottom-0 h-full w-2 lg:h-2 lg:w-full', getAccentColor())} />
         </div>
 
         {/* Spacious content */}
         <div className="flex flex-1 flex-col justify-center p-6 sm:p-8 lg:p-12">
           {/* Monospace metadata */}
-          <div className="mb-4 flex items-center gap-x-4 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+          <div className="mb-4 flex items-center gap-x-4 font-mono text-xs tracking-wider text-ink-muted uppercase dark:text-zinc-500">
             <FormattedDate date={post.published} />
             <span>•</span>
             <span>{post.tags[0]}</span>
           </div>
 
           <div className="relative">
-            <h3 className="text-2xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue lg:text-3xl dark:text-white dark:group-hover:text-mp-blue">
+            <h3 className="text-2xl leading-tight font-bold text-ink transition-colors group-hover:text-mp-blue lg:text-3xl dark:text-white dark:group-hover:text-mp-blue">
               <a href={post.href}>
                 <span className="absolute inset-0" />
                 {post.title}

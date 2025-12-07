@@ -19,6 +19,7 @@
   ],
   "description": "Master use-ref, use-callback, and use-memo — the hooks that help you avoid unnecessary work. Learn when mutable references beat state, how stable callbacks prevent wasteful re-renders, and when memoisation pays off.",
   "tags": [
+    "vui",
     "emacs"
   ]
 }

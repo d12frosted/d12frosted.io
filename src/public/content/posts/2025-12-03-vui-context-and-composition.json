@@ -19,6 +19,7 @@
   ],
   "description": "Solve prop drilling with context and learn four composition patterns - container/presentational, compound components, render props, and slots - that keep complex UIs maintainable.",
   "tags": [
+    "vui",
     "emacs"
   ]
 }
