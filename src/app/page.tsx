@@ -128,7 +128,7 @@ export default async function Home() {
                   </span>
                 </div>
                 <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
-                  Emacs toolkit for note-taking based on org and org-roam.
+                  Emacs Lisp toolkit for note-taking based on org-mode. Flexible, extensible note management and knowledge graphs.
                 </p>
               </a>
 
