@@ -22,7 +22,7 @@ const projects: Project[] = [
   {
     name: 'vulpea',
     repo: 'vulpea',
-    description: 'Emacs Lisp toolkit for note-taking based on org and org-roam. Provides a collection of functions for flexible, extensible note management and knowledge graphs.',
+    description: 'Emacs Lisp toolkit for note-taking based on org-mode. Provides a collection of functions for flexible, extensible note management and knowledge graphs.',
     tags: ['Emacs Lisp', 'Org Mode', 'Knowledge Management'],
     color: 'mp-blue',
   },
@@ -31,6 +31,13 @@ const projects: Project[] = [
     repo: 'vui.el',
     description: 'Declarative, component-based UI library for Emacs. React-like components with state, hooks, reconciliation, and layouts—rendered using native Emacs widgets.',
     tags: ['Emacs Lisp', 'UI Framework', 'Developer Tools'],
+    color: 'mp-blue',
+  },
+  {
+    name: 'vulpea-ui',
+    repo: 'vulpea-ui',
+    description: 'Sidebar infrastructure and widget framework for vulpea notes. Per-frame sidebar with configurable widgets: outline, backlinks, forward links, and stats—built on vui.',
+    tags: ['Emacs Lisp', 'Vulpea', 'UI Framework'],
     color: 'mp-blue',
   },
   {
@@ -174,6 +181,23 @@ export default async function Projects() {
             className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-ink transition-colors hover:text-mp-blue dark:text-white dark:hover:text-mp-blue"
           >
             Visit Barberry.io →
+          </a>
+        </div>
+
+        <div className="border-l-4 border-mp-blue bg-paper p-8 lg:p-10 dark:bg-zinc-900/50">
+          <h3 className="mb-4 text-2xl font-bold tracking-tight text-ink dark:text-white">
+            Tasogare
+          </h3>
+          <p className="mb-6 leading-relaxed text-ink-muted dark:text-zinc-400">
+            Literary criticism at twilight. Analysis of anime, manga, books, games, and films.
+          </p>
+          <a
+            href="https://tasogare.ink"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-ink transition-colors hover:text-mp-blue dark:text-white dark:hover:text-mp-blue"
+          >
+            Visit Tasogare.ink →
           </a>
         </div>
       </div>
