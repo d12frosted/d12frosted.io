@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "bun --bun next dev",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "lint": "bun --bun next lint",
     "notes": "eldev exec '(porg-run \"d12frosted.io\")'"
   },
   "dependencies": {
