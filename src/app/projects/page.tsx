@@ -41,6 +41,13 @@ const projects: Project[] = [
     color: 'mp-blue',
   },
   {
+    name: 'vulpea-journal',
+    repo: 'vulpea-journal',
+    description: 'Modern daily journaling interface for Emacs with reactive sidebar widgets, built on vulpea.',
+    tags: ['Emacs Lisp', 'Vulpea', 'Journaling'],
+    color: 'mp-blue',
+  },
+  {
     name: 'flyspell-correct',
     repo: 'flyspell-correct',
     description: 'Distraction-free spell-checking interface for Emacs. Provides an intuitive way to correct spelling mistakes without leaving your workflow.',
