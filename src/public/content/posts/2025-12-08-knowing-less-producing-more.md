@@ -62,6 +62,20 @@ Perhaps that's what's happening now. Perhaps the question isn't whether we'll re
 
 I don't know. The honest answer is that I don't know, and I'm suspicious of anyone who claims certainty. AI is developing faster than our ability to understand its implications. We're building the road while driving on it.
 
+But here is something I keep returning to, a thread that might lead somewhere.
+
+As human beings, we have only two things that are truly ours: time, and the capacity to make meaning. Everything else can be assisted, augmented, automated. But the hours of our lives remain finite and non-renewable. And meaning - the act of deciding what matters, why something is worth doing, what significance a moment or an object or a relationship holds - this remains stubbornly, irreducibly human.
+
+AI can produce endlessly. It can generate code, text, analysis, images, solutions to problems I didn't know I had. But it doesn't *mean* anything by it. The output has no significance to the machine. There is no one home to care. Meaning is what we bring - the reason a particular library matters to me, why this poem rather than another, why I chose to spend my finite hours on this conversation rather than any of the infinite alternatives.
+
+And perhaps this is the key to everything else. Time is the constraint that makes meaning possible. If we had infinite hours, nothing would require choice, and choice is where meaning lives. Craft matters not because the skill is irreplaceable - perhaps it isn't - but because you chose to spend irreplaceable time on it. Relationships matter because you gave them hours you will never get back, and the other person did the same. The scolding mother's words land not just because she's honest, but because she spent years earning the right to say them, years of attention and care that cannot be compressed or automated.
+
+The context I carry - about my colleague's learning journey, about why this PR is a teaching moment - is not just information. It is accumulated meaning. It is the significance I've assigned to this person's growth, the investment I've made in understanding who they are and who they're becoming. AI sees the code. I see the human.
+
+So perhaps "remain human" means this: remain the one who decides what matters. Remain the meaning-maker. Let AI produce - it's good at that, getting better all the time. But the question of *what for*, the question of *why this and not that*, the question of how to spend the only currency that is truly yours: these remain yours to answer.
+
+It's not a complete philosophy. It's a direction.
+
 What I do know is this: I still feel the pull of craft, the satisfaction of understanding something deeply rather than just using it effectively. I still find more value in a difficult conversation with someone who disagrees with me than in a smooth exchange with an AI that tells me what I want to hear. I still believe - though I can't fully defend this belief - that friction is not the enemy of a good life but one of its essential ingredients.
 
 Whether any of this will matter in ten years, I cannot say. But it matters to me now. And perhaps that's enough to be worth preserving: not a fixed definition of humanity, but an ongoing attention to what we're becoming, and whether we're becoming it on purpose.
