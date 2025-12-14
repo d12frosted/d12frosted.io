@@ -1,0 +1,18 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Implicit Identity Through Call Order",
+  "id": "9bbb1334-6b90-4098-955e-9fa66a81951c",
+  "related": null,
+  "update": "2025-12-14",
+  "date": "2025-12-14",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "How React-style hooks work without explicit keys—using call order during execution to establish identity. A pattern that's non-obvious but elegant, implemented in Emacs Lisp.",
+  "tags": [
+    "emacs",
+    "elisp"
+  ]
+}
