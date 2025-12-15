@@ -34,11 +34,11 @@ export default async function Posts() {
       </div>
 
       {/* Posts grouped by year */}
-      <div className="space-y-20">
+      <div className="space-y-16">
         {years.map((year) => (
           <section key={year}>
             {/* Year header with bold geometric element */}
-            <div className="mb-12 flex items-center gap-6">
+            <div className="mb-8 flex items-center gap-6">
               <div className="h-1 w-12 bg-xp-orange" />
               <h2 className="text-4xl font-bold tabular-nums tracking-tight text-ink dark:text-white">{year}</h2>
               <div className="font-mono text-sm text-ink-muted dark:text-zinc-500">
@@ -46,8 +46,8 @@ export default async function Posts() {
               </div>
             </div>
 
-            {/* Posts for this year */}
-            <div className="space-y-12">
+            {/* Posts for this year - cards without images */}
+            <div className="grid gap-6 lg:grid-cols-2">
               {postsByYear[year].map((post) => (
                 <RegularPostCard key={post.id} post={post} />
               ))}

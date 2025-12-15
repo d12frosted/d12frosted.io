@@ -1,3 +1,4 @@
+import { getAccentColorFromTags } from '@/lib/colors'
 import { fetchGitHubRepo, formatStarCount } from '@/lib/github'
 
 // Enable ISR - page regenerates every 24 hours
@@ -8,7 +9,6 @@ type Project = {
   repo: string
   description: string
   tags: string[]
-  color: string
 }
 
 const projects: Project[] = [
@@ -16,64 +16,55 @@ const projects: Project[] = [
     name: 'homebrew-emacs-plus',
     repo: 'homebrew-emacs-plus',
     description: 'GNU Emacs formulae for macOS Homebrew package manager with additional features, patches, and customizations. Used by thousands of Emacs users on macOS.',
-    tags: ['Homebrew', 'Emacs', 'macOS', 'Ruby'],
-    color: 'mp-blue',
+    tags: ['Emacs', 'Homebrew', 'macOS', 'Ruby'],
   },
   {
     name: 'vulpea',
     repo: 'vulpea',
     description: 'Emacs Lisp toolkit for note-taking based on org-mode. Provides a collection of functions for flexible, extensible note management and knowledge graphs.',
-    tags: ['Emacs Lisp', 'Org Mode', 'Knowledge Management'],
-    color: 'mp-blue',
+    tags: ['Emacs', 'Org Mode', 'Knowledge Management'],
   },
   {
     name: 'vui.el',
     repo: 'vui.el',
     description: 'Declarative, component-based UI library for Emacs. React-like components with state, hooks, reconciliation, and layouts—rendered using native Emacs widgets.',
-    tags: ['Emacs Lisp', 'UI Framework', 'Developer Tools'],
-    color: 'mp-blue',
+    tags: ['Emacs', 'UI Framework', 'Developer Tools'],
   },
   {
     name: 'vulpea-ui',
     repo: 'vulpea-ui',
     description: 'Sidebar infrastructure and widget framework for vulpea notes. Per-frame sidebar with configurable widgets: outline, backlinks, forward links, and stats—built on vui.',
-    tags: ['Emacs Lisp', 'Vulpea', 'UI Framework'],
-    color: 'mp-blue',
+    tags: ['Emacs', 'Vulpea', 'UI Framework'],
   },
   {
     name: 'vulpea-journal',
     repo: 'vulpea-journal',
     description: 'Modern daily journaling interface for Emacs with reactive sidebar widgets, built on vulpea.',
-    tags: ['Emacs Lisp', 'Vulpea', 'Journaling'],
-    color: 'mp-blue',
+    tags: ['Emacs', 'Vulpea', 'Journaling'],
   },
   {
     name: 'flyspell-correct',
     repo: 'flyspell-correct',
     description: 'Distraction-free spell-checking interface for Emacs. Provides an intuitive way to correct spelling mistakes without leaving your workflow.',
-    tags: ['Emacs Lisp', 'Spell Checking', 'Productivity'],
-    color: 'hp-green',
+    tags: ['Emacs', 'Spell Checking', 'Productivity'],
   },
   {
     name: 'environment',
     repo: 'environment',
     description: 'Personal development environment configuration. Complete dotfiles setup featuring Emacs, Fish shell, macOS system settings, and development tools.',
-    tags: ['Dotfiles', 'Emacs', 'Fish', 'macOS'],
-    color: 'hp-green',
+    tags: ['Shell', 'Emacs', 'Fish', 'macOS'],
   },
   {
     name: 'elpa-mirror',
     repo: 'elpa-mirror',
     description: 'Create local mirrors of Emacs package archives (ELPA, MELPA). Useful for offline development, CI/CD pipelines, or air-gapped environments.',
-    tags: ['Emacs Lisp', 'Package Management', 'DevOps'],
-    color: 'xp-orange',
+    tags: ['Emacs', 'Package Management', 'DevOps'],
   },
   {
     name: 'vino',
     repo: 'vino',
     description: 'Wine cellar management and tasting note system for Emacs. Track your collection, record detailed tasting notes, and rate wines—all within org-mode.',
-    tags: ['Emacs Lisp', 'Wine', 'Personal Database'],
-    color: 'xp-orange',
+    tags: ['Wine', 'Emacs', 'Personal Database'],
   },
 ]
 
@@ -111,7 +102,7 @@ export default async function Projects() {
             className="group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900"
           >
             {/* Bold color accent */}
-            <div className={`h-2 bg-${project.color}`} />
+            <div className={`h-2 bg-${getAccentColorFromTags(project.tags)}`} />
 
             <div className="p-8 lg:p-10">
               {/* Project name, stars, and link */}
