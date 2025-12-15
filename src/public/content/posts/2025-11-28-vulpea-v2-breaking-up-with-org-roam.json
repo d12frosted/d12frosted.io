@@ -1,7 +1,7 @@
 {
   "publish": true,
   "hide": null,
-  "pinned": null,
+  "pinned": true,
   "title": "Vulpea v2: a story of breaking up with org-roam",
   "id": "9e8f1148-82b1-4bee-9bdf-3cad3877f17c",
   "related": null,

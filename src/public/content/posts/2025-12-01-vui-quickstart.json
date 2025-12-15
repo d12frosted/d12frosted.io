@@ -1,7 +1,7 @@
 {
   "publish": true,
   "hide": null,
-  "pinned": null,
+  "pinned": true,
   "title": "vui.el Quickstart",
   "id": "053fbb74-a453-4560-8f6a-ce0ecc266c8b",
   "related": [
