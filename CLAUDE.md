@@ -68,7 +68,7 @@ All colors defined in `src/styles/tailwind.css` under `@theme`:
 ### Posts Page (`/posts`)
 - **Grouped by year** with bold year headers
 - Shows post count per year
-- Uses `RegularPostCard` component with large images
+- 2-column grid of cards (no images, color-coded accent bars)
 
 ### Projects Page (`/projects`)
 - Grid of project cards (2 columns on desktop)
@@ -83,24 +83,17 @@ All colors defined in `src/styles/tailwind.css` under `@theme`:
 ## Component Patterns
 
 ### Blog Post Cards
-```tsx
-// Featured cards (home page grid)
-- Large hero images (4:3 aspect ratio)
-- Colored top bar (jRPG status bar style)
+- No images - text-only cards with colored accent bars
+- Colored top bar (jRPG status bar style) based on first tag
 - Monospace metadata with • separators
 - Hover: shadow-2xl
 
-// Regular cards (posts page)
-- Large side image (square on desktop)
-- Colored left/top bar
-- Larger text (up to 3xl on desktop)
-```
-
 ### Color-Coded Accents
-Cards automatically get colored accents based on first tag:
-- Emacs/Org → `mp-blue`
-- Haskell/Code → `hp-green`
-- Tutorial/Guide → `xp-orange`
+Color logic centralized in `src/lib/colors.ts`. Cards and projects use `getAccentColorFromTags()`:
+- Emacs ecosystem (emacs, org-roam, vulpea, vui, elisp, etc.) → `mp-blue`
+- Code & tools (haskell, shell, fish, nix, git, macos, etc.) → `hp-green`
+- Meta & releases (blog, release, readings, wine) → `xp-orange`
+- AI → `critical-red`
 - Default → `ink` (black)
 
 ### Code Blocks
@@ -133,11 +126,11 @@ Special markdown block (````related_posts```):
 
 ### Blog Components
 - `src/components/blog/card.tsx` - FeaturedPostCard, RegularPostCard
-- `src/components/blog/posts.tsx` - AllPosts, LatestPosts containers
 - `src/components/markdown/custom-markdown.tsx` - Markdown renderer with custom handlers
 - `src/components/markdown/syntax-highlighter.tsx` - Code block styling
 
 ### Utilities
+- `src/lib/colors.ts` - Tag-to-color mapping for accent colors
 - `src/lib/github.ts` - GitHub API fetching for star counts
 - `src/lib/posts.ts` - Post loading/filtering
 
@@ -204,4 +197,4 @@ Edit `src/app/projects/page.tsx`:
 
 ---
 
-Last updated: Session ending 2025-01-22
+Last updated: 2025-12-15
