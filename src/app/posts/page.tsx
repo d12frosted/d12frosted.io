@@ -6,15 +6,19 @@ export default async function Posts() {
   const today = new Date()
   const publishedPosts = allPosts.filter((post) => !post.hide && post.published <= today)
 
-  // Group posts by year
-  const postsByYear = publishedPosts.reduce((acc, post) => {
+  // Separate pinned and regular posts
+  const pinnedPosts = publishedPosts.filter((post) => post.pinned)
+  const regularPosts = publishedPosts.filter((post) => !post.pinned)
+
+  // Group regular posts by year
+  const postsByYear = regularPosts.reduce((acc, post) => {
     const year = post.published.getFullYear()
     if (!acc[year]) {
       acc[year] = []
     }
     acc[year].push(post)
     return acc
-  }, {} as Record<number, typeof publishedPosts>)
+  }, {} as Record<number, typeof regularPosts>)
 
   const years = Object.keys(postsByYear)
     .map(Number)
@@ -32,6 +36,21 @@ export default async function Posts() {
           {publishedPosts.length} posts across {years.length} years
         </p>
       </div>
+
+      {/* Pinned posts */}
+      {pinnedPosts.length > 0 && (
+        <section className="mb-16">
+          <div className="mb-8 flex items-center gap-6">
+            <div className="h-1 w-12 bg-mp-blue" />
+            <h2 className="text-4xl font-bold tracking-tight text-ink dark:text-white">Pinned</h2>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {pinnedPosts.map((post) => (
+              <RegularPostCard key={post.id} post={post} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Posts grouped by year */}
       <div className="space-y-16">

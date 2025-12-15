@@ -13,7 +13,11 @@ export default async function Home() {
   // Get published posts for stats
   const today = new Date()
   const publishedPosts = allPosts.filter((post) => !post.hide && post.published <= today)
-  const latestPosts = publishedPosts.slice(0, 3)
+
+  // Show pinned posts first, then fill with latest (up to 3 total)
+  const pinnedPosts = publishedPosts.filter((post) => post.pinned)
+  const nonPinnedPosts = publishedPosts.filter((post) => !post.pinned)
+  const latestPosts = [...pinnedPosts, ...nonPinnedPosts].slice(0, 3)
 
   // Fetch star counts for featured projects
   const [homebrewStars, vulpeaStars] = await Promise.all([
