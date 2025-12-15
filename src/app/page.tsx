@@ -14,10 +14,9 @@ export default async function Home() {
   const today = new Date()
   const publishedPosts = allPosts.filter((post) => !post.hide && post.published <= today)
 
-  // Show pinned posts first, then fill with latest (up to 3 total)
+  // Separate pinned and latest posts
   const pinnedPosts = publishedPosts.filter((post) => post.pinned)
-  const nonPinnedPosts = publishedPosts.filter((post) => !post.pinned)
-  const latestPosts = [...pinnedPosts, ...nonPinnedPosts].slice(0, 3)
+  const latestPosts = publishedPosts.filter((post) => !post.pinned).slice(0, 3)
 
   // Fetch star counts for featured projects
   const [homebrewStars, vulpeaStars] = await Promise.all([
@@ -50,6 +49,33 @@ export default async function Home() {
 
         {/* Right column: Content sections */}
         <div className="space-y-16">
+          {/* Pinned posts */}
+          {pinnedPosts.length > 0 && (
+            <section>
+              <div className="mb-8">
+                <div className="mb-4 h-1 w-16 bg-mp-blue" />
+                <h2 className="text-3xl font-bold tracking-tight text-ink dark:text-white">Pinned</h2>
+              </div>
+              <div className="space-y-8">
+                {pinnedPosts.map((post) => (
+                  <article key={post.id} className="group">
+                    <div className="mb-3 flex items-center gap-x-3 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+                      <time dateTime={post.published.toISOString()}>
+                        {post.published.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </time>
+                      <span>•</span>
+                      <span>{post.tags[0]}</span>
+                    </div>
+                    <h3 className="mb-2 text-xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+                      <a href={post.href}>{post.title}</a>
+                    </h3>
+                    <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Latest posts */}
           <section>
             <div className="mb-8 flex items-end justify-between">
