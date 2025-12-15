@@ -62,7 +62,7 @@ export function ApplicationLayout({
 
       {/* Spacious content area */}
       <main className="flex flex-1 flex-col">
-        <div className="grow px-4 py-8 lg:px-16 lg:py-20">
+        <div className="grow px-4 pt-16 pb-16 lg:px-16 lg:pt-20 lg:pb-20">
           <div className="mx-auto max-w-6xl">{children}</div>
         </div>
       </main>

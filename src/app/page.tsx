@@ -24,12 +24,75 @@ export default async function Home() {
     fetchGitHubRepo('d12frosted', 'vulpea'),
   ])
 
+  // Projects content (shared between mobile and desktop)
+  const projectCards = (
+    <>
+      <a
+        href="https://github.com/d12frosted/homebrew-emacs-plus"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block border-l-4 border-hp-green bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
+      >
+        <div className="mb-1 flex items-baseline justify-between gap-4">
+          <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+            homebrew-emacs-plus
+          </h3>
+          <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
+            ★ {homebrewStars ? formatStarCount(homebrewStars.stargazers_count) : '—'}
+          </span>
+        </div>
+        <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+          GNU Emacs formulae for macOS Homebrew.
+        </p>
+      </a>
+
+      <a
+        href="https://github.com/d12frosted/vulpea"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block border-l-4 border-hp-green bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
+      >
+        <div className="mb-1 flex items-baseline justify-between gap-4">
+          <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+            vulpea
+          </h3>
+          <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
+            ★ {vulpeaStars ? formatStarCount(vulpeaStars.stargazers_count) : '—'}
+          </span>
+        </div>
+        <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+          Emacs Lisp toolkit for note-taking based on org-mode.
+        </p>
+      </a>
+
+      <a
+        href="https://barberry.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block border-l-4 border-xp-orange bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
+      >
+        <h3 className="mb-1 font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+          Barberry Garden
+        </h3>
+        <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+          Wine documentation and cellar management.
+        </p>
+      </a>
+    </>
+  )
+
   return (
     <>
-      {/* Flex on mobile (with order), Grid on desktop */}
-      <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[400px_1fr] lg:gap-20">
-        {/* About - order 1 on mobile, left column on desktop */}
-        <div className="order-1 lg:row-start-1">
+      {/*
+        Grid layout:
+        - Mobile: single column, order controls sequence (About → Pinned → Latest → Projects)
+        - Desktop: 2 columns with explicit placement
+          - Col 1: About (row 1), Projects (row 2)
+          - Col 2: Pinned (row 1), Latest (row 2)
+      */}
+      <div className="grid gap-12 lg:grid-cols-[400px_1fr] lg:gap-x-20 lg:gap-y-16">
+        {/* About - first on mobile, top-left on desktop */}
+        <section className="order-1 lg:col-start-1 lg:row-start-1">
           <div className="mb-4 h-1 w-16 bg-mp-blue" />
           <h2 className="mb-6 text-2xl font-bold tracking-tight text-ink dark:text-white">About</h2>
           <div className="prose prose-stone max-w-none text-base leading-relaxed">
@@ -40,12 +103,14 @@ export default async function Home() {
           <div className="mt-8 space-y-3 border-l-4 border-mp-blue pl-6">
             <div className="font-mono text-sm uppercase tracking-wider text-ink-muted dark:text-zinc-500">
               <div>{publishedPosts.length} posts</div>
-              <div className="mt-1">Since {new Date(publishedPosts[publishedPosts.length - 1]?.published || new Date()).getFullYear()}</div>
+              <div className="mt-1">
+                Since {new Date(publishedPosts[publishedPosts.length - 1]?.published || new Date()).getFullYear()}
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Pinned posts - order 2 on mobile, right column on desktop */}
+        {/* Pinned - second on mobile, top-right on desktop */}
         {pinnedPosts.length > 0 && (
           <section className="order-2 lg:col-start-2 lg:row-start-1">
             <div className="mb-8">
@@ -72,7 +137,7 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Latest posts - order 3 on mobile, right column on desktop */}
+        {/* Latest - third on mobile, bottom-right on desktop */}
         <section className="order-3 lg:col-start-2 lg:row-start-2">
           <div className="mb-8 flex items-end justify-between">
             <div>
@@ -105,9 +170,9 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Projects - order 4 (last) on mobile, left column on desktop */}
+        {/* Projects - fourth on mobile, bottom-left on desktop */}
         <section className="order-4 lg:col-start-1 lg:row-start-2">
-          <div className="mb-6 flex items-end justify-between">
+          <div className="mb-8 flex items-end justify-between">
             <div>
               <div className="mb-4 h-1 w-16 bg-hp-green" />
               <h2 className="text-2xl font-bold tracking-tight text-ink dark:text-white">Projects</h2>
@@ -119,59 +184,7 @@ export default async function Home() {
               All →
             </a>
           </div>
-          <div className="space-y-4">
-            <a
-              href="https://github.com/d12frosted/homebrew-emacs-plus"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block border-l-4 border-hp-green bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
-            >
-              <div className="mb-1 flex items-baseline justify-between gap-4">
-                <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
-                  homebrew-emacs-plus
-                </h3>
-                <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
-                  ★ {homebrewStars ? formatStarCount(homebrewStars.stargazers_count) : '—'}
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
-                GNU Emacs formulae for macOS Homebrew.
-              </p>
-            </a>
-
-            <a
-              href="https://github.com/d12frosted/vulpea"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block border-l-4 border-hp-green bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
-            >
-              <div className="mb-1 flex items-baseline justify-between gap-4">
-                <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
-                  vulpea
-                </h3>
-                <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
-                  ★ {vulpeaStars ? formatStarCount(vulpeaStars.stargazers_count) : '—'}
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
-                Emacs Lisp toolkit for note-taking based on org-mode.
-              </p>
-            </a>
-
-            <a
-              href="https://barberry.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block border-l-4 border-xp-orange bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
-            >
-              <h3 className="mb-1 font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
-                Barberry Garden
-              </h3>
-              <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
-                Wine documentation and cellar management.
-              </p>
-            </a>
-          </div>
+          <div className="space-y-4">{projectCards}</div>
         </section>
       </div>
     </>
