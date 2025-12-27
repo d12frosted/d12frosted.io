@@ -31,7 +31,7 @@ Or with `use-package` and elpaca:
 Let's start with the simplest possible component:
 
 ``` elisp
-(defcomponent hello-world ()
+(vui-defcomponent hello-world ()
   :render
   (vui-text "Hello, World!"))
 
@@ -41,7 +41,7 @@ Let's start with the simplest possible component:
 
 Evaluate this and a buffer appears with "Hello, World!". Nothing to write home about yet, but notice the pattern:
 
-1.  `defcomponent` defines a reusable component
+1.  `vui-defcomponent` defines a reusable component
 2.  `:render` specifies what to display
 3.  `vui-mount` creates a buffer and renders the component
 
@@ -50,7 +50,7 @@ Evaluate this and a buffer appears with "Hello, World!". Nothing to write home a
 Components accept *props* - inputs passed from the parent:
 
 ``` elisp
-(defcomponent greeter (name)
+(vui-defcomponent greeter (name)
   :render
   (vui-text (format "Hello, %s!" name)))
 
@@ -64,7 +64,7 @@ Props are declared in the argument list after the component name. Pass them with
 Build complex UIs by combining simple components:
 
 ``` elisp
-(defcomponent greeting-card (name title)
+(vui-defcomponent greeting-card (name title)
   :render
   (vui-vstack
    (vui-text title :face 'bold)
@@ -83,7 +83,7 @@ Build complex UIs by combining simple components:
 Static text isn't very useful. Let's add state:
 
 ``` elisp
-(defcomponent counter ()
+(vui-defcomponent counter ()
   :state ((count 0))
   :render
   (vui-hstack
@@ -112,7 +112,7 @@ Click the button and watch the count increase. No manual buffer updates needed.
 vui.el wraps Emacs widgets for interactive elements:
 
 ``` elisp
-(defcomponent name-form ()
+(vui-defcomponent name-form ()
   :state ((name ""))
   :render
   (vui-vstack
@@ -143,7 +143,7 @@ The `vui-field` widget:
 Notice the `if` in the previous example - that's conditional rendering. The render function is just Elisp, so use any control flow:
 
 ``` elisp
-(defcomponent toggle-demo ()
+(vui-defcomponent toggle-demo ()
   :state ((visible t))
   :render
   (vui-vstack
@@ -165,7 +165,7 @@ Notice the `if` in the previous example - that's conditional rendering. The rend
 Render dynamic lists with `vui-list`:
 
 ``` elisp
-(defcomponent todo-list ()
+(vui-defcomponent todo-list ()
   :state ((items '("Buy milk" "Write code" "Take a break")))
   :render
   (vui-vstack
@@ -188,7 +188,7 @@ Render dynamic lists with `vui-list`:
 vui.el provides several layout components:
 
 ``` elisp
-(defcomponent layout-demo ()
+(vui-defcomponent layout-demo ()
   :render
   (vui-vstack
    ;; Horizontal stack with spacing
@@ -224,7 +224,7 @@ vui.el provides several layout components:
 Here's a slightly more complete example - a simple task tracker:
 
 ``` elisp
-(defcomponent task-item (task on-toggle on-delete)
+(vui-defcomponent task-item (task on-toggle on-delete)
   :render
   (vui-hstack
    (vui-checkbox (plist-get task :done)
@@ -236,7 +236,7 @@ Here's a slightly more complete example - a simple task tracker:
    (vui-text (plist-get task :text)
      :face (if (plist-get task :done) 'shadow nil))))
 
-(defcomponent task-tracker ()
+(vui-defcomponent task-tracker ()
   :state ((tasks '((:id 1 :text "Learn vui.el" :done nil)
                    (:id 2 :text "Build something cool" :done nil)))
           (next-id 3)
@@ -300,7 +300,7 @@ This demonstrates:
 
 You now know the basics:
 
-- Components with `defcomponent`
+- Components with `vui-defcomponent`
 - Props for inputs, state for local data
 - `vui-set-state` triggers re-renders
 - Composition builds complex UIs from simple pieces
@@ -310,19 +310,19 @@ You might be wondering how vui.el handles re-rendering efficiently under the hoo
 
 # Quick Reference
 
-| Concept          | Syntax                                               |
-|------------------|------------------------------------------------------|
-| Define component | `(defcomponent name (props) :state ... :render ...)` |
-| Create component | `(vui-component 'name :prop value)`                  |
-| Mount to buffer  | `(vui-mount component)`                              |
-| Update state     | `(vui-set-state :key value)`                         |
-| Text             | `(vui-text "string" :face 'face)`                    |
-| Button           | `(vui-button "label" :on-click fn)`                  |
-| Field            | `(vui-field :value v :on-change fn)`                 |
-| Checkbox         | `(vui-checkbox checked :on-change fn)`               |
-| Vertical stack   | `(vui-vstack child1 child2 ...)`                     |
-| Horizontal stack | `(vui-hstack child1 child2 ... :spacing n)`          |
-| List             | `(vui-list items render-fn key-fn)`                  |
-| Fragment         | `(vui-fragment child1 child2 ...)`                   |
-| Newline          | `(vui-newline)`                                      |
-| Space            | `(vui-space n)`                                      |
+| Concept          | Syntax                                                   |
+|------------------|----------------------------------------------------------|
+| Define component | `(vui-defcomponent name (props) :state ... :render ...)` |
+| Create component | `(vui-component 'name :prop value)`                      |
+| Mount to buffer  | `(vui-mount component)`                                  |
+| Update state     | `(vui-set-state :key value)`                             |
+| Text             | `(vui-text "string" :face 'face)`                        |
+| Button           | `(vui-button "label" :on-click fn)`                      |
+| Field            | `(vui-field :value v :on-change fn)`                     |
+| Checkbox         | `(vui-checkbox checked :on-change fn)`                   |
+| Vertical stack   | `(vui-vstack child1 child2 ...)`                         |
+| Horizontal stack | `(vui-hstack child1 child2 ... :spacing n)`              |
+| List             | `(vui-list items render-fn key-fn)`                      |
+| Fragment         | `(vui-fragment child1 child2 ...)`                       |
+| Newline          | `(vui-newline)`                                          |
+| Space            | `(vui-space n)`                                          |

@@ -330,7 +330,7 @@ The full re-render approach is simpler and more reliable. The system still optim
 
 - Skipping render when `should-update` returns nil
 - Preserving component state across re-renders
-- Caching values with `use-memo` and `use-callback`
+- Caching values with `vui-use-memo` and `vui-use-callback`
 
 # Debugging Tools
 
@@ -338,15 +338,15 @@ vui.el includes tools for understanding what's happening. Let's explore them wit
 
 ## Try It: Exploring the Debugger
 
-First, we need a component tree to inspect. We'll wrap `vui-button` in a custom component - not because it's useful (`vui-button` works fine on its own), but because the inspector only shows components defined with `defcomponent`, not primitive vnodes:
+First, we need a component tree to inspect. We'll wrap `vui-button` in a custom component - not because it's useful (`vui-button` works fine on its own), but because the inspector only shows components defined with `vui-defcomponent`, not primitive vnodes:
 
 ``` elisp
 ;; A thin wrapper just so we have child components to inspect
-(defcomponent counter-button (label on-click)
+(vui-defcomponent counter-button (label on-click)
   :render
   (vui-button label :on-click on-click))
 
-(defcomponent debuggable-app ()
+(vui-defcomponent debuggable-app ()
   :state ((count 0))
   :on-mount (message "App mounted!")
   :render
@@ -397,7 +397,7 @@ The inspector shows:
 - **State** - current state values for each component
 - **Props** - what was passed to each component (functions display as `#<function>`)
 
-Note that `vui-vstack`, `vui-hstack`, `vui-text`, and `vui-button` don't appear - they're primitive vnodes, not component instances. Only `defcomponent` definitions create instances that appear in the tree.
+Note that `vui-vstack`, `vui-hstack`, `vui-text`, and `vui-button` don't appear - they're primitive vnodes, not component instances. Only `vui-defcomponent` definitions create instances that appear in the tree.
 
 Click the "+" button, then run `vui-inspect` again:
 
@@ -522,7 +522,7 @@ State changes trigger re-renders from the root down. Place state close to where 
 
 ``` elisp
 ;; BAD: state at root re-renders everything
-(defcomponent app ()
+(vui-defcomponent app ()
   :state ((hover-id nil))
   :render
   (vui-list items
@@ -533,7 +533,7 @@ State changes trigger re-renders from the root down. Place state close to where 
         :on-hover (lambda () (vui-set-state :hover-id ...))))))
 
 ;; BETTER: each item manages its own hover state
-(defcomponent item (item)
+(vui-defcomponent item (item)
   :state ((hovered nil))
   :render
   (vui-hstack
@@ -565,9 +565,9 @@ Each render creates new function objects, defeating callback caching:
 (vui-button "Click"
   :on-click (lambda () (do-something)))
 
-;; BETTER: stable reference via use-callback
+;; BETTER: stable reference via vui-use-callback
 :render
-(let ((handler (use-callback () (do-something))))
+(let ((handler (vui-use-callback () (do-something))))
   (vui-button "Click" :on-click handler))
 ```
 
@@ -575,7 +575,7 @@ Each render creates new function objects, defeating callback caching:
 
 ``` elisp
 :render
-(let ((filtered (use-memo (items filter)
+(let ((filtered (vui-use-memo (items filter)
                   (seq-filter predicate items))))
   (vui-list filtered #'render-item))
 ```
@@ -585,7 +585,7 @@ Each render creates new function objects, defeating callback caching:
 Skip re-renders when props/state changes don't affect output:
 
 ``` elisp
-(defcomponent item (id name)
+(vui-defcomponent item (id name)
   :should-update
   (or (not (equal name (plist-get prev-props :name)))
       (not (equal id (plist-get prev-props :id))))
@@ -620,6 +620,6 @@ Understanding these internals helps you debug issues and write performant compon
 - The render cycle: state change → render → reconcile → commit → effects
 - Why vui.el re-renders the full buffer (widget positioning complexity)
 - Debugging tools: `vui-inspect` for the component tree, `vui-debug-enabled` for render logging, `vui-timing-enabled` for performance measurement
-- Performance patterns: keys for lists, `use-callback` and `use-memo` for stability, `should-update` for fine-grained control
+- Performance patterns: keys for lists, `vui-use-callback` and `vui-use-memo` for stability, `should-update` for fine-grained control
 
 </div>

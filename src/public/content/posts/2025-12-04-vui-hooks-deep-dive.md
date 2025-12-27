@@ -1,4 +1,4 @@
-Hooks let components tap into lifecycle events and manage side effects. [vui.el](https://github.com/d12frosted/vui.el) provides four hooks that cover most needs: `on-mount`, `on-unmount`, `use-effect`, and `use-async`. This article explains each in depth.
+Hooks let components tap into lifecycle events and manage side effects. [vui.el](https://github.com/d12frosted/vui.el) provides four hooks that cover most needs: `on-mount`, `on-unmount`, `vui-use-effect`, and `vui-use-async`. This article explains each in depth.
 
 # The Lifecycle of a Component
 
@@ -17,7 +17,7 @@ Component Created (vui-component called)
          ▼
   Re-renders (0 or more times)
          │
-         │ (use-effect runs based on deps)
+         │ (vui-use-effect runs based on deps)
          │
          ▼
   on-unmount called  ◄── Component about to be removed
@@ -72,7 +72,7 @@ There's another pattern you'll see repeatedly: passing a function to `vui-set-st
 Why does this matter? Consider a timer:
 
 ``` elisp
-(defcomponent broken-timer ()
+(vui-defcomponent broken-timer ()
   :state ((count 0))
   :on-mount
   (run-with-timer 1 1
@@ -89,7 +89,7 @@ This is the **stale closure** problem. When the timer callback is created, `coun
 The fix is a **functional update**:
 
 ``` elisp
-(defcomponent working-timer ()
+(vui-defcomponent working-timer ()
   :state ((count 0))
   :on-mount
   (run-with-timer 1 1
@@ -109,7 +109,7 @@ When you pass a function, `vui-set-state` reads the current state value and pass
 `on-mount` runs once, immediately after the component's first render. Use it for one-time setup that requires the component to exist in the tree.
 
 ``` elisp
-(defcomponent timer-display ()
+(vui-defcomponent timer-display ()
   :state ((seconds 0))
   :on-mount
   (let ((timer (run-with-timer 1 1
@@ -151,7 +151,7 @@ Without cleanup, your hooks and timers persist after the component is gone, caus
 - Starting timers or intervals
 - Adding buffer-local hooks
 - Registering global keybindings
-- Fetching initial data (though `use-async` is often better)
+- Fetching initial data (though `vui-use-async` is often better)
 - Setting up external subscriptions
 
 # on-unmount: Final Cleanup
@@ -170,7 +170,7 @@ Important: killing the buffer does **not** trigger unmount - the cleanup functio
 Let's create a timer that logs to `*Messages*` and a parent that can show/hide it:
 
 ``` elisp
-(defcomponent noisy-timer ()
+(vui-defcomponent noisy-timer ()
   :state ((seconds 0))
   :on-mount
   (progn
@@ -188,7 +188,7 @@ Let's create a timer that logs to `*Messages*` and a parent that can show/hide i
   :render
   (vui-text (format "Elapsed: %d seconds" seconds)))
 
-(defcomponent timer-toggle ()
+(vui-defcomponent timer-toggle ()
   :state ((show-timer t))
   :render
   (vui-vstack
@@ -230,7 +230,7 @@ Use `on-unmount` when you need to clean up state that accumulated during the com
 When you create a resource in `on-mount`, return its cleanup:
 
 ``` elisp
-(defcomponent live-feed ()
+(vui-defcomponent live-feed ()
   :state ((messages nil))
   :on-mount
   (let ((subscription (subscribe-to-feed
@@ -250,7 +250,7 @@ The subscription is created at mount and cleaned up at unmount - a perfect pair.
 Use `on-unmount` when cleanup depends on state that changes over time:
 
 ``` elisp
-(defcomponent document-editor (doc-id)
+(vui-defcomponent document-editor (doc-id)
   :state ((content "") (dirty nil))
 
   :on-mount
@@ -284,35 +284,35 @@ Here, `on-mount` can't return the save logic because:
 
 # use-effect: React to Changes
 
-`use-effect` runs side effects in response to dependency changes. It's the most flexible hook.
+`vui-use-effect` runs side effects in response to dependency changes. It's the most flexible hook.
 
 ## Why Hooks Live in :render
 
-You'll notice `use-effect` is called inside `:render`:
+You'll notice `vui-use-effect` is called inside `:render`:
 
 ``` elisp
 :render
 (progn
-  (use-effect (query)
+  (vui-use-effect (query)
     (search-for query))
   (vui-vstack ...))
 ```
 
-This might seem odd - why call a side effect during render? The answer is that vui.el needs to track which effect is which across re-renders. It does this by call order: the first `use-effect` call is always "effect \#1", the second is "effect \#2", and so on.
+This might seem odd - why call a side effect during render? The answer is that vui.el needs to track which effect is which across re-renders. It does this by call order: the first `vui-use-effect` call is always "effect \#1", the second is "effect \#2", and so on.
 
 This is why you can't put hooks in conditionals - it would change the call order between renders.
 
 ## What use-effect Can Do
 
-`use-effect` subsumes the other lifecycle hooks:
+`vui-use-effect` subsumes the other lifecycle hooks:
 
-- **Empty deps** `(use-effect () ...)` - runs once on mount, like `on-mount`
+- **Empty deps** `(vui-use-effect () ...)` - runs once on mount, like `on-mount`
 - **Cleanup function** - runs on unmount, like `on-unmount`
-- **With deps** `(use-effect (x y) ...)` - runs when `x` or `y` change
+- **With deps** `(vui-use-effect (x y) ...)` - runs when `x` or `y` change
 - **Cleanup before re-run** - cleanup runs before each re-execution, not just unmount
-- **Multiple effects** - use several `use-effect` calls for separate concerns
+- **Multiple effects** - use several `vui-use-effect` calls for separate concerns
 
-This flexibility comes at a cost: you must think about dependencies. With `on-mount`, it just runs once. With `use-effect`, you control *when* it runs by choosing what to depend on.
+This flexibility comes at a cost: you must think about dependencies. With `on-mount`, it just runs once. With `vui-use-effect`, you control *when* it runs by choosing what to depend on.
 
 ## Example: Search with Cancellation
 
@@ -335,11 +335,11 @@ This flexibility comes at a cost: you must think about dependencies. With `on-mo
     (cancel-timer my-search-timer)
     (setq my-search-timer nil)))
 
-(defcomponent search-results (query)
+(vui-defcomponent search-results (query)
   :state ((results nil) (loading t))
   :render
   (progn
-    (use-effect (query)
+    (vui-use-effect (query)
       (message ">>> Effect running for query: '%s'" query)
       (vui-set-state :loading t)
       (vui-set-state :results nil)
@@ -360,7 +360,7 @@ This flexibility comes at a cost: you must think about dependencies. With `on-mo
             (vui-text (format "  • %s" (nth 1 results))))
          (vui-text "No results"))))))
 
-(defcomponent search-demo ()
+(vui-defcomponent search-demo ()
   :state ((query "emacs"))
   :render
   (vui-vstack
@@ -390,19 +390,19 @@ The cleanup function prevents stale results from overwriting newer queries!
 
 ## Dependency List
 
-The first argument to `use-effect` is a list of dependencies:
+The first argument to `vui-use-effect` is a list of dependencies:
 
 ``` elisp
 ;; Run once on mount (empty deps)
-(use-effect ()
+(vui-use-effect ()
   (message "Mounted!"))
 
 ;; Run when 'count' changes
-(use-effect (count)
+(vui-use-effect (count)
   (message "Count is now: %d" count))
 
 ;; Run when either 'user' or 'page' changes
-(use-effect (user page)
+(vui-use-effect (user page)
   (fetch-user-page user page))
 ```
 
@@ -413,10 +413,10 @@ The effect runs:
 
 ## Cleanup Function
 
-Like `on-mount`, `use-effect` can return a cleanup function:
+Like `on-mount`, `vui-use-effect` can return a cleanup function:
 
 ``` elisp
-(use-effect (user-id)
+(vui-use-effect (user-id)
   ;; Setup: subscribe to user updates
   (let ((sub (subscribe-user-updates user-id callback)))
     ;; Cleanup: unsubscribe
@@ -432,16 +432,16 @@ This ensures you don't have stale subscriptions when dependencies change.
 
 ## Effect Identity
 
-Each `use-effect` in a component has a stable identity based on its position. This matters for correct cleanup:
+Each `vui-use-effect` in a component has a stable identity based on its position. This matters for correct cleanup:
 
 ``` elisp
-(defcomponent multi-effect ()
+(vui-defcomponent multi-effect ()
   :state ((a 1) (b 2))
   :render
   (progn
-    (use-effect (a)
+    (vui-use-effect (a)
       (message "Effect A: %d" a))
-    (use-effect (b)
+    (vui-use-effect (b)
       (message "Effect B: %d" b))
     (vui-text "...")))
 ```
@@ -451,13 +451,13 @@ These are tracked separately. Changing `a` only runs the first effect.
 Try it:
 
 ``` elisp
-(defcomponent effect-demo ()
+(vui-defcomponent effect-demo ()
   :state ((a 1) (b 2))
   :render
   (progn
-    (use-effect (a)
+    (vui-use-effect (a)
       (message ">>> Effect A fired: %d" a))
-    (use-effect (b)
+    (vui-use-effect (b)
       (message ">>> Effect B fired: %d" b))
     (vui-vstack
      (vui-hstack
@@ -474,21 +474,21 @@ Try it:
 
 ## Pitfalls
 
-Don't put `use-effect` in conditionals:
+Don't put `vui-use-effect` in conditionals:
 
 ``` elisp
 ;; WRONG: hooks must be called unconditionally
 :render
 (progn
   (when should-track
-    (use-effect (value)
+    (vui-use-effect (value)
       (track-value value)))  ; Don't do this!
   ...)
 
 ;; RIGHT: put the condition inside the effect
 :render
 (progn
-  (use-effect (value should-track)
+  (vui-use-effect (value should-track)
     (when should-track
       (track-value value)))
   ...)
@@ -511,18 +511,18 @@ Emacs offers several async mechanisms:
 | CPU-heavy pure Lisp           | `async.el` (child Emacs)   |
 | Chained async operations      | `promise.el`               |
 
-`use-async` doesn't replace these - it works *with* them. You provide a loader that uses async primitives; `use-async` manages the UI state (loading, success, error) and triggers re-renders when data arrives.
+`vui-use-async` doesn't replace these - it works *with* them. You provide a loader that uses async primitives; `vui-use-async` manages the UI state (loading, success, error) and triggers re-renders when data arrives.
 
 ## The Manual Approach
 
-Without `use-async`, you'd manage loading state yourself:
+Without `vui-use-async`, you'd manage loading state yourself:
 
 ``` elisp
-(defcomponent user-profile-manual (user-id)
+(vui-defcomponent user-profile-manual (user-id)
   :state ((user nil) (loading t) (error nil))
   :render
   (progn
-    (use-effect (user-id)
+    (vui-use-effect (user-id)
       (vui-set-state :loading t)
       (vui-set-state :error nil)
       (fetch-user user-id
@@ -542,12 +542,12 @@ This works, but every async operation needs the same boilerplate.
 
 ## The use-async Solution
 
-`use-async` extracts the pattern:
+`vui-use-async` extracts the pattern:
 
 ``` elisp
-(defcomponent user-profile (user-id)
+(vui-defcomponent user-profile (user-id)
   :render
-  (let ((result (use-async
+  (let ((result (vui-use-async
                   (list 'user user-id)  ; Key: determines when to re-fetch
                   (lambda (resolve reject)
                     (fetch-user user-id resolve reject)))))
@@ -557,14 +557,14 @@ This works, but every async operation needs the same boilerplate.
       ('ready (render-user (plist-get result :data))))))
 ```
 
-No explicit state, no manual effect setup. `use-async` provides:
+No explicit state, no manual effect setup. `vui-use-async` provides:
 
 - **Automatic state management** - tracks pending/ready/error for you
 - **Key-based re-fetching** - when `user-id` changes, re-fetch automatically
 - **Caching** - same key returns cached result without re-fetching
 - **Consistent API** - `resolve/reject` pattern like JavaScript Promises
 
-The hook doesn't make your code async - your loader must use async primitives (`make-process`, `url-retrieve`, etc.). What `use-async` does is manage the *UI state* around async operations.
+The hook doesn't make your code async - your loader must use async primitives (`make-process`, `url-retrieve`, etc.). What `vui-use-async` does is manage the *UI state* around async operations.
 
 ## The Key Mechanism
 
@@ -572,11 +572,11 @@ The first argument is a key that identifies the async operation:
 
 ``` elisp
 ;; Simple key: just a symbol
-(use-async 'users
+(vui-use-async 'users
   (lambda (resolve reject) ...))
 
 ;; Compound key: re-fetches when user-id changes
-(use-async (list 'user user-id)
+(vui-use-async (list 'user user-id)
   (lambda (resolve reject) ...))
 ```
 
@@ -584,7 +584,7 @@ When the key changes (compared with `equal`), the previous operation is cancelle
 
 ## Return Value
 
-`use-async` returns a plist with:
+`vui-use-async` returns a plist with:
 
 | Key       | Value                             |
 |-----------|-----------------------------------|
@@ -593,7 +593,7 @@ When the key changes (compared with `equal`), the previous operation is cancelle
 | `:error`  | The error message (when `error`)  |
 
 ``` elisp
-(let ((result (use-async 'my-data loader)))
+(let ((result (vui-use-async 'my-data loader)))
   (pcase (plist-get result :status)
     ('pending (vui-text "Loading..."))
     ('error (vui-text (format "Error: %s" (plist-get result :error))))
@@ -602,17 +602,17 @@ When the key changes (compared with `equal`), the previous operation is cancelle
 
 ## Important: use-async Doesn't Make Things Async
 
-This is a common misconception. `use-async` is a state machine for managing async operations - it doesn't perform async work itself. The loader function must use actual async mechanisms:
+This is a common misconception. `vui-use-async` is a state machine for managing async operations - it doesn't perform async work itself. The loader function must use actual async mechanisms:
 
 ``` elisp
 ;; WRONG: This blocks!
-(use-async 'data
+(vui-use-async 'data
   (lambda (resolve _reject)
     ;; shell-command-to-string blocks Emacs
     (resolve (shell-command-to-string "slow-command"))))
 
 ;; RIGHT: Use async primitives
-(use-async 'data
+(vui-use-async 'data
   (lambda (resolve reject)
     (make-process
      :name "slow-command"
@@ -629,10 +629,10 @@ This is a common misconception. `use-async` is a state machine for managing asyn
 Here's a complete, runnable example using `make-process`:
 
 ``` elisp
-(defcomponent async-command-demo ()
+(vui-defcomponent async-command-demo ()
   :state ((command "echo 'Hello from async!'"))
   :render
-  (let ((result (use-async
+  (let ((result (vui-use-async
                     (list 'cmd command)
                   (lambda (resolve reject)
                     (let ((output-buffer (generate-new-buffer " *async-output*")))
@@ -682,7 +682,7 @@ When the key changes or component unmounts, any pending operation should be canc
 Hooks compose naturally. Here's a component using multiple hooks:
 
 ``` elisp
-(defcomponent data-view (source-id)
+(vui-defcomponent data-view (source-id)
   :state ((is-visible t)
           (view-count 0))
 
@@ -696,11 +696,11 @@ Hooks compose naturally. Here's a component using multiple hooks:
     (message "DataView unmounted after %d views" view-count))
 
   :render
-  (let ((result (use-async
+  (let ((result (vui-use-async
                   (list 'source source-id)
                   (lambda (resolve reject)
                     (fetch-source source-id resolve reject)))))
-    (use-effect (is-visible)
+    (vui-use-effect (is-visible)
       (when is-visible
         (vui-set-state :view-count #'1+)))
     (if (not is-visible)
@@ -775,11 +775,11 @@ While vui.el doesn't have a formal custom hooks system, you can create reusable 
 
 ``` elisp
 ;; Pattern: Window size tracking
-(defcomponent responsive-component ()
+(vui-defcomponent responsive-component ()
   :state ((window-width (window-width)))
   :render
   (progn
-    (use-effect ()
+    (vui-use-effect ()
       (let ((handler (vui-with-async-context
                        (vui-set-state :window-width (window-width)))))
         (add-hook 'window-size-change-functions handler)
@@ -822,15 +822,15 @@ Customise error handling with `vui-lifecycle-error-handler`:
 |----|----|----|----|
 | `on-mount` | After first render | Optional cleanup fn | One-time setup |
 | `on-unmount` | Before removal | Cleanup fn | Final cleanup |
-| `use-effect` | Mount + deps change | Optional cleanup fn | Reactive side effects |
-| `use-async` | Key changes | Plist (:status :data :error) | Async data management |
+| `vui-use-effect` | Mount + deps change | Optional cleanup fn | Reactive side effects |
+| `vui-use-async` | Key changes | Plist (:status :data :error) | Async data management |
 
 # Summary
 
 - `on-mount`: One-time setup after first render. Return cleanup function.
 - `on-unmount`: Final cleanup before removal. Use when cleanup depends on final state.
-- `use-effect`: Run side effects when dependencies change. Most flexible.
-- `use-async`: Manage async operations with loading/error states.
+- `vui-use-effect`: Run side effects when dependencies change. Most flexible.
+- `vui-use-async`: Manage async operations with loading/error states.
 
 Key principles:
 
@@ -838,6 +838,6 @@ Key principles:
 2.  **Keep hooks unconditional** - don't wrap in `if`, put conditions inside
 3.  **Use dependencies** to control when effects run
 4.  **Use functional updates** in async callbacks to avoid stale closures
-5.  **Remember**: `use-async` doesn't make code async - your loader must be async
+5.  **Remember**: `vui-use-async` doesn't make code async - your loader must be async
 
 Next: Practical patterns for async data loading in Emacs.

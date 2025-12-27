@@ -44,7 +44,7 @@ Let's start with the absolute minimum:
 ``` elisp
 ;;; -*- lexical-binding: t -*-
 
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path default-directory))
   :render
   (let ((files (directory-files path)))
@@ -70,7 +70,7 @@ Run this and you'll see a list of filenames. Not pretty, but it works.
 Let's make each file a button:
 
 ``` elisp
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path default-directory)
           (selected nil))
   :render
@@ -103,7 +103,7 @@ Now clicking a file highlights it and shows the selection above the list.
 Let's detect directories and handle them differently:
 
 ``` elisp
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path default-directory)
           (selected nil))
   :render
@@ -139,7 +139,7 @@ Click a directory to navigate into it. Directories show in a different colour.
 **Goal:** Add a button to go up one directory level. We'll also learn how to batch state updates.
 
 ``` elisp
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path (expand-file-name default-directory))
           (selected nil))
   :render
@@ -197,7 +197,7 @@ Now you can navigate up and down the directory tree. Notice `vui-batch` - withou
     (format "%.1f KB" (/ size 1024.0)))
    (t (format "%d B" size))))
 
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path (expand-file-name default-directory))
           (selected nil))
   :render
@@ -269,7 +269,7 @@ Now files show with properly aligned size and date columns.
     (format "%.1f KB" (/ size 1024.0)))
    (t (format "%d B" size))))
 
-(defcomponent file-table (files selected on-select on-navigate)
+(vui-defcomponent file-table (files selected on-select on-navigate)
   :render
   (vui-table
    :columns '((:min-width 25)
@@ -298,7 +298,7 @@ Now files show with properly aligned size and date columns.
          (format-time-string "%b %d %H:%M" mtime))))
     files)))
 
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path (expand-file-name default-directory))
           (selected nil))
   :render
@@ -340,7 +340,7 @@ Same functionality, but now `file-table` is reusable and `file-browser` is clean
 The `:on-mount` hook runs once when the component first renders - perfect for loading data:
 
 ``` elisp
-(defcomponent file-preview (file)
+(vui-defcomponent file-preview (file)
   :state ((content nil)
           (error nil))
   :on-mount
@@ -360,7 +360,7 @@ The `:on-mount` hook runs once when the component first renders - perfect for lo
     (t (vui-text "Loading..." :face 'shadow)))))
 
 ;; Update file-browser to include preview
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path (expand-file-name default-directory))
           (selected nil))
   :render
@@ -404,7 +404,7 @@ Select a text file and see its contents below.
 **Goal:** Add a toolbar with refresh and "open in Dired" buttons. We'll also see the disabled state and a trick for forcing re-renders.
 
 ``` elisp
-(defcomponent browser-actions (on-parent on-refresh on-dired at-root)
+(vui-defcomponent browser-actions (on-parent on-refresh on-dired at-root)
   :render
   (vui-hstack
    :spacing 1
@@ -416,7 +416,7 @@ Select a text file and see its contents below.
    (vui-button "Open in Dired"
      :on-click on-dired)))
 
-(defcomponent file-browser ()
+(vui-defcomponent file-browser ()
   :state ((path (expand-file-name default-directory))
           (selected nil)
           (refresh-counter 0))  ; Changing this forces reload
@@ -474,7 +474,7 @@ Here's everything together, with a helper function for easy launching:
     (format "%.1f KB" (/ size 1024.0)))
    (t (format "%d B" size))))
 
-(defcomponent browser-actions (on-parent on-refresh on-dired at-root)
+(vui-defcomponent browser-actions (on-parent on-refresh on-dired at-root)
   :render
   (vui-hstack
    :spacing 1
@@ -486,7 +486,7 @@ Here's everything together, with a helper function for easy launching:
    (vui-button "Open in Dired"
      :on-click on-dired)))
 
-(defcomponent file-table (files selected on-select on-navigate)
+(vui-defcomponent file-table (files selected on-select on-navigate)
   :render
   (vui-table
    :columns '((:min-width 25)
@@ -515,7 +515,7 @@ Here's everything together, with a helper function for easy launching:
          (format-time-string "%b %d %H:%M" mtime))))
     files)))
 
-(defcomponent file-preview (file)
+(vui-defcomponent file-preview (file)
   :state ((content nil) (error nil))
   :on-mount
   (condition-case err
@@ -532,7 +532,7 @@ Here's everything together, with a helper function for easy launching:
     (content (vui-text content :face 'shadow))
     (t (vui-text "Loading..." :face 'shadow)))))
 
-(defcomponent file-browser (initial-path)
+(vui-defcomponent file-browser (initial-path)
   :state ((path (or initial-path default-directory))
           (selected nil)
           (refresh-counter 0))

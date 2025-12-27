@@ -207,7 +207,7 @@ If you find yourself building dependency tracking infrastructure for your UI, st
 The key insight: instead of telling Emacs *how* to update the UI, describe *what* the UI should look like given the current state. Let something else figure out the updates.
 
 ``` commonlisp
-(defcomponent my-general-settings ()
+(vui-defcomponent my-general-settings ()
   :render
   (let ((event (use-my-event))
         (host (use-my-host))
@@ -243,14 +243,14 @@ The bad solution is prop drilling - passing state through every intermediate com
 
 ``` commonlisp
 ;; Don't do this
-(defcomponent my-app (event data participants wines host)
+(vui-defcomponent my-app (event data participants wines host)
   :render
   (vui-vstack
    (vui-component 'my-header :event event)
    (vui-component 'my-content :event event :data data
                   :participants participants :wines wines :host host)))
 
-(defcomponent my-content (event data participants wines host)
+(vui-defcomponent my-content (event data participants wines host)
   :render
   (vui-component 'my-deeply-nested-thing :event event :host host))
 ```
@@ -261,12 +261,12 @@ Context solves this:
 
 ``` commonlisp
 ;; Define what state exists
-(defcontext my-event nil "The event being edited.")
-(defcontext my-data nil "Event data from .data.el file.")
-(defcontext my-host nil "The event host.")
+(vui-defcontext my-event nil "The event being edited.")
+(vui-defcontext my-data nil "Event data from .data.el file.")
+(vui-defcontext my-host nil "The event host.")
 
 ;; Provide at the root
-(defcomponent my-app ()
+(vui-defcomponent my-app ()
   :state ((event (load-event))
           (data (load-data event))
           (host (get-host event)))
@@ -277,7 +277,7 @@ Context solves this:
         (vui-component 'my-content)))))
 
 ;; Consume anywhere, no matter how deep
-(defcomponent my-deeply-nested-thing ()
+(vui-defcomponent my-deeply-nested-thing ()
   :render
   (let ((event (use-my-event))
         (host (use-my-host)))
@@ -299,7 +299,7 @@ State changes in a complex UI often need to:
 Scattering this logic across components leads to inconsistency. Centralising it in action functions keeps things predictable:
 
 ``` commonlisp
-(defcomponent my-app ()
+(vui-defcomponent my-app ()
   :state ((event ...)
           (data ...)
           (host ...))
@@ -341,7 +341,7 @@ In the imperative version, tab renderers were 200-300 line functions with nested
 With components, the structure is explicit:
 
 ``` commonlisp
-(defcomponent my-plan-tab ()
+(vui-defcomponent my-plan-tab ()
   :render
   (vui-vstack
    (vui-component 'my-general-settings)

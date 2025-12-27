@@ -19,7 +19,7 @@ Keep state as close to its usage as possible:
 
 ``` elisp
 ;; GOOD: Form state lives in the form
-(defcomponent contact-form ()
+(vui-defcomponent contact-form ()
   :state ((name "") (email "") (submitting nil))
   :render
   (vui-vstack
@@ -28,7 +28,7 @@ Keep state as close to its usage as possible:
    (vui-button "Submit" ...)))
 
 ;; AVOID: Form state lifted to parent unnecessarily
-(defcomponent app ()
+(vui-defcomponent app ()
   :state ((contact-name "") (contact-email "") ...)
   :render
   (vui-component 'contact-form
@@ -46,14 +46,14 @@ Don't store state that can be computed:
 
 ``` elisp
 ;; BAD: Storing derived state
-(defcomponent todo-list ()
+(vui-defcomponent todo-list ()
   :state ((todos '(...))
           (completed-count 0)   ; Redundant!
           (active-count 0))     ; Redundant!
   ...)
 
 ;; GOOD: Compute in render (memoize if expensive)
-(defcomponent todo-list ()
+(vui-defcomponent todo-list ()
   :state ((todos '(...)))
   :render
   (let ((completed (seq-count (lambda (t) (plist-get t :done)) todos))
@@ -61,14 +61,14 @@ Don't store state that can be computed:
     ...))
 ```
 
-Derived state can become stale. Computation is always correct. For expensive computations, wrap in `use-memo`.
+Derived state can become stale. Computation is always correct. For expensive computations, wrap in `vui-use-memo`.
 
 ## 3. Callbacks for Child-to-Parent Communication
 
 Children emit events; parents handle them:
 
 ``` elisp
-(defcomponent parent ()
+(vui-defcomponent parent ()
   :state ((selected nil))
   :render
   (vui-list items
@@ -79,7 +79,7 @@ Children emit events; parents handle them:
                      (vui-set-state :selected (plist-get item :id)))))
     (lambda (item) (plist-get item :id))))
 
-(defcomponent selectable-item (item on-select)
+(vui-defcomponent selectable-item (item on-select)
   :render
   (vui-button (plist-get item :name)
     :on-click on-select))
@@ -92,7 +92,7 @@ Data flows down (props), events flow up (callbacks). This is unidirectional data
 **Controlled**: parent owns the value, re-renders on every change
 
 ``` elisp
-(defcomponent search-form ()
+(vui-defcomponent search-form ()
   :state ((query ""))
   :render
   (vui-hstack
@@ -105,7 +105,7 @@ Data flows down (props), events flow up (callbacks). This is unidirectional data
 **Uncontrolled**: field owns its value, parent reads on demand
 
 ``` elisp
-(defcomponent search-form ()
+(vui-defcomponent search-form ()
   :render
   (vui-hstack
    (vui-field :key 'search-input :size 30)
@@ -121,9 +121,9 @@ Use controlled when you need to validate, transform, or react to every keystroke
 Handle async states consistently:
 
 ``` elisp
-(defcomponent data-display (id)
+(vui-defcomponent data-display (id)
   :render
-  (let ((result (use-async (list 'data id)
+  (let ((result (vui-use-async (list 'data id)
                   (lambda (resolve reject)
                     (fetch-data id resolve reject)))))
     (pcase (plist-get result :status)
@@ -140,7 +140,7 @@ Handle async states consistently:
 Extract to a reusable wrapper for consistency across your app:
 
 ``` elisp
-(defcomponent async-boundary (result on-success)
+(vui-defcomponent async-boundary (result on-success)
   :render
   (pcase (plist-get result :status)
     ('pending (vui-text "Loading..." :face 'shadow))
@@ -188,7 +188,7 @@ When updating multiple state variables, use `vui-batch` to avoid intermediate re
 
 ``` elisp
 ;; WITHOUT batching: 3 separate re-renders
-(defcomponent form ()
+(vui-defcomponent form ()
   :state ((name "") (email "") (valid nil))
   :render
   (vui-button "Reset"
@@ -198,7 +198,7 @@ When updating multiple state variables, use `vui-batch` to avoid intermediate re
                 (vui-set-state :valid nil)))) ; Re-render 3
 
 ;; WITH batching: 1 re-render
-(defcomponent form ()
+(vui-defcomponent form ()
   :state ((name "") (email "") (valid nil))
   :render
   (vui-button "Reset"
@@ -216,7 +216,7 @@ This is especially important in handlers that update many values or in loops.
 For components that re-render frequently but rarely change output, use `:should-update` to short-circuit:
 
 ``` elisp
-(defcomponent list-item (id name on-click)
+(vui-defcomponent list-item (id name on-click)
   :should-update
   ;; Only re-render if name changed (ignore on-click changes)
   (not (equal name (plist-get prev-props :name)))
@@ -238,7 +238,7 @@ CALLBACK should be wrapped with vui-with-async-context."
     (lambda () (cancel-timer timer))))
 
 ;; Use in any component
-(defcomponent live-clock ()
+(vui-defcomponent live-clock ()
   :state ((time (current-time-string)))
   :on-mount
   (setup-polling 1
@@ -277,14 +277,14 @@ The helper returns a cleanup function, which `:on-mount` passes along for automa
 :render
 (progn
   (when show-timer
-    (use-effect ()  ; Sometimes called, sometimes not!
+    (vui-use-effect ()  ; Sometimes called, sometimes not!
       (setup-timer)))
   ...)
 
 ;; RIGHT: Condition inside the hook
 :render
 (progn
-  (use-effect (show-timer)
+  (vui-use-effect (show-timer)
     (when show-timer
       (setup-timer)))
   ...)
@@ -298,14 +298,14 @@ Hooks rely on call order for identity. If a hook is conditionally skipped, all s
 ;; WRONG: Hook called N times, identity shifts as list changes
 (vui-list items
   (lambda (item)
-    (let ((handler (use-callback (item)  ; DON'T DO THIS!
+    (let ((handler (vui-use-callback (item)  ; DON'T DO THIS!
                      (delete-item item))))
       (vui-button "Delete" :on-click handler))))
 
 ;; RIGHT: Wrap in a component (each instance has its own hook state)
-(defcomponent delete-button (item on-delete)
+(vui-defcomponent delete-button (item on-delete)
   :render
-  (let ((handler (use-callback (item)
+  (let ((handler (vui-use-callback (item)
                    (funcall on-delete item))))
     (vui-button "Delete" :on-click handler)))
 
@@ -374,19 +374,19 @@ Always clean up timers, processes, and subscriptions. Both `:on-mount` and `use-
 
 When `vui-set-state` receives a function, it calls it with the current value. This avoids stale closure problems in async callbacks.
 
-## 7. Blocking Calls in use-async
+## 7. Blocking Calls in vui-use-async
 
 ``` elisp
 ;; WRONG: shell-command-to-string blocks Emacs
 :render
-(let ((result (use-async 'data
+(let ((result (vui-use-async 'data
                 (lambda (resolve _reject)
                   (resolve (shell-command-to-string "slow-command"))))))
   ...)
 
 ;; RIGHT: Use async primitives
 :render
-(let ((result (use-async 'data
+(let ((result (vui-use-async 'data
                 (lambda (resolve reject)
                   (make-process
                    :name "slow"
@@ -398,7 +398,7 @@ When `vui-set-state` receives a function, it calls it with the current value. Th
   ...)
 ```
 
-`use-async` doesn't magically make code async. The loader must use non-blocking primitives like `make-process`, `url-retrieve`, or timers.
+`vui-use-async` doesn't magically make code async. The loader must use non-blocking primitives like `make-process`, `url-retrieve`, or timers.
 
 ## 8. Context Overuse
 
@@ -428,7 +428,7 @@ Context makes data flow implicit and harder to trace. Reserve it for truly globa
 ;; WRONG: Effect updates its own dependency
 :render
 (progn
-  (use-effect (count)
+  (vui-use-effect (count)
     ;; Triggers re-render, which runs effect, which triggers...
     (vui-set-state :count (1+ count)))
   ...)
@@ -480,27 +480,27 @@ When things are slow:
 2.  **Check re-render scope**: Is state too high in the tree?
 3.  **Check `should-update`**: Can expensive components skip re-render?
 4.  **Check list keys**: Are items being unnecessarily re-mounted?
-5.  **Check memoization**: Are expensive computations in `use-memo`?
-6.  **Check callbacks**: Are handlers stabilised with `use-callback`?
+5.  **Check memoization**: Are expensive computations in `vui-use-memo`?
+6.  **Check callbacks**: Are handlers stabilised with `vui-use-callback`?
 7.  **Check batching**: Are multiple updates wrapped in `vui-batch`?
 8.  **Check async**: Is anything blocking the main thread?
 
 # Quick Reference
 
-| Do                                     | Don't                             |
-|----------------------------------------|-----------------------------------|
-| Use `vui-set-state`                    | Mutate state directly             |
-| Return cleanup from =on-mount=/effects | Leak timers/subscriptions         |
-| Use keys for dynamic lists             | Match list items by position      |
-| Use `use-callback` for event handlers  | Create lambdas in render          |
-| Use `use-memo` for expensive ops       | Recompute every render            |
-| Put conditions inside hooks            | Put hooks inside conditions/loops |
-| Use `vui-batch` for multiple updates   | Trigger many separate re-renders  |
-| Use async primitives in `use-async`    | Use blocking calls                |
-| Use `vui-with-async-context`           | Update state from raw async       |
-| Keep state local when possible         | Over-lift state to ancestors      |
-| Use context for global concerns        | Put everything in context         |
-| Handle loading/error/success states    | Assume async always succeeds      |
+| Do | Don't |
+|----|----|
+| Use `vui-set-state` | Mutate state directly |
+| Return cleanup from =on-mount=/effects | Leak timers/subscriptions |
+| Use keys for dynamic lists | Match list items by position |
+| Use `vui-use-callback` for event handlers | Create lambdas in render |
+| Use `vui-use-memo` for expensive ops | Recompute every render |
+| Put conditions inside hooks | Put hooks inside conditions/loops |
+| Use `vui-batch` for multiple updates | Trigger many separate re-renders |
+| Use async primitives in `vui-use-async` | Use blocking calls |
+| Use `vui-with-async-context` | Update state from raw async |
+| Keep state local when possible | Over-lift state to ancestors |
+| Use context for global concerns | Put everything in context |
+| Handle loading/error/success states | Assume async always succeeds |
 
 # Summary
 

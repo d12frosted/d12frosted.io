@@ -19,26 +19,26 @@ But React's hooks solved this differently, and the pattern is worth understandin
 Consider a component that uses multiple hooks:
 
 ``` elisp
-(defcomponent my-counter ()
+(vui-defcomponent my-counter ()
   :state ((count 0)
           (name ""))
   :render
   (progn
-    (use-effect (count)
+    (vui-use-effect (count)
       (message "Count changed to %d" count))
-    (use-effect (name)
+    (vui-use-effect (name)
       (message "Name changed to %s" name))
     (vui-text (format "%s: %d" name count))))
 ```
 
-Each `use-effect` needs to track its own state: previous dependency values, cleanup functions, whether it has run before. The system must match "the first effect" on render N with "the first effect" on render N+1.
+Each `vui-use-effect` needs to track its own state: previous dependency values, cleanup functions, whether it has run before. The system must match "the first effect" on render N with "the first effect" on render N+1.
 
 The naive approach is explicit identification:
 
 ``` elisp
 ;; What we want to avoid
-(use-effect :effect-1 (count) ...)
-(use-effect :effect-2 (name) ...)
+(vui-use-effect :effect-1 (count) ...)
+(vui-use-effect :effect-2 (name) ...)
 ```
 
 This works but has problems:
@@ -97,10 +97,10 @@ This creates a strict requirement: **hooks must be called in the same order ever
 ``` elisp
 ;; BAD: conditional hook
 (when show-details
-  (use-effect () ...))  ; Sometimes index 0, sometimes not called
+  (vui-use-effect () ...))  ; Sometimes index 0, sometimes not called
 
 ;; GOOD: always call, conditionally act
-(use-effect ()
+(vui-use-effect ()
   (when show-details
     ...))
 ```
@@ -169,14 +169,14 @@ Consider `use-previous`, a classic pattern for tracking a value's previous state
 ``` elisp
 (defun use-previous (value)
   "Return the previous VALUE from last render."
-  (let ((ref (use-ref nil)))
-    (use-effect (value)
+  (let ((ref (vui-use-ref nil)))
+    (vui-use-effect (value)
       (setcar ref value)
       nil)
     (car ref)))
 ```
 
-This hook combines `use-ref` and `use-effect` - two indices consumed, no coordination needed. During render N, you read from the ref (which holds the value from render N-1), then after commit the effect updates it for render N+1. The timing matters: effects run **after** render commits, which is why you can access the "previous" value during render.
+This hook combines `vui-use-ref` and `vui-use-effect` - two indices consumed, no coordination needed. During render N, you read from the ref (which holds the value from render N-1), then after commit the effect updates it for render N+1. The timing matters: effects run **after** render commits, which is why you can access the "previous" value during render.
 
 This pattern enables comparing current vs previous values - useful for detecting changes, triggering animations on transitions, or skipping work when a value hasn't meaningfully changed.
 
@@ -185,8 +185,8 @@ With explicit keys, composing hooks would require key namespacing:
 ``` elisp
 ;; Hypothetical explicit-key version - messy
 (defun use-previous (key value)
-  (let ((ref (use-ref (intern (format "%s-ref" key)) nil)))
-    (use-effect (intern (format "%s-effect" key)) (value)
+  (let ((ref (vui-use-ref (intern (format "%s-ref" key)) nil)))
+    (vui-use-effect (intern (format "%s-effect" key)) (value)
       ...)))
 ```
 

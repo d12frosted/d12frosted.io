@@ -14,39 +14,39 @@ Consider a theme switcher. The current theme needs to reach every component that
 (copy-face 'default 'default-inverted)
 (invert-face 'default-inverted)
 
-(defcomponent app ()
+(vui-defcomponent app ()
   :state ((theme 'light))
   :render
   (vui-component 'main-layout
     :theme theme
     :on-theme-change (lambda (new-theme) (vui-set-state :theme new-theme))))
 
-(defcomponent main-layout (theme on-theme-change)
+(vui-defcomponent main-layout (theme on-theme-change)
   :render
   (vui-vstack
    (vui-component 'header :theme theme :on-theme-change on-theme-change)
    (vui-component 'content :theme theme)
    (vui-component 'footer :theme theme)))
 
-(defcomponent header (theme on-theme-change)
+(vui-defcomponent header (theme on-theme-change)
   :render
   (vui-hstack
    (vui-text "My App" :face (if (eq theme 'dark) 'default-inverted 'default))
    (vui-component 'theme-toggle :theme theme :on-change on-theme-change)))
 
-(defcomponent theme-toggle (theme on-change)
+(vui-defcomponent theme-toggle (theme on-change)
   :render
   (vui-button (if (eq theme 'dark) "☀️ Light" "🌙 Dark")
     :on-click (lambda ()
                 (funcall on-change (if (eq theme 'dark) 'light 'dark)))))
 
 ;; Placeholder components
-(defcomponent content (theme)
+(vui-defcomponent content (theme)
   :render
   (vui-text "Main content area"
     :face (if (eq theme 'dark) 'default-inverted 'default)))
 
-(defcomponent footer (theme)
+(vui-defcomponent footer (theme)
   :render
   (vui-text "© 2025"
     :face (if (eq theme 'dark) 'default-inverted 'default)))
@@ -74,10 +74,10 @@ Context solves this by making data available to any descendant without explicit 
 ;;   theme-context (the context object)
 ;;   theme-provider (macro to provide value)
 ;;   use-theme (function to consume value)
-(defcontext theme 'light)
+(vui-defcontext theme 'light)
 
 ;; Provide value at the top
-(defcomponent app ()
+(vui-defcomponent app ()
   :state ((theme 'light))
   :render
   (theme-provider
@@ -87,7 +87,7 @@ Context solves this by making data available to any descendant without explicit 
     (vui-component 'main-layout)))
 
 ;; Consume anywhere below  -  no prop drilling!
-(defcomponent theme-toggle ()
+(vui-defcomponent theme-toggle ()
   :render
   (let* ((ctx (use-theme))
          (theme (plist-get ctx :theme))
@@ -96,7 +96,7 @@ Context solves this by making data available to any descendant without explicit 
       :on-click toggle)))
 
 ;; main-layout doesn't need to know about theme at all
-(defcomponent main-layout ()
+(vui-defcomponent main-layout ()
   :render
   (vui-vstack
    (vui-component 'header)
@@ -104,7 +104,7 @@ Context solves this by making data available to any descendant without explicit 
    (vui-component 'footer)))
 
 ;; header uses context for styling and contains the toggle
-(defcomponent header ()
+(vui-defcomponent header ()
   :render
   (let* ((ctx (use-theme))
          (theme (plist-get ctx :theme)))
@@ -113,14 +113,14 @@ Context solves this by making data available to any descendant without explicit 
      (vui-component 'theme-toggle))))
 
 ;; content and footer can use context too
-(defcomponent content ()
+(vui-defcomponent content ()
   :render
   (let* ((ctx (use-theme))
          (theme (plist-get ctx :theme)))
     (vui-text "Main content area"
       :face (if (eq theme 'dark) 'default-inverted 'default))))
 
-(defcomponent footer ()
+(vui-defcomponent footer ()
   :render
   (let* ((ctx (use-theme))
          (theme (plist-get ctx :theme)))
@@ -170,11 +170,11 @@ You can have multiple contexts, each with a focused purpose:
 
 ``` elisp
 ;; Each defcontext generates: NAME-context, NAME-provider, use-NAME
-(defcontext user nil)
-(defcontext app-theme 'light)  ; Using app-theme to avoid conflict with state variable
-(defcontext i18n nil)
+(vui-defcontext user nil)
+(vui-defcontext app-theme 'light)  ; Using app-theme to avoid conflict with state variable
+(vui-defcontext i18n nil)
 
-(defcomponent app ()
+(vui-defcomponent app ()
   :state ((user nil) (theme 'light) (locale "en"))
   :render
   (user-provider user
@@ -207,9 +207,9 @@ Split into two components: a *container* that manages data, and a *presentationa
 
 ``` elisp
 ;; Container: manages data, decides what to render
-(defcomponent user-list-container ()
+(vui-defcomponent user-list-container ()
   :render
-  (let ((result (use-async 'users
+  (let ((result (vui-use-async 'users
                   (lambda (resolve _reject)
                     (fetch-users-async resolve)))))
     (pcase (plist-get result :status)
@@ -218,7 +218,7 @@ Split into two components: a *container* that manages data, and a *presentationa
                 :users (plist-get result :data))))))
 
 ;; Presentational: pure rendering, receives everything via props
-(defcomponent user-list-view (users)
+(vui-defcomponent user-list-view (users)
   :render
   (vui-vstack
    (vui-text "Users" :face 'bold)
@@ -228,7 +228,7 @@ Split into two components: a *container* that manages data, and a *presentationa
        (vui-component 'user-row :user user))
      (lambda (user) (plist-get user :id)))))
 
-(defcomponent user-row (user)
+(vui-defcomponent user-row (user)
   :render
   (vui-hstack
    (vui-text (plist-get user :name))
@@ -259,7 +259,7 @@ You *could* expose all this to the user:
 
 ``` elisp
 ;; Clunky: user manages all the wiring
-(defcomponent my-page ()
+(vui-defcomponent my-page ()
   :state ((active-tab 0))
   :render
   (vui-vstack
@@ -281,9 +281,9 @@ Create compound components that manage their shared state internally:
 
 ``` elisp
 ;; Define a tabs context for internal communication
-(defcontext tabs nil)
+(vui-defcontext tabs nil)
 
-(defcomponent tabs (children)
+(vui-defcomponent tabs (children)
   :state ((active-index 0))
   :render
   (let ((tab-labels (mapcar (lambda (child)
@@ -310,13 +310,13 @@ Create compound components that manage their shared state internally:
        ;; Active panel - render only the selected child
        (nth active-index children)))))
 
-(defcomponent tab-panel (label children)
+(vui-defcomponent tab-panel (label children)
   :render
   ;; Just renders its children - label is used by parent
   (vui-fragment children))
 
 ;; Usage: clean and declarative
-(defcomponent settings-page ()
+(vui-defcomponent settings-page ()
   :render
   (vui-component 'tabs
     :children
@@ -358,7 +358,7 @@ Pass a function that receives the state and returns UI:
 
 ``` elisp
 ;; The component manages state, caller decides display
-(defcomponent toggle-state (render-fn)
+(vui-defcomponent toggle-state (render-fn)
   :state ((on nil))
   :render
   (funcall render-fn
@@ -366,14 +366,14 @@ Pass a function that receives the state and returns UI:
            (lambda () (vui-set-state :on (not on)))))
 
 ;; Usage: different displays, same logic
-(defcomponent button-toggle ()
+(vui-defcomponent button-toggle ()
   :render
   (vui-component 'toggle-state
     :render-fn (lambda (on toggle)
                  (vui-button (if on "[ON]" "[OFF]")
                    :on-click toggle))))
 
-(defcomponent text-toggle ()
+(vui-defcomponent text-toggle ()
   :render
   (vui-component 'toggle-state
     :render-fn (lambda (on toggle)
@@ -383,7 +383,7 @@ Pass a function that receives the state and returns UI:
                   (vui-space)
                   (vui-button "Toggle" :on-click toggle)))))
 
-(defcomponent icon-toggle ()
+(vui-defcomponent icon-toggle ()
   :render
   (vui-component 'toggle-state
     :render-fn (lambda (on toggle)
@@ -413,7 +413,7 @@ Layout components need flexibility. A card might have a header, content, and foo
 
 ``` elisp
 ;; Inflexible: what if someone needs two buttons? An icon? Nothing?
-(defcomponent card (title body button-text on-click)
+(vui-defcomponent card (title body button-text on-click)
   :render
   (vui-vstack
    (vui-text title :face 'bold)
@@ -426,7 +426,7 @@ Layout components need flexibility. A card might have a header, content, and foo
 Define named "slots" that accept arbitrary content:
 
 ``` elisp
-(defcomponent card (header content footer)
+(vui-defcomponent card (header content footer)
   :render
   (vui-vstack
    ;; Header slot
@@ -536,7 +536,7 @@ Let's see context in action with a task app where filter state needs to reach mu
 
 ``` elisp
 ;; Prop drilling: filter passed through every level
-(defcomponent task-app ()
+(vui-defcomponent task-app ()
   :state ((filter 'all))
   :render
   (vui-vstack
@@ -557,9 +557,9 @@ Both `task-list-container` and `filter-bar` need `filter` and `set-filter`. If w
 ;;; -*- lexical-binding: t -*-
 
 ;; Generates: task-filter-context, task-filter-provider, use-task-filter
-(defcontext task-filter nil)
+(vui-defcontext task-filter nil)
 
-(defcomponent task-app ()
+(vui-defcomponent task-app ()
   :state ((filter 'all))  ; all, active, completed
   :render
   (task-filter-provider
@@ -571,12 +571,12 @@ Both `task-list-container` and `filter-bar` need `filter` and `set-filter`. If w
      (vui-component 'filter-bar))))
 
 ;; Simple header - doesn't need filter, doesn't receive it
-(defcomponent task-header ()
+(vui-defcomponent task-header ()
   :render
   (vui-text "Tasks" :face 'bold))
 
 ;; Filter bar accesses context directly
-(defcomponent filter-bar ()
+(vui-defcomponent filter-bar ()
   :render
   (let* ((ctx (use-task-filter))
          (current (plist-get ctx :filter))
@@ -593,7 +593,7 @@ Both `task-list-container` and `filter-bar` need `filter` and `set-filter`. If w
       '(all active completed)))))
 
 ;; Task list accesses context directly
-(defcomponent task-list-container ()
+(vui-defcomponent task-list-container ()
   :state ((tasks '((:id 1 :text "Learn vui.el" :done t)
                    (:id 2 :text "Build something" :done nil))))
   :render
