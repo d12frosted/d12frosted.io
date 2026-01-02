@@ -112,26 +112,7 @@
 
 
 
-(defun blog-sha1sum-attachment (obj)
-  "Calculate sha1sum of attachment OBJ.
-
-The attachments table is defined by custom configurations in the
-init file."
-  (cond
-   ((porg-rule-output-p obj)
-    (let ((id (s-split ":" (porg-rule-output-id obj)))
-          (file (file-name-nondirectory (porg-rule-output-item obj)))
-          res)
-      (setq res
-            (emacsql
-             (vulpea-db)
-             [:select hash
-              :from attachments
-              :where (and (= note-id $s1)
-                          (= file $s2))]
-             id file))
-      res))
-   (t (user-error "Unknown type of attachments %s" obj))))
+;; blog-sha1sum-attachment moved to publicatorg as porg-sha1sum-attachment
 
 
 
@@ -457,9 +438,9 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                 (save-buffer))))
    :clean #'porg-delete-with-metadata)
 
-  (porg-images-compiler :hash #'blog-sha1sum-attachment)
+  (porg-images-compiler :hash #'porg-sha1sum-attachment)
 
-  (porg-videos-compiler :hash #'blog-sha1sum-attachment)))
+  (porg-videos-compiler :hash #'porg-sha1sum-attachment)))
 
 
 
