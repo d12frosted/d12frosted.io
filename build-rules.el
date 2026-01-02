@@ -280,13 +280,15 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
            (concat (org-read-date nil nil date) "-" slug)))
        ".md"))
     :attach-dir
-    (lambda (note)
+    (lambda (note attachment)
       (let* ((date (vulpea-utils-with-note note (vulpea-buffer-prop-get "date")))
              (slug (vulpea-utils-with-note note
                      (or (vulpea-buffer-prop-get "slug")
                          (porg-slug (vulpea-note-title note)))))
              (name (concat (org-read-date nil nil date) "-" slug)))
-        (concat "src/public/content/images/" name)))
+        (if (porg-supported-video-p attachment)
+            (concat "src/public/content/" name)
+          (concat "src/public/content/images/" name))))
     :outputs-extra
     (lambda (output)
       (let* ((note (porg-rule-output-item output)))
