@@ -44,29 +44,11 @@
 
 
 
-(defconst blog-supported-video-media '("mp4"))
-(defconst blog-supported-image-media '("jpeg" "png" "jpg" "heic" "webp" "gif" "svg"))
-(defconst blog-convertible-images '("jpeg" "png" "jpg" "heic" "webp"))
-
-(defun blog-supported-media-p (file)
-  "Return non-nil if FILE is a supported media."
-  (seq-contains-p (-concat blog-supported-image-media blog-supported-video-media)
-                  (s-downcase (file-name-extension file))))
-
-(defun blog-supported-video-media-p (file)
-  "Return non-nil if FILE is a supported video."
-  (seq-contains-p blog-supported-video-media
-                  (s-downcase (file-name-extension file))))
-
-(defun blog-supported-image-media-p (file)
-  "Return non-nil if FILE is a supported image."
-  (seq-contains-p blog-supported-image-media
-                  (s-downcase (file-name-extension file))))
-
-(defun blog-convertible-image-p (file)
-  "Return non-nil if FILE is a convertible image."
-  (seq-contains-p blog-convertible-images
-                  (s-downcase (file-name-extension file))))
+;; Media predicates now in publicatorg:
+;; - porg-supported-media-p
+;; - porg-supported-video-p
+;; - porg-supported-image-p
+;; - porg-convertible-image-p
 
 
 
@@ -91,8 +73,8 @@
     ("attachment"
      (concat "("
              (cond
-              ((blog-supported-image-media-p (porg-item-target-abs item)) "image")
-              ((blog-supported-video-media-p (porg-item-target-abs item)) "video")
+              ((porg-supported-image-p (porg-item-target-abs item)) "image")
+              ((porg-supported-video-p (porg-item-target-abs item)) "video")
               (t "???"))
              ") "
              (file-name-nondirectory (porg-item-target-abs item))))
@@ -105,8 +87,8 @@
     ("attachment"
      (concat "("
              (cond
-              ((blog-supported-image-media-p (porg-rule-output-file item)) "image")
-              ((blog-supported-video-media-p (porg-rule-output-file item)) "video")
+              ((porg-supported-image-p (porg-rule-output-file item)) "image")
+              ((porg-supported-video-p (porg-rule-output-file item)) "video")
               (t "???"))
              ") "
              (file-name-nondirectory (porg-rule-output-file item))))
@@ -125,21 +107,10 @@
 
 
 
-(defun file-name-fix-attachment (file-name ext-new)
-  "Fix attachment FILE-NAME with EXT-NEW."
-  (let ((ext-old (file-name-extension file-name)))
-    (concat (s-replace-regexp "[^a-zA-Z0-9/\\.]" "-" (s-chop-suffix ext-old file-name)) ext-new)))
-
-(defun file-name-fix-media-attachment (file-name)
-  "Fix attachment FILE-NAME with EXT-NEW."
-  (if (blog-convertible-image-p file-name)
-      (file-name-fix-attachment file-name "webp")
-    file-name))
-
-(defun file-name-replace-ext (file-name ext-new)
-  "Replace FILE-NAME extension with EXT-NEW."
-  (let ((ext-old (file-name-extension file-name)))
-    (concat (s-chop-suffix ext-old file-name) ext-new)))
+;; File name utilities now in publicatorg:
+;; - porg-file-name-sanitize (replaces porg-file-name-sanitize)
+;; - porg-file-name-for-web (replaces porg-file-name-for-web)
+;; - porg-porg-file-name-replace-ext (replaces porg-file-name-replace-ext)
 
 (defun directory-from-uuid (uuid)
   "Adapt UUID to directory name."
@@ -205,12 +176,8 @@ init file."
 
 
 
-(cl-defun blog-delete-file (file)
-  "Delete FILE."
-  (message "delete %s" file)
-  (delete-file file)
-  (let ((meta (concat file ".metadata")))
-    (delete-file meta)))
+;; Delete utility now in publicatorg:
+;; - porg-delete-with-metadata (replaces porg-delete-with-metadata)
 
 
 
@@ -234,7 +201,7 @@ too lazy to explain default implementation.
 
 ATTACH-FILTER is a predicate on attachment file. Controls which
 attachments should be part of the output. Defaults to
-`blog-supported-media-p'.
+`porg-supported-media-p'.
 
 OUTPUTS-EXTRA is a function that takes a `porg-rule-output' of
 note and returns list of additional outputs.
@@ -252,11 +219,11 @@ HARD-DEPS. But in this case these are functions on
                         (funcall attach-dir note-output)
                       (let ((name (directory-from-uuid
                                    (file-name-base (porg-rule-output-file note-output)))))
-                        (if (blog-supported-video-media-p attachment)
+                        (if (porg-supported-video-p attachment)
                             (concat "public/content/" name)
                           (concat "src/public/content/images/" name)))))
-             :file-mod (list #'file-name-fix-media-attachment)
-             :filter (or attach-filter #'blog-supported-media-p)))
+             :file-mod (list #'porg-file-name-for-web)
+             :filter (or attach-filter #'porg-supported-media-p)))
            (outputs-extra (when outputs-extra (funcall outputs-extra note-output))))
       (-concat attachments-output
                outputs-extra
@@ -295,10 +262,10 @@ HARD-DEPS. But in this case these are functions on
          :sanitize-attachment-fn
          (lambda (link)
            (let* ((path (org-ml-get-property :path link))
-                  (path (file-name-fix-media-attachment path))
+                  (path (porg-file-name-for-web path))
                   (dir (directory-from-uuid (file-name-base (porg-item-target-abs item)))))
              (->> link
-                  (org-ml-set-property :path (if (blog-supported-video-media-p path)
+                  (org-ml-set-property :path (if (porg-supported-video-p path)
                                                  (format "/content/%s/%s" dir path)
                                                (format "/images/%s/%s" dir path)))
                   (org-ml-set-property :type "file")
@@ -367,7 +334,7 @@ HARD-DEPS. But in this case these are functions on
           (goto-char (point-min))
           (while (search-forward-regexp "\\[file:/content/.+\\](\\(/content/.+\\))" nil t)
             (let ((p (match-string 1)))
-              (when (blog-supported-video-media-p p)
+              (when (porg-supported-video-p p)
                 (replace-match (format "![](%s)" p)))))
           (save-buffer))))))
 
@@ -479,7 +446,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
 
 (org-link-set-parameters "d12frosted" :follow #'org-roam-link-follow-link)
 (setf porg-log-level 'info)
-(setf porg-cache-method 'prin1)
+(setf porg-cache-backend 'sqlite)
 
 
 
@@ -534,7 +501,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
            :id (concat (vulpea-note-id note) ".json")
            :type "json"
            :item note
-           :file (file-name-replace-ext (porg-rule-output-file output) "json")
+           :file (porg-file-name-replace-ext (porg-rule-output-file output) "json")
            :hard-deps (-distinct
                        (-concat
                         (list (porg-rule-output-id output))
@@ -543,7 +510,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
 
   (porg-batch-rule
    :name "nextjs/images"
-   :filter (-rpartial #'porg-item-that :type "attachment" :predicate #'blog-supported-image-media-p)
+   :filter (-rpartial #'porg-item-that :type "attachment" :predicate #'porg-supported-image-p)
    :target "src/components/content/images.tsx"
    :publish #'blog-publish-nextjs/images))
 
@@ -555,7 +522,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                      :predicate (-rpartial #'vulpea-note-tagged-all-p "post"))
    :hash #'porg-sha1sum
    :build (blog-make-publish :copy-fn #'blog-build-post)
-   :clean #'blog-delete-file)
+   :clean #'porg-delete-with-metadata)
 
   (porg-compiler
    :name "post/metadata"
@@ -579,7 +546,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                                   (when image
                                     (let ((image-item (gethash (concat (vulpea-note-id note)
                                                                        ":"
-                                                                       (file-name-fix-attachment
+                                                                       (porg-file-name-sanitize
                                                                         (s-chop-prefix "attachment:" image)
                                                                         "webp"))
                                                                items)))
@@ -603,7 +570,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                                     `(("tags" . ,tags)))))))
                    (hash-a (when (file-exists-p (porg-item-target-abs item))
                              (porg-sha1sum (porg-item-target-abs item))))
-                   (meta-file (file-name-replace-ext (porg-item-target-abs item) "json"))
+                   (meta-file (porg-file-name-replace-ext (porg-item-target-abs item) "json"))
 
                    (hash-b (porg-sha1sum (porg-item-target-abs item)))
 
@@ -666,16 +633,16 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                 (let ((json-encoding-pretty-print t))
                   (insert (json-encode meta)))
                 (save-buffer))))
-   :clean #'blog-delete-file)
+   :clean #'porg-delete-with-metadata)
 
   (porg-compiler
    :name "images"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'blog-supported-image-media-p)
+   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'porg-supported-image-p)
    :hash #'blog-sha1sum-attachment
    :build
    (lambda (item _items _cache)
      (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (if (blog-convertible-image-p (porg-item-item item))
+     (if (porg-convertible-image-p (porg-item-item item))
          (let ((max-width (or (plist-get (porg-item-extra-args item) :variant) 1600))
                (width (string-to-number
                        (shell-command-to-string
@@ -692,17 +659,17 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
               (format "convert '%s' -strip -auto-orient '%s'"
                       (porg-item-item item) (porg-item-target-abs item)))))
        (copy-file (porg-item-item item) (porg-item-target-abs item) t)))
-   :clean #'blog-delete-file)
+   :clean #'porg-delete-with-metadata)
 
   (porg-compiler
    :name "videos"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'blog-supported-video-media-p)
+   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'porg-supported-video-p)
    :hash #'blog-sha1sum-attachment
    :build
    (lambda (item _items _cache)
      (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
      (copy-file (porg-item-item item) (porg-item-target-abs item) t))
-   :clean #'blog-delete-file)))
+   :clean #'porg-delete-with-metadata)))
 
 
 

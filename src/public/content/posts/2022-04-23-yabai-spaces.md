@@ -1,4 +1,4 @@
-![](/images/2022-04-23-yabai-spaces/2022-07-19_22-18-40_yabai-banner.svg)
+![](/images/2022-04-23-yabai-spaces/2022-07-19-22-18-40-yabai-banner.svg)
 
 The idea behind tiling window managers is brilliant - frames on the screen are organised in a non-overlapping fashion. In practice, that means a productivity boost because (1) all non-hidden frames are always visible and (2) all resizing and movement is done automatically by the window manager whenever a frame becomes visible or hidden. It might take some time to get used to this approach, but in the end, it's a love-it-or-hate-it relationship without a position in between.
 

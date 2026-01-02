@@ -4,7 +4,7 @@ In this article, we're going to write a small utility function that asks the use
 
 The introduction is actually longer than the implementation!
 
-![](/content/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4)
+![](/content/2021-01-24-task-management-with-roam-vol6/2022-07-19-21-16-52-org-notes-person-agenda.mp4)
 
 ## Change Log
 
@@ -46,7 +46,7 @@ Here are some explanations:
 
 That's it! Now see it in action again.
 
-![](/content/2021-01-24-task-management-with-roam-vol6/2022-07-19_21-16-52_org-notes-person-agenda.mp4)
+![](/content/2021-01-24-task-management-with-roam-vol6/2022-07-19-21-16-52-org-notes-person-agenda.mp4)
 
 # References
 

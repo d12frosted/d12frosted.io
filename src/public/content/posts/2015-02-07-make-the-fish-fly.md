@@ -37,7 +37,7 @@ For any other problems, may the force be with you. Otherwise, you're ready to di
 
 The first thing you'll notice in `fish` is blazingly fast completion and suggestions based on history, man pages, and custom rules. This amazed me when I first saw it in action, because I remember how tricky it is to configure such things in `bash` and `zsh` - but here you get everything and more out of the box.
 
-<img src="/images/2015-02-07-make-the-fish-fly/2022-07-19_17-11-16_fish-suggestions.gif" class="d12-image-3/4" />
+<img src="/images/2015-02-07-make-the-fish-fly/2022-07-19-17-11-16-fish-suggestions.gif" class="d12-image-3/4" />
 
 What I particularly like about Fish's suggestions is how they narrow based on what you've typed. For example, when the prompt is empty, typing `↑` navigates through your entire history. If you type `stack`, the history narrows to show only `stack` commands. Type `stack build` and it narrows even further. It's like a tree where every word you type selects a more specific branch. Of course, it's actually a bit smarter than this simple metaphor suggests.
 

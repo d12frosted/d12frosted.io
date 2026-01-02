@@ -1,10 +1,10 @@
 In stock Emacs, there's a function called `move-to-beginning-of-line`, which is bound to `C-a` by default. It does exactly what its name implies - it moves the cursor to the beginning of the line. However, when working with indented code, this is usually not what I want. Instead, I'd prefer to move to the first visible character of the line.
 
-<img src="/images/2020-06-04-beginning-of-line/2022-07-19_20-59-00_beginning-of-line-haskell.gif" class="d12-image-1/2" />
+<img src="/images/2020-06-04-beginning-of-line/2022-07-19-20-59-00-beginning-of-line-haskell.gif" class="d12-image-1/2" />
 
 There are packages that do this and even more (for example, [mwim](https://github.com/alezost/mwim.el)), but if you don't want to add another package to your dependencies, or if you only care about moving to the beginning of the line, then you might grab the code I share below. I've also included a version that works intelligently with org-mode headers and lists.
 
-<img src="/images/2020-06-04-beginning-of-line/2022-07-19_20-59-20_beginning-of-line-org.gif" class="d12-image-1/2" />
+<img src="/images/2020-06-04-beginning-of-line/2022-07-19-20-59-20-beginning-of-line-org.gif" class="d12-image-1/2" />
 
 The implementation is quite straightforward. We disable visual movement and jump to the first visible character using `back-to-indentation`. If we didn't change our location, then we move to the beginning of the line.
 

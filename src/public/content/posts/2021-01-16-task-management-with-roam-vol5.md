@@ -26,7 +26,7 @@ Since `filetags` are [inherited](https://orgmode.org/manual/Tag-Inheritance.html
 (add-to-list 'org-tags-exclude-from-inheritance "project")
 ```
 
-<img src="/images/2021-01-16-task-management-with-roam-vol5/2022-07-19_21-14-37_org-notes-project-tag-update.gif" class="d12-image-3/4" />
+<img src="/images/2021-01-16-task-management-with-roam-vol5/2022-07-19-21-14-37-org-notes-project-tag-update.gif" class="d12-image-3/4" />
 
 # Marking a Project
 
@@ -90,7 +90,7 @@ Now we need to use this function to add or to remove `project` tag from a note. 
 
 That's it. Now whenever we modify or visit a notes buffer, this code will update the presence of `project` tag. See it in action:
 
-<img src="/images/2021-01-16-task-management-with-roam-vol5/2022-07-19_21-14-37_org-notes-project-tag-update.gif" class="d12-image-3/4" />
+<img src="/images/2021-01-16-task-management-with-roam-vol5/2022-07-19-21-14-37-org-notes-project-tag-update.gif" class="d12-image-3/4" />
 
 # Building agenda
 

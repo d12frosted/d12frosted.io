@@ -1,6 +1,6 @@
 In the [previous article](/posts/2020-06-25-task-management-with-roam-vol3), we covered automatic tagging of notes related to a specific person. Today we're going to cover automatic tagging of an org-mode heading upon insertion of a link related to a person. To put it simply, when I mention someone in a task, I'd like this task to be automatically tagged with that person's name. As they say, it's better to see once than imagine multiple times, so here's a screencast:
 
-<img src="/images/2020-07-07-task-management-with-roam-vol4/2022-07-19_21-13-09_org-notes-insert.gif" class="d12-image-3/4" />
+<img src="/images/2020-07-07-task-management-with-roam-vol4/2022-07-19-21-13-09-org-notes-insert.gif" class="d12-image-3/4" />
 
 ## Change Log
 

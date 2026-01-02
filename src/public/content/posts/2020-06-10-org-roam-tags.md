@@ -17,7 +17,7 @@ Since I'm already [addicted](/posts/2016-12-20-Being-an-org-mode-addict), it was
 
 <!--more-->
 
-<img src="/images/2020-06-10-org-roam-tags/2022-07-19_21-01-06_org-roam-tags-demo.gif" class="d12-image-3/4" />
+<img src="/images/2020-06-10-org-roam-tags/2022-07-19-21-01-06-org-roam-tags-demo.gif" class="d12-image-3/4" />
 
 When it comes to tag removal, I just want to have a list of tags set in the current buffer and choose one of them to remove. The important thing here is that it shouldn't allow me to remove tags set by directories (see `org-roam-tag-sources`).
 

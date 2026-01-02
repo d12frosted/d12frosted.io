@@ -75,13 +75,13 @@ This should transform link to images into proper HTML.
 
 As you can see, it has 2 meta projects: `emacs-plus` and a personal blog, each containing a task and a project. Meta projects have their own category property (set by hand or using `org-set-property`, which is bound to `C-c C-x p` by default), so in the agenda view you can quickly distinguish (and filter) tasks from different meta projects (for example, using `org-agenda-filter-by-category`, which is bound to `<` by default).
 
-<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19_21-05-00_org-agenda-filter-by-category.gif" class="d12-image-3/4" />
+<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-00-org-agenda-filter-by-category.gif" class="d12-image-3/4" />
 
 Formally (and technically), projects might be defined as a task having sub-tasks, but in this rare case I vote for simplicity - a project is a task tagged as `PROJECT`.
 
 When a task relates to a person or location, I tag it accordingly, using the `@` symbol as a prefix to distinguish it from utilitarian tags. The agenda helps you quickly find all tasks with a specific tag. Use `M-x org-agenda m` or `M-x org-agenda M` (to list only TODO items).
 
-<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19_21-05-13_org-agenda-filter-by-tags.gif" class="d12-image-3/4" />
+<img src="/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-13-org-agenda-filter-by-tags.gif" class="d12-image-3/4" />
 
 With `org-roam`, it makes sense to create a separate file for each meta project. In the endless debate of 'many small' vs 'few big' org files, `org-roam` favours the former approach (though even this is debatable).
 

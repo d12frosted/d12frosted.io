@@ -59,7 +59,7 @@ Every inbox file has a title to distinguish between multiple inbox files and `fi
 
 # Capturing into inbox
 
-![](/content/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-03_org-roam-task-management-vol7-1.mp4)
+![](/content/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-03-org-roam-task-management-vol7-1.mp4)
 
 For items to end up in the inbox file, I'm using a simple capture template for TODO entries. Since I want to avoid picking a template when I have more than one, I have a wrapper `vulpea-capture-task` function that picks up a specific template. There are other ways to achieve this - if you're interested, let me know.
 
@@ -101,7 +101,7 @@ It's hard to come up with a generic example, and I hate examples from the void o
 
 Meeting notes. Whenever I'm in a meeting, I like to keep meeting notes (thanks to Org Mode, my memory can be ephemeral). I divide all meetings into two categories: one-on-ones (e.g. $`p = 2`$) and meetings with multiple participants (e.g. $`p > 2`$). In the end, all notes from one-on-ones are moved under the `Meetings` heading in the file related to the person I have a meeting with. Since this is so common, I decided to save myself from an unnecessary refile action by adapting my capture flow.
 
-![](/content/2021-05-21-task-management-with-roam-vol7/2022-07-19_22-04-33_org-roam-task-management-vol7-3.mp4)
+![](/content/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-33-org-roam-task-management-vol7-3.mp4)
 
 So when I have a meeting, I simply hit `M-m c m` (short for 'capture meeting', which calls the `vulpea-capture-meeting` function), select a person or type any other phrase (e.g. project name), and let the capture process place my notes in the right location. If I select a person, meeting notes will be located under the `Meetings` heading in the file dedicated to the selected person. If I type something else, my notes go straight to the inbox.
 
