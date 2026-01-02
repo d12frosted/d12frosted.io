@@ -181,63 +181,6 @@ init file."
 
 
 
-(cl-defun blog-make-outputs (&key file
-                                  attach-dir
-                                  attach-filter
-                                  soft-deps
-                                  hard-deps
-                                  outputs-extra)
-  "Make outputs function for note.
-
-Just a wrapper around `porg-note-output' and
-`porg-attachments-output'.
-
-FILE is a function that takes a `vulpea-note' and returns
-relative output file.
-
-ATTACH-DIR is a function that takes a `porg-rule-output' of note
-and returns relative directory for attachments. Optional. I am
-too lazy to explain default implementation.
-
-ATTACH-FILTER is a predicate on attachment file. Controls which
-attachments should be part of the output. Defaults to
-`porg-supported-media-p'.
-
-OUTPUTS-EXTRA is a function that takes a `porg-rule-output' of
-note and returns list of additional outputs.
-
-See `porg-note-output' for documentation for SOFT-DEPS and
-HARD-DEPS. But in this case these are functions on
-`vulpea-note'."
-  (lambda (note)
-    (let* ((note-output (porg-note-output note :file (funcall file note)))
-           (attachments-output
-            (porg-attachments-output
-             note
-             :dir (lambda (attachment)
-                    (if attach-dir
-                        (funcall attach-dir note-output)
-                      (let ((name (directory-from-uuid
-                                   (file-name-base (porg-rule-output-file note-output)))))
-                        (if (porg-supported-video-p attachment)
-                            (concat "public/content/" name)
-                          (concat "src/public/content/images/" name)))))
-             :file-mod (list #'porg-file-name-for-web)
-             :filter (or attach-filter #'porg-supported-media-p)))
-           (outputs-extra (when outputs-extra (funcall outputs-extra note-output))))
-      (-concat attachments-output
-               outputs-extra
-               (list
-                (porg-note-output
-                 note
-                 :file (funcall file note)
-                 :soft-deps (when soft-deps (funcall soft-deps note))
-                 :hard-deps (-concat
-                             (when hard-deps (funcall hard-deps note))
-                             (-map #'porg-rule-output-id attachments-output)
-                             (-map #'porg-rule-output-id
-                                   (--filter (string-equal (porg-rule-output-type it) "attachment")
-                                             outputs-extra)))))))))
 
 
 
@@ -478,7 +421,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
    :name "posts"
    :match (-rpartial #'vulpea-note-tagged-all-p "post")
    :outputs
-   (blog-make-outputs
+   (porg-make-outputs
     :file
     (lambda (note)
       (concat
@@ -491,22 +434,28 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                                     (vulpea-note-path note)))
            (concat (org-read-date nil nil date) "-" slug)))
        ".md"))
+    :attach-dir
+    (lambda (note)
+      (let* ((date (vulpea-utils-with-note note (vulpea-buffer-prop-get "date")))
+             (slug (vulpea-utils-with-note note
+                     (or (vulpea-buffer-prop-get "slug")
+                         (porg-slug (vulpea-note-title note)))))
+             (name (concat (org-read-date nil nil date) "-" slug)))
+        (concat "src/public/content/images/" name)))
     :outputs-extra
     (lambda (output)
-      (s-chop-prefix "" "")
       (let* ((note (porg-rule-output-item output)))
-        (-concat
-         (list
-          (porg-rule-output
-           :id (concat (vulpea-note-id note) ".json")
-           :type "json"
-           :item note
-           :file (porg-file-name-replace-ext (porg-rule-output-file output) "json")
-           :hard-deps (-distinct
-                       (-concat
-                        (list (porg-rule-output-id output))
-                        (porg-rule-output-hard-deps output)))
-           :soft-deps (porg-rule-output-soft-deps output))))))))
+        (list
+         (porg-rule-output
+          :id (concat (vulpea-note-id note) ".json")
+          :type "json"
+          :item note
+          :file (porg-file-name-replace-ext (porg-rule-output-file output) "json")
+          :hard-deps (-distinct
+                      (-concat
+                       (list (porg-rule-output-id output))
+                       (porg-rule-output-hard-deps output)))
+          :soft-deps (porg-rule-output-soft-deps output)))))))
 
   (porg-batch-rule
    :name "nextjs/images"
