@@ -66,34 +66,8 @@
 
 
 
-(cl-defmethod porg-describe ((item porg-item))
-  "Describe ITEM."
-  (pcase (porg-item-type item)
-    ("note" (porg-describe (porg-item-item item)))
-    ("attachment"
-     (concat "("
-             (cond
-              ((porg-supported-image-p (porg-item-target-abs item)) "image")
-              ((porg-supported-video-p (porg-item-target-abs item)) "video")
-              (t "???"))
-             ") "
-             (file-name-nondirectory (porg-item-target-abs item))))
-    (_ (concat "(" (porg-item-type item) ") " (porg-item-id item)))))
-
-(cl-defmethod porg-describe ((item porg-rule-output))
-  "Describe ITEM."
-  (pcase (porg-rule-output-type item)
-    ("note" (porg-describe (porg-rule-output-item item)))
-    ("attachment"
-     (concat "("
-             (cond
-              ((porg-supported-image-p (porg-rule-output-file item)) "image")
-              ((porg-supported-video-p (porg-rule-output-file item)) "video")
-              (t "???"))
-             ") "
-             (file-name-nondirectory (porg-rule-output-file item))))
-    ("json" (concat "(json)" (porg-describe (porg-rule-output-item item))))
-    (_ (concat "(" (porg-rule-output-type item) ") " (porg-rule-output-id item)))))
+;; porg-describe for porg-item and porg-rule-output now in publicatorg.
+;; Only the vulpea-note method is project-specific.
 
 (cl-defmethod porg-describe ((note vulpea-note))
   "Describe NOTE."
