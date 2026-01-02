@@ -108,22 +108,7 @@
 
 
 
-(cl-defun blog-sanitize-id-link (link items)
-  "Sanitize ID LINK according to ITEMS."
-  (if-let* ((id (org-ml-get-property :path link))
-            (note (vulpea-db-get-by-id id))
-            (item (gethash id items))
-            (file (porg-item-target-rel item))
-            (path (->> file
-                       (s-chop-suffix ".org")
-                       (s-chop-suffix ".md")
-                       (s-chop-prefix "src/public/content"))))
-      (->> link
-           (org-ml-set-property :type "file")
-           (org-ml-set-property :path path))
-    (org-ml-from-string
-     'plain-text
-     (concat (nth 2 link) (s-repeat (or (org-ml-get-property :post-blank link) 0) " ")))))
+;; blog-sanitize-id-link moved to publicatorg as porg-sanitize-id-link
 
 
 
@@ -355,7 +340,10 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                            (directory-from-uuid
                             (file-name-base (porg-item-target-abs item))))
            :sanitize-id-fn (lambda (items)
-                             (-rpartial #'blog-sanitize-id-link items)))
+                             (lambda (link)
+                               (porg-sanitize-id-link
+                                link items
+                                :content-prefix "src/public/content"))))
    :clean #'porg-delete-with-metadata)
 
   (porg-compiler
