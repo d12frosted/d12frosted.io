@@ -668,12 +668,16 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                 (output (porg-item-target-abs item))
                 (max-width (or (plist-get (porg-item-extra-args item) :variant) 1600))
                 ;; Shell script: get width, then convert with resize if needed
-                (cmd (format "width=$(identify -format %%W '%s') && \
+                ;; Check file exists first, capture all errors
+                (cmd (format "set -e; \
+if [ ! -f '%s' ]; then echo 'Source file not found: %s' >&2; exit 1; fi; \
+width=$(identify -format %%W '%s'); \
 if [ \"$width\" -gt %d ]; then \
   convert '%s' -strip -auto-orient -resize %dx100^ '%s'; \
 else \
   convert '%s' -strip -auto-orient '%s'; \
 fi"
+                             input input
                              input max-width
                              input max-width output
                              input output)))
