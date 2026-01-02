@@ -637,15 +637,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
 
   (porg-images-compiler :hash #'blog-sha1sum-attachment)
 
-  (porg-compiler
-   :name "videos"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'porg-supported-video-p)
-   :hash #'blog-sha1sum-attachment
-   :build
-   (lambda (item _items _cache)
-     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (copy-file (porg-item-item item) (porg-item-target-abs item) t))
-   :clean #'porg-delete-with-metadata)))
+  (porg-videos-compiler :hash #'blog-sha1sum-attachment)))
 
 
 
