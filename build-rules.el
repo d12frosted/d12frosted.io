@@ -635,66 +635,7 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
                 (save-buffer))))
    :clean #'porg-delete-with-metadata)
 
-  (porg-compiler
-   :name "images"
-   :match (-rpartial #'porg-rule-output-that :type "attachment" :predicate #'porg-supported-image-p)
-   :hash #'blog-sha1sum-attachment
-   :build
-   (lambda (item _items _cache)
-     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (if (porg-convertible-image-p (porg-item-item item))
-         (let* ((input (porg-item-item item))
-                (output (porg-item-target-abs item))
-                (max-width (or (plist-get (porg-item-extra-args item) :variant) 1600))
-                (width (string-to-number
-                        (shell-command-to-string
-                         (format "sips -g pixelWidth '%s' 2>/dev/null | awk '/pixelWidth/{print $2}'" input)))))
-           (porg-debug "input:  %s" input)
-           (porg-debug "output: %s" output)
-           ;; Try cwebp first (faster), fall back to magick for unsupported formats
-           (if (> width max-width)
-               (unless (zerop (call-process-shell-command
-                               (format "cwebp -q 75 -resize %d 0 '%s' -o '%s' 2>/dev/null"
-                                       max-width input output)))
-                 (shell-command-to-string
-                  (format "magick '%s' -strip -auto-orient -resize %dx100^ '%s'"
-                          input max-width output)))
-             (unless (zerop (call-process-shell-command
-                             (format "cwebp -q 75 '%s' -o '%s' 2>/dev/null" input output)))
-               (shell-command-to-string
-                (format "magick '%s' -strip -auto-orient '%s'" input output)))))
-       (copy-file (porg-item-item item) (porg-item-target-abs item) t)))
-   :async-build
-   (lambda (item _items _cache callback)
-     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
-     (if (porg-convertible-image-p (porg-item-item item))
-         ;; Async convert: use sips for dimensions (fast) and cwebp for conversion
-         ;; Falls back to magick for formats cwebp doesn't support (e.g., HEIC)
-         (let* ((input (porg-item-item item))
-                (output (porg-item-target-abs item))
-                (max-width (or (plist-get (porg-item-extra-args item) :variant) 1600))
-                (cmd (format "set -e; \
-if [ ! -f '%s' ]; then echo 'Source file not found: %s' >&2; exit 1; fi; \
-width=$(sips -g pixelWidth '%s' 2>/dev/null | awk '/pixelWidth/{print $2}'); \
-if [ \"$width\" -gt %d ]; then \
-  cwebp -q 75 -resize %d 0 '%s' -o '%s' 2>/dev/null || \
-    magick '%s' -strip -auto-orient -resize %dx100^ '%s'; \
-else \
-  cwebp -q 75 '%s' -o '%s' 2>/dev/null || \
-    magick '%s' -strip -auto-orient '%s'; \
-fi"
-                             input input
-                             input max-width
-                             max-width input output
-                             input max-width output
-                             input output
-                             input output)))
-           (porg-async-shell-command cmd callback (file-name-nondirectory output)))
-       ;; Non-convertible: just copy (fast, do sync)
-       (copy-file (porg-item-item item) (porg-item-target-abs item) t)
-       (funcall callback t nil)
-       nil))
-   :clean #'porg-delete-with-metadata)
+  (porg-images-compiler :hash #'blog-sha1sum-attachment)
 
   (porg-compiler
    :name "videos"
