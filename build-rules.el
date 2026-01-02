@@ -659,6 +659,29 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
               (format "convert '%s' -strip -auto-orient '%s'"
                       (porg-item-item item) (porg-item-target-abs item)))))
        (copy-file (porg-item-item item) (porg-item-target-abs item) t)))
+   :async-build
+   (lambda (item _items _cache callback)
+     (make-directory (file-name-directory (porg-item-target-abs item)) 'parents)
+     (if (porg-convertible-image-p (porg-item-item item))
+         ;; Async convert: shell script handles identify + convert in one go
+         (let* ((input (porg-item-item item))
+                (output (porg-item-target-abs item))
+                (max-width (or (plist-get (porg-item-extra-args item) :variant) 1600))
+                ;; Shell script: get width, then convert with resize if needed
+                (cmd (format "width=$(identify -format %%W '%s') && \
+if [ \"$width\" -gt %d ]; then \
+  convert '%s' -strip -auto-orient -resize %dx100^ '%s'; \
+else \
+  convert '%s' -strip -auto-orient '%s'; \
+fi"
+                             input max-width
+                             input max-width output
+                             input output)))
+           (porg-async-shell-command cmd callback (file-name-nondirectory output)))
+       ;; Non-convertible: just copy (fast, do sync)
+       (copy-file (porg-item-item item) (porg-item-target-abs item) t)
+       (funcall callback t nil)
+       nil))
    :clean #'porg-delete-with-metadata)
 
   (porg-compiler
