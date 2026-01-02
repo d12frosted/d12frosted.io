@@ -184,102 +184,7 @@ init file."
 
 
 
-(cl-defun blog-make-publish (&key copy-fn)
-  "Create public function with COPY-FN."
-  (lambda (item items _cache)
-    (let* ((temp-file (make-temp-file "d12frosted-io" nil ".org")))
-      (porg-debug "writing to temp file")
-      (porg-debug "%s" temp-file)
-
-      ;; 1. copy file
-      (mkdir (file-name-directory (porg-item-target-abs item)) 'parents)
-      (funcall copy-fn temp-file item items)
-
-      ;; 2. remove private parts
-      (porg-clean-noexport-headings temp-file)
-
-      ;; 3. cleanup and transform links
-      (with-current-buffer (find-file-noselect temp-file)
-        (porg-clean-links-in-buffer
-         :sanitize-id-fn (-rpartial #'blog-sanitize-id-link items)
-         :sanitize-attachment-fn
-         (lambda (link)
-           (let* ((path (org-ml-get-property :path link))
-                  (path (porg-file-name-for-web path))
-                  (dir (directory-from-uuid (file-name-base (porg-item-target-abs item)))))
-             (->> link
-                  (org-ml-set-property :path (if (porg-supported-video-p path)
-                                                 (format "/content/%s/%s" dir path)
-                                               (format "/images/%s/%s" dir path)))
-                  (org-ml-set-property :type "file")
-                  (org-ml-set-children nil)))))
-        (save-buffer))
-
-      ;; 4. cleanup unsupported things
-      (with-current-buffer (find-file-noselect temp-file)
-        ;; table captions are not supported
-        (save-excursion
-          (goto-char (point-min))
-          (while (search-forward-regexp "^#\\+caption:" nil t)
-            (when (save-excursion
-                    (forward-line)
-                    (looking-at "^#\\+results:"))
-              (beginning-of-line)
-              (kill-line 1))))
-
-        ;; pandoc fails to properly handle caption when attr_html is missing
-        (save-excursion
-          (goto-char (point-min))
-          (while (search-forward-regexp "^#\\+caption:" nil t)
-            (forward-line)
-            (when (looking-at "\\[\\[file.*\\]\\]")
-              (insert "#+attr_html: :class image\n"))))
-
-        ;; verses are not supported by pandoc
-        (save-excursion
-          (goto-char (point-min))
-          (while (search-forward-regexp "^#\\+begin_verse" nil t)
-            (replace-match "#+begin_export html")
-            (forward-line)
-            (insert "<blockquote>\n")
-            (while (not (looking-at "^#\\+end_verse"))
-              ;; replace ---
-              (when (looking-at "---")
-                (replace-match "–")
-                (beginning-of-line))
-
-              ;; add line break
-              (end-of-line)
-              (insert "<br/>")
-              (forward-line))
-            (kill-line)
-
-            ;; done
-            (insert "</blockquote>\n")
-            (insert "#+end_export")))
-
-        ;; save
-        (save-buffer))
-
-      ;; 5. convert to md
-      (shell-command-to-string
-       (format "pandoc --from=org --to=gfm+hard_line_breaks+tex_math_dollars --wrap=none '%s' > '%s'"
-               temp-file
-               (porg-item-target-abs item)))
-      (let ((auto-mode-alist '("\\.md\\'" . text-mode)))
-        (with-current-buffer (find-file-noselect (porg-item-target-abs item))
-          ;; fix attachment links
-          (goto-char (point-min))
-          (while (search-forward "file://" nil t)
-            (replace-match ""))
-
-          ;; fix video links
-          (goto-char (point-min))
-          (while (search-forward-regexp "\\[file:/content/.+\\](\\(/content/.+\\))" nil t)
-            (let ((p (match-string 1)))
-              (when (porg-supported-video-p p)
-                (replace-match (format "![](%s)" p)))))
-          (save-buffer))))))
+;; Using porg-make-publish from publicatorg for org->markdown conversion
 
 
 
@@ -470,7 +375,13 @@ _ITEMS-ALL is input table as returned by `porg-build-input'."
    :match (-rpartial #'porg-rule-output-that :type "note"
                      :predicate (-rpartial #'vulpea-note-tagged-all-p "post"))
    :hash #'porg-sha1sum
-   :build (blog-make-publish :copy-fn #'blog-build-post)
+   :build (porg-make-publish
+           :copy-fn #'blog-build-post
+           :image-dir-fn (lambda (item)
+                           (directory-from-uuid
+                            (file-name-base (porg-item-target-abs item))))
+           :sanitize-id-fn (lambda (items)
+                             (-rpartial #'blog-sanitize-id-link items)))
    :clean #'porg-delete-with-metadata)
 
   (porg-compiler
