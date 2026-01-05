@@ -38,6 +38,15 @@
 
 (require 'init)
 
+;; Force reload vulpea and publicatorg from local development versions
+;; This overrides elpaca-loaded versions with local development code
+(let ((projects-dir (expand-file-name "Developer/" (getenv "HOME"))))
+  (push (expand-file-name "vulpea" projects-dir) load-path)
+  (push (expand-file-name "publicatorg" projects-dir) load-path)
+  ;; Force reload to override elpaca versions
+  (load (expand-file-name "vulpea/vulpea-db-query.el" projects-dir) nil t)
+  (load (expand-file-name "publicatorg/publicatorg.el" projects-dir) nil t))
+
 (require 'dash)
 (require 'vulpea)
 (require 'publicatorg)
