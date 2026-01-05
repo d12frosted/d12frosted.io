@@ -99,7 +99,7 @@ At this point, you might be wondering how this is related to Org Roam. After all
 
 It's hard to come up with a generic example, and I hate examples from the void of someone's imagination, so let me describe where exactly in the capturing process I use it (apart from [Automatic tagging](/posts/2020-07-07-task-management-with-roam-vol4)). Hopefully, it's easy to adapt this idea for other use cases, and if you experience any troubles, don't hesitate to contact me.
 
-Meeting notes. Whenever I'm in a meeting, I like to keep meeting notes (thanks to Org Mode, my memory can be ephemeral). I divide all meetings into two categories: one-on-ones (e.g. $`p = 2`$) and meetings with multiple participants (e.g. $`p > 2`$). In the end, all notes from one-on-ones are moved under the `Meetings` heading in the file related to the person I have a meeting with. Since this is so common, I decided to save myself from an unnecessary refile action by adapting my capture flow.
+Meeting notes. Whenever I'm in a meeting, I like to keep meeting notes (thanks to Org Mode, my memory can be ephemeral). I divide all meetings into two categories: one-on-ones (e.g. $p = 2$) and meetings with multiple participants (e.g. $p > 2$). In the end, all notes from one-on-ones are moved under the `Meetings` heading in the file related to the person I have a meeting with. Since this is so common, I decided to save myself from an unnecessary refile action by adapting my capture flow.
 
 ![](/content/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-33-org-roam-task-management-vol7-3.mp4)
 

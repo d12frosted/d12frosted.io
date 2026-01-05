@@ -169,7 +169,7 @@ This will visit each of your files and update the presence of `Project` tag acco
 
 # Result
 
-With little amount of `emacs-lisp` code we dramatically optimized `org-agenda` loading from $`> 50`$ seconds to $`< 1`$ second. Effectiveness of this approach depends on amount of files with `TODO` entries (the more you have, the less effective this approach becomes). One of the drawbacks is small (in my experience, neglectable) performance degradation of note visiting and note saving. Obviously, if a file contains thousands of headings, it affects performance. In defence, I would argue that such files are against the philosophy of `org-roam`, where you keep lots of small files as opposed to few huge files.
+With little amount of `emacs-lisp` code we dramatically optimized `org-agenda` loading from $> 50$ seconds to $< 1$ second. Effectiveness of this approach depends on amount of files with `TODO` entries (the more you have, the less effective this approach becomes). One of the drawbacks is small (in my experience, neglectable) performance degradation of note visiting and note saving. Obviously, if a file contains thousands of headings, it affects performance. In defence, I would argue that such files are against the philosophy of `org-roam`, where you keep lots of small files as opposed to few huge files.
 
 For you convenience, the full code is displayed below. It is also available as [GitHub Gist](https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e).
 

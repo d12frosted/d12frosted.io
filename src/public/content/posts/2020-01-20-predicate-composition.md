@@ -251,7 +251,7 @@ gmagic :: (Semigroup b) => (a -> b) -> (a -> b) -> (a -> b)
 gmagic f g = \a -> f a <> g a
 ```
 
-In Haskell every single data type can have not more than one instance of a given type class. But for some data types there are more than one valid (lawful) instances of a given type class. For example, we know that the set of natural numbers forms different semigroups with different operations: $` ( \mathbb{N}, + ) `$ or $` ( \mathbb{N}, \cdot ) `$. The same story with booleans - $` ( \mathbb{B}, \wedge ) `$ and $` ( \mathbb{B}, \vee ) `$ are both valid semigroups.
+In Haskell every single data type can have not more than one instance of a given type class. But for some data types there are more than one valid (lawful) instances of a given type class. For example, we know that the set of natural numbers forms different semigroups with different operations: $ ( \mathbb{N}, + ) $ or $ ( \mathbb{N}, \cdot ) $. The same story with booleans - $ ( \mathbb{B}, \wedge ) $ and $ ( \mathbb{B}, \vee ) $ are both valid semigroups.
 
 Restriction for amount of instances means that we need to wrap our data types when we need to create multiple instances. A wrapper per each instance. That leads to an awful runtime cost - wrapping and unwrapping are not free. That's why we use `newtype` to create wrappers. In compile time the `newtype` wrapper is not equal to the type that is being wrapped, so we can use different instances. But since the types are isomorphic, all the wrapping and unwrapping can be removed by compiler, so we don't have any runtime costs anymore.
 

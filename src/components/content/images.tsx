@@ -20,8 +20,8 @@ import pic_39d31d0c_15bb_4c03_a8fe_a44cf0a50df2_2022_07_19_21_58_18_emacs_d_1 fr
 import pic_39d31d0c_15bb_4c03_a8fe_a44cf0a50df2_2022_07_19_21_58_18_emacs_d_2 from "../../public/content/images/2021-04-09-emacs-d/2022-07-19-21-58-18-emacs-d-2.webp";
 import pic_3a117a58_727f_40ce_b925_78440123fd58_2022_07_19_20_59_00_beginning_of_line_haskell_gif from "../../public/content/images/2020-06-04-beginning-of-line/2022-07-19-20-59-00-beginning-of-line-haskell.gif";
 import pic_3a117a58_727f_40ce_b925_78440123fd58_2022_07_19_20_59_20_beginning_of_line_org_gif from "../../public/content/images/2020-06-04-beginning-of-line/2022-07-19-20-59-20-beginning-of-line-org.gif";
-import pic_4ecfd28d_bda9_4645_8885_c7e6ffb61fbc_2022_07_19_21_11_07_org_roam_task_management_vol3_2 from "../../public/content/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-2.webp";
 import pic_4ecfd28d_bda9_4645_8885_c7e6ffb61fbc_2022_07_19_21_11_07_org_roam_task_management_vol3_1 from "../../public/content/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-1.webp";
+import pic_4ecfd28d_bda9_4645_8885_c7e6ffb61fbc_2022_07_19_21_11_07_org_roam_task_management_vol3_2 from "../../public/content/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-2.webp";
 import pic_6108e748_2696_4343_8c04_5c03245261e6_2022_07_19_21_14_37_org_notes_project_tag_update_gif from "../../public/content/images/2021-01-16-task-management-with-roam-vol5/2022-07-19-21-14-37-org-notes-project-tag-update.gif";
 import pic_675cf553_8fcd_4bc4_be22_5eb3e88aab88_2022_07_19_21_13_09_org_notes_insert_gif from "../../public/content/images/2020-07-07-task-management-with-roam-vol4/2022-07-19-21-13-09-org-notes-insert.gif";
 import pic_69ac44fb_bc17_4674_a728_daa5829bcd8b_2022_07_19_17_11_16_fish_suggestions_gif from "../../public/content/images/2015-02-07-make-the-fish-fly/2022-07-19-17-11-16-fish-suggestions.gif";
@@ -30,32 +30,34 @@ import pic_69ac44fb_bc17_4674_a728_daa5829bcd8b_2022_07_19_17_36_39_1423317617 f
 import pic_6c10dab7_9080_4c0d_a786_272f93d3aa99_2022_07_19_17_44_48_b98438ae_65f5_11e7_975f_0bbc94238d24 from "../../public/content/images/2017-06-13-Fish-notify-me-when-you-finish/2022-07-19-17-44-48-b98438ae-65f5-11e7-975f-0bbc94238d24.webp";
 import pic_733d8b25_15b9_4a03_9173_dfc1d5d8c644_2022_07_20_09_51_46_vulpea_logo from "../../public/content/images/2022-07-14-vulpea-0.3/2022-07-20-09-51-46-vulpea-logo.webp";
 import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_03_45_org_roam_task_management_vol1_3 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-03-45-org-roam-task-management-vol1-3.webp";
-import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_04_20_org_roam_task_management_vol1_2 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-2.webp";
 import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_04_20_org_roam_task_management_vol1_1 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-1.webp";
+import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_04_20_org_roam_task_management_vol1_2 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-2.webp";
 import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_00_org_agenda_filter_by_category_gif from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-00-org-agenda-filter-by-category.gif";
 import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_13_org_agenda_filter_by_tags_gif from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-13-org-agenda-filter-by-tags.gif";
-import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_28_org_roam_task_management_vol1_4 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-4.webp";
 import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_28_org_roam_task_management_vol1_3 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-3.webp";
+import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_28_org_roam_task_management_vol1_4 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-4.webp";
 import pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_55_org_roam_task_management_vol1_5 from "../../public/content/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-55-org-roam-task-management-vol1-5.webp";
 import pic_7dea6fd5_a443_434a_91ba_91106d2dc5a2_2022_07_19_18_39_02_59ca88ab_671f_4c5e_9bf8_25547bbadbc2 from "../../public/content/images/2016-12-20-Being-an-org-mode-addict/2022-07-19-18-39-02-59ca88ab-671f-4c5e-9bf8-25547bbadbc2.webp";
 import pic_8afcf505_349b_42cf_b3d0_8be0baef05e6_2022_07_19_22_18_40_yabai_banner_svg from "../../public/content/images/2022-04-23-yabai-spaces/2022-07-19-22-18-40-yabai-banner.svg";
-import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_45_screenshot_popup from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-45-screenshot-popup.webp";
-import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_59_screenshot_helm from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-59-screenshot-helm.webp";
 import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_25_screenshot_ivy_1 from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-1.webp";
 import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_25_screenshot_ivy_2 from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-2.webp";
+import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_45_screenshot_popup from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-45-screenshot-popup.webp";
+import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_59_screenshot_helm from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-59-screenshot-helm.webp";
 import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_57_10_screenshot_ido from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp";
 import pic_a55e8242_5628_4042_baa7_f8e4abd153af_2022_07_19_20_34_19_emacs_booleans from "../../public/content/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp";
 import pic_ad1d1a0e_f6eb_4856_8bd8_f735ed5dd844_2022_07_19_21_01_06_org_roam_tags_demo_gif from "../../public/content/images/2020-06-10-org-roam-tags/2022-07-19-21-01-06-org-roam-tags-demo.gif";
-import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-regular.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_palette_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-palette.gif";
+import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-regular.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_03_ffmpeg_default_palette from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-29-03-ffmpeg-default-palette.webp";
-import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_47_gifify_lolcat_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-regular.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_47_gifify_lolcat_palette_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-palette.gif";
-import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_26_gifify_screen_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-regular.gif";
+import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_47_gifify_lolcat_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-regular.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_26_gifify_screen_palette_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-palette.gif";
-import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-regular.gif";
+import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_26_gifify_screen_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-regular.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_palette_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-palette.gif";
+import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-regular.gif";
 import pic_cd0fefec_39c8_4f72_aa4f_0b45c9b305f6_2022_07_19_22_04_15_org_roam_task_management_vol7_2 from "../../public/content/images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp";
+import pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqhl from "../../public/content/images/2026-01-05-claude-code-notifications/SCR-20260105-kqhl.webp";
+import pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqjz from "../../public/content/images/2026-01-05-claude-code-notifications/SCR-20260105-kqjz.webp";
 
 import static_d12frosted from "../../public/content/images/d12frosted.png";
 import static_emacs from "../../public/content/images/emacs.png";
@@ -69,32 +71,34 @@ import static_fish from "../../public/content/images/fish.png";
 import static_vui from "../../public/content/images/vui.png";
 
 const lookupMap = new Map<string, StaticImageData>([
+  ["/images/2026-01-05-claude-code-notifications/SCR-20260105-kqjz.webp", pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqjz],
+  ["/images/2026-01-05-claude-code-notifications/SCR-20260105-kqhl.webp", pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqhl],
   ["/images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp", pic_cd0fefec_39c8_4f72_aa4f_0b45c9b305f6_2022_07_19_22_04_15_org_roam_task_management_vol7_2],
-  ["/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_palette_gif],
   ["/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-regular.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_regular_gif],
-  ["/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_26_gifify_screen_palette_gif],
+  ["/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_palette_gif],
   ["/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-regular.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_26_gifify_screen_regular_gif],
-  ["/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_47_gifify_lolcat_palette_gif],
+  ["/images/2018-10-13-gifify/2022-07-19-20-30-26-gifify-screen-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_26_gifify_screen_palette_gif],
   ["/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-regular.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_47_gifify_lolcat_regular_gif],
+  ["/images/2018-10-13-gifify/2022-07-19-20-29-47-gifify-lolcat-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_47_gifify_lolcat_palette_gif],
   ["/images/2018-10-13-gifify/2022-07-19-20-29-03-ffmpeg-default-palette.webp", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_03_ffmpeg_default_palette],
-  ["/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_palette_gif],
   ["/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-regular.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_regular_gif],
+  ["/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_palette_gif],
   ["/images/2020-06-10-org-roam-tags/2022-07-19-21-01-06-org-roam-tags-demo.gif", pic_ad1d1a0e_f6eb_4856_8bd8_f735ed5dd844_2022_07_19_21_01_06_org_roam_tags_demo_gif],
   ["/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp", pic_a55e8242_5628_4042_baa7_f8e4abd153af_2022_07_19_20_34_19_emacs_booleans],
   ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_57_10_screenshot_ido],
-  ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-2.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_25_screenshot_ivy_2],
-  ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-1.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_25_screenshot_ivy_1],
   ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-59-screenshot-helm.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_59_screenshot_helm],
   ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-45-screenshot-popup.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_45_screenshot_popup],
+  ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-2.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_25_screenshot_ivy_2],
+  ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-56-25-screenshot-ivy-1.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_25_screenshot_ivy_1],
   ["/images/2022-04-23-yabai-spaces/2022-07-19-22-18-40-yabai-banner.svg", pic_8afcf505_349b_42cf_b3d0_8be0baef05e6_2022_07_19_22_18_40_yabai_banner_svg],
   ["/images/2016-12-20-Being-an-org-mode-addict/2022-07-19-18-39-02-59ca88ab-671f-4c5e-9bf8-25547bbadbc2.webp", pic_7dea6fd5_a443_434a_91ba_91106d2dc5a2_2022_07_19_18_39_02_59ca88ab_671f_4c5e_9bf8_25547bbadbc2],
   ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-55-org-roam-task-management-vol1-5.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_55_org_roam_task_management_vol1_5],
-  ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-3.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_28_org_roam_task_management_vol1_3],
   ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-4.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_28_org_roam_task_management_vol1_4],
+  ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-28-org-roam-task-management-vol1-3.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_28_org_roam_task_management_vol1_3],
   ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-13-org-agenda-filter-by-tags.gif", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_13_org_agenda_filter_by_tags_gif],
   ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-05-00-org-agenda-filter-by-category.gif", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_05_00_org_agenda_filter_by_category_gif],
-  ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-1.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_04_20_org_roam_task_management_vol1_1],
   ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-2.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_04_20_org_roam_task_management_vol1_2],
+  ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-04-20-org-roam-task-management-vol1-1.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_04_20_org_roam_task_management_vol1_1],
   ["/images/2020-06-23-task-management-with-roam-vol1/2022-07-19-21-03-45-org-roam-task-management-vol1-3.webp", pic_79963e74_7689_420b_9cd2_7a89171178f6_2022_07_19_21_03_45_org_roam_task_management_vol1_3],
   ["/images/2022-07-14-vulpea-0.3/2022-07-20-09-51-46-vulpea-logo.webp", pic_733d8b25_15b9_4a03_9173_dfc1d5d8c644_2022_07_20_09_51_46_vulpea_logo],
   ["/images/2017-06-13-Fish-notify-me-when-you-finish/2022-07-19-17-44-48-b98438ae-65f5-11e7-975f-0bbc94238d24.webp", pic_6c10dab7_9080_4c0d_a786_272f93d3aa99_2022_07_19_17_44_48_b98438ae_65f5_11e7_975f_0bbc94238d24],
@@ -103,8 +107,8 @@ const lookupMap = new Map<string, StaticImageData>([
   ["/images/2015-02-07-make-the-fish-fly/2022-07-19-17-11-16-fish-suggestions.gif", pic_69ac44fb_bc17_4674_a728_daa5829bcd8b_2022_07_19_17_11_16_fish_suggestions_gif],
   ["/images/2020-07-07-task-management-with-roam-vol4/2022-07-19-21-13-09-org-notes-insert.gif", pic_675cf553_8fcd_4bc4_be22_5eb3e88aab88_2022_07_19_21_13_09_org_notes_insert_gif],
   ["/images/2021-01-16-task-management-with-roam-vol5/2022-07-19-21-14-37-org-notes-project-tag-update.gif", pic_6108e748_2696_4343_8c04_5c03245261e6_2022_07_19_21_14_37_org_notes_project_tag_update_gif],
-  ["/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-1.webp", pic_4ecfd28d_bda9_4645_8885_c7e6ffb61fbc_2022_07_19_21_11_07_org_roam_task_management_vol3_1],
   ["/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-2.webp", pic_4ecfd28d_bda9_4645_8885_c7e6ffb61fbc_2022_07_19_21_11_07_org_roam_task_management_vol3_2],
+  ["/images/2020-06-25-task-management-with-roam-vol3/2022-07-19-21-11-07-org-roam-task-management-vol3-1.webp", pic_4ecfd28d_bda9_4645_8885_c7e6ffb61fbc_2022_07_19_21_11_07_org_roam_task_management_vol3_1],
   ["/images/2020-06-04-beginning-of-line/2022-07-19-20-59-20-beginning-of-line-org.gif", pic_3a117a58_727f_40ce_b925_78440123fd58_2022_07_19_20_59_20_beginning_of_line_org_gif],
   ["/images/2020-06-04-beginning-of-line/2022-07-19-20-59-00-beginning-of-line-haskell.gif", pic_3a117a58_727f_40ce_b925_78440123fd58_2022_07_19_20_59_00_beginning_of_line_haskell_gif],
   ["/images/2021-04-09-emacs-d/2022-07-19-21-58-18-emacs-d-2.webp", pic_39d31d0c_15bb_4c03_a8fe_a44cf0a50df2_2022_07_19_21_58_18_emacs_d_2],

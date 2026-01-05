@@ -1,0 +1,18 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Claude Code Notifications That Don't Suck",
+  "id": "e05cdcfc-7153-4588-8bb0-fa948b4aeba1",
+  "related": null,
+  "update": "2026-01-05",
+  "date": "2026-01-05",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "How to get useful macOS notifications from Claude Code with proper icons, repository context, and workspace information using hooks and terminal-notifier.",
+  "tags": [
+    "claude",
+    "macos"
+  ]
+}
