@@ -188,7 +188,7 @@ This means you don't need to change your install command when a new stable versi
 
 # Finally
 
-I've been maintaining [emacs-plus](https://github.com/d12frosted/homebrew-emacs-plus) for nearly a decade now. Pre-built binaries have been requested for most of that time, and I kept saying no - too complex, too many edge cases, native compilation makes it impossible. Turns out it wasn't impossible, just hard. The cask has been running for a few weeks now with nightly builds, and the "library not loaded" issues have disappeared for cask users.
+I've been maintaining [emacs-plus](https://github.com/d12frosted/homebrew-emacs-plus) for nearly a decade now. Pre-built binaries have been requested for most of that time, and I kept saying no - too complex, too many edge cases, native compilation makes it impossible. Turns out it wasn't impossible, just hard. The cask has been running for a few days now with nightly builds, and the "library not loaded" issues have disappeared for cask users (thanks for reporting, btw).
 
 If you've been compiling Emacs for years and it's worked fine - keep doing that. The formula isn't going anywhere. But if you've been bitten by dependency issues, or you just want Emacs installed in under a minute, this is for you.
 
