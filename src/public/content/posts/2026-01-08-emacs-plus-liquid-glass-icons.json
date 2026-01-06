@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "emacs-plus: Liquid Glass Icons for macOS Tahoe",
+  "id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+  "related": null,
+  "update": "2026-01-06",
+  "date": "2026-01-08",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "macOS 26 Tahoe introduces a new icon format with translucency and depth. Old icons get trapped in \"icon jail\" - a rounded square container. Automatic conversion looks terrible. Here's what it actually takes to make icons work.",
+  "tags": [
+    "emacs-plus"
+  ]
+}

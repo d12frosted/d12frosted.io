@@ -1,0 +1,17 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "emacs-plus: Pre-built Binaries via Cask",
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "related": null,
+  "update": "2026-01-06",
+  "date": "2026-01-06",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "After years of requests, emacs-plus finally offers pre-built binaries. Skip the 30-minute compile, get native compilation that just works, and never see \"library not loaded\" again. Here's how we made it happen.",
+  "tags": [
+    "emacs-plus"
+  ]
+}
