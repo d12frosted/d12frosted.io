@@ -177,6 +177,16 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
               </SyntaxHighlighter>
             )
           }
+          // Check if this is block code (contains newlines) vs inline code
+          const content = String(children)
+          if (content.includes('\n')) {
+            // Block code without language - still use SyntaxHighlighter for consistent styling
+            return (
+              <SyntaxHighlighter {...rest} language="text">
+                {content.replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            )
+          }
           return (
             <code {...rest} className={className}>
               {children}
