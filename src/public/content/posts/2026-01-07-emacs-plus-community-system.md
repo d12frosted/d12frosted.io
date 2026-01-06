@@ -189,7 +189,7 @@ This might sound harsh, but it's the only sustainable model. The alternative is 
 
 This system represents a shift in how I think about `emacs-plus`.
 
-For years, the formula grew by accumulation. Every reasonable request got a `--with-something` flag. Icons, patches, build options - if someone asked nicely and it wasn't obviously broken, it went in. The result was a formula with dozens of options, each one a maintenance liability. Homebrew's own guidelines [discourage excessive options](https://docs.brew.sh/Acceptable-Formulae#we-dont-like-install-options), and for good reason.
+For years, the formula grew by accumulation. Every reasonable request got a `--with-something` flag. Icons, patches, build options - if someone asked nicely and it wasn't obviously broken, it went in. The result was a formula with dozens of options, each one a maintenance liability. Homebrew's own guidelines discourage excessive options, and for good reason.
 
 The community system inverts this. Instead of me gatekeeping what goes into the formula, the infrastructure is open. Want an experimental patch? Add it to the registry or point to a URL. Want a custom icon? Same thing. The formula stays lean; the customisation lives in `build.yml` and the community directory.
 
