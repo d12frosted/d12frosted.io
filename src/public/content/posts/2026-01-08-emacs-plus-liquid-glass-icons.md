@@ -138,4 +138,4 @@ icon: dragon-plus
 
 ------------------------------------------------------------------------
 
-*This post is part of a series on recent `emacs-plus` changes. See also: [pre-built binaries via cask](/posts/emacs-plus-cask) and [the community patches and icons system](/posts/emacs-plus-community-system).*
+*This post is part of a series on recent `emacs-plus` changes. See also: [pre-built binaries via cask](/posts/2026-01-06-emacs-plus-cask) and [the community patches and icons system](/posts/2026-01-07-emacs-plus-community-system).*
