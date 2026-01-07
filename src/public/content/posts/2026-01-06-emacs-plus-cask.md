@@ -45,7 +45,7 @@ The key wins:
 - **Native compilation works** - Out of the box. No configuration. No tricks.
 - **Custom icons** - Yes, even with pre-built binaries.
 
-The cask includes native compilation (with AOT), xwidgets, tree-sitter, imagemagick, mailutils, and [Emacs Client.app](/posts/2025-11-24-emacs-plus-client-app). The `@master` variant updates nightly.
+The cask includes native compilation (with AOT), xwidgets, tree-sitter, mailutils, and [Emacs Client.app](/posts/2025-11-24-emacs-plus-client-app). The `@master` variant updates nightly.
 
 # Native Compilation: The Hard Part
 
