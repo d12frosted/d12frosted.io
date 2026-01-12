@@ -184,21 +184,31 @@ If you're coming from vulpea v1, migration is simple. Files remain the same; onl
 (vulpea-select "Note")
 ```
 
-The main adjustments are configuration (use `vulpea-db-sync-directories`) and enabling autosync. The [migration guide](https://github.com/d12frosted/vulpea/blob/v2-rewrite/docs/migration.org) covers the details.
+The main adjustments are configuration (use `vulpea-db-sync-directories`) and enabling autosync. The [migration guide](https://github.com/d12frosted/vulpea/blob/master/docs/migration.org) covers the details.
 
 My own migration (13k+ notes, several custom extensions and lots of code relying on vulpea) took about an evening - most of which I fixing old code that relied on org-roam directly.
 
 # What's next
 
-Vulpea v2 is the base layer I needed. On top of it:
+Vulpea v2 is the base layer I needed. On top of it, I've already released:
+
+## vulpea-ui
+
+[vulpea-ui](https://github.com/d12frosted/vulpea-ui) provides sidebar infrastructure and a widget framework. It includes default widgets for outline, backlinks, forward links, and stats - all rendered in a per-frame sidebar that auto-hides when switching to non-vulpea buffers. The widget system is built on [vui](https://github.com/d12frosted/vui), making it easy to create custom widgets for domain-specific needs. Available on MELPA.
 
 ## vulpea-journal
 
-A journaling module with a widget system. The core works; I'm polishing the UX. Will push my work soon™.
+[vulpea-journal](https://github.com/d12frosted/vulpea-journal) is a daily journaling interface that integrates with vulpea-ui's sidebar. It provides calendar navigation, "on this day" views from previous years, and a "created today" widget showing notes you created on any given date. Think of it as [org-journal](https://github.com/bastibe/org-journal) rebuilt for vulpea with a modern reactive UI. Available on MELPA.
 
-## vulpea-view (working title)
+And there's more on the horizon:
 
-A browsing and filtering interface. Interactive predicates, live results. Something I've wanted for years.
+## Collection views
+
+Table and card views for browsing notes - Airtable/Notion-style interfaces with saved queries and filtering. The structured data in vulpea makes this possible in a way that file-based search never could.
+
+## vulpea-mcp
+
+An MCP server exposing vulpea's query layer to LLMs. Imagine asking Claude: "all tasting notes of wines from Piedmont that I tasted with Person A this year" and getting actual results from your notes.
 
 ## Updated articles
 
@@ -212,6 +222,10 @@ To Jethro and everyone who contributed to org-roam: thank you. Your work inspire
 
 To vulpea users: v2 is stable enough for daily use. I've been running it for months. Try it out, report issues, and let me know what you build.
 
-The code is at [github.com/d12frosted/vulpea](https://github.com/d12frosted/vulpea), with v2 on the [v2-rewrite branch](https://github.com/d12frosted/vulpea/tree/v2-rewrite). Documentation is in `docs/`.
+The code is at [github.com/d12frosted/vulpea](https://github.com/d12frosted/vulpea). Vulpea v2 is available on [MELPA](https://melpa.org/#/vulpea). Documentation is in `docs/`.
 
 Safe travels!
+
+# Changelog
+
+- **2026-01-12**: Updated "What's next" section - vulpea v2.0.0, vulpea-ui v1.0.0, and vulpea-journal v1.0.0 are now available on MELPA. Added roadmap items for collection views and vulpea-mcp.
