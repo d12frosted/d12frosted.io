@@ -392,7 +392,7 @@ While building Emacs tools for [Barberry Garden](https://barberry.io) - my wine 
 
 It works, but the friction is constant. Every feature requires fighting the architecture. The cognitive overhead of manual state management, cursor preservation, and layout calculation adds up.
 
-So I've started designing something new: a UI layer that uses `widget.el` under the hood but provides higher-level abstractions. Not a full reactive framework - Emacs doesn't need that complexity - but a thin system that handles:
+That "something new" is now a reality: [vui.el](https://github.com/d12frosted/vui.el) - a UI layer that uses `widget.el` under the hood but provides higher-level abstractions. Not a full reactive framework - Emacs doesn't need that complexity - but a thin system that handles:
 
 - **Declarative composition**: describe what you want, not how to build it
 - **Automatic state propagation**: when this changes, update that
@@ -401,9 +401,9 @@ So I've started designing something new: a UI layer that uses `widget.el` under 
 
 The goal isn't to replace `widget.el` but to tame it. Keep the performance, hide the ceremony. Respect the fundamental constraints of Emacs UI - the criticality of cursor position, the two-dimensional nature of the buffer. We don't have a proper DOM and CSS, and that's actually fine.
 
-No promises on timeline, but I may share the design document soon. One more React-inspired UI library for Emacs? Perhaps. But sometimes you need to build the tools that let you build what you actually want.
+[vui.el](https://github.com/d12frosted/vui.el) is now available on [MELPA](https://melpa.org/#/vui). If you want to get started quickly, check out the [quickstart guide](/posts/2025-12-01-vui-quickstart).
 
-In the meantime, [widget-extra](https://github.com/d12frosted/widget-extra) is available and working. The widgets described in this post - labels, fields, buttons, `fields-group`, `table`, and more - are all there. Use it if it helps. Study it if you're curious. And if I do build the new UI system, `widget-extra` will likely be superseded - but until then, it's a reasonable way to build widget-based interfaces without starting from scratch.
+The [widget-extra](https://github.com/d12frosted/widget-extra) library described in this post remains available - the widgets like labels, fields, buttons, `fields-group`, `table`, and more are all still there. But for new projects, I recommend using `vui.el` instead, as it provides a much more pleasant development experience while building on the same foundations.
 
 # Conclusion
 
