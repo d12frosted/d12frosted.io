@@ -1,14 +1,21 @@
 import { siteConfig } from '@/config/config'
 import { getAllPosts } from '@/lib/posts'
 import { Feed } from 'feed'
+import { marked } from 'marked'
 
-// Sanitize content for XML: remove invalid characters and escape CDATA terminators
-function sanitizeForXml(content: string): string {
-  return content
+// Configure marked for GFM (matching site's remark-gfm)
+marked.use({ gfm: true })
+
+// Convert markdown to HTML and sanitize for XML
+async function markdownToHtml(content: string, baseUrl: string): Promise<string> {
+  const html = await marked.parse(content)
+  return html
     // Remove invalid XML characters (control chars except tab, newline, carriage return)
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
     // Escape CDATA terminator to prevent breaking CDATA sections
     .replace(/]]>/g, ']]&gt;')
+    // Make relative image URLs absolute
+    .replace(/src="\/images\//g, `src="${baseUrl}/images/`)
 }
 
 export const siteUrl =
@@ -47,7 +54,7 @@ export async function generateFeed(): Promise<Feed> {
       id: `${siteUrl}${post.href}`,
       link: `${siteUrl}${post.href}`,
       description: post.description,
-      content: sanitizeForXml(post.content),
+      content: await markdownToHtml(post.content, siteUrl),
       author: post.authors.map((name) => ({ name })),
       date: post.updated && !isNaN(post.updated.getTime()) ? post.updated : post.published,
       published: post.published,
