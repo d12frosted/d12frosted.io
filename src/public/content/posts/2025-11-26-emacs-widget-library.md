@@ -217,7 +217,7 @@ Solution: create each widget in a temporary buffer, measure the resulting text, 
   ...)
 ```
 
-This is expensive - we create every widget twice. But it works, and for reasonable table sizes, it's fast enough.
+This is expensive - we create every widget twice. But it works, and for reasonable table sizes, it's fast enough. (For better performance, you should reuse the same temporary buffer instead of creating a new one for each cell - but for simplicity of illustration, I'm omitting that optimisation here.)
 
 ### Step 3: Render with Padding
 
