@@ -36,6 +36,7 @@ export async function GET() {
       id: `${siteUrl}${post.href}`,
       link: `${siteUrl}${post.href}`,
       description: post.description,
+      content: post.content,
       author: post.authors.map((name) => ({ name })),
       date: post.published,
       category: post.tags.map((tag) => ({ name: tag })),
