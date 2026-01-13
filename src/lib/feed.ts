@@ -40,9 +40,8 @@ export async function generateFeed(): Promise<Feed> {
       description: post.description,
       content: post.content,
       author: post.authors.map((name) => ({ name })),
-      date: post.published,
+      date: post.updated && !isNaN(post.updated.getTime()) ? post.updated : post.published,
       published: post.published,
-      updated: post.updated,
       category: post.tags.map((tag) => ({ name: tag })),
     })
   }
