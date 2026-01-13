@@ -7,9 +7,10 @@ import { marked } from 'marked'
 marked.use({ gfm: true })
 
 // Convert markdown to HTML and sanitize for XML
-async function markdownToHtml(content: string, baseUrl: string): Promise<string> {
+async function markdownToHtml(content: string, baseUrl: string, postUrl: string): Promise<string> {
   const html = await marked.parse(content)
-  return html
+  const notice = `<p><em>For proper rendering of code blocks, math, and interactive elements, <a href="${postUrl}">read this post on the website</a>.</em></p><hr/>`
+  return (notice + html)
     // Remove invalid XML characters (control chars except tab, newline, carriage return)
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
     // Escape CDATA terminator to prevent breaking CDATA sections
@@ -54,7 +55,7 @@ export async function generateFeed(): Promise<Feed> {
       id: `${siteUrl}${post.href}`,
       link: `${siteUrl}${post.href}`,
       description: post.description,
-      content: await markdownToHtml(post.content, siteUrl),
+      content: await markdownToHtml(post.content, siteUrl, `${siteUrl}${post.href}`),
       author: post.authors.map((name) => ({ name })),
       date: post.updated && !isNaN(post.updated.getTime()) ? post.updated : post.published,
       published: post.published,
