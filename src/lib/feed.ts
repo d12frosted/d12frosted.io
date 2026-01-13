@@ -3,10 +3,10 @@ import { getAllPosts } from '@/lib/posts'
 import { Feed } from 'feed'
 
 export const siteUrl =
-  process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NODE_ENV === 'production'
-      ? 'https://d12frosted.io'
+  process.env.VERCEL_ENV === 'production'
+    ? 'https://www.d12frosted.io'
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
       : 'http://localhost:3000'
 
 export async function generateFeed(): Promise<Feed> {
