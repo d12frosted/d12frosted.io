@@ -3,7 +3,7 @@ import { Navbar, NavbarDivider, NavbarItem, NavbarLabel, NavbarSection, NavbarSp
 import { Sidebar, SidebarBody, SidebarHeader, SidebarItem, SidebarSection } from '@/components/sidebar'
 import { StackedLayout } from '@/components/stacked-layout'
 import { siteConfig } from '@/config/config'
-import { SiGithub } from '@icons-pack/react-simple-icons'
+import { SiGithub, SiRss } from '@icons-pack/react-simple-icons'
 import { Analytics } from '@vercel/analytics/react'
 import Image from 'next/image'
 import React from 'react'
@@ -49,6 +49,9 @@ export function ApplicationLayout({
             </NavbarSection>
             <NavbarSpacer />
             <NavbarSection>
+              <NavbarItem href="/feed.xml" aria-label="RSS Feed">
+                <SiRss />
+              </NavbarItem>
               <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
                 <SiGithub />
               </NavbarItem>
@@ -107,6 +110,9 @@ export function ApplicationLayoutWide({
           </NavbarSection>
           <NavbarSpacer />
           <NavbarSection>
+            <NavbarItem href="/feed.xml" aria-label="RSS Feed">
+              <SiRss />
+            </NavbarItem>
             <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
               <SiGithub />
             </NavbarItem>
