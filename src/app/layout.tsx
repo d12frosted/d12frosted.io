@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import type React from 'react'
 import { ApplicationLayout } from './application-layout'
 import {siteConfig} from "@/config/config";
+import { ThemeProvider, themeInitScript } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
   title: {
@@ -25,14 +26,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="en"
-      className="overflow-x-hidden text-zinc-950 antialiased lg:bg-zinc-100 dark:bg-zinc-900 dark:text-white dark:lg:bg-zinc-950"
+      className="overflow-x-hidden text-ink antialiased bg-paper"
+      suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
-      <body className="overflow-x-hidden">
-        <ApplicationLayout>{children}</ApplicationLayout>
+      <body className="overflow-x-hidden bg-paper text-ink">
+        <ThemeProvider>
+          <ApplicationLayout>{children}</ApplicationLayout>
+        </ThemeProvider>
       </body>
     </html>
   )

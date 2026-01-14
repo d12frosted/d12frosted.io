@@ -6,6 +6,71 @@ html {
   font-feature-settings: 'cv11';
 }
 
+/* Dark mode color overrides */
+html.dark {
+  --color-paper: #1A1A1A;
+  --color-canvas: #242424;
+  --color-ink: #E8E6E3;
+  --color-ink-muted: #9CA3AF;
+  --color-border-soft: #3D3D3D;
+  --color-code-bg: #2D2D2D;
+
+  /* jRPG colors - slightly adjusted for dark mode contrast */
+  --color-hp-green: #8FC279;
+  --color-mp-blue: #7A9FC4;
+  --color-xp-orange: #F0BC62;
+  --color-critical-red: #E07A67;
+  --color-magic-purple: #D4CCE6;
+}
+
+/* Dark mode prose overrides - ensure readable text */
+html.dark .prose {
+  --tw-prose-body: #E8E6E3;
+  --tw-prose-headings: #FFFFFF;
+  --tw-prose-lead: #D1D5DB;
+  --tw-prose-links: #7A9FC4;
+  --tw-prose-bold: #FFFFFF;
+  --tw-prose-counters: #9CA3AF;
+  --tw-prose-bullets: #9CA3AF;
+  --tw-prose-hr: #3D3D3D;
+  --tw-prose-quotes: #E8E6E3;
+  --tw-prose-quote-borders: #7A9FC4;
+  --tw-prose-captions: #9CA3AF;
+  --tw-prose-code: #E8E6E3;
+  --tw-prose-pre-code: #E8E6E3;
+  --tw-prose-pre-bg: #2D2D2D;
+  --tw-prose-th-borders: #3D3D3D;
+  --tw-prose-td-borders: #3D3D3D;
+}
+
+/* Syntax highlighting - light mode */
+:root {
+  --syntax-bg: #FFFFFF;
+  --syntax-text: #1A1A1A;
+  --syntax-comment: #6B6B6B;
+  --syntax-keyword: #5F87AF;
+  --syntax-string: #7FB069;
+  --syntax-number: #E9AE4E;
+  --syntax-deleted: #D66853;
+}
+
+/* Syntax highlighting - dark mode */
+html.dark {
+  --syntax-bg: #2D2D2D;
+  --syntax-text: #E8E6E3;
+  --syntax-comment: #9CA3AF;
+  --syntax-keyword: #7A9FC4;
+  --syntax-string: #8FC279;
+  --syntax-number: #F0BC62;
+  --syntax-deleted: #E07A67;
+}
+
+/* Syntax highlighter container styling */
+.syntax-highlighter {
+  background-color: var(--syntax-bg);
+  color: var(--syntax-text);
+}
+
 @theme {
   --font-sans: 'Inter var', Inter, sans-serif;
   --font-sans--font-feature-settings: 'cv11';
@@ -40,7 +105,7 @@ html {
 
 @utility prose {
   a {
-    @apply text-mp-blue underline decoration-mp-blue/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink/50;
+    @apply text-mp-blue underline decoration-mp-blue/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink/50 dark:hover:text-white dark:hover:decoration-white/50;
   }
 
   blockquote {

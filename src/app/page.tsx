@@ -95,7 +95,7 @@ export default async function Home() {
         <section className="order-1 lg:col-start-1 lg:row-start-1">
           <div className="mb-4 h-1 w-16 bg-mp-blue" />
           <h2 className="mb-6 text-2xl font-bold tracking-tight text-ink dark:text-white">About</h2>
-          <div className="prose prose-stone max-w-none text-base leading-relaxed">
+          <div className="prose prose-stone dark:prose-invert max-w-none text-base leading-relaxed">
             <CustomMarkdown>{aboutText}</CustomMarkdown>
           </div>
 

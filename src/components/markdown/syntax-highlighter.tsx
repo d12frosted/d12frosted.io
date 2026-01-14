@@ -3,54 +3,52 @@
 import * as React from 'react'
 import { Prism as Highlighter, SyntaxHighlighterProps } from 'react-syntax-highlighter'
 
-// Custom syntax theme matching our brutalist + jRPG color palette
-const customStyle = {
+// Base style - background handled by CSS for dark mode support
+const baseStyle = {
   'pre[class*="language-"]': {
-    background: '#FFFFFF !important', // white for better readability
-    borderRadius: '0 !important',
-    margin: '0 !important',
-    padding: '1.5rem !important',
-    border: 'none !important',
-    color: '#1A1A1A', // ink
+    background: 'transparent',
+    borderRadius: '0',
+    margin: '0',
+    padding: '1.5rem',
+    border: 'none',
     fontFamily: 'IBM Plex Mono, Source Code Pro, monospace',
     fontSize: '0.875rem',
     lineHeight: '1.7',
   },
   'code[class*="language-"]': {
-    background: 'transparent !important',
-    color: '#1A1A1A', // ink
+    background: 'transparent',
     fontFamily: 'IBM Plex Mono, Source Code Pro, monospace',
   },
-  // Token colors using our palette
-  'comment': { color: '#6B6B6B', fontStyle: 'italic' }, // ink-muted
-  'prolog': { color: '#6B6B6B' },
-  'doctype': { color: '#6B6B6B' },
-  'cdata': { color: '#6B6B6B' },
-  'punctuation': { color: '#1A1A1A' }, // ink
-  'property': { color: '#5F87AF' }, // mp-blue
-  'tag': { color: '#5F87AF' },
-  'boolean': { color: '#5F87AF' },
-  'number': { color: '#E9AE4E' }, // xp-orange
-  'constant': { color: '#E9AE4E' },
-  'symbol': { color: '#E9AE4E' },
-  'deleted': { color: '#D66853' }, // critical-red
-  'selector': { color: '#7FB069' }, // hp-green
-  'attr-name': { color: '#7FB069' },
-  'string': { color: '#7FB069' },
-  'char': { color: '#7FB069' },
-  'builtin': { color: '#7FB069' },
-  'inserted': { color: '#7FB069' },
-  'operator': { color: '#1A1A1A' },
-  'entity': { color: '#1A1A1A' },
-  'url': { color: '#5F87AF' },
-  'variable': { color: '#1A1A1A' },
-  'atrule': { color: '#5F87AF' },
-  'attr-value': { color: '#7FB069' },
-  'function': { color: '#5F87AF' },
-  'class-name': { color: '#E9AE4E' },
-  'keyword': { color: '#5F87AF', fontWeight: '600' },
-  'regex': { color: '#7FB069' },
-  'important': { color: '#D66853', fontWeight: '600' },
+  // Token colors using CSS variables - these work in both light and dark
+  'comment': { color: 'var(--syntax-comment)', fontStyle: 'italic' },
+  'prolog': { color: 'var(--syntax-comment)' },
+  'doctype': { color: 'var(--syntax-comment)' },
+  'cdata': { color: 'var(--syntax-comment)' },
+  'punctuation': { color: 'var(--syntax-text)' },
+  'property': { color: 'var(--syntax-keyword)' },
+  'tag': { color: 'var(--syntax-keyword)' },
+  'boolean': { color: 'var(--syntax-keyword)' },
+  'number': { color: 'var(--syntax-number)' },
+  'constant': { color: 'var(--syntax-number)' },
+  'symbol': { color: 'var(--syntax-number)' },
+  'deleted': { color: 'var(--syntax-deleted)' },
+  'selector': { color: 'var(--syntax-string)' },
+  'attr-name': { color: 'var(--syntax-string)' },
+  'string': { color: 'var(--syntax-string)' },
+  'char': { color: 'var(--syntax-string)' },
+  'builtin': { color: 'var(--syntax-string)' },
+  'inserted': { color: 'var(--syntax-string)' },
+  'operator': { color: 'var(--syntax-text)' },
+  'entity': { color: 'var(--syntax-text)' },
+  'url': { color: 'var(--syntax-keyword)' },
+  'variable': { color: 'var(--syntax-text)' },
+  'atrule': { color: 'var(--syntax-keyword)' },
+  'attr-value': { color: 'var(--syntax-string)' },
+  'function': { color: 'var(--syntax-keyword)' },
+  'class-name': { color: 'var(--syntax-number)' },
+  'keyword': { color: 'var(--syntax-keyword)', fontWeight: '600' },
+  'regex': { color: 'var(--syntax-string)' },
+  'important': { color: 'var(--syntax-deleted)', fontWeight: '600' },
 }
 
 export const SyntaxHighlighter: React.FC<Omit<SyntaxHighlighterProps, 'style' | 'PreTag' | 'codeTagProps'>> = ({
@@ -59,11 +57,11 @@ export const SyntaxHighlighter: React.FC<Omit<SyntaxHighlighterProps, 'style' | 
   ...props
 }) => {
   return (
-    <div className="border-l-[3px] border-mp-blue overflow-x-auto bg-white">
+    <div className="syntax-highlighter border-l-[3px] border-mp-blue overflow-x-auto">
       {/* @ts-ignore */}
       <Highlighter
         {...props}
-        style={customStyle}
+        style={baseStyle}
         language={language}
         PreTag="div"
         codeTagProps={{ className: 'font-mono' }}
