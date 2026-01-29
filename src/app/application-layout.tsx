@@ -72,6 +72,31 @@ export function ApplicationLayout({
         </div>
       </main>
 
+      {/* Footer */}
+      <footer className="border-t border-border-soft px-4 py-8 lg:px-16">
+        <div className="mx-auto max-w-6xl font-mono text-xs uppercase tracking-wider text-ink-muted">
+          <a
+            href="https://www.patreon.com/d12frosted"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-ink-muted/30 hover:text-ink hover:decoration-ink/30"
+          >
+            Support on Patreon
+          </a>
+          <span className="mx-2">·</span>
+          <a
+            href="https://creativecommons.org/licenses/by/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-ink-muted/30 hover:text-ink hover:decoration-ink/30"
+          >
+            CC BY 4.0
+          </a>
+          <span className="mx-2">·</span>
+          <span>2015 - 2026 Boris Buliga</span>
+        </div>
+      </footer>
+
       {/* Analytics */}
       <Analytics />
       <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
