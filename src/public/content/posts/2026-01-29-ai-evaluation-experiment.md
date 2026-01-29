@@ -123,6 +123,8 @@ So the next phase isn't just "give everyone Claude." It's improving infrastructu
 
 The dashboard keeps running. The community keeps growing. And somewhere in the backlog, there are questions we haven't answered yet: how do you validate AI-generated code at scale? How do you handle the review bottleneck when PRs contain "too much value"? What happens to expertise when the tool handles execution?
 
+I've also been running separate experiments on teaching Claude to generate domain-specific code patterns correctly - getting it to look things up instead of guessing. If there's interest, I can write about that separately.
+
 I don't have answers to those yet. But the experiment gave us enough confidence to keep going.
 
 ------------------------------------------------------------------------
