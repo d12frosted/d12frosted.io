@@ -1,0 +1,17 @@
+{
+  "publish": null,
+  "hide": null,
+  "pinned": null,
+  "title": "How We Evaluated AI Coding Tools at Scale",
+  "id": "177936e1-37e5-47cd-95dc-fdb5ca2d6611",
+  "related": null,
+  "update": "2026-01-29",
+  "date": "2026-01-29",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Running a 5-week experiment to evaluate Claude Code at Wix. Methodology, tooling, findings, and what we'd do differently.",
+  "tags": [
+    "ai"
+  ]
+}
