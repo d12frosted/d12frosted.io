@@ -43,7 +43,7 @@ export function ApplicationLayout({
             <NavbarDivider className="max-sm:hidden" />
             <NavbarSection className="">
               {navItems.map(({ label, url }) => (
-                <NavbarItem key={label} href={url}>
+                <NavbarItem key={label} href={url} className={label === 'Projects' ? 'max-sm:hidden' : undefined}>
                   {label}
                 </NavbarItem>
               ))}
@@ -52,13 +52,13 @@ export function ApplicationLayout({
             <NavbarSection>
               <ThemeToggle />
               <NavbarItem href="/feed.xml" aria-label="RSS Feed">
-                <SiRss />
+                <SiRss size={20} />
               </NavbarItem>
-              <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
-                <SiGithub />
+              <NavbarItem href={siteConfig.links.github} aria-label="GitHub" className="max-sm:hidden">
+                <SiGithub size={20} />
               </NavbarItem>
               <NavbarItem href="/support" aria-label="Support">
-                <HeartIcon />
+                <HeartIcon size={20} />
               </NavbarItem>
             </NavbarSection>
           </Navbar>
@@ -137,10 +137,13 @@ export function ApplicationLayoutWide({
           <NavbarSection>
             <ThemeToggle />
             <NavbarItem href="/feed.xml" aria-label="RSS Feed">
-              <SiRss />
+              <SiRss size={20} />
             </NavbarItem>
             <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
-              <SiGithub />
+              <SiGithub size={20} />
+            </NavbarItem>
+            <NavbarItem href="/support" aria-label="Support">
+              <HeartIcon size={20} />
             </NavbarItem>
           </NavbarSection>
         </Navbar>
