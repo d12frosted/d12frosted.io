@@ -142,9 +142,6 @@ export function ApplicationLayoutWide({
             <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
               <SiGithub />
             </NavbarItem>
-            <NavbarItem href={siteConfig.links.barberry} aria-label="Barberry">
-              <WineIcon />
-            </NavbarItem>
           </NavbarSection>
         </Navbar>
       }
