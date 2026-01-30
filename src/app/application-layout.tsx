@@ -1,4 +1,4 @@
-import { WineIcon } from '@/components/icons/wine'
+import { HeartIcon } from '@/components/icons/heart'
 import { Navbar, NavbarDivider, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/navbar'
 import { Sidebar, SidebarBody, SidebarHeader, SidebarItem, SidebarSection } from '@/components/sidebar'
 import { StackedLayout } from '@/components/stacked-layout'
@@ -57,8 +57,8 @@ export function ApplicationLayout({
               <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
                 <SiGithub />
               </NavbarItem>
-              <NavbarItem href={siteConfig.links.barberry} aria-label="Barberry">
-                <WineIcon />
+              <NavbarItem href="/support" aria-label="Support">
+                <HeartIcon />
               </NavbarItem>
             </NavbarSection>
           </Navbar>
@@ -76,12 +76,10 @@ export function ApplicationLayout({
       <footer className="border-t border-border-soft px-4 py-8 lg:px-16">
         <div className="mx-auto max-w-6xl font-mono text-xs uppercase tracking-wider text-ink-muted">
           <a
-            href="https://www.patreon.com/d12frosted"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/support"
             className="underline decoration-ink-muted/30 hover:text-ink hover:decoration-ink/30"
           >
-            Support on Patreon
+            Support
           </a>
           <span className="mx-2">·</span>
           <a
