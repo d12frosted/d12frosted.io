@@ -1,0 +1,18 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Vulpea: 171x faster autosync startup",
+  "id": "bc4e30ed-fb18-419f-96ef-184b1a5b269a",
+  "related": null,
+  "update": "2026-01-31",
+  "date": "2026-01-31",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "How I took vulpea's autosync startup from 1.4 seconds to 8 milliseconds for 13,800 notes. A story of measuring first, then eliminating every blocking call from the startup path.",
+  "tags": [
+    "vulpea",
+    "emacs"
+  ]
+}
