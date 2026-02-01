@@ -1,0 +1,18 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Vulpea v2.1: queries, fixes, and performance",
+  "id": "a7c3e5f1-4b82-4d9a-8f6e-1c2d3e4f5a6b",
+  "related": null,
+  "update": "2026-02-01",
+  "date": "2026-02-01",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Vulpea v2.1 adds graph diagnostics, a link querying API, extraction fixes, and non-blocking polling. A recap of everything since v2.0.0.",
+  "tags": [
+    "vulpea",
+    "emacs"
+  ]
+}
