@@ -84,4 +84,4 @@ The tool will keep getting better. The question is whether we will.
 
 —
 
-**The study referenced throughout is Shen & Tamkin (2026), "How AI Impacts Skill Formation." Full paper: <https://arxiv.org/abs/2601.20245>**
+/The study referenced throughout is Shen & Tamkin (2026), "How AI Impacts Skill Formation." Full paper: <https://arxiv.org/abs/2601.20245/>
