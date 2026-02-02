@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://github.com/sponsors/d12frosted"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-d12frosted-pink?logo=githubsponsors&logoColor=white"/></a>
+</p>
+
 # d12frosted.io
 
 Personal site.
@@ -48,3 +52,7 @@ npm run dev
 ## License
 
 Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+
+## Support
+
+If you enjoy this project, you can support its development via [GitHub Sponsors](https://github.com/sponsors/d12frosted) or [Patreon](https://www.patreon.com/d12frosted).
