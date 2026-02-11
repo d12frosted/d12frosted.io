@@ -4,7 +4,7 @@ We started with twenty-one volunteers and a two-week experiment. Five weeks late
 
 Wix engineering had a fragmented AI tooling landscape. Cursor was available and widely used. We also had an internal tool called Astra - and I want to be fair to that team. They were essentially trying to build something like Claude Code before Claude Code existed: a local web interface for AI-assisted development. Small team, limited resources, genuinely novel attempt at a hard problem. It worked, but not as well as we needed for real-world tasks.
 
-After some internal debates about whether to try Claude Code more broadly, we decided to run a proper evaluation. I didn't want to go blindly. I wanted to measure things, understand effects, collect information. Otherwise my enthusiasm would stay just with me.
+After some internal debates about whether to try Claude Code more broadly, we decided to run a proper evaluation. I didn't want to go blindly. I wanted to measure things, understand effects and collect information. Otherwise my enthusiasm would stay just with me.
 
 # The Design
 
@@ -20,7 +20,7 @@ The experiment had four components:
 
 # The Waves
 
-Wave 1 started December 22nd with twenty-one volunteers from Israel. Wave 2 brought in Ukraine, Lithuania, and Poland. Wave 3 specifically recruited heavy Cursor users. Wave 4 targeted heavy Astra users.
+Wave 1 started December 22nd with twenty-one volunteers. Wave 2 added twenty-seven participants. Wave 3 brought in twenty-four more, specifically recruiting heavy Cursor users. Wave 4 targeted heavy Astra users with fourteen participants.
 
 This wasn't the original plan. We'd intended a simple two-week study. But the early results were strong enough that people started asking to join, and we said yes. The rolling design turned out to be analytically useful: each participant serves as their own baseline, which avoids calendar confounds like holidays.
 
@@ -30,20 +30,20 @@ I built a dashboard called TACOS - Tracking AI Code Output Statistics. It ingest
 
 The whole pipeline ran on my laptop. I was lazy, and iterating locally was fast. I treated it as a throwaway tool from day one.
 
-There were interesting technical challenges. Connecting commits to employees sounds trivial until you realise people forget to configure their git author properly. Personal cryptic emails, GitHub noreply addresses, mismatched identities. Luckily I had a few tricks - an internal service and local CLI to query employee data - though these tricks sometimes result in calls with security. Resolving 89% of commit emails to actual employees took more work than the analysis itself.
+There were interesting technical challenges. Connecting commits to employees sounds trivial until you realise people forget to configure their git author properly. Personal cryptic emails, GitHub noreply addresses, mismatched identities. I used internal services and a local CLI to map commit data to employees. Resolving 89% of commit emails to actual employees took more work than the analysis itself.
 
 Not to mention the infrastructural limitations: disk space on my laptop, API rate limits, network constraints. I couldn't afford to fully clone the entire organisation's repositories. Had to be smart about what to fetch and when.
 
 Of course I would have loved richer data - tickets closed, cycle time, that sort of thing. But at Wix we don't constrain people with heavy tooling requirements, and we don't collect that kind of performance data. I consider this a good thing. I pity employees at companies where they have "performance metrics" tracking their every move.
 
-So I measured what was measurable: GitHub activity. Without telling anyone, naturally.
+So I measured what was measurable: GitHub activity.
 
 ## GitHub Results
 
 | Metric      | Claude Code | Cursor (control) | DiD Effect |
 |-------------|-------------|------------------|------------|
-| PRs/day     | +83%        | +19%             | +0.40      |
-| Commits/day | +95%        | +4%              | +0.83      |
+| PRs/day     | +92%        | +22%             | +0.61      |
+| Commits/day | +119%       | +6%              | +1.11      |
 
 These effects were consistent across all matching levels - guild, guild + country, guild + company, same manager-of-manager. Even when we restricted the control group to the top 100 heaviest Cursor users in our Server guild, the pattern held.
 
@@ -65,7 +65,7 @@ The funny thing: Cursor users *said* they'd become much more productive. I could
 | Learning curve                     | 69% trivial/gentle, 0% steep      |
 | Chose Claude as single AI tool     | 100%                              |
 
-When asked to pick one AI coding tool, every single exit respondent chose Claude Code.
+NPS (Net Promoter Score) measures how likely people are to recommend a tool, on a scale from -100 to +100. Anything above +50 is considered excellent. When asked to pick one AI coding tool, every single exit respondent chose Claude Code.
 
 **People didn't need guidance.** My superiors assumed I was productive with Claude because I knew our infrastructure well, and others would need significant hand-holding. Wrong. People figured it out themselves, often within days. I'm glad we took the approach of giving nothing at all and letting people discover what worked.
 
@@ -91,9 +91,7 @@ The community built itself. We just provided the space.
 
 ## What Didn't Work
 
-The MCP integrations - connectors to external tools like Grafana and Slack - were flaky. This was the most common complaint. In fairness, the problem was our internal MCP gateway; auth and security are hard. Most participants worked around it by using CLI tools directly, especially `gh` for GitHub.
-
-Some developers missed having a proper IDE interface. The terminal-based workflow polarised people: those who loved it really loved it, and those who didn't felt constrained.
+Some developers missed having a proper IDE interface. The terminal-based workflow polarised people: those who loved it really loved it, and those who didn't felt constrained. I think this is mostly about what you're used to. Giving up familiar tools is genuinely hard - even when the new thing is better, the transition cost is real. And the tooling is improving fast. IDE integrations, better UIs, more options. The market will figure this out. But the struggle for new users shouldn't be dismissed.
 
 # The Organic Growth
 
@@ -119,7 +117,7 @@ The bottleneck shifts from "can I build this?" to "can we coordinate, review, an
 
 If we don't address this, we get the AI Curse: individuals highly productive, organisation unable to absorb the output.
 
-So the next phase isn't just "give everyone Claude." It's improving infrastructure to be AI-friendly. Cutting the number of decision-making checkpoints. Building skills and documentation that encode our patterns. I've been running separate experiments on teaching Claude to generate our internal API patterns correctly, and building a CI system that runs scenarios against real-world tasks to catch regressions before they ship.
+So the next phase isn't just "give everyone Claude." It's improving infrastructure to be AI-friendly. Cutting the number of decision-making checkpoints - what Aviran Mordo describes as the [xEngineer](https://www.aviransplace.com/post/embracing-the-ai-revolution-introducing-the-xengineer-at-wix): fewer people involved in each process, each person owning more end-to-end. Building skills and documentation that encode our patterns. I've been running separate experiments on teaching Claude to generate our internal API patterns correctly, and building a CI system that runs scenarios against real-world tasks to catch regressions before they ship.
 
 The dashboard keeps running. The community keeps growing. And somewhere in the backlog, there are questions we haven't answered yet: how do you validate AI-generated code at scale? How do you handle the review bottleneck when PRs contain "too much value"? What happens to expertise when the tool handles execution?
 
