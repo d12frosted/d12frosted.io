@@ -54,7 +54,7 @@ What's actually happening is that some skills are migrating and others are becom
 
 —
 
-Working with AI is not unlike working with people. Each new session is a newcomer who knows nothing about your context. They learn fast - faster than any human would - but they arrive blank. Your job is to onboard them: articulate the outcome you want clearly enough that they can move toward it, and understand your domain deeply enough to know what context is critical to share. Which constraints are load-bearing. Which decisions have history behind them that the code alone doesn't reveal.
+Working with AI is not unlike working with people. Each new session is a newcomer who knows nothing about your context. They learn fast - faster than any human would - but they arrive blank. And unlike a human, they won't remember tomorrow. Your job is to onboard them: articulate the outcome you want clearly enough that they can move toward it, and understand your domain deeply enough to know what context is critical to share. Which constraints are load-bearing. Which decisions have history behind them that the code alone doesn't reveal.
 
 This is the same skill you need when onboarding a junior engineer, when explaining a technical decision to a product manager, when writing a design document that will outlive the meeting where you presented it. And it depends, entirely, on the expertise you bring. Without understanding the craft, it's hard to know what context matters. You might explain the wrong things in great detail while leaving the critical assumptions implicit. The AI will do exactly what you described - competently, thoroughly, and in the wrong direction.
 
