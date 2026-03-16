@@ -8,7 +8,7 @@ The optics are extraordinary. You can see craters on moons, the rings of distant
 
 The tool didn't make seeing harder. It made *steadiness* harder. And if you don't know that going in, you'll think the sky is shaking when it's actually your hands.
 
-I keep thinking about this image because I got something wrong a few months ago. I wrote that AI might be eroding expertise - that the gap between capability and comprehension was widening, quietly, and that the people most tempted to skip the foundations were the ones who needed them most. I called it "knowing less, producing more." I meant it as an observation, not a verdict. But observations have a way of settling into conclusions if you don't revisit them.
+I keep thinking about this image because I got something wrong a few months ago. I wrote that AI might be eroding expertise - that the gap between capability and comprehension was widening, quietly, and that the people most tempted to skip the foundations were the ones who needed them most. I called it "[knowing less, producing more](/posts/2025-12-08-knowing-less-producing-more)." I meant it as an observation, not a verdict. But observations have a way of settling into conclusions if you don't revisit them.
 
 I no longer think it's erosion. I think it's something louder and more disorienting - a transformation that *feels* like erosion because the speed distorts our sense of what's happening. The principles of good engineering haven't changed. The cost of ignoring them has. The telescope got stronger. The sky stayed where it was.
 
@@ -66,7 +66,7 @@ AI didn't bring much new to the table in terms of mental models. There are new c
 
 And this is where I keep landing: the discipline was always the point.
 
-When I wrote about the struggle you choose, I was circling this idea - that the people who use AI most effectively aren't using it to skip thinking, they're using it to think about different things. The mechanical parts get handled. The architectural parts get more attention. The overall pace stays human, because humans are the bottleneck, and that's fine.
+When I wrote about [the struggle you choose](/posts/2026-02-02-the-struggle-you-choose), I was circling this idea - that the people who use AI most effectively aren't using it to skip thinking, they're using it to think about different things. The mechanical parts get handled. The architectural parts get more attention. The overall pace stays human, because humans are the bottleneck, and that's fine.
 
 But now I'd add something. It's not just that the pace stays human. It's that the *stakes* of human judgment increase. If you can reach ten times further with AI, then the direction you're pointing in matters ten times more. A small error in aim, magnified by the telescope, puts you thousands of kilometres off target. And the restraint not to aim everywhere at once matters ten times more too.
 
