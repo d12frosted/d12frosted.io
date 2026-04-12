@@ -32,7 +32,7 @@ export default async function Posts() {
         <h1 className="mt-8 text-5xl font-bold tracking-tight text-ink lg:text-6xl dark:text-white">
           All posts
         </h1>
-        <p className="mt-6 font-mono text-sm uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+        <p className="mt-6 font-mono text-sm uppercase tracking-wider text-ink-muted">
           {publishedPosts.length} posts across {years.length} years
         </p>
       </div>
@@ -60,7 +60,7 @@ export default async function Posts() {
             <div className="mb-8 flex items-center gap-6">
               <div className="h-1 w-12 bg-xp-orange" />
               <h2 className="text-4xl font-bold tabular-nums tracking-tight text-ink dark:text-white">{year}</h2>
-              <div className="font-mono text-sm text-ink-muted dark:text-zinc-500">
+              <div className="font-mono text-sm text-ink-muted">
                 {postsByYear[year].length} {postsByYear[year].length === 1 ? 'post' : 'posts'}
               </div>
             </div>

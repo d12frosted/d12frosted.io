@@ -70,7 +70,7 @@ export default async function Post({ params }: Props) {
       {/* Bold post header with architectural elements */}
       <header className="mb-12 flex flex-col lg:mb-16">
         {/* Monospace metadata */}
-        <div className="mb-6 flex items-center gap-x-4 font-mono text-xs tracking-wider text-ink-muted uppercase dark:text-zinc-500">
+        <div className="mb-6 flex items-center gap-x-4 font-mono text-xs tracking-wider text-ink-muted uppercase">
           <FormattedDate date={post.published} />
           <span>•</span>
           <span>{post.tags.join(' · ')}</span>
@@ -78,7 +78,7 @@ export default async function Post({ params }: Props) {
 
         <h1 className="mb-6 text-4xl font-bold tracking-tight text-ink lg:text-5xl dark:text-white">{post.title}</h1>
 
-        <p className="text-xl leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+        <p className="text-xl leading-relaxed text-ink-muted">{post.description}</p>
 
         {/* Bold geometric divider */}
         <div className="mt-8 h-1 w-24 bg-mp-blue" />

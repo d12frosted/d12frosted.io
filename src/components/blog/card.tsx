@@ -9,7 +9,7 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
   return (
     <article
       className={clsx(
-        'group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900',
+        'group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl',
         className
       )}
       {...props}
@@ -20,7 +20,7 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
       {/* Content */}
       <div className="p-6 sm:p-8 lg:p-12">
         {/* Monospace metadata */}
-        <div className="mb-4 flex items-center gap-x-4 font-mono text-xs tracking-wider text-ink-muted uppercase dark:text-zinc-500">
+        <div className="mb-4 flex items-center gap-x-4 font-mono text-xs tracking-wider text-ink-muted uppercase">
           <FormattedDate date={post.published} />
           <span>•</span>
           <span>{post.tags[0]}</span>
@@ -33,7 +33,7 @@ export function RegularPostCard({ post, className, ...props }: React.ComponentPr
               {post.title}
             </a>
           </h3>
-          <p className="mt-4 text-base leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+          <p className="mt-4 text-base leading-relaxed text-ink-muted">{post.description}</p>
         </div>
       </div>
     </article>

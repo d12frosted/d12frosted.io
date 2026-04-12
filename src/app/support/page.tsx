@@ -61,7 +61,7 @@ export default function SupportPage() {
         <h1 className="mt-8 text-5xl font-bold tracking-tight text-ink lg:text-6xl dark:text-white">
           Support
         </h1>
-        <p className="mt-6 max-w-2xl text-xl leading-relaxed text-ink-muted dark:text-zinc-400">
+        <p className="mt-6 max-w-2xl text-xl leading-relaxed text-ink-muted">
           If you enjoy the writing, the Emacs packages, or any of the other things I put out here, there are a few ways
           to chip in. Pick whichever is easiest where you are — every bit helps keep the lights on.
         </p>
@@ -72,7 +72,7 @@ export default function SupportPage() {
         <div className="mb-8">
           <div className="mb-4 h-1 w-16 bg-mp-blue" />
           <h2 className="text-3xl font-bold tracking-tight text-ink dark:text-white">Platforms</h2>
-          <p className="mt-3 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+          <p className="mt-3 font-mono text-xs uppercase tracking-wider text-ink-muted">
             International · Recurring or one-time
           </p>
         </div>
@@ -87,7 +87,7 @@ export default function SupportPage() {
                 href={platform.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative block overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900"
+                className="group relative block overflow-hidden bg-canvas transition-all hover:shadow-2xl"
               >
                 <div className={`h-2 ${classes.bar}`} />
 
@@ -98,7 +98,7 @@ export default function SupportPage() {
                     >
                       <Icon className="h-6 w-6" strokeWidth={2} />
                     </div>
-                    <span className="shrink-0 font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors group-hover:text-mp-blue dark:text-zinc-500">
+                    <span className="shrink-0 font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors group-hover:text-mp-blue">
                       Visit →
                     </span>
                   </div>
@@ -106,7 +106,7 @@ export default function SupportPage() {
                   <h3 className="text-2xl font-bold tracking-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
                     {platform.name}
                   </h3>
-                  <p className="mt-3 leading-relaxed text-ink-muted dark:text-zinc-400">
+                  <p className="mt-3 leading-relaxed text-ink-muted">
                     {platform.description}
                   </p>
                 </div>
@@ -121,21 +121,21 @@ export default function SupportPage() {
         <div className="mb-8">
           <div className="mb-4 h-1 w-16 bg-hp-green" />
           <h2 className="text-3xl font-bold tracking-tight text-ink dark:text-white">Direct transfers</h2>
-          <p className="mt-3 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+          <p className="mt-3 font-mono text-xs uppercase tracking-wider text-ink-muted">
             Local · No platform fees
           </p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Ukraine */}
-          <div className="border-l-4 border-xp-orange bg-paper p-8 lg:p-10 dark:bg-zinc-900/50">
+          <div className="border-l-4 border-xp-orange bg-paper p-8 lg:p-10">
             <div className="mb-6 flex items-center gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center border-2 border-xp-orange text-xp-orange">
                 <BanknotesIcon className="h-6 w-6" strokeWidth={2} />
               </div>
               <div>
                 <h3 className="text-2xl font-bold tracking-tight text-ink dark:text-white">Ukraine</h3>
-                <p className="font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+                <p className="font-mono text-xs uppercase tracking-wider text-ink-muted">
                   UAH · Monobank
                 </p>
               </div>
@@ -146,16 +146,16 @@ export default function SupportPage() {
                 href="https://send.monobank.ua/jar/2Bd1NZxSmq"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-between border border-border-soft bg-canvas p-4 transition-all hover:border-xp-orange dark:border-zinc-800 dark:bg-zinc-900"
+                className="group flex items-center justify-between border border-border-soft bg-canvas p-4 transition-all hover:border-xp-orange"
               >
                 <span className="font-bold text-ink dark:text-white">Monobank jar</span>
-                <span className="font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors group-hover:text-xp-orange dark:text-zinc-500">
+                <span className="font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors group-hover:text-xp-orange">
                   Open →
                 </span>
               </a>
 
-              <div className="border border-border-soft bg-canvas p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                <div className="font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+              <div className="border border-border-soft bg-canvas p-4">
+                <div className="font-mono text-xs uppercase tracking-wider text-ink-muted">
                   Card number
                 </div>
                 <div className="mt-2 font-mono text-base tracking-wider text-ink tabular-nums dark:text-white">
@@ -166,14 +166,14 @@ export default function SupportPage() {
           </div>
 
           {/* Moldova */}
-          <div className="border-l-4 border-hp-green bg-paper p-8 lg:p-10 dark:bg-zinc-900/50">
+          <div className="border-l-4 border-hp-green bg-paper p-8 lg:p-10">
             <div className="mb-6 flex items-center gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center border-2 border-hp-green text-hp-green">
                 <QrCodeIcon className="h-6 w-6" strokeWidth={2} />
               </div>
               <div>
                 <h3 className="text-2xl font-bold tracking-tight text-ink dark:text-white">Moldova</h3>
-                <p className="font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+                <p className="font-mono text-xs uppercase tracking-wider text-ink-muted">
                   MDL · MIA / Phone
                 </p>
               </div>
@@ -184,16 +184,16 @@ export default function SupportPage() {
                 href="https://mia-qr.bnm.md/1/m/BNM/AGR1cadd5f4573744e28d367c3c8a53e952"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-between border border-border-soft bg-canvas p-4 transition-all hover:border-hp-green dark:border-zinc-800 dark:bg-zinc-900"
+                className="group flex items-center justify-between border border-border-soft bg-canvas p-4 transition-all hover:border-hp-green"
               >
                 <span className="font-bold text-ink dark:text-white">MIA QR payment</span>
-                <span className="font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors group-hover:text-hp-green dark:text-zinc-500">
+                <span className="font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors group-hover:text-hp-green">
                   Open →
                 </span>
               </a>
 
-              <div className="border border-border-soft bg-canvas p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                <div className="font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+              <div className="border border-border-soft bg-canvas p-4">
+                <div className="font-mono text-xs uppercase tracking-wider text-ink-muted">
                   Phone transfer
                 </div>
                 <div className="mt-2 font-mono text-base tracking-wider text-ink tabular-nums dark:text-white">
@@ -206,14 +206,14 @@ export default function SupportPage() {
       </section>
 
       {/* Thank you callout */}
-      <div className="border-l-4 border-mp-blue bg-paper p-8 lg:p-10 dark:bg-zinc-900/50">
+      <div className="border-l-4 border-mp-blue bg-paper p-8 lg:p-10">
         <div className="flex items-start gap-6">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center border-2 border-mp-blue text-mp-blue">
             <HeartIcon className="h-6 w-6" strokeWidth={2} />
           </div>
           <div>
             <h3 className="text-2xl font-bold tracking-tight text-ink dark:text-white">Thank you</h3>
-            <p className="mt-3 leading-relaxed text-ink-muted dark:text-zinc-400">
+            <p className="mt-3 leading-relaxed text-ink-muted">
               Writing, maintaining open source, and running this site is something I do in the margins of the day. Any
               support — a star, a share, a sponsorship, a kind message — genuinely helps me keep doing it.
             </p>

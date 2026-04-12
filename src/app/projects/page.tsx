@@ -89,7 +89,7 @@ export default async function Projects() {
         <h1 className="mt-8 text-5xl font-bold tracking-tight text-ink lg:text-6xl dark:text-white">
           Projects
         </h1>
-        <p className="mt-6 text-xl leading-relaxed text-ink-muted dark:text-zinc-400">
+        <p className="mt-6 text-xl leading-relaxed text-ink-muted">
           Open source tools and libraries for Emacs, package management, and personal productivity. Maintained with love and used by thousands.
         </p>
       </div>
@@ -99,7 +99,7 @@ export default async function Projects() {
         {projectsWithStars.map((project) => (
           <article
             key={project.name}
-            className="group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900"
+            className="group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl"
           >
             {/* Bold color accent */}
             <div className={`h-2 ${getAccentBgClass(project.tags)}`} />
@@ -111,7 +111,7 @@ export default async function Projects() {
                   <h2 className="text-2xl font-bold tracking-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
                     {project.name}
                   </h2>
-                  <div className="mt-1 font-mono text-xs text-ink-muted dark:text-zinc-500">
+                  <div className="mt-1 font-mono text-xs text-ink-muted">
                     ★ {project.stars}
                   </div>
                 </div>
@@ -119,14 +119,14 @@ export default async function Projects() {
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:text-zinc-500 dark:hover:text-mp-blue"
+                  className="shrink-0 font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:hover:text-mp-blue"
                 >
                   GitHub →
                 </a>
               </div>
 
               {/* Description */}
-              <p className="mb-6 leading-relaxed text-ink-muted dark:text-zinc-400">
+              <p className="mb-6 leading-relaxed text-ink-muted">
                 {project.description}
               </p>
 
@@ -135,7 +135,7 @@ export default async function Projects() {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="bg-paper px-3 py-1 font-mono text-xs uppercase tracking-wider text-ink-muted dark:bg-zinc-800 dark:text-zinc-500"
+                    className="bg-paper px-3 py-1 font-mono text-xs uppercase tracking-wider text-ink-muted dark:bg-code-bg"
                   >
                     {tag}
                   </span>
@@ -148,11 +148,11 @@ export default async function Projects() {
 
       {/* Call to action sections */}
       <div className="mt-20 grid gap-8 lg:mt-24 lg:grid-cols-2">
-        <div className="border-l-4 border-hp-green bg-paper p-8 lg:p-10 dark:bg-zinc-900/50">
+        <div className="border-l-4 border-hp-green bg-paper p-8 lg:p-10">
           <h3 className="mb-4 text-2xl font-bold tracking-tight text-ink dark:text-white">
             More on GitHub
           </h3>
-          <p className="mb-6 leading-relaxed text-ink-muted dark:text-zinc-400">
+          <p className="mb-6 leading-relaxed text-ink-muted">
             These are the highlights. Check out my GitHub profile for more projects, contributions, and experiments.
           </p>
           <a
@@ -165,11 +165,11 @@ export default async function Projects() {
           </a>
         </div>
 
-        <div className="border-l-4 border-xp-orange bg-paper p-8 lg:p-10 dark:bg-zinc-900/50">
+        <div className="border-l-4 border-xp-orange bg-paper p-8 lg:p-10">
           <h3 className="mb-4 text-2xl font-bold tracking-tight text-ink dark:text-white">
             Barberry Garden
           </h3>
-          <p className="mb-6 leading-relaxed text-ink-muted dark:text-zinc-400">
+          <p className="mb-6 leading-relaxed text-ink-muted">
             My wine documentation project. Tasting notes, ratings, and cellar management—powered by vino and org-mode.
           </p>
           <a
@@ -182,11 +182,11 @@ export default async function Projects() {
           </a>
         </div>
 
-        <div className="border-l-4 border-mp-blue bg-paper p-8 lg:p-10 dark:bg-zinc-900/50">
+        <div className="border-l-4 border-mp-blue bg-paper p-8 lg:p-10">
           <h3 className="mb-4 text-2xl font-bold tracking-tight text-ink dark:text-white">
             Tasogare
           </h3>
-          <p className="mb-6 leading-relaxed text-ink-muted dark:text-zinc-400">
+          <p className="mb-6 leading-relaxed text-ink-muted">
             Literary criticism at twilight. Analysis of anime, manga, books, games, and films.
           </p>
           <a

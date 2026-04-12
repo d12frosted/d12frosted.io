@@ -31,7 +31,7 @@ export default async function Home() {
         href="https://github.com/d12frosted/homebrew-emacs-plus"
         target="_blank"
         rel="noopener noreferrer"
-        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg dark:bg-zinc-900/50"
+        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg"
       >
         <div className="h-1 bg-hp-green" />
         <div className="p-4">
@@ -39,11 +39,11 @@ export default async function Home() {
             <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
               homebrew-emacs-plus
             </h3>
-            <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
+            <span className="font-mono text-xs text-ink-muted">
               ★ {homebrewStars ? formatStarCount(homebrewStars.stargazers_count) : '—'}
             </span>
           </div>
-          <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+          <p className="text-sm leading-relaxed text-ink-muted">
             GNU Emacs formulae for macOS Homebrew.
           </p>
         </div>
@@ -53,7 +53,7 @@ export default async function Home() {
         href="https://github.com/d12frosted/vulpea"
         target="_blank"
         rel="noopener noreferrer"
-        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg dark:bg-zinc-900/50"
+        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg"
       >
         <div className="h-1 bg-hp-green" />
         <div className="p-4">
@@ -61,11 +61,11 @@ export default async function Home() {
             <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
               vulpea
             </h3>
-            <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
+            <span className="font-mono text-xs text-ink-muted">
               ★ {vulpeaStars ? formatStarCount(vulpeaStars.stargazers_count) : '—'}
             </span>
           </div>
-          <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+          <p className="text-sm leading-relaxed text-ink-muted">
             Emacs Lisp toolkit for note-taking based on org-mode.
           </p>
         </div>
@@ -75,14 +75,14 @@ export default async function Home() {
         href="https://barberry.io"
         target="_blank"
         rel="noopener noreferrer"
-        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg dark:bg-zinc-900/50"
+        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg"
       >
         <div className="h-1 bg-xp-orange" />
         <div className="p-4">
           <h3 className="mb-1 font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
             Barberry Garden
           </h3>
-          <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+          <p className="text-sm leading-relaxed text-ink-muted">
             Wine documentation and cellar management.
           </p>
         </div>
@@ -110,7 +110,7 @@ export default async function Home() {
 
           {/* Quick stats */}
           <div className="mt-8 bg-code-bg p-4 dark:bg-ink/10">
-            <div className="font-mono text-sm uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+            <div className="font-mono text-sm uppercase tracking-wider text-ink-muted">
               <div>{publishedPosts.length} posts</div>
               <div className="mt-1">
                 Since {new Date(publishedPosts[publishedPosts.length - 1]?.published || new Date()).getFullYear()}
@@ -129,7 +129,7 @@ export default async function Home() {
             <div className="space-y-8">
               {pinnedPosts.map((post) => (
                 <article key={post.id} className="group">
-                  <div className="mb-3 flex items-center gap-x-3 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+                  <div className="mb-3 flex items-center gap-x-3 font-mono text-xs uppercase tracking-wider text-ink-muted">
                     <time dateTime={post.published.toISOString()}>
                       {post.published.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </time>
@@ -139,7 +139,7 @@ export default async function Home() {
                   <h3 className="mb-2 text-xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
                     <a href={post.href}>{post.title}</a>
                   </h3>
-                  <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+                  <p className="text-sm leading-relaxed text-ink-muted">{post.description}</p>
                 </article>
               ))}
             </div>
@@ -155,7 +155,7 @@ export default async function Home() {
             </div>
             <a
               href="/posts"
-              className="font-mono text-sm uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:text-zinc-500 dark:hover:text-mp-blue"
+              className="font-mono text-sm uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:hover:text-mp-blue"
             >
               All posts →
             </a>
@@ -163,7 +163,7 @@ export default async function Home() {
           <div className="space-y-8">
             {latestPosts.map((post) => (
               <article key={post.id} className="group">
-                <div className="mb-3 flex items-center gap-x-3 font-mono text-xs uppercase tracking-wider text-ink-muted dark:text-zinc-500">
+                <div className="mb-3 flex items-center gap-x-3 font-mono text-xs uppercase tracking-wider text-ink-muted">
                   <time dateTime={post.published.toISOString()}>
                     {post.published.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </time>
@@ -173,7 +173,7 @@ export default async function Home() {
                 <h3 className="mb-2 text-xl font-bold leading-tight text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
                   <a href={post.href}>{post.title}</a>
                 </h3>
-                <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">{post.description}</p>
+                <p className="text-sm leading-relaxed text-ink-muted">{post.description}</p>
               </article>
             ))}
           </div>
@@ -188,7 +188,7 @@ export default async function Home() {
             </div>
             <a
               href="/projects"
-              className="font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:text-zinc-500 dark:hover:text-mp-blue"
+              className="font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:hover:text-mp-blue"
             >
               All →
             </a>
