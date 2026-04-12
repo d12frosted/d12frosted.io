@@ -89,7 +89,7 @@ export default async function Projects() {
         <h1 className="mt-8 text-5xl font-bold tracking-tight text-ink lg:text-6xl dark:text-white">
           Projects
         </h1>
-        <p className="mt-6 text-xl leading-relaxed text-ink-muted">
+        <p className="mt-6 max-w-2xl text-xl leading-relaxed text-ink-muted">
           Open source tools and libraries for Emacs, package management, and personal productivity. Maintained with love and used by thousands.
         </p>
       </div>
