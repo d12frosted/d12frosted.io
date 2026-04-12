@@ -108,12 +108,24 @@ export default async function Home() {
             <CustomMarkdown>{aboutText}</CustomMarkdown>
           </div>
 
-          {/* Quick stats */}
-          <div className="mt-8 bg-code-bg p-4 dark:bg-ink/10">
-            <div className="font-mono text-sm uppercase tracking-wider text-ink-muted">
-              <div>{publishedPosts.length} posts</div>
-              <div className="mt-1">
-                Since {new Date(publishedPosts[publishedPosts.length - 1]?.published || new Date()).getFullYear()}
+          {/* Status panel — jRPG party member style */}
+          <div className="mt-8 border-4 border-ink bg-canvas p-4 dark:border-white">
+            <div className="mb-3 flex items-center gap-3">
+              <div className="h-3 w-3 bg-hp-green" />
+              <span className="font-mono text-xs uppercase tracking-widest text-ink-muted">Status</span>
+            </div>
+            <div className="space-y-1.5 font-mono text-sm">
+              <div className="flex justify-between gap-4">
+                <span className="text-ink-muted">Posts</span>
+                <span className="tabular-nums text-ink dark:text-white">{publishedPosts.length}</span>
+              </div>
+              <div className="flex justify-between gap-4">
+                <span className="text-ink-muted">Since</span>
+                <span className="text-hp-green">{new Date(publishedPosts[publishedPosts.length - 1]?.published || new Date()).getFullYear()}</span>
+              </div>
+              <div className="flex justify-between gap-4">
+                <span className="text-ink-muted">Class</span>
+                <span className="text-mp-blue">Emacs User</span>
               </div>
             </div>
           </div>

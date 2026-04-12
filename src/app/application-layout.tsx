@@ -67,24 +67,34 @@ export function ApplicationLayout({
 
       {/* Footer */}
       <footer className="border-t border-border-soft px-4 py-8 lg:px-16">
-        <div className="mx-auto max-w-6xl font-mono text-xs uppercase tracking-wider text-ink-muted">
-          <a
-            href="/support"
-            className="underline decoration-ink-muted/30 hover:text-ink hover:decoration-ink/30"
-          >
-            Support
-          </a>
-          <span className="mx-2">·</span>
-          <a
-            href="https://creativecommons.org/licenses/by/4.0/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-ink-muted/30 hover:text-ink hover:decoration-ink/30"
-          >
-            CC BY 4.0
-          </a>
-          <span className="mx-2">·</span>
-          <span>2015 - {new Date().getFullYear()} Boris Buliga</span>
+        <div className="mx-auto max-w-6xl">
+          <div className="flex items-center justify-between">
+            <div className="font-mono text-xs uppercase tracking-wider text-ink-muted">
+              <a
+                href="/support"
+                className="underline decoration-ink-muted/30 hover:text-ink hover:decoration-ink/30"
+              >
+                Support
+              </a>
+              <span className="mx-2">·</span>
+              <a
+                href="https://creativecommons.org/licenses/by/4.0/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-ink-muted/30 hover:text-ink hover:decoration-ink/30"
+              >
+                CC BY 4.0
+              </a>
+              <span className="mx-2">·</span>
+              <span>2015 - {new Date().getFullYear()} Boris Buliga</span>
+            </div>
+            {/* Geometric signature */}
+            <div className="flex items-center gap-1.5">
+              <div className="h-1.5 w-3 bg-mp-blue" />
+              <div className="h-1.5 w-6 bg-xp-orange" />
+              <div className="h-1.5 w-3 bg-hp-green" />
+            </div>
+          </div>
         </div>
       </footer>
 
