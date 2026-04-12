@@ -91,7 +91,7 @@ export function ApplicationLayout({
             CC BY 4.0
           </a>
           <span className="mx-2">·</span>
-          <span>2015 - 2026 Boris Buliga</span>
+          <span>2015 - {new Date().getFullYear()} Boris Buliga</span>
         </div>
       </footer>
 
