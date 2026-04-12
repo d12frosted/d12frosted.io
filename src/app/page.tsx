@@ -31,52 +31,61 @@ export default async function Home() {
         href="https://github.com/d12frosted/homebrew-emacs-plus"
         target="_blank"
         rel="noopener noreferrer"
-        className="group block border-l-4 border-hp-green bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
+        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg dark:bg-zinc-900/50"
       >
-        <div className="mb-1 flex items-baseline justify-between gap-4">
-          <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
-            homebrew-emacs-plus
-          </h3>
-          <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
-            ★ {homebrewStars ? formatStarCount(homebrewStars.stargazers_count) : '—'}
-          </span>
+        <div className="h-1 bg-hp-green" />
+        <div className="p-4">
+          <div className="mb-1 flex items-baseline justify-between gap-4">
+            <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+              homebrew-emacs-plus
+            </h3>
+            <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
+              ★ {homebrewStars ? formatStarCount(homebrewStars.stargazers_count) : '—'}
+            </span>
+          </div>
+          <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+            GNU Emacs formulae for macOS Homebrew.
+          </p>
         </div>
-        <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
-          GNU Emacs formulae for macOS Homebrew.
-        </p>
       </a>
 
       <a
         href="https://github.com/d12frosted/vulpea"
         target="_blank"
         rel="noopener noreferrer"
-        className="group block border-l-4 border-hp-green bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
+        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg dark:bg-zinc-900/50"
       >
-        <div className="mb-1 flex items-baseline justify-between gap-4">
-          <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
-            vulpea
-          </h3>
-          <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
-            ★ {vulpeaStars ? formatStarCount(vulpeaStars.stargazers_count) : '—'}
-          </span>
+        <div className="h-1 bg-hp-green" />
+        <div className="p-4">
+          <div className="mb-1 flex items-baseline justify-between gap-4">
+            <h3 className="font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+              vulpea
+            </h3>
+            <span className="font-mono text-xs text-ink-muted dark:text-zinc-500">
+              ★ {vulpeaStars ? formatStarCount(vulpeaStars.stargazers_count) : '—'}
+            </span>
+          </div>
+          <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+            Emacs Lisp toolkit for note-taking based on org-mode.
+          </p>
         </div>
-        <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
-          Emacs Lisp toolkit for note-taking based on org-mode.
-        </p>
       </a>
 
       <a
         href="https://barberry.io"
         target="_blank"
         rel="noopener noreferrer"
-        className="group block border-l-4 border-xp-orange bg-paper p-4 transition-all hover:shadow-lg dark:bg-zinc-900/50"
+        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg dark:bg-zinc-900/50"
       >
-        <h3 className="mb-1 font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
-          Barberry Garden
-        </h3>
-        <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
-          Wine documentation and cellar management.
-        </p>
+        <div className="h-1 bg-xp-orange" />
+        <div className="p-4">
+          <h3 className="mb-1 font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+            Barberry Garden
+          </h3>
+          <p className="text-sm leading-relaxed text-ink-muted dark:text-zinc-400">
+            Wine documentation and cellar management.
+          </p>
+        </div>
       </a>
     </>
   )
@@ -100,7 +109,7 @@ export default async function Home() {
           </div>
 
           {/* Quick stats */}
-          <div className="mt-8 space-y-3 border-l-4 border-mp-blue pl-6">
+          <div className="mt-8 bg-code-bg p-4 dark:bg-ink/10">
             <div className="font-mono text-sm uppercase tracking-wider text-ink-muted dark:text-zinc-500">
               <div>{publishedPosts.length} posts</div>
               <div className="mt-1">
