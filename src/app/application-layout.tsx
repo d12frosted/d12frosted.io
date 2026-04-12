@@ -41,7 +41,7 @@ export function ApplicationLayout({
             <NavbarDivider className="max-sm:hidden" />
             <NavbarSection className="">
               {navItems.map(({ label, url }) => (
-                <NavbarItem key={label} href={url} className={label === 'Projects' ? 'max-sm:hidden' : undefined}>
+                <NavbarItem key={label} href={url}>
                   {label}
                 </NavbarItem>
               ))}
