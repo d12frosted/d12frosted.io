@@ -1,7 +1,5 @@
 import { HeartIcon } from '@/components/icons/heart'
 import { Navbar, NavbarDivider, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/navbar'
-import { Sidebar, SidebarBody, SidebarHeader, SidebarItem, SidebarSection } from '@/components/sidebar'
-import { StackedLayout } from '@/components/stacked-layout'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { siteConfig } from '@/config/config'
 import { SiGithub, SiRss } from '@icons-pack/react-simple-icons'
@@ -99,82 +97,5 @@ export function ApplicationLayout({
       <Analytics />
       <script data-goatcounter="https://d12frosted.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     </div>
-  )
-}
-
-export function ApplicationLayoutWide({
-  // events,
-  children,
-}: {
-  // events: Awaited<ReturnType<typeof getEvents>>
-  children: React.ReactNode
-}) {
-  // let pathname = usePathname()
-
-  return (
-    <StackedLayout
-      navbar={
-        <Navbar>
-          <div className="max-lg:hidden">
-            <Image
-              src="/d12frosted.png"
-              width={128}
-              height={128}
-              alt="d12frosted icon"
-              className="mr-2 inline-grid size-10 shrink-0 align-middle *:col-start-1 *:row-start-1 sm:size-8"
-            />
-            <NavbarLabel>{siteConfig.name}</NavbarLabel>
-          </div>
-          <NavbarDivider className="max-lg:hidden" />
-          <NavbarSection className="max-lg:hidden">
-            {navItems.map(({ label, url }) => (
-              <NavbarItem key={label} href={url}>
-                {label}
-              </NavbarItem>
-            ))}
-          </NavbarSection>
-          <NavbarSpacer />
-          <NavbarSection>
-            <ThemeToggle />
-            <NavbarItem href="/feed.xml" aria-label="RSS Feed">
-              <SiRss size={20} />
-            </NavbarItem>
-            <NavbarItem href={siteConfig.links.github} aria-label="GitHub">
-              <SiGithub size={20} />
-            </NavbarItem>
-            <NavbarItem href="/support" aria-label="Support">
-              <HeartIcon size={20} />
-            </NavbarItem>
-          </NavbarSection>
-        </Navbar>
-      }
-      sidebar={
-        <Sidebar>
-          <SidebarHeader>
-            <div>
-              <Image
-                src="/d12frosted.png"
-                width={128}
-                height={128}
-                alt="d12frosted icon"
-                className="mr-2 inline-grid size-10 shrink-0 align-middle *:col-start-1 *:row-start-1 sm:size-8"
-              />
-              <NavbarLabel>{siteConfig.name}</NavbarLabel>
-            </div>
-          </SidebarHeader>
-          <SidebarBody>
-            <SidebarSection>
-              {navItems.map(({ label, url }) => (
-                <SidebarItem key={label} href={url}>
-                  {label}
-                </SidebarItem>
-              ))}
-            </SidebarSection>
-          </SidebarBody>
-        </Sidebar>
-      }
-    >
-      {children}
-    </StackedLayout>
   )
 }
