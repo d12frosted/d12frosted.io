@@ -1,4 +1,4 @@
-import { RegularPostCard } from '@/components/blog/card'
+import { PostsFiltered } from '@/components/blog/posts-filtered'
 import { getAllPosts } from '@/lib/posts'
 
 export default async function Posts() {
@@ -6,23 +6,18 @@ export default async function Posts() {
   const today = new Date()
   const publishedPosts = allPosts.filter((post) => !post.hide && post.published <= today)
 
-  // Separate pinned and regular posts
   const pinnedPosts = publishedPosts.filter((post) => post.pinned)
   const regularPosts = publishedPosts.filter((post) => !post.pinned)
 
-  // Group regular posts by year
-  const postsByYear = regularPosts.reduce((acc, post) => {
-    const year = post.published.getFullYear()
-    if (!acc[year]) {
-      acc[year] = []
-    }
-    acc[year].push(post)
-    return acc
-  }, {} as Record<number, typeof regularPosts>)
+  const years = [...new Set(regularPosts.map((p) => p.published.getFullYear()))].sort((a, b) => b - a)
 
-  const years = Object.keys(postsByYear)
-    .map(Number)
-    .sort((a, b) => b - a)
+  // Serialize dates and strip content for client component
+  const serialize = (posts: typeof publishedPosts) =>
+    posts.map(({ content, ...post }) => ({
+      ...post,
+      published: post.published.toISOString(),
+      updated: isNaN(post.updated.getTime()) ? post.published.toISOString() : post.updated.toISOString(),
+    }))
 
   return (
     <>
@@ -32,48 +27,14 @@ export default async function Posts() {
         <h1 className="mt-8 text-5xl font-bold tracking-tight text-ink lg:text-6xl dark:text-white">
           All posts
         </h1>
-        <p className="mt-6 font-mono text-sm uppercase tracking-wider text-ink-muted">
-          {publishedPosts.length} posts across {years.length} years
-        </p>
       </div>
 
-      {/* Pinned posts */}
-      {pinnedPosts.length > 0 && (
-        <section className="mb-16">
-          <div className="mb-8 flex items-center gap-6">
-            <div className="h-1 w-12 bg-mp-blue" />
-            <h2 className="text-4xl font-bold tracking-tight text-ink dark:text-white">Pinned</h2>
-          </div>
-          <div className="grid gap-6 lg:grid-cols-2">
-            {pinnedPosts.map((post) => (
-              <RegularPostCard key={post.id} post={post} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Posts grouped by year */}
-      <div className="space-y-16">
-        {years.map((year) => (
-          <section key={year}>
-            {/* Year header with bold geometric element */}
-            <div className="mb-8 flex items-center gap-6">
-              <div className="h-1 w-12 bg-xp-orange" />
-              <h2 className="text-4xl font-bold tabular-nums tracking-tight text-ink dark:text-white">{year}</h2>
-              <div className="font-mono text-sm text-ink-muted">
-                {postsByYear[year].length} {postsByYear[year].length === 1 ? 'post' : 'posts'}
-              </div>
-            </div>
-
-            {/* Posts for this year - cards without images */}
-            <div className="grid gap-6 lg:grid-cols-2">
-              {postsByYear[year].map((post) => (
-                <RegularPostCard key={post.id} post={post} />
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+      <PostsFiltered
+        pinnedPosts={serialize(pinnedPosts)}
+        regularPosts={serialize(regularPosts)}
+        totalCount={publishedPosts.length}
+        yearCount={years.length}
+      />
     </>
   )
 }
