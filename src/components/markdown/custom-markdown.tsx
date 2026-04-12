@@ -233,13 +233,13 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
               >
                 {images.map((image) => (
                   <div key={image.key} className="group relative">
-                    <h3 className="mt-2 text-sm text-gray-700">
+                    <h3 className="mt-2 text-sm text-ink-muted">
                       <span className="absolute inset-0" />
                       {image.props.alt}
                     </h3>
                     <div
                       className={clsx(
-                        'w-full rounded-md border-slate-300 group-hover:opacity-75',
+                        'w-full border-border-soft group-hover:opacity-75',
                         classNames.indexOf('border-0') >= 0 ? 'border-0' : 'border-4'
                       )}
                     >
@@ -263,7 +263,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
           if (classNames.indexOf('footnotes') >= 0) {
             return (
               <section {...rest} className={className}>
-                <hr className="my-8 border-gray-200" />
+                <hr className="my-8 border-border-soft" />
                 {children}
               </section>
             )
