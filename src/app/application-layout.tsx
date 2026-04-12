@@ -1,4 +1,5 @@
 import { HeartIcon } from '@/components/icons/heart'
+import { NavItems } from '@/components/nav-items'
 import { Navbar, NavbarDivider, NavbarItem, NavbarLabel, NavbarSection, NavbarSpacer } from '@/components/navbar'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { siteConfig } from '@/config/config'
@@ -20,8 +21,6 @@ export function ApplicationLayout({
   // events: Awaited<ReturnType<typeof getEvents>>
   children: React.ReactNode
 }) {
-  // let pathname = usePathname()
-
   return (
     <div className="relative isolate mx-auto flex min-h-svh w-full max-w-7xl flex-col bg-canvas overflow-x-hidden lg:bg-paper">
       {/* Bold navbar with stark contrast */}
@@ -39,12 +38,8 @@ export function ApplicationLayout({
               <NavbarLabel className="max-sm:hidden">{siteConfig.name}</NavbarLabel>
             </div>
             <NavbarDivider className="max-sm:hidden" />
-            <NavbarSection className="">
-              {navItems.map(({ label, url }) => (
-                <NavbarItem key={label} href={url}>
-                  {label}
-                </NavbarItem>
-              ))}
+            <NavbarSection>
+              <NavItems items={navItems} />
             </NavbarSection>
             <NavbarSpacer />
             <NavbarSection>
