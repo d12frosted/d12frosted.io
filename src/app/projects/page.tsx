@@ -1,4 +1,4 @@
-import { getAccentColorFromTags } from '@/lib/colors'
+import { getAccentBgClass } from '@/lib/colors'
 import { fetchGitHubRepo, formatStarCount } from '@/lib/github'
 
 // Enable ISR - page regenerates every 24 hours
@@ -102,7 +102,7 @@ export default async function Projects() {
             className="group relative overflow-hidden bg-canvas transition-all hover:shadow-2xl dark:bg-zinc-900"
           >
             {/* Bold color accent */}
-            <div className={`h-2 bg-${getAccentColorFromTags(project.tags)}`} />
+            <div className={`h-2 ${getAccentBgClass(project.tags)}`} />
 
             <div className="p-8 lg:p-10">
               {/* Project name, stars, and link */}

@@ -71,16 +71,52 @@ export function getAccentColorFromTags(tags: string[]): string {
   return getTagColor(tags[0])
 }
 
+const bgClasses: Record<string, string> = {
+  'mp-blue': 'bg-mp-blue',
+  'hp-green': 'bg-hp-green',
+  'xp-orange': 'bg-xp-orange',
+  'critical-red': 'bg-critical-red',
+  'ink': 'bg-ink',
+}
+
+const borderClasses: Record<string, string> = {
+  'mp-blue': 'border-mp-blue',
+  'hp-green': 'border-hp-green',
+  'xp-orange': 'border-xp-orange',
+  'critical-red': 'border-critical-red',
+  'ink': 'border-ink',
+}
+
+/**
+ * Get Tailwind background class for a color token.
+ * Uses a static mapping so Tailwind's JIT can detect the classes.
+ */
+export function getAccentBgClass(tags: string[]): string {
+  const color = getAccentColorFromTags(tags)
+  return bgClasses[color] ?? 'bg-ink'
+}
+
+/**
+ * Get Tailwind border class for a color token.
+ * Uses a static mapping so Tailwind's JIT can detect the classes.
+ */
+export function getAccentBorderClass(tags: string[]): string {
+  const color = getAccentColorFromTags(tags)
+  return borderClasses[color] ?? 'border-ink'
+}
+
 /**
  * Get Tailwind background class for a tag color.
  */
 export function getTagBgClass(tag: string): string {
-  return `bg-${getTagColor(tag)}`
+  const color = getTagColor(tag)
+  return bgClasses[color] ?? 'bg-ink'
 }
 
 /**
  * Get Tailwind border class for a tag color.
  */
 export function getTagBorderClass(tag: string): string {
-  return `border-${getTagColor(tag)}`
+  const color = getTagColor(tag)
+  return borderClasses[color] ?? 'border-ink'
 }
