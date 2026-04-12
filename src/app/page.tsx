@@ -200,9 +200,9 @@ export default async function Home() {
             </div>
             <a
               href="/projects"
-              className="font-mono text-xs uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:hover:text-mp-blue"
+              className="font-mono text-sm uppercase tracking-wider text-ink-muted transition-colors hover:text-mp-blue dark:hover:text-mp-blue"
             >
-              All →
+              All projects →
             </a>
           </div>
           <div className="space-y-4">{projectCards}</div>

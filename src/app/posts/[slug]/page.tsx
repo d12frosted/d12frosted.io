@@ -78,7 +78,7 @@ export default async function Post({ params }: Props) {
 
         <h1 className="mb-6 text-4xl font-bold tracking-tight text-ink lg:text-5xl dark:text-white">{post.title}</h1>
 
-        <p className="text-xl leading-relaxed text-ink-muted">{post.description}</p>
+        <p className="max-w-prose text-xl leading-relaxed text-ink-muted">{post.description}</p>
 
         {/* Bold geometric divider */}
         <div className="mt-8 h-1 w-24 bg-mp-blue" />
@@ -86,7 +86,7 @@ export default async function Post({ params }: Props) {
 
       <div
         id="post-content"
-        className="prose max-w-none prose-stone dark:prose-invert prose-h1:mt-12 prose-h1:mb-4 prose-h1:text-3xl prose-h1:font-bold prose-h1:tracking-tight prose-h2:mt-10 prose-h2:mb-3 prose-h2:text-2xl prose-h2:font-bold prose-h2:tracking-tight prose-p:mt-4 prose-p:leading-relaxed [&>ul]:mt-6 [&>ul]:list-['\2013\20'] [&>ul]:pl-5"
+        className="prose prose-stone dark:prose-invert prose-h1:mt-12 prose-h1:mb-4 prose-h1:text-3xl prose-h1:font-bold prose-h1:tracking-tight prose-h2:mt-10 prose-h2:mb-3 prose-h2:text-2xl prose-h2:font-bold prose-h2:tracking-tight prose-p:mt-4 prose-p:leading-relaxed-plus [&>ul]:mt-6 [&>ul]:list-['\2013\20'] [&>ul]:pl-5"
       >
         <CustomMarkdown context={context}>{post.content}</CustomMarkdown>
       </div>
