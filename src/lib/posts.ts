@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { join } from 'path'
 
-const postsDir = join('src/public/content/posts')
+const postsDir = join(process.cwd(), 'src/public/content/posts')
 
 export interface BlogPost {
   href: string
