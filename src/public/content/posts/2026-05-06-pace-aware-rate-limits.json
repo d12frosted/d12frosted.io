@@ -1,0 +1,16 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Pace-Aware Rate Limits in the Claude Code Statusline",
+  "id": "482c1b2a-2832-4c88-8dfa-2d63f90044ea",
+  "related": null,
+  "update": "2026-05-06",
+  "date": "2026-05-06",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "tags": [
+    "claude"
+  ]
+}
