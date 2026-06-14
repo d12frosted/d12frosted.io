@@ -15,3 +15,34 @@
     padding-left: 1.25rem;
     margin-top: 0;
 }
+
+/* Tabbed content (Emacs tab-line style). The panel reveals with a short,
+   restrained fade as you switch buffers. */
+.tabs-panel {
+    animation: tabs-panel-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Keep the first and last rendered blocks flush so the panel hugs the strip. */
+.tabs-panel > :first-child {
+    margin-top: 0;
+}
+.tabs-panel > :last-child {
+    margin-bottom: 0;
+}
+
+@keyframes tabs-panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tabs-panel {
+        animation: none;
+    }
+}

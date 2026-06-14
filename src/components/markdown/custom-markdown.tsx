@@ -15,9 +15,36 @@ import YAML from 'yaml'
 import { CustomMarkdownProps, isBlogPostContext } from './common'
 import { Donut, DonutProps } from './d3/v0/donut'
 import { PlotFigure, PlotFigureProps } from './d3/v0/plot'
+import { Tabs } from './tabs'
 
 const isElement = (child: React.ReactNode): child is React.ReactElement =>
   (child as React.ReactElement)?.props !== undefined
+
+/** Flatten a React node tree down to its visible text. */
+function nodeText(node: ReactNode): string {
+  if (typeof node === 'string') return node
+  if (typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(nodeText).join('')
+  if (isElement(node)) return nodeText(node.props.children)
+  return ''
+}
+
+/**
+ * A tab's label is its leading bold paragraph (`*Label*` in org →
+ * `<p><strong>Label</strong></p>`). Returns the label element so the caller
+ * can lift the text out and drop the paragraph from the rendered panel.
+ *
+ * Operates on an already-arrayed child list: calling `Children.toArray` again
+ * would re-key (clone) the elements, breaking the reference equality the
+ * caller relies on to filter the label back out of the panel.
+ */
+function findLabelParagraph(kids: ReactNode[]): React.ReactElement | undefined {
+  return kids.find((child) => {
+    if (!isElement(child) || child.type !== 'p') return false
+    const inner = Children.toArray(child.props.children).filter(isElement)
+    return inner.length === 1 && inner[0].type === 'strong'
+  }) as React.ReactElement | undefined
+}
 
 function findChildThat(
   { children }: { children?: ReactNode },
@@ -222,6 +249,23 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
         div(props) {
           const { className, ...rest } = props
           const classNames = (className ?? '').split(' ')
+          if (classNames.indexOf('tabs') >= 0) {
+            const tabEls = Children.toArray(props.children).filter(
+              (child) => isElement(child) && (child.props.className ?? '').split(' ').indexOf('tab') >= 0
+            ) as React.ReactElement[]
+            const tabs = tabEls.map((tabEl, index) => {
+              const kids = Children.toArray(tabEl.props.children)
+              const labelEl = findLabelParagraph(kids)
+              if (labelEl) {
+                return {
+                  label: nodeText(labelEl.props.children),
+                  panel: <>{kids.filter((child) => child !== labelEl)}</>,
+                }
+              }
+              return { label: `Tab ${index + 1}`, panel: <>{kids}</> }
+            })
+            return <Tabs tabs={tabs} />
+          }
           if (classNames.indexOf('compare-images-block') >= 0) {
             const images = Children.toArray(props.children).filter((child) => isElement(child)) as React.ReactElement[]
             return (
