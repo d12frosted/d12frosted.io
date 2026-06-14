@@ -1,0 +1,26 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "vui.el: Building a Pomodoro Timer",
+  "id": "afc9b5b3-23fb-4045-a462-06ec978fbf23",
+  "related": [
+    "053fbb74-a453-4560-8f6a-ce0ecc266c8b",
+    "396ba104-e67c-4eae-a557-4ed758617339",
+    "3ecfb8e8-05ad-4466-aaa1-139ea4f8327f",
+    "98a5de2c-bb98-4842-a69b-07bd8ea16a72"
+  ],
+  "update": "2026-06-14",
+  "date": "2026-06-14",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "image": "src/public/content/images/2026-06-14-vui-pomodoro/pomodoro-hero.webp",
+  "image-width": "1600",
+  "image-height": "995",
+  "description": "Build a Pomodoro timer from scratch with vui.el. We start with a static clock, hit every wrong instinct around timers and state, and arrive at a clean async UI - the same example that surfaced real bugs in the library.",
+  "tags": [
+    "vui",
+    "emacs"
+  ]
+}

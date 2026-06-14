@@ -46,6 +46,12 @@ import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_56_59_screenshot_h
 import pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_57_10_screenshot_ido from "../../public/content/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp";
 import pic_a55e8242_5628_4042_baa7_f8e4abd153af_2022_07_19_20_34_19_emacs_booleans from "../../public/content/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp";
 import pic_ad1d1a0e_f6eb_4856_8bd8_f735ed5dd844_2022_07_19_21_01_06_org_roam_tags_demo_gif from "../../public/content/images/2020-06-10-org-roam-tags/2022-07-19-21-01-06-org-roam-tags-demo.gif";
+import pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_first_example from "../../public/content/images/2026-06-14-vui-pomodoro/pomodoro-first-example.webp";
+import pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_hero from "../../public/content/images/2026-06-14-vui-pomodoro/pomodoro-hero.webp";
+import pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step1_static_clock from "../../public/content/images/2026-06-14-vui-pomodoro/pomodoro-step1-static-clock.webp";
+import pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step3_timer_effect from "../../public/content/images/2026-06-14-vui-pomodoro/pomodoro-step3-timer-effect.webp";
+import pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step4_work_break from "../../public/content/images/2026-06-14-vui-pomodoro/pomodoro-step4-work-break.webp";
+import pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step5_full_app from "../../public/content/images/2026-06-14-vui-pomodoro/pomodoro-step5-full-app.webp";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_palette_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-palette.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-regular.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_03_ffmpeg_default_palette from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-29-03-ffmpeg-default-palette.webp";
@@ -83,6 +89,12 @@ const lookupMap = new Map<string, StaticImageData>([
   ["/images/2018-10-13-gifify/2022-07-19-20-29-03-ffmpeg-default-palette.webp", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_29_03_ffmpeg_default_palette],
   ["/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-regular.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_regular_gif],
   ["/images/2018-10-13-gifify/2022-07-19-20-24-38-gifify-lolcat-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_24_38_gifify_lolcat_palette_gif],
+  ["/images/2026-06-14-vui-pomodoro/pomodoro-step5-full-app.webp", pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step5_full_app],
+  ["/images/2026-06-14-vui-pomodoro/pomodoro-step4-work-break.webp", pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step4_work_break],
+  ["/images/2026-06-14-vui-pomodoro/pomodoro-step3-timer-effect.webp", pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step3_timer_effect],
+  ["/images/2026-06-14-vui-pomodoro/pomodoro-step1-static-clock.webp", pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_step1_static_clock],
+  ["/images/2026-06-14-vui-pomodoro/pomodoro-hero.webp", pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_hero],
+  ["/images/2026-06-14-vui-pomodoro/pomodoro-first-example.webp", pic_afc9b5b3_23fb_4045_a462_06ec978fbf23_pomodoro_first_example],
   ["/images/2020-06-10-org-roam-tags/2022-07-19-21-01-06-org-roam-tags-demo.gif", pic_ad1d1a0e_f6eb_4856_8bd8_f735ed5dd844_2022_07_19_21_01_06_org_roam_tags_demo_gif],
   ["/images/2018-10-14-equality-of-booleans-in-emacs/2022-07-19-20-34-19-emacs-booleans.webp", pic_a55e8242_5628_4042_baa7_f8e4abd153af_2022_07_19_20_34_19_emacs_booleans],
   ["/images/2016-05-09-flyspell-correct-intro/2022-07-19-17-57-10-screenshot-ido.webp", pic_90edc1a1_f7c5_472d_8d29_882b7b95d016_2022_07_19_17_57_10_screenshot_ido],

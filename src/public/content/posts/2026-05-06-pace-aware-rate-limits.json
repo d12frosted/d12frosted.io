@@ -10,6 +10,7 @@
   "authors": [
     "Boris Buliga"
   ],
+  "description": "5% of a weekly limit looks fine — unless you're an hour into the week. Here's how I made the Claude Code statusline project rate-limit usage to the end of each window, so the color tracks pace, not just raw spend.",
   "tags": [
     "claude"
   ]
