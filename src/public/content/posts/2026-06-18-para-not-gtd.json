@@ -1,0 +1,24 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "PARA, not GTD: organizing notes by what they are, not where they live",
+  "id": "14e7d5bf-c6f7-46fc-986d-373bcfb19e15",
+  "related": [
+    "9e8f1148-82b1-4bee-9bdf-3cad3877f17c",
+    "79963e74-7689-420b-9cd2-7a89171178f6",
+    "6108e748-2696-4343-8c04-5c03245261e6"
+  ],
+  "update": "2026-06-18",
+  "date": "2026-06-18",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "How I organize notes and tasks with PARA in vulpea - Projects, Areas, Resources, Archives - by deriving each note's bucket from metadata and queries instead of filing it into folders. PARA without GTD's weight.",
+  "tags": [
+    "vulpea",
+    "emacs",
+    "org-mode",
+    "para"
+  ]
+}
