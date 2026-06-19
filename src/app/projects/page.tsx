@@ -43,6 +43,12 @@ const projects: Project[] = [
     tags: ['Emacs', 'Vulpea', 'Journaling'],
   },
   {
+    name: 'vulpea-para',
+    repo: 'vulpea-para',
+    description: 'PARA for your org notes, without the filing. Brings the PARA method (Projects, Areas, Resources, Archives) to Emacs on top of vulpea—organize notes without moving files around.',
+    tags: ['Emacs', 'Vulpea', 'Productivity'],
+  },
+  {
     name: 'flyspell-correct',
     repo: 'flyspell-correct',
     description: 'Distraction-free spell-checking interface for Emacs. Provides an intuitive way to correct spelling mistakes without leaving your workflow.',
