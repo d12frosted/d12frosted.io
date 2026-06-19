@@ -62,6 +62,8 @@ import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_26_gifify_scree
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_palette_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-palette.gif";
 import pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_regular_gif from "../../public/content/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-regular.gif";
 import pic_cd0fefec_39c8_4f72_aa4f_0b45c9b305f6_2022_07_19_22_04_15_org_roam_task_management_vol7_2 from "../../public/content/images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp";
+import pic_d158b79c_a9a7_4726_8542_05df25bf1c53_SCR_20260619_kpfy from "../../public/content/images/2026-06-19-vulpea-v2-4/SCR-20260619-kpfy.webp";
+import pic_d158b79c_a9a7_4726_8542_05df25bf1c53_SCR_20260619_kswu from "../../public/content/images/2026-06-19-vulpea-v2-4/SCR-20260619-kswu.webp";
 import pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqhl from "../../public/content/images/2026-01-05-claude-code-notifications/SCR-20260105-kqhl.webp";
 import pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqjz from "../../public/content/images/2026-01-05-claude-code-notifications/SCR-20260105-kqjz.webp";
 
@@ -79,6 +81,8 @@ import static_vui from "../../public/content/images/vui.png";
 const lookupMap = new Map<string, StaticImageData>([
   ["/images/2026-01-05-claude-code-notifications/SCR-20260105-kqjz.webp", pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqjz],
   ["/images/2026-01-05-claude-code-notifications/SCR-20260105-kqhl.webp", pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqhl],
+  ["/images/2026-06-19-vulpea-v2-4/SCR-20260619-kswu.webp", pic_d158b79c_a9a7_4726_8542_05df25bf1c53_SCR_20260619_kswu],
+  ["/images/2026-06-19-vulpea-v2-4/SCR-20260619-kpfy.webp", pic_d158b79c_a9a7_4726_8542_05df25bf1c53_SCR_20260619_kpfy],
   ["/images/2021-05-21-task-management-with-roam-vol7/2022-07-19-22-04-15-org-roam-task-management-vol7-2.webp", pic_cd0fefec_39c8_4f72_aa4f_0b45c9b305f6_2022_07_19_22_04_15_org_roam_task_management_vol7_2],
   ["/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-regular.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_regular_gif],
   ["/images/2018-10-13-gifify/2022-07-19-20-30-51-gifify-monty-palette.gif", pic_bd4e041f_29c2_4f17_90e9_05f9d5c6a69a_2022_07_19_20_30_51_gifify_monty_palette_gif],

@@ -1,0 +1,18 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Vulpea v2.4: unlinked mentions, schemas, and renaming",
+  "id": "d158b79c-a9a7-4726-8542-05df25bf1c53",
+  "related": null,
+  "update": "2026-06-19",
+  "date": "2026-06-19",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Everything in vulpea since v2.1 - the three roadmap features (unlinked mentions, schema validation, note renaming) plus a diagnostics command, a Doom module, bulk tag and metadata operations, and a security fix.",
+  "tags": [
+    "vulpea",
+    "emacs"
+  ]
+}
