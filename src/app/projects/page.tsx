@@ -204,6 +204,23 @@ export default async function Projects() {
             Visit Tasogare.ink →
           </a>
         </div>
+
+        <div className="border-l-4 border-mp-blue bg-paper p-8 lg:p-10">
+          <h3 className="mb-4 text-2xl font-bold tracking-tight text-ink dark:text-white">
+            Talks
+          </h3>
+          <p className="mb-6 leading-relaxed text-ink-muted">
+            Slides and recordings from public talks on Emacs, tooling, and software.
+          </p>
+          <a
+            href="https://talks.d12frosted.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-wider text-ink transition-colors hover:text-mp-blue dark:text-white dark:hover:text-mp-blue"
+          >
+            Visit Talks →
+          </a>
+        </div>
       </div>
     </>
   )
