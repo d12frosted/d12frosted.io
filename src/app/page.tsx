@@ -87,6 +87,23 @@ export default async function Home() {
           </p>
         </div>
       </a>
+
+      <a
+        href="https://talks.d12frosted.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block overflow-hidden bg-paper transition-all hover:shadow-lg"
+      >
+        <div className="h-1 bg-mp-blue" />
+        <div className="p-4">
+          <h3 className="mb-1 font-bold text-ink transition-colors group-hover:text-mp-blue dark:text-white dark:group-hover:text-mp-blue">
+            Talks
+          </h3>
+          <p className="text-sm leading-relaxed text-ink-muted">
+            Slides and recordings from public talks.
+          </p>
+        </div>
+      </a>
     </>
   )
 
