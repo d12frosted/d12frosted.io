@@ -1,0 +1,21 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Chasing a GitHub 429 across my Emacs CI",
+  "id": "8da80984-a583-40d1-95e3-2f788084eb7e",
+  "related": null,
+  "update": "2026-06-29",
+  "date": "2026-06-29",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "A tiny HTTP 429 on api.github.com quietly broke Emacs CI across most of my projects. Chasing it down revealed a community-wide trap with nix-based setup-emacs, led to a small throttle-proof GitHub Action, a fleet-wide CI cleanup, and a couple of long-standing bugs fixed in my ELPA mirror.",
+  "tags": [
+    "emacs",
+    "github-actions",
+    "ci",
+    "nix",
+    "elpa"
+  ]
+}

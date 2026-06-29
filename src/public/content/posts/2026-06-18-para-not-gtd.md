@@ -63,28 +63,51 @@ Enough idea. Here is the blog area, trimmed to the bone:
 - short name :: blog
 
 * Notes
+:PROPERTIES:
+:ID:                     ce3a8e30-f659-4d6b-a325-da1fa2162d06
+:END:
 
 ** Post ideas
+:PROPERTIES:
+:ID:                     e73dfa39-80f2-4b64-b27e-d0a20e8d968c
+:END:
 - a follow-up on the mobile reader
 - the economics of self-hosting
 
 * Tasks
+:PROPERTIES:
+:ID:                     e50269ec-a678-4236-a1df-96944c13946b
+:END:
 
 ** TODO Ship the v2.1 post                                        :project:
 :PROPERTIES:
 :CATEGORY:               blog > ship the v2.1 post
+:ID:                     ddb96585-5cec-4b2c-a071-152a4ac60c84
 :END:
 
 *** TODO Draft the PARA write-up
+:PROPERTIES:
+:ID:                     9b41ad35-a22d-4741-ba27-b07f5b193c58
+:END:
 *** TODO Trim it where it drifts into theory
+:PROPERTIES:
+:ID:                     b83ecc23-0988-401f-a450-d1a40c2a777b
+:END:
 
 ** TODO Fix the broken RSS enclosure
+:PROPERTIES:
+:ID:                     7307b660-4223-4934-9bbb-eca98529677d
+:END:
 
 * Archive                                                         :ARCHIVE:
+:PROPERTIES:
+:ID:                     868bfb9f-6dc2-4f6d-a0a5-96be6fdf3d0c
+:END:
 
 ** DONE Ship the v2.0 post                                        :project:
 :PROPERTIES:
 :CATEGORY:               blog > ship the v2.0 post
+:ID:                     1cb0211e-a74d-4102-a283-d66c386f9e10
 :END:
 ```
 
