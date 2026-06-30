@@ -1,0 +1,18 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Vulpea schemas: structure you can see and fix",
+  "id": "ff102079-fe9d-44c6-bb33-0b2f58eb86e7",
+  "related": null,
+  "update": "2026-06-30",
+  "date": "2026-06-30",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "The full schema arc in vulpea, shaped as much by reader feedback as by my own roadmap: the rules I deferred (conditional requirements, reference checks, composition) plus the UI that makes them livable - a per-note health widget, in-buffer linting, and a collection-wide dashboard with one-key fixes.",
+  "tags": [
+    "vulpea",
+    "emacs"
+  ]
+}

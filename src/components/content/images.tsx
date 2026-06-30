@@ -66,6 +66,9 @@ import pic_d158b79c_a9a7_4726_8542_05df25bf1c53_SCR_20260619_kpfy from "../../pu
 import pic_d158b79c_a9a7_4726_8542_05df25bf1c53_SCR_20260619_kswu from "../../public/content/images/2026-06-19-vulpea-v2-4/SCR-20260619-kswu.webp";
 import pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqhl from "../../public/content/images/2026-01-05-claude-code-notifications/SCR-20260105-kqhl.webp";
 import pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqjz from "../../public/content/images/2026-01-05-claude-code-notifications/SCR-20260105-kqjz.webp";
+import pic_ff102079_fe9d_44c6_bb33_0b2f58eb86e7_schema_health_widget from "../../public/content/images/2026-06-30-vulpea-schemas/schema-health-widget.webp";
+import pic_ff102079_fe9d_44c6_bb33_0b2f58eb86e7_schema_quick_fix from "../../public/content/images/2026-06-30-vulpea-schemas/schema-quick-fix.webp";
+import pic_ff102079_fe9d_44c6_bb33_0b2f58eb86e7_schema_dashboard_gif from "../../public/content/images/2026-06-30-vulpea-schemas/schema-dashboard.gif";
 
 import static_d12frosted from "../../public/content/images/d12frosted.png";
 import static_emacs from "../../public/content/images/emacs.png";
@@ -79,6 +82,9 @@ import static_fish from "../../public/content/images/fish.png";
 import static_vui from "../../public/content/images/vui.png";
 
 const lookupMap = new Map<string, StaticImageData>([
+  ["/images/2026-06-30-vulpea-schemas/schema-dashboard.gif", pic_ff102079_fe9d_44c6_bb33_0b2f58eb86e7_schema_dashboard_gif],
+  ["/images/2026-06-30-vulpea-schemas/schema-quick-fix.webp", pic_ff102079_fe9d_44c6_bb33_0b2f58eb86e7_schema_quick_fix],
+  ["/images/2026-06-30-vulpea-schemas/schema-health-widget.webp", pic_ff102079_fe9d_44c6_bb33_0b2f58eb86e7_schema_health_widget],
   ["/images/2026-01-05-claude-code-notifications/SCR-20260105-kqjz.webp", pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqjz],
   ["/images/2026-01-05-claude-code-notifications/SCR-20260105-kqhl.webp", pic_e05cdcfc_7153_4588_8bb0_fa948b4aeba1_SCR_20260105_kqhl],
   ["/images/2026-06-19-vulpea-v2-4/SCR-20260619-kswu.webp", pic_d158b79c_a9a7_4726_8542_05df25bf1c53_SCR_20260619_kswu],
