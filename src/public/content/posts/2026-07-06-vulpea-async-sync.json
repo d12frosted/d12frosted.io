@@ -1,7 +1,7 @@
 {
   "publish": true,
   "hide": null,
-  "pinned": null,
+  "pinned": true,
   "title": "Vulpea: sync that is finally, actually async",
   "id": "f3a81c2e-9b47-4d15-a2c6-8e0d4b7f19a3",
   "related": null,
