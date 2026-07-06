@@ -1,0 +1,19 @@
+{
+  "publish": true,
+  "hide": null,
+  "pinned": null,
+  "title": "Vulpea: sync that is finally, actually async",
+  "id": "f3a81c2e-9b47-4d15-a2c6-8e0d4b7f19a3",
+  "related": null,
+  "update": "2026-07-06",
+  "date": "2026-07-06",
+  "authors": [
+    "Boris Buliga"
+  ],
+  "description": "Saving a large org file used to freeze Emacs for a second per megabyte. The synchronous path is now twice as fast, and an opt-in worker process takes the freeze down to about a millisecond - at any file size. Here's the whole story, including the parts where I was wrong.",
+  "tags": [
+    "vulpea",
+    "emacs",
+    "performance"
+  ]
+}
