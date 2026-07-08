@@ -226,7 +226,7 @@ export function CustomMarkdown(props: CustomMarkdownProps): JSX.Element {
           if (src && src.endsWith('.mp4')) {
             return (
               // @ts-ignore
-              <video autoPlay muted playsInline preload="auto" loop {...props}>
+              <video autoPlay muted playsInline preload="auto" loop {...rest}>
                 <source src={src} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
