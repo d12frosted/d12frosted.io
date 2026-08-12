@@ -257,13 +257,12 @@ The commit phase applies changes to the actual buffer:
      (insert (propertize (vui-vnode-text-content vnode)
                          'face (vui-vnode-text-face vnode))))
     ((pred vui-vnode-button-p)
-     (widget-create 'push-button
-                    :notify ...
-                    (vui-vnode-button-label vnode)))
+     (vui--insert-text-button
+      (vui-vnode-button-label vnode) ...))
     ...))
 ```
 
-This is where `widget.el` comes in - vui.el uses Emacs widgets for interactive elements like buttons and fields.
+Interactive elements sit on two substrates: buttons, checkboxes and selects are `button.el` text buttons (plain text properties, no markers), while editable fields use `widget.el`.
 
 ## 6. Lifecycle Hooks
 
@@ -273,17 +272,20 @@ After commit, lifecycle hooks run:
 - Re-render: `use-effect` callbacks run if deps changed
 - Component removed: cleanup functions called, then `on-unmount`
 
-# Widget Integration
+# Button and Widget Integration
 
-vui.el builds on `widget.el` for interactive elements:
+Interactive elements sit on two substrates. Buttons, checkboxes and selects are `button.el` text buttons: plain text with an action property, no markers or overlays, so a bufferful of them renders in linear time:
 
 ``` elisp
-;; A vui button becomes a widget
-(widget-create 'push-button
-  :notify (lambda (&rest _)
-            (funcall on-click-handler))
-  "Button Label")
+;; A vui button becomes a button.el text button
+(insert-text-button "Button Label"
+  'action (lambda (_button)
+            (funcall on-click-handler)))
+```
 
+Editable fields are the one place `widget.el` stays:
+
+``` elisp
 ;; A vui field becomes an editable field widget
 (widget-create 'editable-field
   :value "initial"
@@ -293,16 +295,16 @@ vui.el builds on `widget.el` for interactive elements:
   :size 20)
 ```
 
-Widgets handle:
+button.el and widget.el handle:
 
-- Keyboard navigation (TAB between fields)
-- Text input and editing
-- Click handling
+- Text input and editing (fields)
+- Click and RET handling (buttons)
 - Visual feedback
 
 vui.el manages the higher-level concerns:
 
-- When to create/update/remove widgets
+- Unified TAB navigation across buttons and fields
+- When to create/update/remove elements
 - State synchronisation
 - Layout and composition
 

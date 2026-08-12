@@ -109,7 +109,7 @@ Click the button and watch the count increase. No manual buffer updates needed.
 
 # User Input: Buttons and Fields
 
-vui.el wraps Emacs widgets for interactive elements:
+vui.el wraps Emacs' native buttons and widgets for interactive elements:
 
 ``` elisp
 (vui-defcomponent name-form ()
