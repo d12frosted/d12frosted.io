@@ -227,7 +227,7 @@ Here's a slightly more complete example - a simple task tracker:
 (vui-defcomponent task-item (task on-toggle on-delete)
   :render
   (vui-hstack
-   (vui-checkbox (plist-get task :done)
+   (vui-checkbox :checked (plist-get task :done)
      :on-change (lambda (_) (funcall on-toggle)))
    (vui-space)
    (vui-button "x"
@@ -319,7 +319,7 @@ You might be wondering how vui.el handles re-rendering efficiently under the hoo
 | Text             | `(vui-text "string" :face 'face)`                        |
 | Button           | `(vui-button "label" :on-click fn)`                      |
 | Field            | `(vui-field :value v :on-change fn)`                     |
-| Checkbox         | `(vui-checkbox checked :on-change fn)`                   |
+| Checkbox         | `(vui-checkbox :checked bool :on-change fn)`             |
 | Vertical stack   | `(vui-vstack child1 child2 ...)`                         |
 | Horizontal stack | `(vui-hstack child1 child2 ... :spacing n)`              |
 | List             | `(vui-list items render-fn key-fn)`                      |
