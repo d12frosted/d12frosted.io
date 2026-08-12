@@ -200,6 +200,8 @@ Usually this doesn't matter. But it becomes a problem when:
 
 The child's optimisation is defeated because `on-click` is always a fresh function.
 
+(These days you don't have to write that comparison by hand: `:memo t` on the child does exactly this - skip the re-render while props are shallow-equal and state is unchanged, like `React.memo`. The problem is the same either way: a fresh lambda makes the props look changed.)
+
 ## The Solution
 
 `vui-use-callback` returns a stable function reference that only changes when its dependencies change:
@@ -240,7 +242,7 @@ Like `use-effect`, the first argument is a list of values to watch:
 
 Use `vui-use-callback` when:
 
-- Passing callbacks to child components with `:should-update`
+- Passing callbacks to child components with `:should-update` or `:memo t`
 - Callbacks are used as dependencies in child `use-effect` calls
 - You're creating many similar callbacks in a loop
 
@@ -496,7 +498,7 @@ When should you reach for these hooks?
 
 ## Use `vui-use-callback` When…
 
-- You pass callbacks to child components that use `:should-update`
+- You pass callbacks to child components that use `:should-update` or `:memo t`
 - A callback identity matters to downstream code
 - You're creating callbacks in a loop for list items
 

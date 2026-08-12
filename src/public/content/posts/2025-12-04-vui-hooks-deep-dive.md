@@ -100,7 +100,7 @@ The fix is a **functional update**:
   (vui-text (format "Count: %d" count)))  ; 1, 2, 3, 4...
 ```
 
-When you pass a function, `vui-set-state` reads the current state value and passes it to your function. No stale closure.
+When you pass a function that takes one argument, `vui-set-state` reads the current state value and passes it to your function. No stale closure. (A plain data symbol that happens to name a function, like `'all`, is stored as a value, not called.)
 
 **Rule of thumb:** In async callbacks (timers, processes, hooks), always use functional updates when the new value depends on the current value.
 
@@ -127,7 +127,7 @@ Try it:
 ``` elisp
 (vui-mount (vui-component 'timer-display))
 ;; Watch the seconds tick up
-;; Kill the buffer to stop (though see note about cleanup below)
+;; Kill the buffer to stop - cleanup runs and cancels the timer
 ```
 
 ## Return Value: Cleanup
@@ -161,9 +161,9 @@ Without cleanup, your hooks and timers persist after the component is gone, caus
 ## When Does Mount/Unmount Happen?
 
 - **Mount**: When a component is first rendered into the tree
-- **Unmount**: When a parent re-renders and no longer includes the child
+- **Unmount**: When a parent re-renders and no longer includes the child, when you call `vui-unmount`, when `vui-mount` replaces an existing tree, and when the buffer is killed
 
-Important: killing the buffer does **not** trigger unmount - the cleanup function won't run. Components only unmount during reconciliation when their parent removes them.
+Killing the buffer runs the full unmount lifecycle - `on-unmount` hooks, effect cleanups, `on-mount` cleanup functions - so your cleanup does run.
 
 ## Example: Toggle Timer with Cleanup
 
@@ -260,10 +260,9 @@ Use `on-unmount` when cleanup depends on state that changes over time:
   ;; At unmount time, check if we have unsaved changes
   ;; We can't do this in on-mount cleanup because we don't know
   ;; what the final state will be
-  (lambda ()
-    (when dirty
-      (save-document doc-id content)
-      (message "Auto-saved changes to %s" doc-id)))
+  (when dirty
+    (save-document doc-id content)
+    (message "Auto-saved changes to %s" doc-id))
 
   :render
   (vui-vstack
@@ -675,7 +674,7 @@ Try it:
 
 ## Cancellation
 
-When the key changes or component unmounts, any pending operation should be cancelled. This happens automatically if your loader respects Emacs process semantics - vui.el tracks processes and can kill them when needed.
+When the key changes or component unmounts, any pending operation should be cancelled. This happens automatically if your loader returns the process object: vui.el stores it and kills it when the key changes or the component unmounts. And even when there is nothing to kill, results from a superseded load are simply ignored, so a late callback can't overwrite newer data.
 
 # Combining Hooks
 
@@ -692,8 +691,7 @@ Hooks compose naturally. Here's a component using multiple hooks:
     nil)  ; No cleanup needed
 
   :on-unmount
-  (lambda ()
-    (message "DataView unmounted after %d views" view-count))
+  (message "DataView unmounted after %d views" view-count)
 
   :render
   (let ((result (vui-use-async
@@ -811,9 +809,10 @@ Customise error handling with `vui-lifecycle-error-handler`:
 
 ``` elisp
 (setq vui-lifecycle-error-handler
-      (lambda (component hook-name error)
+      (lambda (hook-name error instance)
         (message "Hook error in %s (%s): %s"
-                 component hook-name error)))
+                 (vui-component-def-name (vui-instance-def instance))
+                 hook-name error)))
 ```
 
 # Hook Reference
@@ -821,7 +820,7 @@ Customise error handling with `vui-lifecycle-error-handler`:
 | Hook | Runs When | Returns | Use For |
 |----|----|----|----|
 | `on-mount` | After first render | Optional cleanup fn | One-time setup |
-| `on-unmount` | Before removal | Cleanup fn | Final cleanup |
+| `on-unmount` | Before removal | Ignored (the body IS the cleanup) | Final cleanup |
 | `vui-use-effect` | Mount + deps change | Optional cleanup fn | Reactive side effects |
 | `vui-use-async` | Key changes | Plist (:status :data :error) | Async data management |
 

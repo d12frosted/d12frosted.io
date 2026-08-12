@@ -72,7 +72,7 @@ Context solves this by making data available to any descendant without explicit 
 
 ;; Define a context - generates:
 ;;   theme-context (the context object)
-;;   theme-provider (macro to provide value)
+;;   theme-provider (function to provide value)
 ;;   use-theme (function to consume value)
 (vui-defcontext theme 'light)
 
@@ -138,7 +138,7 @@ Notice how `main-layout` is now clean - it just arranges its children without kn
 `defcontext` generates three things:
 
 1.  **The context object** (`theme-context`) - stores the default value
-2.  **A provider macro** (`theme-provider`) - wraps a subtree and provides a value
+2.  **A provider function** (`theme-provider`) - wraps a subtree and provides a value
 3.  **A consumer function** (`use-theme`) - retrieves the current value
 
 When a component calls `use-theme`, vui.el walks up the component tree looking for the nearest `theme-provider`. If none is found, it uses the default value from `defcontext`.
@@ -159,7 +159,7 @@ Context is powerful but can make data flow harder to trace. With props, you can 
 **Avoid context for:**
 
 - **Data specific to one subtree** - just pass props, it's clearer
-- **Frequently changing data** - context changes re-render all consumers
+- **Frequently changing data** - hard to trace, and `:memo` can't skip work it can't see in props
 - **Everything** - overusing context makes debugging harder
 
 Rule of thumb: if you're passing the same prop through 3+ intermediate components that don't use it, consider context. Otherwise, explicit props are clearer.

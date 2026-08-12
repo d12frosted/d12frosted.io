@@ -184,18 +184,18 @@ Small components are easier to test, reuse, and reason about.
 
 ## 7. Batching Multiple State Updates
 
-When updating multiple state variables, use `vui-batch` to avoid intermediate re-renders:
+When updating multiple state variables, use `vui-batch` to guarantee a single re-render. With the default `vui-render-delay`, consecutive `vui-set-state` calls in one handler already coalesce into one deferred re-render; but with `vui-render-delay` set to nil (immediate rendering), each call renders separately. `vui-batch` gives you one re-render either way:
 
 ``` elisp
-;; WITHOUT batching: 3 separate re-renders
+;; WITHOUT batching: up to 3 re-renders (with vui-render-delay nil)
 (vui-defcomponent form ()
   :state ((name "") (email "") (valid nil))
   :render
   (vui-button "Reset"
     :on-click (lambda ()
-                (vui-set-state :name "")      ; Re-render 1
-                (vui-set-state :email "")     ; Re-render 2
-                (vui-set-state :valid nil)))) ; Re-render 3
+                (vui-set-state :name "")
+                (vui-set-state :email "")
+                (vui-set-state :valid nil))))
 
 ;; WITH batching: 1 re-render
 (vui-defcomponent form ()
@@ -268,7 +268,7 @@ The helper returns a cleanup function, which `:on-mount` passes along for automa
   (vui-set-state :count (1+ count)))
 ```
 
-`vui-set-state` is the only way to trigger re-renders. Direct mutation silently fails to update the UI.
+`vui-set-state` is the only way to change component state so vui notices. Direct mutation silently fails to update the UI.
 
 ## 2. Hooks in Conditionals
 
@@ -323,19 +323,19 @@ Hooks inside `vui-list`'s render function are called once per item. As items cha
 ## 4. Missing Keys in Lists
 
 ``` elisp
-;; WRONG: No keys  -  items matched by position
+;; FRAGILE: the item itself is the key
 (vui-list items
   (lambda (item)
     (vui-component 'item-row :item item)))
 
-;; RIGHT: Stable keys  -  items matched by identity
+;; RIGHT: Stable keys  -  items matched by id
 (vui-list items
   (lambda (item)
     (vui-component 'item-row :item item))
   (lambda (item) (plist-get item :id)))
 ```
 
-Without keys, reordering items causes components to re-mount with wrong data, losing their state. Always provide a key function for lists that can change.
+Without a key function, the item's whole value is its key: reordering is fine, but editing an item changes its key, so its component re-mounts and loses state. Provide a stable key (like an id) for lists whose items can change.
 
 ## 5. Effect Without Cleanup
 
@@ -372,7 +372,7 @@ Always clean up timers, processes, and subscriptions. Both `:on-mount` and `use-
   (lambda () (cancel-timer timer)))
 ```
 
-When `vui-set-state` receives a function, it calls it with the current value. This avoids stale closure problems in async callbacks.
+When `vui-set-state` receives a function that takes one argument, it calls it with the current value and stores the result. (A plain value that merely happens to name a function, like the symbol `all`, is stored as-is.) This avoids stale closure problems in async callbacks.
 
 ## 7. Blocking Calls in vui-use-async
 

@@ -7,18 +7,18 @@ This tutorial gets you from zero to a working component in 15 minutes.
 
 # Installation
 
-vui.el isn't on MELPA yet. Clone the repository and add it to your load path:
+vui.el is on [MELPA](https://melpa.org/#/vui):
+
+``` elisp
+(use-package vui
+  :ensure t)
+```
+
+Or clone the repository and add it to your load path:
 
 ``` elisp
 (add-to-list 'load-path "/path/to/vui.el")
 (require 'vui)
-```
-
-Or with `use-package` and elpaca:
-
-``` elisp
-(use-package vui
-  :ensure (:host github :repo "d12frosted/vui.el"))
 ```
 
 **Important**: vui.el requires lexical binding. When trying examples, either:
@@ -181,7 +181,7 @@ Render dynamic lists with `vui-list`:
 
 - A list of data
 - A function that renders each item
-- Optional `:key-fn` for stable identity across re-renders
+- An optional key function (third argument) for stable identity across re-renders
 
 # Layout Primitives
 

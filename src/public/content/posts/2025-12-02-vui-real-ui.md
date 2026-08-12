@@ -179,7 +179,7 @@ Click a directory to navigate into it. Directories show in a different colour.
 (vui-mount (vui-component 'file-browser))
 ```
 
-Now you can navigate up and down the directory tree. Notice `vui-batch` - without it, each `vui-set-state` would trigger its own re-render. Wrapping them combines the updates into one. We'll cover re-rendering in more detail in a later article.
+Now you can navigate up and down the directory tree. Notice `vui-batch` - it makes the two `vui-set-state` calls commit as a single re-render. By default vui defers renders for a tick, so consecutive updates usually coalesce anyway, but `vui-batch` guarantees a single render regardless of `vui-render-delay`. We'll cover re-rendering in more detail in a later article.
 
 **What you learned:** Conditional rendering with `unless`, batching state updates with `vui-batch`.
 

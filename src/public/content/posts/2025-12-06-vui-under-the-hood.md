@@ -4,7 +4,7 @@
 
 - The difference between virtual nodes (ephemeral descriptions) and component instances (persistent state)
 - How the render cycle works: state change → render → reconcile → commit → effects
-- Why vui.el re-renders the full buffer instead of patching in place
+- Why vui.el re-renders the full buffer by default (and when it skips that)
 - How to use debugging tools: `vui-inspect`, debug logging, and timing instrumentation
 - Performance patterns: keys, memoisation, `should-update`
 
@@ -115,7 +115,7 @@ Every vnode has an optional `key` for stable identity:
       :key (plist-get item :id))))  ; Stable key
 ```
 
-Keys help the reconciler match nodes across renders. Without keys, list items are matched by position - reordering looks like updates rather than moves.
+Keys help the reconciler match nodes across renders. Without a key function, `vui-list` uses the item itself as the key - so editing an item's content changes its key and looks like remove-plus-add instead of an update. A stable id keeps the item's identity while its content changes.
 
 # Component Instances
 
@@ -312,17 +312,17 @@ vui.el manages the higher-level concerns:
 
 A key feature: cursor position is preserved across re-renders. The algorithm:
 
-1.  Before render: save cursor position relative to the current widget (by index)
+1.  Before render: remember which element the cursor is on - its tree path, its `:key` (or label), and the offset inside it
 2.  Render: clear and redraw buffer
-3.  After render: find the widget at the same index, restore cursor with offset
+3.  After render: find that element again - by path, then by key or label when rows shifted around it - and restore the cursor with the offset. If the element is gone entirely (its row was deleted), the cursor lands on the nearest surviving neighbour in the component tree instead of jumping to the top.
 
-This ensures typing in a field doesn't jump the cursor, and navigating through buttons stays consistent. Window scroll positions are also preserved for all windows showing the buffer.
+This ensures typing in a field doesn't jump the cursor, and navigating through buttons stays consistent. The window holding the cursor restores its scroll relative to point (so the cursor's row stays where it visually was), and other windows showing the buffer keep their own scroll positions.
 
 # Why Not Just Update In Place?
 
 You might wonder: why recreate the buffer each render? Why not just update what changed?
 
-Emacs widgets are stateful and tied to buffer positions. When surrounding content changes (items added/removed from a list), widgets can't easily slide around. Partial updates lead to:
+Editable fields are stateful `widget.el` widgets tied to buffer positions. When surrounding content changes (items added/removed from a list), they can't easily slide around. Partial updates lead to:
 
 - Widgets pointing to wrong buffer positions
 - Overlapping or orphaned widgets
@@ -330,7 +330,8 @@ Emacs widgets are stateful and tied to buffer positions. When surrounding conten
 
 The full re-render approach is simpler and more reliable. The system still optimises by:
 
-- Skipping render when `should-update` returns nil
+- Skipping render when `should-update` returns nil - and when the whole tree comes back unchanged, skipping the commit too (an O(1) no-op instead of a rebuild)
+- Leaving a live `vui-stream` region untouched and re-rendering only what sits below it
 - Preserving component state across re-renders
 - Caching values with `vui-use-memo` and `vui-use-callback`
 
@@ -550,10 +551,10 @@ State changes trigger re-renders from the root down. Place state close to where 
 Keys let the reconciler match items efficiently:
 
 ``` elisp
-;; Without keys: matched by position
+;; Default: the item itself is the key (an edited item re-mounts)
 (vui-list items render-fn)
 
-;; With keys: matched by identity
+;; Stable keys: matched by id, item content can change freely
 (vui-list items render-fn #'item-id)
 ```
 
@@ -602,7 +603,7 @@ vui.el's architecture:
 1.  **Components** are definitions; **instances** are live copies with state
 2.  **Virtual nodes** describe UI without touching the buffer
 3.  **Reconciliation** matches old and new trees to find changes
-4.  **Commit** applies changes, using `widget.el` for interactivity
+4.  **Commit** applies changes - `button.el` text buttons for buttons, checkboxes and selects, `widget.el` for editable fields
 5.  **Lifecycle hooks** run at appropriate times
 
 The pattern enables:
@@ -620,7 +621,7 @@ Understanding these internals helps you debug issues and write performant compon
 
 - Virtual nodes are ephemeral descriptions; component instances persist with state
 - The render cycle: state change → render → reconcile → commit → effects
-- Why vui.el re-renders the full buffer (widget positioning complexity)
+- Why vui.el re-renders the full buffer by default (field positioning complexity), and when it skips that
 - Debugging tools: `vui-inspect` for the component tree, `vui-debug-enabled` for render logging, `vui-timing-enabled` for performance measurement
 - Performance patterns: keys for lists, `vui-use-callback` and `vui-use-memo` for stability, `should-update` for fine-grained control
 
